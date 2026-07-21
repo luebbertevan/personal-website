@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
@@ -11,115 +11,255 @@ type AudioRig = {
   context: AudioContext;
   analyser: AnalyserNode;
   master: GainNode;
-  interval: number | null;
-  synthNodes: AudioNode[];
-  mediaElement?: HTMLAudioElement;
+  sources: AudioNode[];
+  element?: HTMLAudioElement;
   objectUrl?: string;
 };
 
-const vertexShader = /* glsl */ `
+type ViewMode = "home" | "project";
+
+const screenVertexShader = /* glsl */ `
+  varying vec2 vUv;
+  void main() {
+    vUv = uv;
+    gl_Position = vec4(position.xy, 0.0, 1.0);
+  }
+`;
+
+const carbonFragmentShader = /* glsl */ `
+  precision highp float;
+  varying vec2 vUv;
+
+  uniform vec2 uResolution;
+  uniform vec2 uPointer;
   uniform float uTime;
+  uniform float uTravel;
   uniform float uBass;
   uniform float uMid;
   uniform float uHigh;
   uniform float uImpulse;
-  uniform vec2 uPointer;
-  varying vec2 vUv;
-  varying vec3 vNormalW;
-  varying vec3 vWorld;
-  varying float vPulse;
+  uniform float uProject;
+  uniform float uChapter;
+
+  #define PI 3.14159265359
+  #define MAX_STEPS 76
+
+  float hash11(float p) {
+    p = fract(p * 0.1031);
+    p *= p + 33.33;
+    p *= p + p;
+    return fract(p);
+  }
+
+  float hash21(vec2 p) {
+    vec3 p3 = fract(vec3(p.xyx) * 0.1031);
+    p3 += dot(p3, p3.yzx + 33.33);
+    return fract((p3.x + p3.y) * p3.z);
+  }
+
+  float hash31(vec3 p) {
+    p = fract(p * 0.1031);
+    p += dot(p, p.yzx + 33.33);
+    return fract((p.x + p.y) * p.z);
+  }
+
+  float noise3(vec3 p) {
+    vec3 i = floor(p);
+    vec3 f = fract(p);
+    f = f * f * (3.0 - 2.0 * f);
+    return mix(
+      mix(mix(hash31(i + vec3(0,0,0)), hash31(i + vec3(1,0,0)), f.x),
+          mix(hash31(i + vec3(0,1,0)), hash31(i + vec3(1,1,0)), f.x), f.y),
+      mix(mix(hash31(i + vec3(0,0,1)), hash31(i + vec3(1,0,1)), f.x),
+          mix(hash31(i + vec3(0,1,1)), hash31(i + vec3(1,1,1)), f.x), f.y), f.z
+    );
+  }
+
+  float fbm(vec3 p) {
+    float f = 0.0;
+    float a = 0.52;
+    mat3 m = mat3(0.00, 0.80, 0.60, -0.80, 0.36, -0.48, -0.60, -0.48, 0.64);
+    for (int i = 0; i < 5; i++) {
+      f += a * noise3(p);
+      p = m * p * 2.02 + vec3(1.7, 2.1, -1.3);
+      a *= 0.48;
+    }
+    return f;
+  }
+
+  mat2 rotate2(float a) {
+    float c = cos(a), s = sin(a);
+    return mat2(c, -s, s, c);
+  }
+
+  vec2 path(float z) {
+    float slow = z * 0.22;
+    return vec2(
+      sin(slow * 1.43 + sin(slow * 0.37) * 1.4) * 1.20 + sin(z * 0.61) * 0.12,
+      cos(slow * 1.17 + 0.7) * 0.72 + sin(z * 0.47) * 0.20
+    );
+  }
+
+  float carbonField(vec3 p) {
+    vec3 q = p;
+    q.xy -= path(p.z);
+    q.xy = rotate2(p.z * 0.38 + sin(p.z * 0.31) * 0.7) * q.xy;
+    float angle = atan(q.y, q.x);
+    float coarse = fbm(vec3(q.xy * 2.1, p.z * 0.48) + vec3(0.0, 0.0, uTime * 0.035));
+    float folded = abs(fbm(vec3(q.xy * 5.0, p.z * 0.85) - uTime * 0.025) - 0.52);
+    float crust = fbm(vec3(q.xy * 11.0, p.z * 1.8) + 6.0);
+    float radius = 0.62 + sin(p.z * 1.7 + coarse * 5.0) * 0.065;
+    radius += (coarse - 0.48) * 0.34;
+    radius += sin(angle * 3.0 + p.z * 1.35 + coarse * 4.0) * 0.065;
+    float porous = smoothstep(0.52, 0.82, crust) * (0.035 + folded * 0.065);
+    return length(q.xy * vec2(0.92, 1.07)) - radius + folded * 0.095 + porous;
+  }
+
+  vec3 normalAt(vec3 p) {
+    float e = 0.0035;
+    vec2 h = vec2(e, 0.0);
+    return normalize(vec3(
+      carbonField(p + h.xyy) - carbonField(p - h.xyy),
+      carbonField(p + h.yxy) - carbonField(p - h.yxy),
+      carbonField(p + h.yyx) - carbonField(p - h.yyx)
+    ));
+  }
+
+  float softShadow(vec3 ro, vec3 rd) {
+    float shade = 1.0;
+    float t = 0.04;
+    for (int i = 0; i < 20; i++) {
+      float h = carbonField(ro + rd * t);
+      shade = min(shade, 14.0 * h / t);
+      t += clamp(h, 0.025, 0.18);
+      if (h < 0.001 || t > 4.0) break;
+    }
+    return clamp(shade, 0.12, 1.0);
+  }
+
+  float ambientOcclusion(vec3 p, vec3 n) {
+    float occ = 0.0;
+    float weight = 1.0;
+    for (int i = 1; i < 6; i++) {
+      float d = float(i) * 0.055;
+      occ += (d - carbonField(p + n * d)) * weight;
+      weight *= 0.62;
+    }
+    return clamp(1.0 - occ * 2.7, 0.18, 1.0);
+  }
+
+  vec3 gridConstellation(vec2 uv, vec3 rd) {
+    vec2 p = uv;
+    p += uPointer * 0.018 / (0.35 + length(p - uPointer * 0.42));
+    vec2 cell = floor(p * 15.0);
+    vec2 local = fract(p * 15.0) - 0.5;
+    float star = 0.0;
+    for (int y = -1; y <= 1; y++) {
+      for (int x = -1; x <= 1; x++) {
+        vec2 id = cell + vec2(float(x), float(y));
+        vec2 offset = vec2(hash21(id), hash21(id + 41.7)) - 0.5;
+        vec2 delta = local - vec2(float(x), float(y)) - offset * 0.72;
+        float pulse = 0.62 + 0.38 * sin(uTime * (0.45 + hash21(id + 8.0)) + hash21(id) * 20.0);
+        star += exp(-length(delta) * 34.0) * pulse * step(0.72, hash21(id + 4.0));
+      }
+    }
+    vec2 fine = abs(fract(p * 30.0) - 0.5);
+    float grid = (smoothstep(0.495, 0.475, fine.x) + smoothstep(0.495, 0.475, fine.y));
+    float horizon = pow(max(0.0, 1.0 - abs(rd.y + 0.08)), 12.0);
+    float wake = exp(-length(uv - uPointer * vec2(0.55, 0.35)) * 4.8);
+    vec3 cool = vec3(0.07, 0.24, 0.34) * grid * (0.025 + wake * 0.12);
+    cool += vec3(0.24, 0.68, 0.78) * star * (0.18 + uHigh * 0.3);
+    cool += vec3(0.12, 0.20, 0.24) * horizon * 0.08;
+    return cool;
+  }
 
   void main() {
-    vUv = uv;
-    vec3 p = position;
-    float along = uv.x;
-    float wave = sin(along * 34.0 - uTime * 2.4) * (0.035 + uMid * 0.12);
-    float braid = sin(along * 13.0 + uTime * 0.7) * cos(along * 21.0 - uTime) * 0.07;
-    float pointerBand = exp(-pow(along - (uPointer.x * 0.34 + 0.5), 2.0) * 35.0);
-    float radiusKick = (uBass * 0.15 + uImpulse * 0.22) * sin(uv.y * 6.28318 + uTime * 2.0);
-    p += normal * (wave + braid * (0.25 + uBass) + pointerBand * (uPointer.y * 0.12 + radiusKick));
-    p.y += sin(along * 9.0 + uTime * 0.4) * uBass * 0.07;
+    vec2 uv = (gl_FragCoord.xy * 2.0 - uResolution.xy) / uResolution.y;
+    uv.y *= -1.0;
 
-    vec4 world = modelMatrix * vec4(p, 1.0);
-    vWorld = world.xyz;
-    vNormalW = normalize(mat3(modelMatrix) * normal);
-    vPulse = smoothstep(0.16, 0.0, abs(fract(along * 1.65 - uTime * (0.1 + uBass * 0.14)) - 0.5));
-    gl_Position = projectionMatrix * viewMatrix * world;
-  }
-`;
+    float z = uTravel;
+    vec3 center = vec3(path(z), z);
+    vec3 ahead = vec3(path(z + 1.25), z + 1.25);
+    vec3 tangent = normalize(ahead - center);
+    vec3 side = normalize(cross(vec3(0.0, 1.0, 0.0), tangent));
+    vec3 up = normalize(cross(tangent, side));
 
-const fragmentShader = /* glsl */ `
-  uniform float uTime;
-  uniform float uBass;
-  uniform float uMid;
-  uniform float uHigh;
-  uniform float uImpulse;
-  varying vec2 vUv;
-  varying vec3 vNormalW;
-  varying vec3 vWorld;
-  varying float vPulse;
+    float chapterEase = smoothstep(0.0, 1.0, uChapter);
+    float orbit = 0.38 * sin(z * 0.43) + chapterEase * (uChapter - 0.5) * 1.75;
+    float distanceFromSpine = mix(2.55, 2.05 + sin(uChapter * PI) * 0.65, uProject);
+    vec3 ro = center + side * cos(orbit) * distanceFromSpine + up * sin(orbit) * distanceFromSpine;
+    ro -= tangent * mix(0.90, 0.42, uProject);
+    ro += (side * uPointer.x + up * uPointer.y) * 0.09;
+    vec3 ta = vec3(path(z + mix(1.65, 0.80, uProject)), z + mix(1.65, 0.80, uProject));
 
-  vec3 palette(float t) {
-    vec3 a = vec3(0.04, 0.055, 0.09);
-    vec3 b = vec3(0.45, 0.43, 0.55);
-    vec3 c = vec3(1.0, 1.0, 1.0);
-    vec3 d = vec3(0.50, 0.16, 0.03);
-    return a + b * cos(6.28318 * (c * t + d));
-  }
+    vec3 forward = normalize(ta - ro);
+    vec3 right = normalize(cross(forward, up));
+    vec3 cameraUp = cross(right, forward);
+    float focal = mix(1.42, 1.62, uProject);
+    vec3 rd = normalize(forward * focal + right * uv.x + cameraUp * uv.y);
 
-  void main() {
-    vec3 viewDir = normalize(cameraPosition - vWorld);
-    float fresnel = pow(1.0 - abs(dot(viewDir, normalize(vNormalW))), 2.4);
-    float micro = sin(vUv.x * 230.0 + sin(vUv.y * 21.0 + uTime) * 3.0);
-    float filament = smoothstep(0.94, 1.0, micro) * (0.35 + uHigh * 1.8);
-    vec3 spectral = palette(vUv.x * 1.4 + fresnel * 0.3 + uTime * 0.025);
-    vec3 blackGlass = vec3(0.004, 0.008, 0.018) + spectral * fresnel * (0.75 + uMid);
-    vec3 cyan = vec3(0.28, 1.5, 1.8);
-    vec3 coral = vec3(2.1, 0.18, 0.48);
-    vec3 emission = cyan * vPulse * (0.35 + uBass * 1.8);
-    emission += coral * filament * (0.25 + uHigh);
-    emission += spectral * uImpulse * fresnel * 1.6;
-    gl_FragColor = vec4(blackGlass + emission, 1.0);
-  }
-`;
+    float t = 0.0;
+    float halo = 0.0;
+    float hit = 0.0;
+    vec3 p = ro;
+    for (int i = 0; i < MAX_STEPS; i++) {
+      p = ro + rd * t;
+      float d = carbonField(p);
+      float proximity = exp(-abs(d) * 18.0);
+      float emberProbe = smoothstep(0.54, 0.83, fbm(p * 2.35 + vec3(0.0, 0.0, -uTime * 0.06)));
+      halo += proximity * emberProbe * 0.0045;
+      if (d < 0.0015 + t * 0.00045) {
+        hit = 1.0;
+        break;
+      }
+      t += max(0.012, d * 0.62);
+      if (t > 10.0) break;
+    }
 
-const gridFragmentShader = /* glsl */ `
-  uniform float uTime;
-  uniform float uBass;
-  uniform float uMid;
-  uniform float uImpulse;
-  uniform vec2 uPointer;
-  varying vec2 vUv;
+    vec3 color = vec3(0.005, 0.006, 0.008);
+    color += gridConstellation(uv, rd);
+    color += vec3(1.0, 0.18, 0.025) * halo * (1.2 + uBass * 2.2 + uImpulse);
 
-  float lineGrid(vec2 p, float scale, float width) {
-    vec2 q = abs(fract(p * scale - 0.5) - 0.5) / fwidth(p * scale);
-    return 1.0 - min(min(q.x, q.y) / width, 1.0);
-  }
+    if (hit > 0.5) {
+      vec3 n = normalAt(p);
+      vec3 view = normalize(ro - p);
+      vec3 lightDir = normalize(vec3(-0.55, 0.72, -0.35));
+      vec3 warmDir = normalize(vec3(0.65, -0.15, -0.45));
+      float diffuse = max(dot(n, lightDir), 0.0);
+      float warmDiffuse = max(dot(n, warmDir), 0.0);
+      float shadow = softShadow(p + n * 0.012, lightDir);
+      float ao = ambientOcclusion(p, n);
+      float fresnel = pow(1.0 - max(dot(n, view), 0.0), 3.2);
+      vec3 halfDir = normalize(lightDir + view);
+      float spec = pow(max(dot(n, halfDir), 0.0), 76.0) * shadow;
+      float broadSpec = pow(max(dot(reflect(-view, n), lightDir), 0.0), 8.0);
 
-  void main() {
-    vec2 p = (vUv - 0.5) * vec2(1.7, 1.0);
-    float r = length(p);
-    float a = atan(p.y, p.x);
-    p += vec2(sin(a * 6.0 + uTime * 0.18), cos(a * 4.0 - uTime * 0.13)) * 0.016 * (1.0 + uMid);
-    float g1 = lineGrid(p + sin(p.yx * 9.0) * 0.012, 8.0, 1.25);
-    float g2 = lineGrid(p * mat2(0.707, -0.707, 0.707, 0.707), 17.0, 0.8);
-    float g3 = lineGrid(p + sin(p.yx * 17.0 + uTime * 0.2) * 0.008, 35.0, 0.45);
-    float rings = pow(max(0.0, sin(r * 66.0 - uTime * 0.55)), 16.0) * 0.2;
-    vec2 cursor = uPointer * vec2(0.85, 0.5);
-    float wake = exp(-length(p - cursor) * (4.2 - uBass * 1.4));
-    float cells = g1 * 0.34 + g2 * 0.17 + g3 * 0.08 + rings;
-    float mask = smoothstep(0.86, 0.08, r) * (0.16 + wake * 0.85 + uImpulse * 0.32);
-    vec3 color = mix(vec3(0.11, 0.20, 0.55), vec3(0.23, 1.25, 1.55), wake);
-    color += vec3(0.65, 0.10, 0.82) * g2 * uMid;
-    gl_FragColor = vec4(color * cells * mask, cells * mask * 0.68);
-  }
-`;
+      float mineral = fbm(p * 3.05 + vec3(0.0, 0.0, uTime * 0.025));
+      float veins = fbm(p * 7.2 - vec3(0.0, 0.0, uTime * 0.045));
+      float molten = smoothstep(0.58 - uBass * 0.08, 0.79, mineral + veins * 0.19);
+      molten *= smoothstep(0.08, 0.48, 1.0 - diffuse + veins * 0.3);
+      float pulse = 0.72 + 0.28 * sin(p.z * 2.8 - uTime * (1.1 + uBass));
 
-const gridVertexShader = /* glsl */ `
-  varying vec2 vUv;
-  void main() {
-    vUv = uv;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      vec3 carbon = mix(vec3(0.006, 0.007, 0.009), vec3(0.10, 0.105, 0.11), diffuse * ao);
+      carbon += vec3(0.52, 0.58, 0.62) * broadSpec * 0.48;
+      carbon += vec3(1.35, 1.45, 1.52) * spec * (0.68 + uHigh);
+      carbon += vec3(0.36, 0.44, 0.48) * fresnel * (0.35 + ao * 0.5);
+      carbon *= ao;
+
+      vec3 ember = mix(vec3(0.42, 0.012, 0.002), vec3(1.85, 0.29, 0.018), mineral);
+      ember += vec3(1.45, 0.72, 0.18) * pow(molten, 3.0);
+      vec3 cyanAccent = vec3(0.05, 0.65, 0.86) * fresnel * uImpulse * (0.4 + pulse);
+      color = carbon + ember * molten * pulse * (0.8 + uBass * 1.8) + cyanAccent;
+
+      float fog = smoothstep(4.0, 9.5, t);
+      color = mix(color, vec3(0.008, 0.006, 0.006), fog * 0.72);
+    }
+
+    float vignette = 1.0 - smoothstep(0.42, 1.42, length(uv * vec2(0.72, 0.92)));
+    color *= 0.55 + vignette * 0.58;
+    color = color / (1.0 + color * 0.34);
+    color = pow(color, vec3(0.88));
+    gl_FragColor = vec4(color, 1.0);
   }
 `;
 
@@ -130,7 +270,7 @@ const pointVertexShader = /* glsl */ `
   void main() {
     vEnergy = aEnergy;
     vec4 mv = modelViewMatrix * vec4(position, 1.0);
-    gl_PointSize = min(15.0, (1.5 + aEnergy * 8.0) * uPixelRatio * (5.2 / -mv.z));
+    gl_PointSize = min(18.0, (1.6 + aEnergy * 9.0) * uPixelRatio);
     gl_Position = projectionMatrix * mv;
   }
 `;
@@ -140,520 +280,464 @@ const pointFragmentShader = /* glsl */ `
   void main() {
     vec2 p = gl_PointCoord - 0.5;
     float d = length(p);
-    float core = smoothstep(0.5, 0.02, d);
-    float halo = exp(-d * 7.5);
-    vec3 cool = vec3(0.16, 0.52, 1.2);
-    vec3 hot = vec3(1.8, 0.22, 0.78);
-    vec3 color = mix(cool, hot, clamp(vEnergy, 0.0, 1.0));
-    gl_FragColor = vec4(color * (core + halo * (0.6 + vEnergy)), core * 0.84);
+    float core = smoothstep(0.38, 0.01, d);
+    float halo = exp(-d * 8.0);
+    vec3 cool = vec3(0.18, 0.70, 0.92);
+    vec3 hot = vec3(2.3, 0.24, 0.035);
+    vec3 color = mix(cool, hot, clamp(vEnergy * 1.2, 0.0, 1.0));
+    gl_FragColor = vec4(color * (core + halo * 0.65), core * 0.88);
   }
 `;
 
-function makeCurve() {
-  const points: THREE.Vector3[] = [];
-  for (let i = 0; i < 15; i += 1) {
-    const t = i / 14;
-    const z = THREE.MathUtils.lerp(-4.6, 3.5, t);
-    const x = Math.sin(t * Math.PI * 3.4) * (1.3 + Math.sin(t * 7.0) * 0.24);
-    const y = Math.cos(t * Math.PI * 4.2) * 0.72 + Math.sin(t * 11.0) * 0.18;
-    points.push(new THREE.Vector3(x, y, z));
-  }
-  return new THREE.CatmullRomCurve3(points, false, "catmullrom", 0.52);
-}
-
-function bandAverage(data: Uint8Array, from: number, to: number) {
-  let total = 0;
+function averageBand(data: Uint8Array, from: number, to: number) {
+  let sum = 0;
   const end = Math.min(data.length, to);
-  for (let i = from; i < end; i += 1) total += data[i];
-  return total / Math.max(1, end - from) / 255;
+  for (let i = from; i < end; i += 1) sum += data[i];
+  return sum / Math.max(1, end - from) / 255;
 }
 
 export function SignalPrototype() {
   const mountRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<AudioRig | null>(null);
-  const audioBandsRef = useRef({ bass: 0.18, mid: 0.12, high: 0.08 });
   const mutedRef = useRef(false);
+  const viewRef = useRef<ViewMode>("home");
+  const destinationRef = useRef(0);
+  const entryProgressRef = useRef(0);
+  const [view, setView] = useState<ViewMode>("home");
+  const [entryProgress, setEntryProgress] = useState(0);
   const [audioOpen, setAudioOpen] = useState(false);
   const [muted, setMuted] = useState(false);
-  const [audioLabel, setAudioLabel] = useState("Prototype score");
   const [awake, setAwake] = useState(false);
+  const [audioLabel, setAudioLabel] = useState("Curated signal");
 
-  const stopAudioRig = () => {
+  const stopAudio = useCallback(() => {
     const rig = audioRef.current;
     if (!rig) return;
-    if (rig.interval !== null) window.clearInterval(rig.interval);
-    rig.mediaElement?.pause();
-    rig.synthNodes.forEach((node) => {
-      if ("stop" in node && typeof node.stop === "function") {
-        try {
-          node.stop();
-        } catch {
-          // Already stopped.
-        }
+    rig.element?.pause();
+    rig.sources.forEach((source) => {
+      if ("stop" in source && typeof source.stop === "function") {
+        try { source.stop(); } catch { /* already stopped */ }
       }
-      try {
-        node.disconnect();
-      } catch {
-        // Already disconnected.
-      }
+      try { source.disconnect(); } catch { /* already disconnected */ }
     });
     if (rig.objectUrl) URL.revokeObjectURL(rig.objectUrl);
     void rig.context.close();
     audioRef.current = null;
-  };
+  }, []);
 
-  const startPrototypeScore = async () => {
+  const startScore = useCallback(async () => {
     if (audioRef.current) {
       await audioRef.current.context.resume();
+      setAwake(true);
       return;
     }
-
     const context = new AudioContext();
     const analyser = context.createAnalyser();
     analyser.fftSize = 256;
-    analyser.smoothingTimeConstant = 0.76;
+    analyser.smoothingTimeConstant = 0.82;
     const master = context.createGain();
-    master.gain.value = mutedRef.current ? 0 : 0.36;
+    master.gain.value = mutedRef.current ? 0 : 0.30;
     master.connect(analyser);
     analyser.connect(context.destination);
-    const synthNodes: AudioNode[] = [master, analyser];
 
-    const padBus = context.createGain();
-    padBus.gain.value = 0.08;
-    const lowPass = context.createBiquadFilter();
-    lowPass.type = "lowpass";
-    lowPass.frequency.value = 680;
-    lowPass.Q.value = 1.7;
-    padBus.connect(lowPass).connect(master);
-    synthNodes.push(padBus, lowPass);
-
-    [55, 82.41, 110, 164.81].forEach((frequency, index) => {
+    const filter = context.createBiquadFilter();
+    filter.type = "lowpass";
+    filter.frequency.value = 720;
+    filter.Q.value = 2.2;
+    filter.connect(master);
+    const sources: AudioNode[] = [master, analyser, filter];
+    [48.99, 73.42, 98.0, 146.83].forEach((frequency, index) => {
       const oscillator = context.createOscillator();
       const gain = context.createGain();
       oscillator.type = index < 2 ? "sine" : "triangle";
       oscillator.frequency.value = frequency;
-      oscillator.detune.value = index % 2 === 0 ? -5 : 6;
-      gain.gain.value = index === 0 ? 0.55 : 0.18;
-      oscillator.connect(gain).connect(padBus);
+      oscillator.detune.value = index % 2 ? 7 : -5;
+      gain.gain.value = index === 0 ? 0.19 : 0.045;
+      oscillator.connect(gain).connect(filter);
       oscillator.start();
-      synthNodes.push(oscillator, gain);
+      sources.push(oscillator, gain);
     });
 
-    const lfo = context.createOscillator();
-    const lfoGain = context.createGain();
-    lfo.frequency.value = 0.085;
-    lfoGain.gain.value = 260;
-    lfo.connect(lfoGain).connect(lowPass.frequency);
-    lfo.start();
-    synthNodes.push(lfo, lfoGain);
+    const pulse = context.createOscillator();
+    const pulseGain = context.createGain();
+    pulse.type = "sine";
+    pulse.frequency.value = 0.11;
+    pulseGain.gain.value = 0.025;
+    pulse.connect(pulseGain).connect(master);
+    pulse.start();
+    sources.push(pulse, pulseGain);
 
-    const scheduleBeat = () => {
-      if (context.state !== "running") return;
-      const now = context.currentTime;
-      const kick = context.createOscillator();
-      const kickGain = context.createGain();
-      kick.type = "sine";
-      kick.frequency.setValueAtTime(92, now);
-      kick.frequency.exponentialRampToValueAtTime(38, now + 0.19);
-      kickGain.gain.setValueAtTime(0.0001, now);
-      kickGain.gain.exponentialRampToValueAtTime(0.42, now + 0.012);
-      kickGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.32);
-      kick.connect(kickGain).connect(master);
-      kick.start(now);
-      kick.stop(now + 0.34);
-
-      const ping = context.createOscillator();
-      const pingGain = context.createGain();
-      const pingFilter = context.createBiquadFilter();
-      ping.type = "sine";
-      ping.frequency.value = Math.random() > 0.5 ? 659.25 : 493.88;
-      pingFilter.type = "bandpass";
-      pingFilter.frequency.value = 900;
-      pingFilter.Q.value = 4;
-      pingGain.gain.setValueAtTime(0.0001, now + 0.16);
-      pingGain.gain.exponentialRampToValueAtTime(0.055, now + 0.18);
-      pingGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.82);
-      ping.connect(pingFilter).connect(pingGain).connect(master);
-      ping.start(now + 0.16);
-      ping.stop(now + 0.84);
-    };
-
-    scheduleBeat();
-    const interval = window.setInterval(scheduleBeat, 780);
-    audioRef.current = { context, analyser, master, interval, synthNodes };
+    audioRef.current = { context, analyser, master, sources };
     await context.resume();
     setAwake(true);
-    setAudioLabel("Prototype score");
-  };
+  }, []);
 
-  const useUploadedTrack = async (event: ChangeEvent<HTMLInputElement>) => {
+  const loadTrack = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
-    stopAudioRig();
-
+    stopAudio();
     const context = new AudioContext();
     const analyser = context.createAnalyser();
-    analyser.fftSize = 512;
-    analyser.smoothingTimeConstant = 0.74;
+    analyser.fftSize = 256;
+    analyser.smoothingTimeConstant = 0.82;
     const master = context.createGain();
-    master.gain.value = mutedRef.current ? 0 : 0.78;
+    master.gain.value = mutedRef.current ? 0 : 0.58;
+    master.connect(analyser);
+    analyser.connect(context.destination);
     const objectUrl = URL.createObjectURL(file);
-    const mediaElement = new Audio(objectUrl);
-    mediaElement.loop = true;
-    mediaElement.crossOrigin = "anonymous";
-    const source = context.createMediaElementSource(mediaElement);
-    source.connect(master).connect(analyser).connect(context.destination);
-    audioRef.current = {
-      context,
-      analyser,
-      master,
-      interval: null,
-      synthNodes: [source, master, analyser],
-      mediaElement,
-      objectUrl,
-    };
+    const element = new Audio(objectUrl);
+    element.loop = true;
+    const source = context.createMediaElementSource(element);
+    source.connect(master);
+    audioRef.current = { context, analyser, master, sources: [source, master, analyser], element, objectUrl };
     await context.resume();
-    await mediaElement.play();
-    setAudioLabel(file.name.replace(/\.[^.]+$/, ""));
+    await element.play();
+    setAudioLabel(file.name);
     setAwake(true);
     setAudioOpen(false);
   };
 
-  const toggleMute = () => {
+  const toggleMute = async () => {
     const next = !mutedRef.current;
     mutedRef.current = next;
     setMuted(next);
-    const rig = audioRef.current;
-    if (rig) {
-      rig.master.gain.setTargetAtTime(next ? 0 : rig.mediaElement ? 0.78 : 0.36, rig.context.currentTime, 0.06);
+    if (!audioRef.current) await startScore();
+    if (audioRef.current) {
+      audioRef.current.master.gain.setTargetAtTime(next ? 0 : 0.3, audioRef.current.context.currentTime, 0.08);
     }
+  };
+
+  const selectView = (next: ViewMode) => {
+    viewRef.current = next;
+    setView(next);
+    if (next === "project") {
+      destinationRef.current = 9.2;
+      entryProgressRef.current = 0;
+      setEntryProgress(0);
+    } else {
+      destinationRef.current = 0;
+    }
+    void startScore();
   };
 
   useEffect(() => {
     const mount = mountRef.current;
     if (!mount) return;
 
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x02030a);
-    scene.fog = new THREE.FogExp2(0x02030a, 0.052);
-    const camera = new THREE.PerspectiveCamera(47, 1, 0.1, 60);
-    camera.position.set(0, 0.1, 7.1);
-
-    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: "high-performance" });
+    const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: false, powerPreference: "high-performance" });
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.16;
-    renderer.setClearColor(0x02030a, 1);
+    renderer.toneMappingExposure = 0.92;
     mount.appendChild(renderer.domElement);
 
-    const composer = new EffectComposer(renderer);
-    composer.addPass(new RenderPass(scene, camera));
-    const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 1.08, 0.72, 0.24);
-    composer.addPass(bloom);
+    const scene = new THREE.Scene();
+    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.01, 20);
+    camera.position.z = 4;
 
-    const group = new THREE.Group();
-    scene.add(group);
-
-    const tubeUniforms = {
+    const uniforms = {
+      uResolution: { value: new THREE.Vector2(1, 1) },
+      uPointer: { value: new THREE.Vector2(0, 0) },
       uTime: { value: 0 },
-      uBass: { value: 0.15 },
-      uMid: { value: 0.1 },
-      uHigh: { value: 0.08 },
+      uTravel: { value: 0 },
+      uBass: { value: 0.12 },
+      uMid: { value: 0.08 },
+      uHigh: { value: 0.06 },
       uImpulse: { value: 0 },
-      uPointer: { value: new THREE.Vector2() },
+      uProject: { value: 0 },
+      uChapter: { value: 0 },
     };
-    const tube = new THREE.Mesh(
-      new THREE.TubeGeometry(makeCurve(), reducedMotion ? 120 : 260, 0.29, reducedMotion ? 10 : 18, false),
-      new THREE.ShaderMaterial({
-        uniforms: tubeUniforms,
-        vertexShader,
-        fragmentShader,
-      }),
-    );
-    tube.rotation.set(-0.09, -0.2, 0.08);
-    group.add(tube);
 
-    const gridUniforms = {
-      uTime: { value: 0 },
-      uBass: { value: 0 },
-      uMid: { value: 0 },
-      uImpulse: { value: 0 },
-      uPointer: { value: new THREE.Vector2() },
-    };
-    const grid = new THREE.Mesh(
-      new THREE.PlaneGeometry(18, 11, 1, 1),
-      new THREE.ShaderMaterial({
-        uniforms: gridUniforms,
-        vertexShader: gridVertexShader,
-        fragmentShader: gridFragmentShader,
-        transparent: true,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending,
-        side: THREE.DoubleSide,
-      }),
-    );
-    grid.position.z = -2.7;
-    scene.add(grid);
+    const screenMaterial = new THREE.ShaderMaterial({
+      uniforms,
+      vertexShader: screenVertexShader,
+      fragmentShader: carbonFragmentShader,
+      depthTest: false,
+      depthWrite: false,
+    });
+    const screen = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), screenMaterial);
+    screen.frustumCulled = false;
+    screen.renderOrder = -10;
+    scene.add(screen);
 
-    const particleCount = reducedMotion ? 280 : 760;
-    const homes = new Float32Array(particleCount * 3);
+    const particleCount = window.innerWidth < 700 ? 170 : 320;
     const positions = new Float32Array(particleCount * 3);
+    const origins = new Float32Array(particleCount * 3);
     const velocities = new Float32Array(particleCount * 3);
     const energies = new Float32Array(particleCount);
+    const seed = new Float32Array(particleCount);
     for (let i = 0; i < particleCount; i += 1) {
-      const angle = i * 2.399963 + Math.sin(i) * 0.12;
-      const shell = 1.65 + (i % 47) / 47 * 2.6;
-      const x = Math.cos(angle) * shell * (1.2 + Math.sin(i * 0.17) * 0.13);
-      const y = Math.sin(angle) * shell * 0.68;
-      const z = -0.7 + Math.sin(i * 0.41) * 2.1 - shell * 0.18;
-      homes[i * 3] = positions[i * 3] = x;
-      homes[i * 3 + 1] = positions[i * 3 + 1] = y;
-      homes[i * 3 + 2] = positions[i * 3 + 2] = z;
-      energies[i] = Math.random() * 0.18;
+      const radius = 0.20 + Math.pow(Math.random(), 0.75) * 0.88;
+      const angle = Math.random() * Math.PI * 2;
+      const x = Math.cos(angle) * radius;
+      const y = Math.sin(angle) * radius * 0.66;
+      positions[i * 3] = origins[i * 3] = x;
+      positions[i * 3 + 1] = origins[i * 3 + 1] = y;
+      positions[i * 3 + 2] = origins[i * 3 + 2] = 1;
+      seed[i] = Math.random();
     }
-    const particleGeometry = new THREE.BufferGeometry();
-    const positionAttribute = new THREE.BufferAttribute(positions, 3);
-    const energyAttribute = new THREE.BufferAttribute(energies, 1);
-    particleGeometry.setAttribute("position", positionAttribute);
-    particleGeometry.setAttribute("aEnergy", energyAttribute);
-    const particleMaterial = new THREE.ShaderMaterial({
-      uniforms: { uPixelRatio: { value: Math.min(window.devicePixelRatio, 2) } },
+    const pointsGeometry = new THREE.BufferGeometry();
+    pointsGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    pointsGeometry.setAttribute("aEnergy", new THREE.BufferAttribute(energies, 1));
+    const pointMaterial = new THREE.ShaderMaterial({
+      uniforms: { uPixelRatio: { value: 1 } },
       vertexShader: pointVertexShader,
       fragmentShader: pointFragmentShader,
       transparent: true,
+      depthTest: false,
       depthWrite: false,
       blending: THREE.AdditiveBlending,
     });
-    const particles = new THREE.Points(particleGeometry, particleMaterial);
-    group.add(particles);
+    const points = new THREE.Points(pointsGeometry, pointMaterial);
+    points.renderOrder = 5;
+    scene.add(points);
+
+    const composer = new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene, camera));
+    const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.48, 0.72, 0.58);
+    composer.addPass(bloom);
 
     const pointer = new THREE.Vector2(0, 0);
     const pointerTarget = new THREE.Vector2(0, 0);
-    const pointerWorld = new THREE.Vector3();
-    const raycaster = new THREE.Raycaster();
-    const interactionPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+    let travel = 0;
     let impulse = 0;
-    let scrollEnergy = 0;
-    let journey = 0;
-    let journeyTarget = 0;
-    let frame = 0;
-    let lastPointer = new THREE.Vector2();
-    let pointerSpeed = 0;
-    const frequencyData = new Uint8Array(256);
-
-    const updatePointer = (clientX: number, clientY: number) => {
-      const rect = mount.getBoundingClientRect();
-      pointerTarget.set(((clientX - rect.left) / rect.width) * 2 - 1, -(((clientY - rect.top) / rect.height) * 2 - 1));
-      pointerSpeed = Math.min(1, pointerTarget.distanceTo(lastPointer) * 3.5);
-      lastPointer.copy(pointerTarget);
-    };
-
-    const onPointerMove = (event: PointerEvent) => updatePointer(event.clientX, event.clientY);
-    const onPointerDown = (event: PointerEvent) => {
-      updatePointer(event.clientX, event.clientY);
-      impulse = 1;
-      void startPrototypeScore();
-    };
-    const onWheel = (event: WheelEvent) => {
-      journeyTarget += event.deltaY * 0.00072;
-      scrollEnergy = Math.min(1, scrollEnergy + Math.abs(event.deltaY) * 0.002);
-      impulse = Math.min(1, impulse + Math.abs(event.deltaY) * 0.001);
-      void startPrototypeScore();
-    };
-    const onKey = () => void startPrototypeScore();
-    mount.addEventListener("pointermove", onPointerMove);
-    mount.addEventListener("pointerdown", onPointerDown);
-    window.addEventListener("wheel", onWheel, { passive: true });
-    window.addEventListener("keydown", onKey, { once: true });
+    let lastTime = performance.now();
+    let animationFrame = 0;
+    let disposed = false;
 
     const resize = () => {
-      const width = mount.clientWidth;
-      const height = mount.clientHeight;
-      const dpr = Math.min(window.devicePixelRatio, width < 700 ? 1.35 : 1.8);
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
+      const width = Math.max(1, mount.clientWidth);
+      const height = Math.max(1, mount.clientHeight);
+      const quality = width > 1500 ? 0.86 : width < 700 ? 0.72 : 1;
+      const dpr = Math.min(window.devicePixelRatio, 1.25) * quality;
       renderer.setPixelRatio(dpr);
       renderer.setSize(width, height, false);
       composer.setPixelRatio(dpr);
       composer.setSize(width, height);
-      particleMaterial.uniforms.uPixelRatio.value = dpr;
+      uniforms.uResolution.value.set(width * dpr, height * dpr);
+      const aspect = width / height;
+      camera.left = -aspect;
+      camera.right = aspect;
+      camera.top = 1;
+      camera.bottom = -1;
+      camera.updateProjectionMatrix();
+      pointMaterial.uniforms.uPixelRatio.value = dpr;
     };
-    resize();
-    window.addEventListener("resize", resize);
 
-    const clock = new THREE.Clock();
-    let animationId = 0;
-    const animate = () => {
-      animationId = window.requestAnimationFrame(animate);
-      const time = clock.getElapsedTime();
-      frame += 1;
-      pointer.lerp(pointerTarget, reducedMotion ? 0.035 : 0.085);
-      journey += (journeyTarget - journey) * 0.045;
-      scrollEnergy *= 0.92;
-      impulse *= 0.925;
-      pointerSpeed *= 0.89;
+    const move = (event: PointerEvent) => {
+      const rect = mount.getBoundingClientRect();
+      pointerTarget.set(
+        ((event.clientX - rect.left) / rect.width) * 2 - 1,
+        -(((event.clientY - rect.top) / rect.height) * 2 - 1),
+      );
+    };
 
+    const press = () => {
+      impulse = 1;
+      void startScore();
+    };
+
+    const wheel = (event: WheelEvent) => {
+      event.preventDefault();
+      const normalized = Math.sign(event.deltaY) * Math.min(Math.abs(event.deltaY), 120);
+      if (viewRef.current === "project") {
+        const next = THREE.MathUtils.clamp(entryProgressRef.current + normalized * 0.0018, 0, 1);
+        entryProgressRef.current = next;
+        setEntryProgress(next);
+        destinationRef.current = 9.2 + (next - 0.5) * 2.6;
+      } else {
+        destinationRef.current += normalized * 0.009;
+      }
+      impulse = Math.min(1, impulse + Math.abs(normalized) * 0.006);
+      void startScore();
+    };
+
+    const keydown = (event: KeyboardEvent) => {
+      const direction = event.key === "ArrowDown" || event.key === "PageDown" || event.key === " "
+        ? 1
+        : event.key === "ArrowUp" || event.key === "PageUp"
+          ? -1
+          : 0;
+      if (!direction) return;
+      event.preventDefault();
+      if (viewRef.current === "project") {
+        const next = THREE.MathUtils.clamp(entryProgressRef.current + direction * 0.24, 0, 1);
+        entryProgressRef.current = next;
+        setEntryProgress(next);
+        destinationRef.current = 9.2 + (next - 0.5) * 2.6;
+      } else {
+        destinationRef.current += direction * 0.9;
+      }
+      impulse = Math.min(1, impulse + 0.42);
+      void startScore();
+    };
+
+    const animate = (now: number) => {
+      if (disposed) return;
+      const dt = Math.min(0.04, (now - lastTime) / 1000);
+      lastTime = now;
+      const seconds = now / 1000;
+      pointer.lerp(pointerTarget, 1 - Math.exp(-dt * 8));
+      travel = THREE.MathUtils.lerp(travel, destinationRef.current, 1 - Math.exp(-dt * 4.8));
+      impulse *= Math.exp(-dt * 2.8);
+
+      let bass = 0.10 + Math.sin(seconds * 1.15) * 0.025;
+      let mid = 0.07 + Math.sin(seconds * 1.83 + 1.1) * 0.018;
+      let high = 0.05 + Math.sin(seconds * 3.3) * 0.014;
       const rig = audioRef.current;
       if (rig) {
-        rig.analyser.getByteFrequencyData(frequencyData);
-        const rawBass = bandAverage(frequencyData, 1, 8);
-        const rawMid = bandAverage(frequencyData, 8, 31);
-        const rawHigh = bandAverage(frequencyData, 31, 96);
-        const bands = audioBandsRef.current;
-        bands.bass += (rawBass - bands.bass) * (rawBass > bands.bass ? 0.34 : 0.075);
-        bands.mid += (rawMid - bands.mid) * (rawMid > bands.mid ? 0.26 : 0.065);
-        bands.high += (rawHigh - bands.high) * (rawHigh > bands.high ? 0.38 : 0.12);
+        const data = new Uint8Array(rig.analyser.frequencyBinCount);
+        rig.analyser.getByteFrequencyData(data);
+        bass = averageBand(data, 0, 8);
+        mid = averageBand(data, 8, 28);
+        high = averageBand(data, 28, 68);
       }
-      const { bass, mid, high } = audioBandsRef.current;
+      uniforms.uTime.value = seconds;
+      uniforms.uTravel.value = travel;
+      uniforms.uPointer.value.copy(pointer);
+      uniforms.uBass.value = THREE.MathUtils.lerp(uniforms.uBass.value, bass, 0.12);
+      uniforms.uMid.value = THREE.MathUtils.lerp(uniforms.uMid.value, mid, 0.10);
+      uniforms.uHigh.value = THREE.MathUtils.lerp(uniforms.uHigh.value, high, 0.10);
+      uniforms.uImpulse.value = impulse;
+      uniforms.uProject.value = THREE.MathUtils.lerp(uniforms.uProject.value, viewRef.current === "project" ? 1 : 0, 0.065);
+      uniforms.uChapter.value = THREE.MathUtils.lerp(uniforms.uChapter.value, entryProgressRef.current, 0.08);
 
-      tubeUniforms.uTime.value = time;
-      tubeUniforms.uBass.value = bass + scrollEnergy * 0.22;
-      tubeUniforms.uMid.value = mid + pointerSpeed * 0.25;
-      tubeUniforms.uHigh.value = high;
-      tubeUniforms.uImpulse.value = impulse;
-      tubeUniforms.uPointer.value.copy(pointer);
-      gridUniforms.uTime.value = time;
-      gridUniforms.uBass.value = bass;
-      gridUniforms.uMid.value = mid;
-      gridUniforms.uImpulse.value = impulse;
-      gridUniforms.uPointer.value.copy(pointer);
-
-      raycaster.setFromCamera(pointer, camera);
-      raycaster.ray.intersectPlane(interactionPlane, pointerWorld);
-      const repulseRadius = 1.1 + bass * 1.3 + impulse * 0.8;
+      const aspect = mount.clientWidth / Math.max(1, mount.clientHeight);
       for (let i = 0; i < particleCount; i += 1) {
-        const i3 = i * 3;
-        let x = positions[i3];
-        let y = positions[i3 + 1];
-        let z = positions[i3 + 2];
-        let vx = velocities[i3];
-        let vy = velocities[i3 + 1];
-        let vz = velocities[i3 + 2];
-        const dx = x - pointerWorld.x;
-        const dy = y - pointerWorld.y;
-        const distance = Math.sqrt(dx * dx + dy * dy) + 0.001;
-        if (distance < repulseRadius) {
-          const force = (1 - distance / repulseRadius) * (0.028 + pointerSpeed * 0.085 + impulse * 0.06);
-          vx += (dx / distance) * force;
-          vy += (dy / distance) * force;
-          vz += force * 0.25;
+        const j = i * 3;
+        const ox = origins[j] * aspect;
+        const oy = origins[j + 1];
+        const idleX = Math.sin(seconds * (0.13 + seed[i] * 0.16) + seed[i] * 20) * 0.018;
+        const idleY = Math.cos(seconds * (0.11 + seed[i] * 0.13) + seed[i] * 17) * 0.014;
+        velocities[j] += (ox + idleX - positions[j]) * 0.045;
+        velocities[j + 1] += (oy + idleY - positions[j + 1]) * 0.045;
+        const dx = positions[j] - pointer.x * aspect;
+        const dy = positions[j + 1] - pointer.y;
+        const distanceSq = dx * dx + dy * dy;
+        if (distanceSq < 0.11) {
+          const force = (0.11 - distanceSq) / (distanceSq + 0.016);
+          velocities[j] += dx * force * 0.028;
+          velocities[j + 1] += dy * force * 0.028;
+          energies[i] = Math.min(1, energies[i] + force * 0.06);
         }
-        vx += (homes[i3] - x) * 0.0065;
-        vy += (homes[i3 + 1] - y) * 0.0065;
-        vz += (homes[i3 + 2] - z) * 0.0065;
-        vx *= 0.925;
-        vy *= 0.925;
-        vz *= 0.925;
-        x += vx;
-        y += vy;
-        z += vz;
-        positions[i3] = x;
-        positions[i3 + 1] = y;
-        positions[i3 + 2] = z;
-        velocities[i3] = vx;
-        velocities[i3 + 1] = vy;
-        velocities[i3 + 2] = vz;
-        const speed = Math.sqrt(vx * vx + vy * vy + vz * vz);
-        energies[i] += (Math.min(1, speed * 24 + high * 0.7 + (i % 41 === frame % 41 ? bass : 0)) - energies[i]) * 0.16;
+        velocities[j] *= 0.91;
+        velocities[j + 1] *= 0.91;
+        positions[j] += velocities[j];
+        positions[j + 1] += velocities[j + 1];
+        energies[i] *= 0.94;
       }
-      positionAttribute.needsUpdate = true;
-      energyAttribute.needsUpdate = true;
+      (pointsGeometry.attributes.position as THREE.BufferAttribute).needsUpdate = true;
+      (pointsGeometry.attributes.aEnergy as THREE.BufferAttribute).needsUpdate = true;
 
-      group.rotation.y = Math.sin(time * 0.1) * 0.06 + pointer.x * 0.07 + journey * 0.18;
-      group.rotation.x = pointer.y * 0.035 + Math.sin(journey * 0.6) * 0.025;
-      camera.position.x += (pointer.x * 0.32 - camera.position.x) * 0.025;
-      camera.position.y += (pointer.y * 0.18 + Math.sin(time * 0.18) * 0.06 - camera.position.y) * 0.025;
-      camera.position.z = 7.1 + Math.sin(journey * 0.4) * 0.35 - bass * 0.12;
-      camera.lookAt(0, 0, 0);
-      bloom.strength = 0.9 + bass * 0.7 + impulse * 0.38;
-      bloom.radius = 0.62 + mid * 0.24;
       composer.render();
+      animationFrame = requestAnimationFrame(animate);
     };
-    animate();
+
+    resize();
+    window.addEventListener("resize", resize);
+    window.addEventListener("keydown", keydown);
+    mount.addEventListener("pointermove", move);
+    mount.addEventListener("pointerdown", press);
+    mount.addEventListener("wheel", wheel, { passive: false });
+    animationFrame = requestAnimationFrame(animate);
 
     return () => {
-      window.cancelAnimationFrame(animationId);
-      mount.removeEventListener("pointermove", onPointerMove);
-      mount.removeEventListener("pointerdown", onPointerDown);
-      window.removeEventListener("wheel", onWheel);
-      window.removeEventListener("keydown", onKey);
+      disposed = true;
+      cancelAnimationFrame(animationFrame);
       window.removeEventListener("resize", resize);
-      tube.geometry.dispose();
-      (tube.material as THREE.Material).dispose();
-      grid.geometry.dispose();
-      (grid.material as THREE.Material).dispose();
-      particleGeometry.dispose();
-      particleMaterial.dispose();
+      window.removeEventListener("keydown", keydown);
+      mount.removeEventListener("pointermove", move);
+      mount.removeEventListener("pointerdown", press);
+      mount.removeEventListener("wheel", wheel);
+      pointsGeometry.dispose();
+      pointMaterial.dispose();
+      screen.geometry.dispose();
+      screenMaterial.dispose();
       composer.dispose();
       renderer.dispose();
-      mount.removeChild(renderer.domElement);
+      renderer.domElement.remove();
     };
-    // The audio rig intentionally lives outside the render lifecycle.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [startScore]);
 
-  useEffect(() => () => stopAudioRig(), []);
+  useEffect(() => () => stopAudio(), [stopAudio]);
+
+  const chapter = entryProgress < 0.28 ? "TITLE" : entryProgress < 0.68 ? "STORY" : "LINK";
 
   return (
     <main className={styles.shell}>
       <div ref={mountRef} className={styles.canvas} aria-hidden="true" />
-      <div className={styles.vignette} aria-hidden="true" />
+      <div className={styles.vignette} />
+
       <header className={styles.header}>
         <div className={styles.ident}>
-          <span className={styles.kicker}>VISUAL SYSTEM / PROOF 01</span>
-          <span className={styles.status}><i /> REALTIME</span>
+          <span>EVAN / PORTFOLIO POC</span>
+          <span className={styles.status}><i /> LIVE SIGNAL</span>
         </div>
         <div className={styles.audioArea}>
           <button
             className={`${styles.noteButton} ${awake && !muted ? styles.noteActive : ""}`}
             type="button"
-            aria-label="Audio controls"
+            aria-label="Open audio controls"
             aria-expanded={audioOpen}
-            onClick={() => setAudioOpen((value) => !value)}
+            onClick={() => { setAudioOpen((open) => !open); void startScore(); }}
           >
-            {muted ? "×" : "♫"}
+            <span aria-hidden="true">♫</span>
           </button>
           {audioOpen && (
             <div className={styles.audioPanel}>
-              <div>
-                <span>NOW REACTING TO</span>
-                <strong>{audioLabel}</strong>
-              </div>
-              <button type="button" onClick={toggleMute}>{muted ? "Unmute" : "Mute"}</button>
-              <button type="button" onClick={() => { stopAudioRig(); void startPrototypeScore(); setAudioOpen(false); }}>
-                Prototype score
-              </button>
-              <label>
-                Choose your track
-                <input type="file" accept="audio/*" onChange={useUploadedTrack} />
-              </label>
-              <small>Selected files stay in this browser session.</small>
+              <div><span>NOW REACTING TO</span><strong>{audioLabel}</strong><small>Starts with your first gesture</small></div>
+              <button type="button" onClick={toggleMute}>{muted ? "Unmute score" : "Mute score"}</button>
+              <label>Choose your own track<input type="file" accept="audio/*" onChange={loadTrack} /></label>
             </div>
           )}
         </div>
       </header>
 
-      <section className={styles.titleBlock} aria-label="Signal Spine visual prototype">
-        <p>LIQUID LIGHT / PARTICLE MEMORY / RECURSIVE SPACE</p>
-        <h1>SIGNAL<br /><em>SPINE</em></h1>
+      <nav className={styles.index} aria-label="Portfolio index">
+        <p>SELECT / JUMP</p>
+        <button type="button" className={view === "home" ? styles.selected : ""} onClick={() => selectView("home")}>
+          <span>00</span><strong>ORIGIN</strong><i>HOME</i>
+        </button>
+        <button type="button" className={view === "project" ? styles.selected : ""} onClick={() => selectView("project")}>
+          <span>01</span><strong>LUMEN INDEX</strong><i>REALTIME SYSTEM</i>
+        </button>
+        <div className={styles.future}><span>02—04</span><strong>MORE SIGNALS</strong><i>AVAILABLE HERE</i></div>
+      </nav>
+
+      <section className={`${styles.homeCopy} ${view === "home" ? styles.visible : ""}`} aria-hidden={view !== "home"}>
+        <p>CREATIVE TECHNOLOGIST / DIGITAL DESIGNER</p>
+        <h1>EVAN<br /><em>LUEBBERT</em></h1>
         <div className={styles.rule} />
-        <p className={styles.dek}>A reactive study for a portfolio world.<br />Move through it. Disturb it. Turn it up.</p>
+        <p className={styles.dek}>Interactive systems, spatial interfaces, and work that makes complex ideas feel inevitable.</p>
       </section>
 
-      <aside className={styles.readout} aria-hidden="true">
-        <span>MATTER</span>
-        <b>→</b>
-        <span>SIGNAL</span>
-        <b>→</b>
-        <span>PARTICLE</span>
+      <article className={`${styles.projectCard} ${view === "project" ? styles.visible : ""}`} aria-hidden={view !== "project"}>
+        <div className={styles.projectMeta}><span>PROJECT 01 / 2026</span><span>{chapter}</span></div>
+        <div className={`${styles.projectStage} ${entryProgress < 0.46 ? styles.stageVisible : ""}`}>
+          <p>REALTIME ENVIRONMENTAL SYSTEM</p>
+          <h2>LUMEN<br />INDEX</h2>
+          <span className={styles.projectSub}>A living interface for the invisible conditions around us.</span>
+        </div>
+        <div className={`${styles.projectStage} ${entryProgress >= 0.28 && entryProgress < 0.82 ? styles.stageVisible : ""}`}>
+          <p>THE WORK</p>
+          <h3>DATA THAT<br />BEHAVES LIKE WEATHER.</h3>
+          <p className={styles.projectBody}>Lumen Index turns live air, light, and movement data into a spatial instrument. I designed the visual language, interaction model, and realtime rendering system—making a dense stream of measurements legible through motion.</p>
+        </div>
+        <div className={`${styles.projectStage} ${entryProgress >= 0.65 ? styles.stageVisible : ""}`}>
+          <p>EXPLORE THE OUTCOME</p>
+          <h3>ENTER THE<br />FULL SIGNAL.</h3>
+          <a href="#project-01" onClick={(event) => event.preventDefault()}>VIEW CASE STUDY <span>↗</span></a>
+        </div>
+      </article>
+
+      <aside className={styles.telemetry}>
+        <span>{view === "home" ? "FREE TRAVEL" : `ENTRY ${String(Math.round(entryProgress * 100)).padStart(2, "0")}%`}</span>
+        <div><i style={{ transform: `scaleX(${view === "home" ? 0.18 : Math.max(0.025, entryProgress)})` }} /></div>
+        <b>SCROLL</b>
       </aside>
 
       <footer className={styles.footer}>
-        <div className={styles.instructions}>
-          <span>MOVE</span><span>CLICK</span><span>SCROLL</span>
-        </div>
-        <p>{awake ? "SOUND ONLINE" : "SOUND WAKES WITH FIRST INTERACTION"}</p>
+        <span>MOVE / DISRUPT</span><span>SCROLL / TRAVEL</span><span>CLICK / EXCITE</span>
+        <strong>{view === "home" ? "CHOOSE A SIGNAL AT LEFT" : "PROJECT ANCHOR 09.2"}</strong>
       </footer>
     </main>
   );

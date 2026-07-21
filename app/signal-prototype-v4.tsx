@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
+import { createEmberLoom } from "./ember-loom";
 import { carbonPassShader, depthOfFieldShader, screenVertexShader } from "./signal-prototype";
 import styles from "./signal-prototype.module.css";
 
@@ -142,6 +143,7 @@ export function SignalPrototypeV4() {
     const finalQuad = new THREE.Mesh(geometry, finalMaterial);
     finalQuad.frustumCulled = false;
     finalScene.add(finalQuad);
+    const emberLoom = createEmberLoom(renderer);
 
     const panelBundles = Array.from(shell.querySelectorAll<HTMLElement>("[data-destination-panel]")).map((panel) => ({
       panel,
@@ -154,6 +156,9 @@ export function SignalPrototypeV4() {
 
     const pointer = new THREE.Vector2(0, 0);
     const pointerTarget = new THREE.Vector2(0, 0);
+    const strandAnchor = new THREE.Vector2(-0.28, 0);
+    const strandTangent = new THREE.Vector2(1, 0);
+    const panelBounds = new THREE.Vector4(0.05, 0.92, -0.72, 0.72);
     const framePalette = new THREE.Vector3();
     let impulse = 0;
     let elapsed = 0;
@@ -185,6 +190,19 @@ export function SignalPrototypeV4() {
       renderTarget.setSize(targetWidth, targetHeight);
       carbonUniforms.uResolution.value.set(targetWidth, targetHeight);
       finalUniforms.uResolution.value.set(pixelWidth, pixelHeight);
+      emberLoom?.resize(targetWidth, targetHeight);
+
+      strandAnchor.set(-0.54 * height / width, 0);
+      const panel = shell.querySelector<HTMLElement>("[data-destination-panel]");
+      if (panel) {
+        const shellRect = shell.getBoundingClientRect();
+        const panelRect = panel.getBoundingClientRect();
+        const left = ((panelRect.left - shellRect.left) / width) * 2 - 1;
+        const right = ((panelRect.right - shellRect.left) / width) * 2 - 1;
+        const top = 1 - ((panelRect.top - shellRect.top) / height) * 2;
+        const bottom = 1 - ((panelRect.bottom - shellRect.top) / height) * 2;
+        panelBounds.set(left + 0.018, right - 0.018, bottom + 0.025, top - 0.025);
+      }
     };
 
     const move = (event: PointerEvent) => {
@@ -232,9 +250,9 @@ export function SignalPrototypeV4() {
       transition = {
         kind: "destination",
         elapsed: 0,
-        duration: 2.4,
+        duration: 3.1,
         fromX: cameraX,
-        toX: cameraX + direction * 10,
+        toX: cameraX + direction * 20,
         sourceDestination: currentDestination,
         targetDestination,
         sourceChapter: currentChapter,
@@ -252,9 +270,9 @@ export function SignalPrototypeV4() {
       transition = {
         kind: "chapter",
         elapsed: 0,
-        duration: 1.05,
+        duration: 1.34,
         fromX: cameraX,
-        toX: currentAnchorX + targetChapter * 6,
+        toX: currentAnchorX + targetChapter * 9,
         sourceDestination: currentDestination,
         targetDestination: currentDestination,
         sourceChapter: currentChapter,
@@ -296,9 +314,15 @@ export function SignalPrototypeV4() {
 
       const previousCameraX = cameraX;
       let transitionT = 0;
+      let particleTransitionActive = 0;
+      let particleTransitionProgress = 0;
+      let particleTravelDirection = 1;
       if (transition) {
+        particleTransitionActive = 1;
         transition.elapsed = Math.min(transition.duration, transition.elapsed + delta);
         transitionT = transition.elapsed / transition.duration;
+        particleTransitionProgress = transitionT;
+        particleTravelDirection = Math.sign(transition.toX - transition.fromX) || 1;
         const easedTravel = transitionT < 0.5
           ? 4 * transitionT * transitionT * transitionT
           : 1 - Math.pow(-2 * transitionT + 2, 3) / 2;
@@ -359,24 +383,24 @@ export function SignalPrototypeV4() {
         if (transition?.kind === "destination") {
           panelOpacity = 0;
           if (destinationIndex === transition.sourceDestination) {
-            panelOpacity = 1 - THREE.MathUtils.smoothstep(transitionT, 0.05, 0.30);
+            panelOpacity = 1 - THREE.MathUtils.smoothstep(transitionT, 0.03, 0.18);
             chapterOpacities.fill(0);
             chapterOpacities[transition.sourceChapter] = panelOpacity;
-            chapterShifts[transition.sourceChapter] = -42 * transitionT;
+            chapterShifts[transition.sourceChapter] = -18 * transitionT;
           }
           if (destinationIndex === transition.targetDestination) {
-            panelOpacity = THREE.MathUtils.smoothstep(transitionT, 0.70, 0.95);
+            panelOpacity = THREE.MathUtils.smoothstep(transitionT, 0.82, 0.98);
             chapterOpacities.fill(0);
             chapterOpacities[0] = panelOpacity;
-            chapterShifts[0] = 42 * (1 - transitionT);
+            chapterShifts[0] = 18 * (1 - transitionT);
           }
         } else if (transition?.kind === "chapter" && destinationIndex === currentDestination) {
           panelOpacity = 1;
           chapterOpacities.fill(0);
-          chapterOpacities[transition.sourceChapter] = 1 - THREE.MathUtils.smoothstep(transitionT, 0.02, 0.28);
-          chapterOpacities[transition.targetChapter] = THREE.MathUtils.smoothstep(transitionT, 0.72, 0.98);
-          chapterShifts[transition.sourceChapter] = -52 * transitionT;
-          chapterShifts[transition.targetChapter] = 52 * (1 - transitionT);
+          chapterOpacities[transition.sourceChapter] = 1 - THREE.MathUtils.smoothstep(transitionT, 0.02, 0.16);
+          chapterOpacities[transition.targetChapter] = THREE.MathUtils.smoothstep(transitionT, 0.84, 0.98);
+          chapterShifts[transition.sourceChapter] = -16 * transitionT;
+          chapterShifts[transition.targetChapter] = 16 * (1 - transitionT);
         }
 
         bundle.panel.style.setProperty("--entry-presence", panelOpacity.toFixed(3));
@@ -388,6 +412,8 @@ export function SignalPrototypeV4() {
           const chapterOpacity = chapterOpacities[chapterIndex];
           chapter.style.setProperty("--chapter-presence", chapterOpacity.toFixed(3));
           chapter.style.setProperty("--chapter-shift", `${chapterShifts[chapterIndex].toFixed(1)}px`);
+          chapter.style.setProperty("--chapter-wipe", `${((1 - chapterOpacity) * 100).toFixed(1)}%`);
+          chapter.style.setProperty("--chapter-blur", `${((1 - chapterOpacity) * 5).toFixed(1)}px`);
           chapter.inert = chapterOpacity < 0.75;
           chapter.setAttribute("aria-hidden", chapterOpacity < 0.5 ? "true" : "false");
         });
@@ -426,8 +452,33 @@ export function SignalPrototypeV4() {
       if (previousButton) previousButton.disabled = Boolean(transition) || atRouteStart;
       if (nextButton) nextButton.disabled = Boolean(transition) || atRouteEnd;
 
+      const cameraRoll = 1.46 * Math.sin(cameraX * 0.055) + 0.34 * Math.sin(cameraX * 0.017);
+      strandTangent.set(
+        Math.cos(cameraRoll) * mount.clientHeight / Math.max(mount.clientWidth, 1),
+        -Math.sin(cameraRoll),
+      ).normalize();
+      emberLoom?.update({
+        delta: pausedRef.current ? 0 : delta,
+        time: elapsed,
+        pointer,
+        impulse,
+        anchor: strandAnchor,
+        strandTangent,
+        panelBounds,
+        palette: carbonUniforms.uPaletteColor.value,
+        transitionActive: particleTransitionActive,
+        transitionProgress: particleTransitionProgress,
+        travelDirection: particleTravelDirection,
+        cameraVelocity,
+      });
+
       renderer.setRenderTarget(renderTarget);
       renderer.render(carbonScene, camera);
+      if (emberLoom) {
+        renderer.autoClear = false;
+        renderer.render(emberLoom.scene, camera);
+        renderer.autoClear = true;
+      }
       renderer.setRenderTarget(null);
       renderer.render(finalScene, camera);
       animationFrame = requestAnimationFrame(animate);
@@ -450,6 +501,7 @@ export function SignalPrototypeV4() {
       shell.removeEventListener("pointerdown", excite);
       shell.removeEventListener("wheel", wheel);
       renderTarget.dispose();
+      emberLoom?.dispose();
       carbonMaterial.dispose();
       finalMaterial.dispose();
       geometry.dispose();
@@ -488,7 +540,6 @@ export function SignalPrototypeV4() {
       </nav>
 
       <article className={`${styles.project} ${styles.homeProject}`} data-destination-panel="0" aria-hidden="false">
-        <div className={styles.connector} aria-hidden="true"><i /></div>
         <section className={styles.chapter} data-project-chapter>
           <div className={styles.projectMeta}><span>HOME / PERSONAL INTRODUCTION</span><span>00 / ORIGIN</span></div>
           <p className={styles.eyebrow}>EVAN LUEBBERT / PORTFOLIO</p>
@@ -502,7 +553,6 @@ export function SignalPrototypeV4() {
       </article>
 
       <article className={styles.project} data-destination-panel="1" aria-hidden="true">
-        <div className={styles.connector} aria-hidden="true"><i /></div>
         <section className={styles.chapter} data-project-chapter>
           <div className={styles.projectMeta}><span>EXAMPLE PROJECT</span><span>01 / INTRODUCTION</span></div>
           <p className={styles.eyebrow}>SIGNAL ATLAS / BLUE SYSTEM</p>
@@ -541,7 +591,6 @@ export function SignalPrototypeV4() {
       </article>
 
       <article className={styles.project} data-destination-panel="2" aria-hidden="true">
-        <div className={styles.connector} aria-hidden="true"><i /></div>
         <section className={styles.chapter} data-project-chapter>
           <div className={styles.projectMeta}><span>EXAMPLE PROJECT</span><span>01 / INTRODUCTION</span></div>
           <p className={styles.eyebrow}>VELVET CIRCUIT / PINK SYSTEM</p>
@@ -589,7 +638,7 @@ export function SignalPrototypeV4() {
       </button>
 
       <footer className={styles.footer}>
-        <span>SCROLL / SNAP</span><span>ARROWS / NAVIGATE</span><span>CLICK / EXCITE</span>
+        <span>SCROLL / SNAP</span><span>ARROWS / NAVIGATE</span><span>POINTER / DISTURB FIELD</span>
         <span className={styles.palette}>AMBER · BLUE · PINK</span>
       </footer>
     </main>

@@ -213,13 +213,18 @@
 .chapter {
   --chapter-presence: 0;
   --chapter-shift: 64px;
+  --chapter-wipe: 100%;
+  --chapter-blur: 5px;
   position: absolute;
   top: 50%;
   right: 0;
   left: clamp(32px, 3vw, 52px);
   opacity: var(--chapter-presence);
+  clip-path: inset(0 var(--chapter-wipe) 0 0);
+  filter: blur(var(--chapter-blur));
   transform: translate3d(var(--chapter-shift), -50%, 0);
   pointer-events: none;
+  will-change: opacity, clip-path, filter, transform;
 }
 .chapter:not([inert]) { pointer-events: auto; }
 .projectMeta {

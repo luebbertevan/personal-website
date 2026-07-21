@@ -362,6 +362,13 @@ export function SignalPrototype() {
 
     const pointer = new THREE.Vector2(0, 0);
     const pointerTarget = new THREE.Vector2(0, 0);
+    const chapterCenters = [22, 28, 34, 40];
+    const chapterElements = projectRef.current
+      ? Array.from(projectRef.current.querySelectorAll<HTMLElement>("[data-project-chapter]"))
+      : [];
+    const chapterRailItems = projectRef.current
+      ? Array.from(projectRef.current.querySelectorAll<HTMLElement>("[data-chapter-index]"))
+      : [];
     let impulse = 0;
     let elapsed = 0;
     let cameraX = 0;
@@ -469,30 +476,37 @@ export function SignalPrototype() {
       carbonUniforms.uCameraX.value = cameraX;
       carbonUniforms.uScrollVelocity.value = cameraVelocity;
       const waypointDistance = Math.abs(cameraX - 22);
-      const projectPresence = 1 - THREE.MathUtils.smoothstep(waypointDistance, 5.5, 13.5);
+      const projectArrival = THREE.MathUtils.smoothstep(cameraX, 9, 17);
+      const projectDeparture = 1 - THREE.MathUtils.smoothstep(cameraX, 45, 52);
+      const projectPresence = projectArrival * projectDeparture;
+      const projectProgress = THREE.MathUtils.clamp((cameraX - 22) / 18, 0, 1);
+      const activeChapter = cameraX < 25 ? 0 : cameraX < 31 ? 1 : cameraX < 37 ? 2 : 3;
       carbonUniforms.uProjectPresence.value = projectPresence;
       finalUniforms.uTime.value = elapsed;
       finalUniforms.uPointer.value.copy(pointer);
       finalUniforms.uImpulse.value = impulse;
 
       if (projectRef.current) {
-        const metaPresence = THREE.MathUtils.smoothstep(projectPresence, 0.10, 0.32);
-        const titlePresence = THREE.MathUtils.smoothstep(projectPresence, 0.24, 0.52);
-        const bodyPresence = THREE.MathUtils.smoothstep(projectPresence, 0.42, 0.70);
-        const actionPresence = THREE.MathUtils.smoothstep(projectPresence, 0.62, 0.88);
         projectRef.current.style.setProperty("--entry-presence", projectPresence.toFixed(3));
         projectRef.current.style.setProperty("--entry-shift", `${((1 - projectPresence) * 42).toFixed(1)}px`);
-        projectRef.current.style.setProperty("--meta-presence", metaPresence.toFixed(3));
-        projectRef.current.style.setProperty("--title-presence", titlePresence.toFixed(3));
-        projectRef.current.style.setProperty("--body-presence", bodyPresence.toFixed(3));
-        projectRef.current.style.setProperty("--action-presence", actionPresence.toFixed(3));
-        projectRef.current.style.setProperty("--meta-shift", `${((1 - metaPresence) * 28).toFixed(1)}px`);
-        projectRef.current.style.setProperty("--title-shift", `${((1 - titlePresence) * 42).toFixed(1)}px`);
-        projectRef.current.style.setProperty("--body-shift", `${((1 - bodyPresence) * 34).toFixed(1)}px`);
-        projectRef.current.style.setProperty("--action-shift", `${((1 - actionPresence) * 24).toFixed(1)}px`);
-        projectRef.current.inert = projectPresence < 0.72;
-        projectRef.current.setAttribute("aria-hidden", projectPresence < 0.55 ? "true" : "false");
+        projectRef.current.inert = projectPresence < 0.42;
+        projectRef.current.setAttribute("aria-hidden", projectPresence < 0.32 ? "true" : "false");
       }
+      chapterElements.forEach((chapter, index) => {
+        const distanceToChapter = Math.abs(cameraX - chapterCenters[index]);
+        const chapterPresence = 1 - THREE.MathUtils.smoothstep(distanceToChapter, 0.8, 4.6);
+        const chapterShift = THREE.MathUtils.clamp((chapterCenters[index] - cameraX) * 14, -64, 64);
+        chapter.style.setProperty("--chapter-presence", chapterPresence.toFixed(3));
+        chapter.style.setProperty("--chapter-shift", `${chapterShift.toFixed(1)}px`);
+        chapter.inert = chapterPresence < 0.55;
+        chapter.setAttribute("aria-hidden", chapterPresence < 0.38 ? "true" : "false");
+      });
+      chapterRailItems.forEach((item, index) => {
+        const isActive = index === activeChapter && projectPresence > 0.45;
+        item.toggleAttribute("data-active", isActive);
+        if (isActive) item.setAttribute("aria-current", "step");
+        else item.removeAttribute("aria-current");
+      });
       const accent = [
         Math.round(255 + (58 - 255) * projectPresence),
         Math.round(103 + (169 - 103) * projectPresence),
@@ -500,19 +514,25 @@ export function SignalPrototype() {
       ];
       shell.style.setProperty("--accent-rgb", accent.join(", "));
       if (waypointDistanceRef.current) {
-        if (waypointDistance < 1.25) {
-          waypointDistanceRef.current.textContent = "AT WAYPOINT";
+        if (cameraX >= 17 && cameraX <= 45) {
+          waypointDistanceRef.current.textContent = `CHAPTER ${activeChapter + 1} / 4`;
         } else {
           waypointDistanceRef.current.textContent = `${waypointDistance.toFixed(1)} UNITS ${cameraX < 22 ? "AHEAD" : "BEHIND"}`;
         }
       }
       if (velocityRef.current) {
         velocityRef.current.textContent = Math.abs(cameraVelocity) < 0.03
-          ? cameraX < 20.75 ? "CLICK PROJECT OR SCROLL EAST" : cameraX > 23.25 ? "SCROLL WEST TO RETURN" : "PROJECT SIGNAL LOCKED"
+          ? cameraX < 17
+            ? "CLICK PROJECT OR SCROLL EAST"
+            : cameraX <= 37
+              ? "SCROLL TO CONTINUE STORY"
+              : cameraX <= 45
+                ? "PROJECT SEQUENCE COMPLETE"
+                : "SCROLL WEST TO RETURN"
           : `MOVING ${cameraVelocity > 0 ? "EAST" : "WEST"}`;
       }
       if (travelFillRef.current) {
-        travelFillRef.current.style.transform = `scaleX(${projectPresence.toFixed(3)})`;
+        travelFillRef.current.style.transform = `scaleX(${projectProgress.toFixed(3)})`;
       }
 
       renderer.setRenderTarget(renderTarget);
@@ -565,7 +585,7 @@ export function SignalPrototype() {
         <button type="button" onClick={navigateToProject}>
           <i>01</i>
           <strong>SIGNAL ATLAS</strong>
-          <small>X +22</small>
+          <small>4 CHAPTERS</small>
         </button>
         <div><i ref={travelFillRef} /></div>
         <b ref={waypointDistanceRef}>22.0 UNITS AHEAD</b>
@@ -574,23 +594,71 @@ export function SignalPrototype() {
 
       <article ref={projectRef} id="project-01" className={styles.project} aria-hidden="true">
         <div className={styles.connector} aria-hidden="true"><i /></div>
-        <div className={styles.projectMeta}>
-          <span>EXAMPLE PROJECT</span>
-          <span>2026 / INTERACTIVE</span>
-        </div>
-        <p className={styles.eyebrow}>WAYPOINT 01 / SIGNAL ACQUIRED</p>
-        <h1>Signal Atlas</h1>
-        <p className={styles.subtitle}>A test case for attaching readable portfolio content to a living 3D material.</p>
-        <p className={styles.description}>
-          This placeholder proves that a project title, supporting copy, metadata, and an external link can share the scene without obscuring the strand.
-        </p>
-        <div className={styles.tags} aria-label="Project disciplines">
-          <span>INTERACTION DESIGN</span>
-          <span>CREATIVE DEVELOPMENT</span>
-        </div>
-        <a href="https://example.com" target="_blank" rel="noreferrer">
-          OPEN EXAMPLE PROJECT <span aria-hidden="true">↗</span>
-        </a>
+        <section className={styles.chapter} data-project-chapter>
+          <div className={styles.projectMeta}>
+            <span>EXAMPLE PROJECT</span>
+            <span>01 / INTRODUCTION</span>
+          </div>
+          <p className={styles.eyebrow}>WAYPOINT 01 / SIGNAL ACQUIRED</p>
+          <h1>Signal Atlas</h1>
+          <p className={styles.subtitle}>A test case for attaching a complete portfolio story to a living 3D material.</p>
+          <p className={styles.continue}>SCROLL TO ENTER THE PROJECT →</p>
+        </section>
+
+        <section className={styles.chapter} data-project-chapter>
+          <div className={styles.projectMeta}>
+            <span>PROJECT ARTIFACT</span>
+            <span>02 / MEDIA</span>
+          </div>
+          <p className={styles.eyebrow}>VISUAL SYSTEM / PLACEHOLDER</p>
+          <h2>The work in motion.</h2>
+          <div className={styles.mediaFrame} role="img" aria-label="Placeholder for project imagery or video">
+            <span>PROJECT MEDIA / 16:9</span>
+            <strong>IMAGE OR VIDEO</strong>
+            <i />
+          </div>
+        </section>
+
+        <section className={styles.chapter} data-project-chapter>
+          <div className={styles.projectMeta}>
+            <span>PROJECT CONTEXT</span>
+            <span>03 / IMPACT</span>
+          </div>
+          <p className={styles.eyebrow}>DESCRIPTION / CONTRIBUTION</p>
+          <h2>Designed to make complexity legible.</h2>
+          <p className={styles.description}>
+            This placeholder chapter shows where the project’s problem, approach, personal contribution, and measurable result can be explained without crowding the visual arrival.
+          </p>
+          <dl className={styles.facts}>
+            <div><dt>ROLE</dt><dd>DESIGN + BUILD</dd></div>
+            <div><dt>FORMAT</dt><dd>INTERACTIVE</dd></div>
+            <div><dt>OUTCOME</dt><dd>CASE STUDY</dd></div>
+          </dl>
+        </section>
+
+        <section className={styles.chapter} data-project-chapter>
+          <div className={styles.projectMeta}>
+            <span>PROJECT DESTINATION</span>
+            <span>04 / LAUNCH</span>
+          </div>
+          <p className={styles.eyebrow}>END OF SIGNAL / EXTERNAL LINK</p>
+          <h2>Explore the complete project.</h2>
+          <p className={styles.subtitle}>The final chapter converts the visual journey into a clear next action.</p>
+          <div className={styles.tags} aria-label="Project disciplines">
+            <span>INTERACTION DESIGN</span>
+            <span>CREATIVE DEVELOPMENT</span>
+          </div>
+          <a href="https://example.com" target="_blank" rel="noreferrer">
+            OPEN EXAMPLE PROJECT <span aria-hidden="true">↗</span>
+          </a>
+        </section>
+
+        <ol className={styles.chapterRail} aria-label="Project sequence">
+          <li data-chapter-index><span>01</span>INTRO</li>
+          <li data-chapter-index><span>02</span>MEDIA</li>
+          <li data-chapter-index><span>03</span>IMPACT</li>
+          <li data-chapter-index><span>04</span>LAUNCH</li>
+        </ol>
       </article>
 
       <button className={styles.pause} type="button" onClick={togglePause}>

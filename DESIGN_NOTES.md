@@ -41,6 +41,10 @@
 - Increase every functional text tier again, including peripheral navigation, metadata, project copy, tags, and actions; legibility takes precedence over preserving large empty UI margins.
 - Stage the project arrival in layers: metadata, title, body copy, and action reveal separately while the camera performs an additional waypoint-specific pullback.
 - Use a temporary screen-space line and glowing node to connect the project HUD to the strand. Defer true world-tracked 3D connections or branching project geometry to the later strand-connection iteration.
+- Iteration 03 expands one project into four fixed world-space chapters at X +22, +28, +34, and +40: introduction, media, context/impact, and launch.
+- Keep the project palette and content frame active across the complete local sequence, with crossfades between chapters and a progress rail that makes the story length legible.
+- Extend the temporary connector far enough for its glowing node to visibly meet the shifted strand composition.
+- Add a personal `00 / Home` destination during Iteration 04 (direct navigation). It should introduce the owner’s name and personal headline with a unique composition, and remain a first-class item in the index.
 
 ## Tabled concepts
 

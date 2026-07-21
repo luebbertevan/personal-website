@@ -1,0 +1,342 @@
+.shell {
+  position: relative;
+  width: 100vw;
+  height: 100svh;
+  min-height: 560px;
+  overflow: hidden;
+  isolation: isolate;
+  background: #02030a;
+  cursor: crosshair;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.canvas canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(2, 3, 10, 0.74) 0%, transparent 34%, transparent 72%, rgba(2, 3, 10, 0.18) 100%),
+    radial-gradient(circle at 55% 50%, transparent 30%, rgba(0, 0, 0, 0.62) 112%);
+}
+
+.vignette::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.13;
+  background-image:
+    repeating-radial-gradient(circle at 12% 31%, rgba(255, 255, 255, 0.18) 0 0.4px, transparent 0.9px 4px),
+    repeating-linear-gradient(117deg, transparent 0 3px, rgba(255, 255, 255, 0.05) 4px, transparent 5px 8px);
+  background-size: 7px 9px, 11px 13px;
+  mix-blend-mode: soft-light;
+}
+
+.header,
+.footer,
+.titleBlock,
+.readout {
+  position: absolute;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.header {
+  top: 0;
+  right: 0;
+  left: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: clamp(20px, 3vw, 46px);
+}
+
+.ident {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  color: rgba(235, 241, 255, 0.72);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.status i {
+  display: block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #79fbff;
+  box-shadow: 0 0 9px #79fbff;
+}
+
+.audioArea {
+  position: relative;
+  pointer-events: auto;
+  cursor: default;
+}
+
+.noteButton {
+  display: grid;
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  place-items: center;
+  border: 1px solid rgba(186, 216, 255, 0.26);
+  border-radius: 50%;
+  color: #f6f7ff;
+  background: rgba(5, 8, 19, 0.58);
+  box-shadow: inset 0 0 16px rgba(119, 225, 255, 0.08);
+  backdrop-filter: blur(16px);
+  cursor: pointer;
+  transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.noteButton:hover {
+  transform: scale(1.04);
+  border-color: rgba(125, 249, 255, 0.72);
+  box-shadow: 0 0 24px rgba(125, 249, 255, 0.12), inset 0 0 18px rgba(119, 225, 255, 0.12);
+}
+
+.noteActive {
+  color: #9bfbff;
+  box-shadow: 0 0 24px rgba(125, 249, 255, 0.2), inset 0 0 22px rgba(119, 225, 255, 0.15);
+}
+
+.audioPanel {
+  position: absolute;
+  top: 58px;
+  right: 0;
+  display: grid;
+  width: 244px;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid rgba(181, 216, 255, 0.2);
+  border-radius: 12px;
+  background: rgba(5, 7, 17, 0.82);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.48);
+  backdrop-filter: blur(22px);
+}
+
+.audioPanel div {
+  display: grid;
+  gap: 4px;
+  padding: 3px 4px 10px;
+  overflow: hidden;
+}
+
+.audioPanel span,
+.audioPanel small {
+  color: rgba(219, 228, 255, 0.48);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 8px;
+  line-height: 1.45;
+  letter-spacing: 0.14em;
+}
+
+.audioPanel strong {
+  overflow: hidden;
+  color: #effcff;
+  font-size: 12px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.audioPanel button,
+.audioPanel label {
+  padding: 10px 11px;
+  border: 1px solid rgba(181, 216, 255, 0.12);
+  border-radius: 7px;
+  color: rgba(244, 247, 255, 0.82);
+  background: rgba(255, 255, 255, 0.035);
+  font-size: 11px;
+  text-align: left;
+  cursor: pointer;
+  transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.audioPanel button:hover,
+.audioPanel label:hover {
+  color: white;
+  border-color: rgba(125, 249, 255, 0.42);
+  background: rgba(125, 249, 255, 0.07);
+}
+
+.audioPanel input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.titleBlock {
+  top: 50%;
+  left: clamp(24px, 5vw, 78px);
+  width: min(470px, 42vw);
+  transform: translateY(-47%);
+}
+
+.titleBlock > p:first-child {
+  margin: 0 0 18px;
+  color: rgba(205, 219, 255, 0.48);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 9px;
+  letter-spacing: 0.19em;
+}
+
+.titleBlock h1 {
+  margin: 0;
+  color: rgba(247, 249, 255, 0.96);
+  font-size: clamp(72px, 8.4vw, 146px);
+  font-weight: 560;
+  line-height: 0.69;
+  letter-spacing: -0.085em;
+  text-shadow: 0 0 60px rgba(118, 201, 255, 0.08);
+}
+
+.titleBlock h1 em {
+  display: inline-block;
+  padding-left: 0.22em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(188, 223, 255, 0.58);
+  font-style: normal;
+  font-weight: 320;
+  letter-spacing: -0.07em;
+}
+
+.rule {
+  width: 76px;
+  height: 1px;
+  margin: 32px 0 22px;
+  background: linear-gradient(90deg, #84fbff, rgba(132, 251, 255, 0));
+  box-shadow: 0 0 12px rgba(132, 251, 255, 0.52);
+}
+
+.dek {
+  margin: 0;
+  color: rgba(224, 230, 247, 0.6);
+  font-size: clamp(12px, 1.1vw, 15px);
+  font-weight: 350;
+  line-height: 1.55;
+  letter-spacing: 0.025em;
+}
+
+.readout {
+  right: clamp(30px, 4vw, 64px);
+  top: 50%;
+  display: grid;
+  gap: 9px;
+  transform: translateY(-50%);
+  color: rgba(213, 226, 255, 0.35);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  text-align: center;
+}
+
+.readout b {
+  color: rgba(125, 249, 255, 0.42);
+  font-weight: 400;
+  transform: rotate(90deg);
+}
+
+.footer {
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: clamp(20px, 3vw, 46px);
+  color: rgba(205, 219, 255, 0.44);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 8px;
+  letter-spacing: 0.16em;
+}
+
+.footer p {
+  margin: 0;
+}
+
+.instructions {
+  display: flex;
+  gap: 26px;
+}
+
+.instructions span::before {
+  content: "○";
+  margin-right: 7px;
+  color: rgba(125, 249, 255, 0.62);
+}
+
+@media (max-width: 760px) {
+  .shell {
+    min-height: 500px;
+  }
+
+  .vignette {
+    background: linear-gradient(0deg, rgba(2, 3, 10, 0.88) 0%, transparent 42%, rgba(2, 3, 10, 0.18) 100%);
+  }
+
+  .kicker,
+  .readout {
+    display: none;
+  }
+
+  .titleBlock {
+    top: auto;
+    right: 24px;
+    bottom: 94px;
+    left: 24px;
+    width: auto;
+    transform: none;
+  }
+
+  .titleBlock h1 {
+    font-size: clamp(62px, 20vw, 98px);
+    line-height: 0.72;
+  }
+
+  .titleBlock > p:first-child {
+    max-width: 290px;
+    line-height: 1.5;
+  }
+
+  .rule {
+    margin: 24px 0 17px;
+  }
+
+  .footer p {
+    display: none;
+  }
+
+  .instructions {
+    width: 100%;
+    justify-content: space-between;
+    gap: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .noteButton {
+    transition: none;
+  }
+}

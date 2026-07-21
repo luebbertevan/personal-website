@@ -126,13 +126,13 @@ const carbonPassShader = /* glsl */ `
     float orbitAngle = 0.32 * sin(uCameraX * 0.11) + 0.92 * sin(uCameraX * 0.027);
     float cameraRoll = 1.46 * sin(uCameraX * 0.055) + 0.34 * sin(uCameraX * 0.017);
     float distanceDrift = 0.72 * (0.5 + 0.5 * sin(uCameraX * 0.071 + 1.4));
-    float verticalPullback = 1.25 * smoothstep(0.78, 1.42, abs(cameraRoll));
+    float verticalPullback = 2.80 * smoothstep(0.62, 1.30, abs(cameraRoll));
     float scenicPhase = 0.5 + 0.5 * sin(uCameraX * 0.021 - 1.1);
-    float scenicPullback = 0.85 * smoothstep(0.70, 0.98, scenicPhase);
+    float scenicPullback = 1.65 * smoothstep(0.58, 0.94, scenicPhase);
     float cameraDistance = clamp(
       3.55 + distanceDrift + verticalPullback + scenicPullback,
       3.55,
-      5.80
+      7.75
     );
 
     vec3 strandCenter = vec3(uCameraX, 0.0, 1.0);
@@ -433,15 +433,21 @@ export function SignalPrototype() {
       if (rangeRef.current) {
         const cameraRoll = 1.46 * Math.sin(cameraX * 0.055) + 0.34 * Math.sin(cameraX * 0.017);
         const distanceDrift = 0.72 * (0.5 + 0.5 * Math.sin(cameraX * 0.071 + 1.4));
-        const verticalT = THREE.MathUtils.smoothstep(Math.abs(cameraRoll), 0.78, 1.42);
+        const verticalT = THREE.MathUtils.smoothstep(Math.abs(cameraRoll), 0.62, 1.30);
         const scenicPhase = 0.5 + 0.5 * Math.sin(cameraX * 0.021 - 1.1);
-        const scenicT = THREE.MathUtils.smoothstep(scenicPhase, 0.70, 0.98);
+        const scenicT = THREE.MathUtils.smoothstep(scenicPhase, 0.58, 0.94);
         const cameraDistance = THREE.MathUtils.clamp(
-          3.55 + distanceDrift + 1.25 * verticalT + 0.85 * scenicT,
+          3.55 + distanceDrift + 2.80 * verticalT + 1.65 * scenicT,
           3.55,
-          5.8,
+          7.75,
         );
-        const rangeMode = cameraDistance > 5.15 ? "WIDE" : cameraDistance > 4.35 ? "OPEN" : "CLOSE";
+        const rangeMode = cameraDistance > 7.10
+          ? "ULTRAWIDE"
+          : cameraDistance > 5.85
+            ? "WIDE"
+            : cameraDistance > 4.55
+              ? "OPEN"
+              : "CLOSE";
         rangeRef.current.textContent = `RANGE ${cameraDistance.toFixed(2)} / ${rangeMode}`;
       }
       if (velocityRef.current) {
@@ -510,7 +516,7 @@ export function SignalPrototype() {
         <div>
           <span ref={coordinateRef}>WORLD X +0.00</span>
           <strong>STRAND ANCHOR</strong>
-          <span ref={rangeRef}>RANGE 3.90 / CLOSE</span>
+          <span ref={rangeRef}>RANGE 4.26 / CLOSE</span>
         </div>
       </div>
 

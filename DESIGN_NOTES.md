@@ -22,6 +22,7 @@
 - Keep the existing close framing as the minimum distance; do not push the camera closer to the material.
 - Script occasional wider scenic views, with the strongest pullbacks aligned to near-vertical compositions and a slower independent distance rhythm for broader variation.
 - Let pullbacks blend continuously rather than behaving like discrete zoom cuts, and keep focus derived from the final scripted distance.
+- Make the wide beats deliberately dramatic: preserve the 3.55 close radius while allowing authored pullbacks as far as 7.75, with eased shoulders and a sustained wide plateau.
 
 ## Portfolio integration direction
 

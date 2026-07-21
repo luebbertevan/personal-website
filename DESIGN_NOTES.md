@@ -19,6 +19,9 @@
 - Vary camera orbit, distance, and roll while keeping the current strand coordinate as the look target.
 - Allow the strand to become diagonal and occasionally near-vertical, but never let the camera enter the material.
 - Recalculate the focal depth from the camera's changing orbital radius so the strand stays readable during zooms.
+- Keep the existing close framing as the minimum distance; do not push the camera closer to the material.
+- Script occasional wider scenic views, with the strongest pullbacks aligned to near-vertical compositions and a slower independent distance rhythm for broader variation.
+- Let pullbacks blend continuously rather than behaving like discrete zoom cuts, and keep focus derived from the final scripted distance.
 
 ## Portfolio integration direction
 

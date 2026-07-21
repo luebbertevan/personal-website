@@ -14,6 +14,11 @@
 - Focus is recalculated from camera-relative depth every frame and therefore travels with the camera.
 - Remove the original timed camera shake. It is a controllable authored effect, not a requirement of the material.
 - Use subtle world-space mist, HUD coordinates, and later particle parallax to make camera travel legible.
+- Remove the finite cap from the strand field so traversal is practically unbounded in either direction.
+- Use smooth procedural camera-path functions rather than a finite list of keyframes so the camera path also continues indefinitely.
+- Vary camera orbit, distance, and roll while keeping the current strand coordinate as the look target.
+- Allow the strand to become diagonal and occasionally near-vertical, but never let the camera enter the material.
+- Recalculate the focal depth from the camera's changing orbital radius so the strand stays readable during zooms.
 
 ## Portfolio integration direction
 

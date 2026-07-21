@@ -25,9 +25,9 @@ const carbonPassShader = /* glsl */ `
 
   float bounce;
 
-  float sdBox(vec3 p, vec3 b) {
-    vec3 d = abs(p) - b;
-    return min(max(d.x, max(d.y, d.z)), 0.0) + length(max(d, 0.0));
+  float sdBox2D(vec2 p, vec2 b) {
+    vec2 d = abs(p) - b;
+    return min(max(d.x, d.y), 0.0) + length(max(d, 0.0));
   }
 
   void rotatePlane(inout vec2 p, float a) {
@@ -49,9 +49,9 @@ const carbonPassShader = /* glsl */ `
     p.z -= 1.0;
     p *= 0.9;
     rotatePlane(p.yz, bounce + 0.4 * p.x + uPointer.x * 0.045);
-    float body = sdBox(
-      p + vec3(0.0, sin(0.72 * uTime) * 0.16 + uPointer.y * 0.028, 0.0),
-      vec3(20.0, 0.05, 1.2)
+    float body = sdBox2D(
+      p.yz + vec2(sin(0.72 * uTime) * 0.16 + uPointer.y * 0.028, 0.0),
+      vec2(0.05, 1.2)
     );
     float fracture = 0.4 * noise3(8.0 * p + 3.0 * bounce);
     return body - fracture;
@@ -120,10 +120,31 @@ const carbonPassShader = /* glsl */ `
     bounce = abs(fract(0.05 * time) - 0.5) * 20.0;
 
     vec2 fragCoord = vUv * uResolution;
-    vec3 rayDirection = normalize(vec3(2.0 * fragCoord - uResolution, uResolution.y));
-    float cameraLead = clamp(uScrollVelocity * 0.012, -0.045, 0.045);
-    rayDirection = normalize(rayDirection + vec3(cameraLead, 0.0, 0.0));
-    vec3 rayOrigin = vec3(uCameraX, uPointer.y * 0.028, -3.0);
+    vec2 screenPosition = (2.0 * fragCoord - uResolution) / uResolution.y;
+
+    float cameraLead = clamp(uScrollVelocity * 0.075, -0.75, 0.75);
+    float orbitAngle = 0.32 * sin(uCameraX * 0.11) + 0.92 * sin(uCameraX * 0.027);
+    float cameraDistance = 3.55 + 0.72 * (0.5 + 0.5 * sin(uCameraX * 0.071 + 1.4));
+    float cameraRoll = 1.46 * sin(uCameraX * 0.055) + 0.34 * sin(uCameraX * 0.017);
+    cameraDistance += 0.58 * smoothstep(0.85, 1.55, abs(cameraRoll));
+
+    vec3 strandCenter = vec3(uCameraX, 0.0, 1.0);
+    vec3 rayOrigin = strandCenter + vec3(
+      -cameraLead * 0.16,
+      sin(orbitAngle) * cameraDistance,
+      -cos(orbitAngle) * cameraDistance
+    );
+    vec3 cameraTarget = strandCenter + vec3(cameraLead, uPointer.y * 0.035, 0.0);
+    vec3 cameraForward = normalize(cameraTarget - rayOrigin);
+
+    vec3 strandAxis = vec3(1.0, 0.0, 0.0);
+    vec3 horizontal = normalize(strandAxis - cameraForward * dot(strandAxis, cameraForward));
+    vec3 vertical = normalize(cross(horizontal, cameraForward));
+    vec3 cameraRight = horizontal * cos(cameraRoll) + vertical * sin(cameraRoll);
+    vec3 cameraUp = -horizontal * sin(cameraRoll) + vertical * cos(cameraRoll);
+    vec3 rayDirection = normalize(
+      cameraForward * 1.18 + cameraRight * screenPosition.x + cameraUp * screenPosition.y
+    );
 
     vec3 surfaceLight = vec3(0.0);
     vec3 volumeLight = vec3(0.0);
@@ -174,7 +195,8 @@ const carbonPassShader = /* glsl */ `
     surfaceLight += (1.0 - depth) * noise3(movingMist) * 0.1;
 
     vec3 finalColor = (volumeLight + 0.8 * surfaceLight) * 1.3;
-    float focusRadius = abs(0.67 - depth) * 1.6;
+    float focalDepth = clamp(1.0 - 0.09 * cameraDistance, 0.0, 1.0);
+    float focusRadius = abs(focalDepth - depth) * 1.6;
     gl_FragColor = vec4(finalColor, focusRadius);
   }
 `;
@@ -358,7 +380,7 @@ export function SignalPrototype() {
       event.preventDefault();
       const dominantDelta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
       const normalized = THREE.MathUtils.clamp(dominantDelta, -140, 140);
-      cameraTarget = THREE.MathUtils.clamp(cameraTarget + normalized * 0.013, -16, 16);
+      cameraTarget += normalized * 0.013;
       impulse = Math.min(1, impulse + Math.abs(normalized) * 0.0015);
     };
 
@@ -370,7 +392,7 @@ export function SignalPrototype() {
           : 0;
       if (!direction) return;
       event.preventDefault();
-      cameraTarget = THREE.MathUtils.clamp(cameraTarget + direction * 1.8, -16, 16);
+      cameraTarget += direction * 1.8;
       impulse = Math.min(1, impulse + 0.16);
     };
 
@@ -395,7 +417,7 @@ export function SignalPrototype() {
       finalUniforms.uPointer.value.copy(pointer);
       finalUniforms.uImpulse.value = impulse;
 
-      const travelProgress = (cameraX + 16) / 32;
+      const travelPhase = THREE.MathUtils.euclideanModulo(cameraX * 0.032 + 0.5, 1);
       if (coordinateRef.current) {
         const sign = cameraX >= 0 ? "+" : "−";
         coordinateRef.current.textContent = `WORLD X ${sign}${Math.abs(cameraX).toFixed(2)}`;
@@ -406,7 +428,7 @@ export function SignalPrototype() {
           : `DOLLY ${cameraVelocity > 0 ? "EAST" : "WEST"} / ${Math.abs(cameraVelocity).toFixed(2)}`;
       }
       if (travelFillRef.current) {
-        travelFillRef.current.style.transform = `scaleX(${travelProgress})`;
+        travelFillRef.current.style.transform = `translateX(${travelPhase * 720 - 10}%) scaleX(0.14)`;
       }
 
       renderer.setRenderTarget(renderTarget);
@@ -448,17 +470,17 @@ export function SignalPrototype() {
 
       <header className={styles.header}>
         <div>
-          <span>MATERIAL STUDY / 04</span>
+          <span>MATERIAL STUDY / 05</span>
           <strong>LIQUID CARBON</strong>
         </div>
-        <div className={styles.live}><i /> CONTINUOUS CAMERA TRACK</div>
+        <div className={styles.live}><i /> INFINITE ORBIT PATH</div>
       </header>
 
       <aside className={styles.method}>
-        <span>01 / CONTINUOUS FIELD</span>
-        <span>02 / WORLD-SPACE CAMERA</span>
-        <span>03 / TRAVELING FOCUS</span>
-        <span>04 / SHAKE REMOVED</span>
+        <span>01 / UNBOUNDED FIELD</span>
+        <span>02 / ORBIT + DISTANCE</span>
+        <span>03 / ROLL + TILT</span>
+        <span>04 / ADAPTIVE FOCUS</span>
       </aside>
 
       <div className={styles.reticle} aria-hidden="true">
@@ -470,9 +492,9 @@ export function SignalPrototype() {
       </div>
 
       <div className={styles.travel} aria-hidden="true">
-        <span>−16</span>
+        <span>−∞</span>
         <div><i ref={travelFillRef} /></div>
-        <span>+16</span>
+        <span>+∞</span>
         <b ref={velocityRef}>CAMERA LOCKED</b>
       </div>
 

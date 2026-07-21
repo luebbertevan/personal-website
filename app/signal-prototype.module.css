@@ -149,7 +149,7 @@
   height: 1px;
   background: linear-gradient(90deg, rgba(255, 87, 27, 0.25), #ff7742);
   box-shadow: 0 0 10px #ff511f;
-  transform: scaleX(0.5);
+  transform: translateX(350%) scaleX(0.14);
   transform-origin: left;
 }
 .travel > span:last-of-type { text-align: right; }

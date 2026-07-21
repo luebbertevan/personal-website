@@ -38,6 +38,7 @@
 .waypoint,
 .project,
 .pause,
+.routeControls,
 .footer {
   position: absolute;
   z-index: 2;
@@ -109,7 +110,8 @@
   transition: color 180ms ease, border-color 180ms ease, background 180ms ease;
 }
 .waypoint button:hover,
-.waypoint button:focus-visible {
+.waypoint button:focus-visible,
+.waypoint button[data-active] {
   border-color: rgba(var(--accent-rgb), 0.86);
   color: rgb(var(--accent-rgb));
   background: linear-gradient(90deg, rgba(var(--accent-rgb), 0.20), transparent 82%);
@@ -154,15 +156,16 @@
   --entry-presence: 0;
   --entry-shift: 42px;
   top: 50%;
-  right: clamp(54px, 6vw, 110px);
-  width: min(650px, 45vw);
-  height: min(680px, 74vh);
+  right: clamp(32px, 3vw, 58px);
+  width: min(880px, 58vw);
+  height: min(760px, 80vh);
   opacity: var(--entry-presence);
   background: linear-gradient(90deg, rgba(4, 9, 17, 0.74), rgba(4, 9, 17, 0.16) 70%, transparent);
   transform: translate3d(var(--entry-shift), -50%, 0);
   transition: background 400ms ease;
   pointer-events: none;
 }
+.homeProject { --entry-presence: 1; }
 .project::before {
   position: absolute;
   top: 0;
@@ -178,7 +181,7 @@
   position: absolute;
   top: 45%;
   right: 100%;
-  width: clamp(280px, 24vw, 420px);
+  width: clamp(420px, 34vw, 620px);
   height: 1px;
   background: linear-gradient(90deg, rgba(var(--accent-rgb), 0.15), rgba(var(--accent-rgb), 0.95));
   box-shadow: 0 0 10px rgba(var(--accent-rgb), 0.36);
@@ -259,6 +262,17 @@
   line-height: 1.55;
   letter-spacing: 0;
 }
+.homeHeadline {
+  max-width: 24ch;
+  margin: 28px 0 0;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: clamp(28px, 2.25vw, 40px);
+  line-height: 1.18;
+  letter-spacing: -0.025em;
+}
+.homeProject .description { max-width: 64ch; }
+.homeProject .chapterRail { grid-template-columns: 1fr; width: 180px; }
+.homeProject h1 { font-size: clamp(80px, 7.5vw, 132px); }
 .continue {
   margin: 32px 0 0;
   color: rgba(var(--accent-rgb), 0.8);
@@ -304,6 +318,13 @@
   border-radius: 50%;
   box-shadow: 0 0 22px rgba(var(--accent-rgb), 0.8);
   transform: translate(-50%, -50%);
+}
+.mediaFramePink {
+  background:
+    radial-gradient(circle at 68% 34%, rgba(var(--accent-rgb), 0.34), transparent 24%),
+    linear-gradient(145deg, rgba(var(--accent-rgb), 0.22), transparent 58%),
+    repeating-linear-gradient(45deg, transparent 0 32px, rgba(var(--accent-rgb), 0.09) 32px 33px),
+    rgba(12, 3, 12, 0.78);
 }
 .facts {
   display: grid;
@@ -362,19 +383,64 @@
   list-style: none;
   background: rgba(255, 255, 255, 0.1);
 }
-.chapterRail li {
+.chapterRail li { min-width: 0; background: rgba(3, 7, 14, 0.82); }
+.chapterRail button {
   display: grid;
+  width: 100%;
   gap: 7px;
-  padding: 12px 10px;
-  background: rgba(3, 7, 14, 0.82);
+  padding: 13px 11px;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  letter-spacing: inherit;
+  text-align: left;
+  cursor: pointer;
   transition: color 180ms ease, background 180ms ease;
 }
-.chapterRail li span { color: rgba(var(--accent-rgb), 0.5); }
-.chapterRail li[data-active] {
+.chapterRail button span { color: rgba(var(--accent-rgb), 0.5); }
+.chapterRail button:hover,
+.chapterRail button:focus-visible,
+.chapterRail button[data-active] {
   color: rgba(247, 244, 241, 0.92);
   background: rgba(var(--accent-rgb), 0.14);
+  outline: none;
 }
-.chapterRail li[data-active] span { color: rgb(var(--accent-rgb)); }
+.chapterRail button[data-active] span { color: rgb(var(--accent-rgb)); }
+.chapterRail button:disabled { cursor: default; }
+
+.routeControls {
+  bottom: clamp(92px, 10vh, 126px);
+  left: clamp(28px, 3.5vw, 58px);
+  display: grid;
+  width: min(430px, 34vw);
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.routeControls button {
+  display: flex;
+  min-height: 52px;
+  padding: 0 16px;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  color: rgba(247, 244, 241, 0.78);
+  background: rgba(3, 7, 14, 0.42);
+  font-family: inherit;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+.routeControls button:hover,
+.routeControls button:focus-visible {
+  border-color: rgba(var(--accent-rgb), 0.82);
+  color: rgb(var(--accent-rgb));
+  background: rgba(var(--accent-rgb), 0.10);
+  outline: none;
+}
+.routeControls button:disabled { opacity: 0.28; cursor: default; }
+.routeControls button span { font-size: 22px; letter-spacing: 0; }
 
 .pause {
   top: clamp(102px, 12vh, 130px);
@@ -427,7 +493,7 @@
   .project {
     top: auto;
     right: 20px;
-    bottom: 112px;
+    bottom: 138px;
     left: 20px;
     width: auto;
     height: min(470px, 62vh);
@@ -450,7 +516,9 @@
   .tags { margin-top: 16px; }
   .chapter > a { min-width: 270px; margin-top: 18px; }
   .chapterRail { right: 16px; left: 24px; font-size: 10px; }
-  .chapterRail li { padding: 9px 6px; }
+  .chapterRail button { padding: 9px 6px; }
+  .routeControls { right: 20px; bottom: 72px; left: 20px; width: auto; }
+  .routeControls button { min-height: 46px; padding: 0 12px; font-size: 12px; }
   .pause { top: 96px; right: 20px; width: 110px; font-size: 12px; }
   .footer { gap: 20px; padding: 24px 20px; font-size: 12px; }
   .footer span:nth-child(2),
@@ -460,5 +528,6 @@
 @media (prefers-reduced-motion: reduce) {
   .project,
   .pause,
+  .routeControls button,
   .chapter > a { transition: none; }
 }

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import styles from "./signal-prototype.module.css";
 
-const screenVertexShader = /* glsl */ `
+export const screenVertexShader = /* glsl */ `
   varying vec2 vUv;
   void main() {
     vUv = uv;
@@ -12,7 +12,7 @@ const screenVertexShader = /* glsl */ `
   }
 `;
 
-const carbonPassShader = /* glsl */ `
+export const carbonPassShader = /* glsl */ `
   precision highp float;
 
   uniform vec2 uResolution;
@@ -22,6 +22,7 @@ const carbonPassShader = /* glsl */ `
   uniform float uCameraX;
   uniform float uScrollVelocity;
   uniform float uProjectPresence;
+  uniform vec3 uPaletteColor;
   varying vec2 vUv;
 
   float bounce;
@@ -122,7 +123,7 @@ const carbonPassShader = /* glsl */ `
 
     vec2 fragCoord = vUv * uResolution;
     vec2 screenPosition = (2.0 * fragCoord - uResolution) / uResolution.y;
-    screenPosition.x += uProjectPresence * 0.38;
+    screenPosition.x += uProjectPresence * 0.54;
 
     float cameraLead = clamp(uScrollVelocity * 0.075, -0.75, 0.75);
     float orbitAngle = 0.32 * sin(uCameraX * 0.11) + 0.92 * sin(uCameraX * 0.027);
@@ -132,7 +133,7 @@ const carbonPassShader = /* glsl */ `
     float scenicPhase = 0.5 + 0.5 * sin(uCameraX * 0.021 - 1.1);
     float scenicPullback = 1.65 * smoothstep(0.58, 0.94, scenicPhase);
     float cameraDistance = clamp(
-      3.55 + distanceDrift + verticalPullback + scenicPullback + 1.15 * uProjectPresence,
+      3.55 + distanceDrift + verticalPullback + scenicPullback + 1.35 * uProjectPresence,
       3.55,
       8.65
     );
@@ -196,16 +197,11 @@ const carbonPassShader = /* glsl */ `
       volumePosition += rayDirection * 0.078;
     }
 
-    float projectMix = smoothstep(0.0, 1.0, uProjectPresence);
-    vec3 absorptionColor = mix(
-      vec3(1.0, 0.25, 0.0625),
-      vec3(0.025, 0.42, 1.0),
-      projectMix
-    );
+    vec3 absorptionColor = uPaletteColor;
     transmittance = clamp(transmittance, 0.0, 1.5);
     volumeLight += absorptionColor * exp(4.0 * (0.5 - transmittance) - 0.8);
     surfaceLight *= depth;
-    surfaceLight *= mix(vec3(1.0), vec3(0.72, 0.90, 1.10), projectMix * 0.42);
+    surfaceLight *= mix(vec3(1.0), vec3(0.78) + 0.34 * uPaletteColor, 0.34);
     vec3 movingMist = 6.0 * rayDirection + vec3(uCameraX * 0.18, 0.0, 0.3 * time);
     surfaceLight += (1.0 - depth) * noise3(movingMist) * 0.1;
 
@@ -216,7 +212,7 @@ const carbonPassShader = /* glsl */ `
   }
 `;
 
-const depthOfFieldShader = /* glsl */ `
+export const depthOfFieldShader = /* glsl */ `
   precision highp float;
 
   uniform sampler2D uSource;

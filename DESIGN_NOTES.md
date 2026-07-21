@@ -26,7 +26,7 @@
 
 ## Portfolio integration direction
 
-- Treat the strand as a true timeline with fixed world-space coordinates for projects and experiences.
+- Treat the strand as a continuous narrative coordinate, but instantiate project and experience anchors dynamically relative to the camera so direct navigation never has to cross unselected destinations.
 - Prefer crisp HTML content connected visually to the strand over text rendered inside the shader.
 - Explore a sci-fi HUD language that appears to scan, annotate, and reveal information on the 3D material.
 - Let changes in twist, glow, focus, speed, and camera distance announce portfolio waypoints.
@@ -45,6 +45,12 @@
 - Keep the project palette and content frame active across the complete local sequence, with crossfades between chapters and a progress rail that makes the story length legible.
 - Extend the temporary connector far enough for its glowing node to visibly meet the shifted strand composition.
 - Add a personal `00 / Home` destination during Iteration 04 (direct navigation). It should introduce the owner’s name and personal headline with a unique composition, and remain a first-class item in the index.
+- Iteration 04 replaces globally fixed project coordinates with dynamically placed route anchors. Direct selection positions the chosen destination a short distance from the camera’s current strand coordinate, so it never travels through unselected projects.
+- Preserve chronological next/previous behavior as `Home → Signal Atlas → Velvet Circuit`, while allowing any index item to become the next rendered destination from anywhere on the strand.
+- Snap scrolling, arrow keys, on-screen controls, and chapter tabs to complete states; content fades out before travel and the destination fades in only after arrival, eliminating persistent halfway compositions.
+- Give project panels at least half of the desktop viewport and shift the strand farther left so larger bodies of text and multiple media assets can fit without overlap.
+- Persist the active destination palette across all of its chapters. Interpolate directly from the current palette to the selected palette during destination travel, without returning to amber between projects.
+- Use `00 / Home` as the personal introduction with name and headline. Add `02 / Velvet Circuit` as a pink second-project proof.
 
 ## Tabled concepts
 

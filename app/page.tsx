@@ -1,5 +1,5 @@
-import { SignalPrototype } from "./signal-prototype";
+import { SignalPrototypeV4 } from "./signal-prototype-v4";
 
 export default function Home() {
-  return <SignalPrototype />;
+  return <SignalPrototypeV4 />;
 }

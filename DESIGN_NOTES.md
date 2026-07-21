@@ -33,6 +33,10 @@
 - At a waypoint, the camera may pull back and create negative space for title, imagery, description, and links.
 - Use particle or light tendrils as an efficient branching illusion before attempting multiple raymarched glass branches.
 - Preserve direct project navigation so visitors never need to traverse the entire line.
+- Iteration 01 uses a single fixed waypoint at world X +22 to prove content arrival before direct navigation is added.
+- Remove the centered diagnostic reticle from the product UI; retain only meaningful, peripheral navigation indicators.
+- Use significantly larger functional typography and place project content in negative space created by shifting the strand composition during arrival.
+- Prove project-aware color by fading the amber material and interface accent into a signal-blue palette as the waypoint is approached.
 
 ## Tabled concepts
 

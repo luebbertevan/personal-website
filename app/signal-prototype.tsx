@@ -21,6 +21,7 @@ const carbonPassShader = /* glsl */ `
   uniform float uImpulse;
   uniform float uCameraX;
   uniform float uScrollVelocity;
+  uniform float uProjectPresence;
   varying vec2 vUv;
 
   float bounce;
@@ -121,6 +122,7 @@ const carbonPassShader = /* glsl */ `
 
     vec2 fragCoord = vUv * uResolution;
     vec2 screenPosition = (2.0 * fragCoord - uResolution) / uResolution.y;
+    screenPosition.x += uProjectPresence * 0.30;
 
     float cameraLead = clamp(uScrollVelocity * 0.075, -0.75, 0.75);
     float orbitAngle = 0.32 * sin(uCameraX * 0.11) + 0.92 * sin(uCameraX * 0.027);
@@ -194,10 +196,16 @@ const carbonPassShader = /* glsl */ `
       volumePosition += rayDirection * 0.078;
     }
 
-    vec3 absorptionColor = vec3(1.0, 0.25, 0.0625);
+    float projectMix = smoothstep(0.0, 1.0, uProjectPresence);
+    vec3 absorptionColor = mix(
+      vec3(1.0, 0.25, 0.0625),
+      vec3(0.025, 0.42, 1.0),
+      projectMix
+    );
     transmittance = clamp(transmittance, 0.0, 1.5);
     volumeLight += absorptionColor * exp(4.0 * (0.5 - transmittance) - 0.8);
     surfaceLight *= depth;
+    surfaceLight *= mix(vec3(1.0), vec3(0.72, 0.90, 1.10), projectMix * 0.42);
     vec3 movingMist = 6.0 * rayDirection + vec3(uCameraX * 0.18, 0.0, 0.3 * time);
     surfaceLight += (1.0 - depth) * noise3(movingMist) * 0.1;
 
@@ -265,9 +273,10 @@ const depthOfFieldShader = /* glsl */ `
 `;
 
 export function SignalPrototype() {
+  const shellRef = useRef<HTMLElement>(null);
   const mountRef = useRef<HTMLDivElement>(null);
-  const coordinateRef = useRef<HTMLSpanElement>(null);
-  const rangeRef = useRef<HTMLSpanElement>(null);
+  const projectRef = useRef<HTMLElement>(null);
+  const waypointDistanceRef = useRef<HTMLElement>(null);
   const velocityRef = useRef<HTMLElement>(null);
   const travelFillRef = useRef<HTMLElement>(null);
   const [paused, setPaused] = useState(false);
@@ -279,8 +288,9 @@ export function SignalPrototype() {
   };
 
   useEffect(() => {
+    const shell = shellRef.current;
     const mount = mountRef.current;
-    if (!mount) return;
+    if (!mount || !shell) return;
 
     const renderer = new THREE.WebGLRenderer({
       antialias: false,
@@ -303,6 +313,7 @@ export function SignalPrototype() {
       uImpulse: { value: 0 },
       uCameraX: { value: 0 },
       uScrollVelocity: { value: 0 },
+      uProjectPresence: { value: 0 },
     };
     const carbonMaterial = new THREE.ShaderMaterial({
       uniforms: carbonUniforms,
@@ -421,42 +432,39 @@ export function SignalPrototype() {
       carbonUniforms.uImpulse.value = impulse;
       carbonUniforms.uCameraX.value = cameraX;
       carbonUniforms.uScrollVelocity.value = cameraVelocity;
+      const waypointDistance = Math.abs(cameraX - 22);
+      const projectPresence = 1 - THREE.MathUtils.smoothstep(waypointDistance, 5.5, 13.5);
+      carbonUniforms.uProjectPresence.value = projectPresence;
       finalUniforms.uTime.value = elapsed;
       finalUniforms.uPointer.value.copy(pointer);
       finalUniforms.uImpulse.value = impulse;
 
-      const travelPhase = THREE.MathUtils.euclideanModulo(cameraX * 0.032 + 0.5, 1);
-      if (coordinateRef.current) {
-        const sign = cameraX >= 0 ? "+" : "−";
-        coordinateRef.current.textContent = `WORLD X ${sign}${Math.abs(cameraX).toFixed(2)}`;
+      if (projectRef.current) {
+        projectRef.current.style.setProperty("--entry-presence", projectPresence.toFixed(3));
+        projectRef.current.style.setProperty("--entry-shift", `${((1 - projectPresence) * 42).toFixed(1)}px`);
+        projectRef.current.inert = projectPresence < 0.72;
+        projectRef.current.setAttribute("aria-hidden", projectPresence < 0.55 ? "true" : "false");
       }
-      if (rangeRef.current) {
-        const cameraRoll = 1.46 * Math.sin(cameraX * 0.055) + 0.34 * Math.sin(cameraX * 0.017);
-        const distanceDrift = 0.72 * (0.5 + 0.5 * Math.sin(cameraX * 0.071 + 1.4));
-        const verticalT = THREE.MathUtils.smoothstep(Math.abs(cameraRoll), 0.62, 1.30);
-        const scenicPhase = 0.5 + 0.5 * Math.sin(cameraX * 0.021 - 1.1);
-        const scenicT = THREE.MathUtils.smoothstep(scenicPhase, 0.58, 0.94);
-        const cameraDistance = THREE.MathUtils.clamp(
-          3.55 + distanceDrift + 2.80 * verticalT + 1.65 * scenicT,
-          3.55,
-          7.75,
-        );
-        const rangeMode = cameraDistance > 7.10
-          ? "ULTRAWIDE"
-          : cameraDistance > 5.85
-            ? "WIDE"
-            : cameraDistance > 4.55
-              ? "OPEN"
-              : "CLOSE";
-        rangeRef.current.textContent = `RANGE ${cameraDistance.toFixed(2)} / ${rangeMode}`;
+      const accent = [
+        Math.round(255 + (58 - 255) * projectPresence),
+        Math.round(103 + (169 - 103) * projectPresence),
+        Math.round(49 + (255 - 49) * projectPresence),
+      ];
+      shell.style.setProperty("--accent-rgb", accent.join(", "));
+      if (waypointDistanceRef.current) {
+        if (waypointDistance < 1.25) {
+          waypointDistanceRef.current.textContent = "AT WAYPOINT";
+        } else {
+          waypointDistanceRef.current.textContent = `${waypointDistance.toFixed(1)} UNITS ${cameraX < 22 ? "AHEAD" : "BEHIND"}`;
+        }
       }
       if (velocityRef.current) {
         velocityRef.current.textContent = Math.abs(cameraVelocity) < 0.03
-          ? "CAMERA LOCKED"
-          : `DOLLY ${cameraVelocity > 0 ? "EAST" : "WEST"} / ${Math.abs(cameraVelocity).toFixed(2)}`;
+          ? cameraX < 20.75 ? "SCROLL EAST TO ARRIVE" : cameraX > 23.25 ? "SCROLL WEST TO RETURN" : "PROJECT SIGNAL LOCKED"
+          : `MOVING ${cameraVelocity > 0 ? "EAST" : "WEST"}`;
       }
       if (travelFillRef.current) {
-        travelFillRef.current.style.transform = `translateX(${travelPhase * 720 - 10}%) scaleX(0.14)`;
+        travelFillRef.current.style.transform = `scaleX(${projectPresence.toFixed(3)})`;
       }
 
       renderer.setRenderTarget(renderTarget);
@@ -469,9 +477,9 @@ export function SignalPrototype() {
     resize();
     window.addEventListener("resize", resize);
     window.addEventListener("keydown", keydown);
-    mount.addEventListener("pointermove", move);
-    mount.addEventListener("pointerdown", excite);
-    mount.addEventListener("wheel", wheel, { passive: false });
+    shell.addEventListener("pointermove", move);
+    shell.addEventListener("pointerdown", excite);
+    shell.addEventListener("wheel", wheel, { passive: false });
     animationFrame = requestAnimationFrame(animate);
 
     return () => {
@@ -479,9 +487,9 @@ export function SignalPrototype() {
       cancelAnimationFrame(animationFrame);
       window.removeEventListener("resize", resize);
       window.removeEventListener("keydown", keydown);
-      mount.removeEventListener("pointermove", move);
-      mount.removeEventListener("pointerdown", excite);
-      mount.removeEventListener("wheel", wheel);
+      shell.removeEventListener("pointermove", move);
+      shell.removeEventListener("pointerdown", excite);
+      shell.removeEventListener("wheel", wheel);
       renderTarget.dispose();
       carbonMaterial.dispose();
       finalMaterial.dispose();
@@ -492,40 +500,45 @@ export function SignalPrototype() {
   }, []);
 
   return (
-    <main className={styles.shell}>
+    <main ref={shellRef} className={styles.shell}>
       <div ref={mountRef} className={styles.canvas} aria-hidden="true" />
       <div className={styles.grain} aria-hidden="true" />
 
       <header className={styles.header}>
         <div>
-          <span>MATERIAL STUDY / 05</span>
-          <strong>LIQUID CARBON</strong>
+          <span>PORTFOLIO PROTOTYPE / 01</span>
+          <strong>SIGNAL SPINE</strong>
         </div>
-        <div className={styles.live}><i /> INFINITE ORBIT PATH</div>
+        <div className={styles.live}><i /> WAYPOINT SYSTEM ONLINE</div>
       </header>
 
-      <aside className={styles.method}>
-        <span>01 / UNBOUNDED FIELD</span>
-        <span>02 / ORBIT + DISTANCE</span>
-        <span>03 / ROLL + TILT</span>
-        <span>04 / ADAPTIVE FOCUS</span>
+      <aside className={styles.waypoint}>
+        <span>NEXT SIGNAL</span>
+        <strong>PROJECT 01 / X +22.00</strong>
+        <div><i ref={travelFillRef} /></div>
+        <b ref={waypointDistanceRef}>22.0 UNITS AHEAD</b>
+        <em ref={velocityRef}>SCROLL EAST TO ARRIVE</em>
       </aside>
 
-      <div className={styles.reticle} aria-hidden="true">
-        <i />
-        <div>
-          <span ref={coordinateRef}>WORLD X +0.00</span>
-          <strong>STRAND ANCHOR</strong>
-          <span ref={rangeRef}>RANGE 4.26 / CLOSE</span>
+      <article ref={projectRef} id="project-01" className={styles.project} aria-hidden="true">
+        <div className={styles.projectMeta}>
+          <span>EXAMPLE PROJECT</span>
+          <span>2026 / INTERACTIVE</span>
         </div>
-      </div>
-
-      <div className={styles.travel} aria-hidden="true">
-        <span>−∞</span>
-        <div><i ref={travelFillRef} /></div>
-        <span>+∞</span>
-        <b ref={velocityRef}>CAMERA LOCKED</b>
-      </div>
+        <p className={styles.eyebrow}>WAYPOINT 01 / SIGNAL ACQUIRED</p>
+        <h1>Signal Atlas</h1>
+        <p className={styles.subtitle}>A test case for attaching readable portfolio content to a living 3D material.</p>
+        <p className={styles.description}>
+          This placeholder proves that a project title, supporting copy, metadata, and an external link can share the scene without obscuring the strand.
+        </p>
+        <div className={styles.tags} aria-label="Project disciplines">
+          <span>INTERACTION DESIGN</span>
+          <span>CREATIVE DEVELOPMENT</span>
+        </div>
+        <a href="https://example.com" target="_blank" rel="noreferrer">
+          OPEN EXAMPLE PROJECT <span aria-hidden="true">↗</span>
+        </a>
+      </article>
 
       <button className={styles.pause} type="button" onClick={togglePause}>
         <span>{paused ? "PLAY" : "PAUSE"}</span>
@@ -533,12 +546,10 @@ export function SignalPrototype() {
       </button>
 
       <footer className={styles.footer}>
-        <span>SCROLL / DOLLY CAMERA</span>
+        <span>SCROLL / TRAVEL</span>
         <span>MOVE / BEND LIGHT</span>
-        <span>CLICK / EXCITE CORE</span>
-        <a href="https://www.shadertoy.com/view/llK3Dy" target="_blank" rel="noreferrer">
-          REFERENCE / RHODIUM BY VIRGILL ↗
-        </a>
+        <span>CLICK / EXCITE</span>
+        <span className={styles.palette}>AMBER → SIGNAL BLUE</span>
       </footer>
     </main>
   );

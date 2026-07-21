@@ -37,6 +37,10 @@
 - Remove the centered diagnostic reticle from the product UI; retain only meaningful, peripheral navigation indicators.
 - Use significantly larger functional typography and place project content in negative space created by shifting the strand composition during arrival.
 - Prove project-aware color by fading the amber material and interface accent into a signal-blue palette as the waypoint is approached.
+- Iteration 02 turns the waypoint label into the first clickable project index item and uses a 2.4-second eased camera move that visitors can interrupt with scroll or keyboard input.
+- Increase every functional text tier again, including peripheral navigation, metadata, project copy, tags, and actions; legibility takes precedence over preserving large empty UI margins.
+- Stage the project arrival in layers: metadata, title, body copy, and action reveal separately while the camera performs an additional waypoint-specific pullback.
+- Use a temporary screen-space line and glowing node to connect the project HUD to the strand. Defer true world-tracked 3D connections or branching project geometry to the later strand-connection iteration.
 
 ## Tabled concepts
 

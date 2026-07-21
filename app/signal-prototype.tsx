@@ -122,7 +122,7 @@ const carbonPassShader = /* glsl */ `
 
     vec2 fragCoord = vUv * uResolution;
     vec2 screenPosition = (2.0 * fragCoord - uResolution) / uResolution.y;
-    screenPosition.x += uProjectPresence * 0.30;
+    screenPosition.x += uProjectPresence * 0.38;
 
     float cameraLead = clamp(uScrollVelocity * 0.075, -0.75, 0.75);
     float orbitAngle = 0.32 * sin(uCameraX * 0.11) + 0.92 * sin(uCameraX * 0.027);
@@ -132,9 +132,9 @@ const carbonPassShader = /* glsl */ `
     float scenicPhase = 0.5 + 0.5 * sin(uCameraX * 0.021 - 1.1);
     float scenicPullback = 1.65 * smoothstep(0.58, 0.94, scenicPhase);
     float cameraDistance = clamp(
-      3.55 + distanceDrift + verticalPullback + scenicPullback,
+      3.55 + distanceDrift + verticalPullback + scenicPullback + 1.15 * uProjectPresence,
       3.55,
-      7.75
+      8.65
     );
 
     vec3 strandCenter = vec3(uCameraX, 0.0, 1.0);
@@ -281,10 +281,15 @@ export function SignalPrototype() {
   const travelFillRef = useRef<HTMLElement>(null);
   const [paused, setPaused] = useState(false);
   const pausedRef = useRef(false);
+  const autoTravelTargetRef = useRef<number | null>(null);
 
   const togglePause = () => {
     pausedRef.current = !pausedRef.current;
     setPaused(pausedRef.current);
+  };
+
+  const navigateToProject = () => {
+    autoTravelTargetRef.current = 22;
   };
 
   useEffect(() => {
@@ -362,6 +367,10 @@ export function SignalPrototype() {
     let cameraX = 0;
     let cameraTarget = 0;
     let cameraVelocity = 0;
+    let autoTravelActive = false;
+    let autoTravelFrom = 0;
+    let autoTravelElapsed = 0;
+    const autoTravelDuration = 2.4;
     let previousTime = performance.now();
     let animationFrame = 0;
     let disposed = false;
@@ -399,6 +408,11 @@ export function SignalPrototype() {
       event.preventDefault();
       const dominantDelta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
       const normalized = THREE.MathUtils.clamp(dominantDelta, -140, 140);
+      autoTravelTargetRef.current = null;
+      if (autoTravelActive) {
+        autoTravelActive = false;
+        cameraTarget = cameraX;
+      }
       cameraTarget += normalized * 0.013;
       impulse = Math.min(1, impulse + Math.abs(normalized) * 0.0015);
     };
@@ -411,6 +425,11 @@ export function SignalPrototype() {
           : 0;
       if (!direction) return;
       event.preventDefault();
+      autoTravelTargetRef.current = null;
+      if (autoTravelActive) {
+        autoTravelActive = false;
+        cameraTarget = cameraX;
+      }
       cameraTarget += direction * 1.8;
       impulse = Math.min(1, impulse + 0.16);
     };
@@ -422,8 +441,25 @@ export function SignalPrototype() {
       if (!pausedRef.current) elapsed += delta;
       pointer.lerp(pointerTarget, 1.0 - Math.exp(-delta * 5.0));
       impulse *= Math.exp(-delta * 2.3);
+      if (autoTravelTargetRef.current !== null) {
+        autoTravelFrom = cameraX;
+        cameraTarget = autoTravelTargetRef.current;
+        autoTravelElapsed = 0;
+        autoTravelActive = true;
+        autoTravelTargetRef.current = null;
+      }
       const previousCameraX = cameraX;
-      cameraX = THREE.MathUtils.lerp(cameraX, cameraTarget, 1.0 - Math.exp(-delta * 3.6));
+      if (autoTravelActive) {
+        autoTravelElapsed = Math.min(autoTravelDuration, autoTravelElapsed + delta);
+        const travelT = autoTravelElapsed / autoTravelDuration;
+        const easedTravel = travelT < 0.5
+          ? 4 * travelT * travelT * travelT
+          : 1 - Math.pow(-2 * travelT + 2, 3) / 2;
+        cameraX = THREE.MathUtils.lerp(autoTravelFrom, cameraTarget, easedTravel);
+        if (travelT >= 1) autoTravelActive = false;
+      } else {
+        cameraX = THREE.MathUtils.lerp(cameraX, cameraTarget, 1.0 - Math.exp(-delta * 3.6));
+      }
       const instantaneousVelocity = delta > 0 ? (cameraX - previousCameraX) / delta : 0;
       cameraVelocity = THREE.MathUtils.lerp(cameraVelocity, instantaneousVelocity, 0.16);
 
@@ -440,8 +476,20 @@ export function SignalPrototype() {
       finalUniforms.uImpulse.value = impulse;
 
       if (projectRef.current) {
+        const metaPresence = THREE.MathUtils.smoothstep(projectPresence, 0.10, 0.32);
+        const titlePresence = THREE.MathUtils.smoothstep(projectPresence, 0.24, 0.52);
+        const bodyPresence = THREE.MathUtils.smoothstep(projectPresence, 0.42, 0.70);
+        const actionPresence = THREE.MathUtils.smoothstep(projectPresence, 0.62, 0.88);
         projectRef.current.style.setProperty("--entry-presence", projectPresence.toFixed(3));
         projectRef.current.style.setProperty("--entry-shift", `${((1 - projectPresence) * 42).toFixed(1)}px`);
+        projectRef.current.style.setProperty("--meta-presence", metaPresence.toFixed(3));
+        projectRef.current.style.setProperty("--title-presence", titlePresence.toFixed(3));
+        projectRef.current.style.setProperty("--body-presence", bodyPresence.toFixed(3));
+        projectRef.current.style.setProperty("--action-presence", actionPresence.toFixed(3));
+        projectRef.current.style.setProperty("--meta-shift", `${((1 - metaPresence) * 28).toFixed(1)}px`);
+        projectRef.current.style.setProperty("--title-shift", `${((1 - titlePresence) * 42).toFixed(1)}px`);
+        projectRef.current.style.setProperty("--body-shift", `${((1 - bodyPresence) * 34).toFixed(1)}px`);
+        projectRef.current.style.setProperty("--action-shift", `${((1 - actionPresence) * 24).toFixed(1)}px`);
         projectRef.current.inert = projectPresence < 0.72;
         projectRef.current.setAttribute("aria-hidden", projectPresence < 0.55 ? "true" : "false");
       }
@@ -460,7 +508,7 @@ export function SignalPrototype() {
       }
       if (velocityRef.current) {
         velocityRef.current.textContent = Math.abs(cameraVelocity) < 0.03
-          ? cameraX < 20.75 ? "SCROLL EAST TO ARRIVE" : cameraX > 23.25 ? "SCROLL WEST TO RETURN" : "PROJECT SIGNAL LOCKED"
+          ? cameraX < 20.75 ? "CLICK PROJECT OR SCROLL EAST" : cameraX > 23.25 ? "SCROLL WEST TO RETURN" : "PROJECT SIGNAL LOCKED"
           : `MOVING ${cameraVelocity > 0 ? "EAST" : "WEST"}`;
       }
       if (travelFillRef.current) {
@@ -512,15 +560,20 @@ export function SignalPrototype() {
         <div className={styles.live}><i /> WAYPOINT SYSTEM ONLINE</div>
       </header>
 
-      <aside className={styles.waypoint}>
-        <span>NEXT SIGNAL</span>
-        <strong>PROJECT 01 / X +22.00</strong>
+      <nav className={styles.waypoint} aria-label="Project table of contents">
+        <span>PROJECT INDEX / 01 OF 01</span>
+        <button type="button" onClick={navigateToProject}>
+          <i>01</i>
+          <strong>SIGNAL ATLAS</strong>
+          <small>X +22</small>
+        </button>
         <div><i ref={travelFillRef} /></div>
         <b ref={waypointDistanceRef}>22.0 UNITS AHEAD</b>
-        <em ref={velocityRef}>SCROLL EAST TO ARRIVE</em>
-      </aside>
+        <em ref={velocityRef}>CLICK PROJECT OR SCROLL EAST</em>
+      </nav>
 
       <article ref={projectRef} id="project-01" className={styles.project} aria-hidden="true">
+        <div className={styles.connector} aria-hidden="true"><i /></div>
         <div className={styles.projectMeta}>
           <span>EXAMPLE PROJECT</span>
           <span>2026 / INTERACTIVE</span>

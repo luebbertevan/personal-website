@@ -190,7 +190,7 @@ export function SignalPrototypeV4() {
       renderTarget.setSize(targetWidth, targetHeight);
       carbonUniforms.uResolution.value.set(targetWidth, targetHeight);
       finalUniforms.uResolution.value.set(pixelWidth, pixelHeight);
-      emberLoom?.resize(targetWidth, targetHeight);
+      emberLoom?.resize(pixelWidth, pixelHeight);
 
       strandAnchor.set(-0.54 * height / width, 0);
       const panel = shell.querySelector<HTMLElement>("[data-destination-panel]");
@@ -250,9 +250,9 @@ export function SignalPrototypeV4() {
       transition = {
         kind: "destination",
         elapsed: 0,
-        duration: 3.1,
+        duration: 6.4,
         fromX: cameraX,
-        toX: cameraX + direction * 20,
+        toX: cameraX + direction * 60,
         sourceDestination: currentDestination,
         targetDestination,
         sourceChapter: currentChapter,
@@ -270,9 +270,9 @@ export function SignalPrototypeV4() {
       transition = {
         kind: "chapter",
         elapsed: 0,
-        duration: 1.34,
+        duration: 2.8,
         fromX: cameraX,
-        toX: currentAnchorX + targetChapter * 9,
+        toX: currentAnchorX + targetChapter * 27,
         sourceDestination: currentDestination,
         targetDestination: currentDestination,
         sourceChapter: currentChapter,
@@ -318,7 +318,7 @@ export function SignalPrototypeV4() {
       let particleTransitionProgress = 0;
       let particleTravelDirection = 1;
       if (transition) {
-        particleTransitionActive = 1;
+        particleTransitionActive = transition.kind === "destination" ? 1 : 0;
         transition.elapsed = Math.min(transition.duration, transition.elapsed + delta);
         transitionT = transition.elapsed / transition.duration;
         particleTransitionProgress = transitionT;
@@ -383,22 +383,27 @@ export function SignalPrototypeV4() {
         if (transition?.kind === "destination") {
           panelOpacity = 0;
           if (destinationIndex === transition.sourceDestination) {
-            panelOpacity = 1 - THREE.MathUtils.smoothstep(transitionT, 0.03, 0.18);
+            panelOpacity = 1 - THREE.MathUtils.smoothstep(transitionT, 0.02, 0.12);
             chapterOpacities.fill(0);
             chapterOpacities[transition.sourceChapter] = panelOpacity;
             chapterShifts[transition.sourceChapter] = -18 * transitionT;
           }
           if (destinationIndex === transition.targetDestination) {
-            panelOpacity = THREE.MathUtils.smoothstep(transitionT, 0.82, 0.98);
+            panelOpacity = THREE.MathUtils.smoothstep(transitionT, 0.90, 0.995);
             chapterOpacities.fill(0);
             chapterOpacities[0] = panelOpacity;
             chapterShifts[0] = 18 * (1 - transitionT);
           }
         } else if (transition?.kind === "chapter" && destinationIndex === currentDestination) {
-          panelOpacity = 1;
+          panelOpacity = THREE.MathUtils.clamp(
+            1 - THREE.MathUtils.smoothstep(transitionT, 0.05, 0.24)
+              + THREE.MathUtils.smoothstep(transitionT, 0.76, 0.95),
+            0,
+            1,
+          );
           chapterOpacities.fill(0);
-          chapterOpacities[transition.sourceChapter] = 1 - THREE.MathUtils.smoothstep(transitionT, 0.02, 0.16);
-          chapterOpacities[transition.targetChapter] = THREE.MathUtils.smoothstep(transitionT, 0.84, 0.98);
+          chapterOpacities[transition.sourceChapter] = 1 - THREE.MathUtils.smoothstep(transitionT, 0.04, 0.20);
+          chapterOpacities[transition.targetChapter] = THREE.MathUtils.smoothstep(transitionT, 0.80, 0.96);
           chapterShifts[transition.sourceChapter] = -16 * transitionT;
           chapterShifts[transition.targetChapter] = 16 * (1 - transitionT);
         }
@@ -474,13 +479,13 @@ export function SignalPrototypeV4() {
 
       renderer.setRenderTarget(renderTarget);
       renderer.render(carbonScene, camera);
+      renderer.setRenderTarget(null);
+      renderer.render(finalScene, camera);
       if (emberLoom) {
         renderer.autoClear = false;
         renderer.render(emberLoom.scene, camera);
         renderer.autoClear = true;
       }
-      renderer.setRenderTarget(null);
-      renderer.render(finalScene, camera);
       animationFrame = requestAnimationFrame(animate);
     };
 

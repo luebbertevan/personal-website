@@ -64,46 +64,53 @@ const velocityShader = /* glsl */ `
 
     vec2 tangent = normalize(uStrandTangent + vec2(0.0001, 0.0));
     vec2 normal = vec2(-tangent.y, tangent.x);
-    float along = (lane - 0.5) * 1.45;
-    float orbit = sin(uTime * (0.32 + phase * 0.34) + phase * 18.0);
-    float orbitWide = cos(uTime * 0.21 + lane * 25.0);
+    float along = (lane - 0.5) * 2.20;
+    float orbit = sin(uTime * (0.24 + phase * 0.30) + phase * 18.0);
+    float orbitWide = cos(uTime * 0.17 + lane * 25.0);
     vec2 ambientTarget = uAnchor
-      + tangent * (along + 0.055 * orbitWide)
-      + normal * (orbit * (0.035 + 0.105 * phase));
+      + tangent * (along + 0.13 * orbitWide)
+      + normal * (orbit * (0.10 + 0.34 * phase));
+
+    float trailGroup = smoothstep(0.61, 0.66, seed) * (1.0 - smoothstep(0.84, 0.89, seed));
+    float trailAngle = uTime * (0.30 + phase * 0.27) + phase * 23.0;
+    vec2 trailTarget = uAnchor
+      + tangent * ((lane - 0.5) * 2.35 + cos(trailAngle) * (0.09 + phase * 0.16))
+      + normal * sin(trailAngle) * (0.18 + phase * 0.34);
+    ambientTarget = mix(ambientTarget, trailTarget, trailGroup);
 
     vec2 structureTarget = frameTarget(seed + uv.x, lane);
     structureTarget += normal * sin(uTime * 0.42 + seed * 31.0) * 0.0025;
-    float structureGroup = smoothstep(0.56, 0.68, seed);
-    vec2 settledTarget = mix(ambientTarget, structureTarget, structureGroup);
+    float structureGroup = smoothstep(0.89, 0.96, seed);
 
-    float collapse = smoothstep(0.02, 0.32, uTransitionProgress) * uTransitionActive;
-    float assemble = smoothstep(0.62, 0.98, uTransitionProgress) * uTransitionActive;
+    float collapse = smoothstep(0.03, 0.34, uTransitionProgress) * uTransitionActive;
+    float assemble = smoothstep(0.55, 0.90, uTransitionProgress) * uTransitionActive;
     float inTransit = collapse * (1.0 - assemble);
     vec2 streamTarget = uAnchor
-      + tangent * ((lane - 0.5) * 1.75 - uTravelDirection * (0.10 + phase * 0.18))
-      + normal * sin(uTime * 1.15 + seed * 41.0) * (0.045 + 0.07 * phase);
-    vec2 target = mix(settledTarget, streamTarget, inTransit);
+      + tangent * ((lane - 0.5) * 2.05 - uTravelDirection * (0.14 + phase * 0.24))
+      + normal * sin(uTime * 0.88 + seed * 41.0) * (0.10 + 0.19 * phase);
+    vec2 target = mix(ambientTarget, streamTarget, inTransit);
+    target = mix(target, structureTarget, structureGroup * assemble);
 
     vec2 toTarget = target - position;
-    float spring = mix(3.6, 7.8, structureGroup);
-    spring += inTransit * 2.8;
+    float spring = mix(2.8, 6.8, structureGroup);
+    spring += inTransit * 1.9 + trailGroup * 0.8;
     vec2 acceleration = toTarget * spring;
 
     float field = sin(position.x * 10.0 + uTime * 0.55 + seed * 27.0)
       + cos(position.y * 13.0 - uTime * 0.43 + phase * 19.0);
-    acceleration += normal * field * mix(0.012, 0.045, 1.0 - structureGroup);
+    acceleration += normal * field * mix(0.026, 0.075, 1.0 - structureGroup);
 
     vec2 pointerDelta = position - uPointer;
     float pointerDistance = length(pointerDelta);
-    float influenceRadius = 0.19 + phase * 0.08;
+    float influenceRadius = 0.25 + phase * 0.13;
     float pointerInfluence = 1.0 - smoothstep(0.0, influenceRadius, pointerDistance);
     vec2 pointerDirection = pointerDelta / max(pointerDistance, 0.018);
-    acceleration += pointerDirection * pointerInfluence * (1.2 + 2.2 * uImpulse) * (0.65 + phase);
-    acceleration += normal * pointerInfluence * uImpulse * (phase - 0.5) * 1.8;
+    acceleration += pointerDirection * pointerInfluence * (1.55 + 2.8 * uImpulse) * (0.72 + phase);
+    acceleration += normal * pointerInfluence * uImpulse * (phase - 0.5) * 2.2;
 
     acceleration += tangent * clamp(uCameraVelocity * 0.003, -0.12, 0.12) * (0.25 + phase);
     velocity.xy += acceleration * uDelta;
-    velocity.xy *= exp(-mix(2.25, 3.4, structureGroup) * uDelta);
+    velocity.xy *= exp(-mix(1.72, 3.1, structureGroup) * uDelta);
     float speed = length(velocity.xy);
     if (speed > 0.72) velocity.xy *= 0.72 / speed;
     velocity.z = mix(velocity.z, orbit * 0.08, 1.0 - exp(-uDelta * 1.8));
@@ -121,6 +128,7 @@ const particleVertexShader = /* glsl */ `
   varying vec2 vParticleUv;
   varying float vSpeed;
   varying float vSeed;
+  varying float vTrail;
 
   void main() {
     vec4 positionState = texture2D(texturePosition, particleUv);
@@ -129,8 +137,13 @@ const particleVertexShader = /* glsl */ `
     vec2 direction = normalize(velocity.xy + normalize(uStrandTangent) * 0.0025);
     vec2 normal = vec2(-direction.y, direction.x);
     float depthScale = 0.72 + 0.50 * positionState.z;
-    float width = (0.0021 + particleSeed * 0.0018) * depthScale;
-    float trail = (0.0045 + min(speed * 0.13, 0.040)) * depthScale;
+    float trailClass = smoothstep(0.61, 0.66, particleSeed) * (1.0 - smoothstep(0.84, 0.89, particleSeed));
+    float emberWidth = 0.0054 + particleSeed * 0.0032;
+    float trailWidth = 0.0032 + particleSeed * 0.0014;
+    float width = mix(emberWidth, trailWidth, trailClass) * depthScale;
+    float emberLength = 0.010 + min(speed * 0.22, 0.062);
+    float orbitLength = 0.042 + min(speed * 0.38, 0.105);
+    float trail = mix(emberLength, orbitLength, trailClass) * depthScale;
     vec2 offset = direction * position.x * trail + normal * position.y * width;
     offset.x *= uResolution.y / max(uResolution.x, 1.0);
 
@@ -138,6 +151,7 @@ const particleVertexShader = /* glsl */ `
     vParticleUv = uv;
     vSpeed = speed;
     vSeed = particleSeed;
+    vTrail = trailClass;
   }
 `;
 
@@ -147,18 +161,20 @@ const particleFragmentShader = /* glsl */ `
   varying vec2 vParticleUv;
   varying float vSpeed;
   varying float vSeed;
+  varying float vTrail;
 
   void main() {
     vec2 p = vParticleUv - 0.5;
     float radius = length(vec2(p.x * 0.66, p.y));
-    float halo = 1.0 - smoothstep(0.12, 0.52, radius);
-    float core = 1.0 - smoothstep(0.02, 0.17, radius);
-    float heat = smoothstep(0.012, 0.18, vSpeed);
-    vec3 hotColor = mix(vec3(1.0, 0.84, 0.62), vec3(0.92, 0.98, 1.0), step(uPaletteColor.b, uPaletteColor.r));
-    vec3 color = mix(uPaletteColor * (0.72 + vSeed * 0.42), hotColor, heat * 0.82 + core * 0.12);
-    float alpha = (halo * 0.16 + core * (0.48 + heat * 0.52)) * uOpacity;
+    float halo = 1.0 - smoothstep(0.10, 0.53, radius);
+    float core = 1.0 - smoothstep(0.018, 0.19, radius);
+    float heat = smoothstep(0.018, 0.24, vSpeed);
+    vec3 saturated = uPaletteColor * (1.25 + vSeed * 0.72);
+    vec3 hotColor = mix(saturated, vec3(1.0), 0.28 + heat * 0.26);
+    vec3 color = mix(saturated, hotColor, heat * 0.72 + core * 0.16);
+    float alpha = (halo * mix(0.22, 0.34, vTrail) + core * (0.70 + heat * 0.30)) * uOpacity;
     if (alpha < 0.008) discard;
-    gl_FragColor = vec4(color * alpha, alpha);
+    gl_FragColor = vec4(color, alpha);
   }
 `;
 
@@ -265,7 +281,7 @@ export function createEmberLoom(renderer: THREE.WebGLRenderer): EmberLoom | null
     uResolution: { value: new THREE.Vector2(1, 1) },
     uStrandTangent: { value: new THREE.Vector2(1, 0) },
     uPaletteColor: { value: new THREE.Vector3(1, 0.25, 0.0625) },
-    uOpacity: { value: 0.88 },
+    uOpacity: { value: 0.96 },
   };
   const material = new THREE.ShaderMaterial({
     uniforms: renderUniforms,

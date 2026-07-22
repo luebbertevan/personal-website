@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { GPUComputationRenderer } from "three/examples/jsm/misc/GPUComputationRenderer.js";
 
-const SIMULATION_SIZE = 48;
+const SIMULATION_SIZE = 68;
 
 const positionShader = /* glsl */ `
   uniform float uDelta;
@@ -68,11 +68,10 @@ const velocityShader = /* glsl */ `
     float along = (worldProgress - 0.5) * 2.82;
     vec2 basePosition = uAnchor + tangent * along;
 
-    float orbitDirection = mix(-1.0, 1.0, step(0.5, orbitSeed));
     float orbitSpeed = 0.16 + 0.31 * hash12(uv * 181.9 + seed * 7.7);
-    float orbitAngle = phase * 6.2831853 + uTime * orbitSpeed * orbitDirection;
+    float orbitAngle = phase * 6.2831853 + uTime * orbitSpeed;
     orbitAngle += sin(uTime * (0.047 + orbitSeed * 0.034) + seed * 43.0) * 0.34;
-    float orbitRadius = 0.075 + 0.40 * pow(orbitSeed, 1.55);
+    float orbitRadius = 0.078 + 0.52 * pow(orbitSeed, 1.55);
     orbitRadius *= 0.88 + 0.18 * sin(uTime * 0.09 + seed * 61.0);
     vec2 ambientOffset = normal * sin(orbitAngle) * orbitRadius;
     ambientOffset += tangent * cos(orbitAngle) * orbitRadius * (0.08 + phase * 0.11);
@@ -103,10 +102,10 @@ const velocityShader = /* glsl */ `
 
     vec2 pointerDelta = actualPosition - uPointer;
     float pointerDistance = length(pointerDelta);
-    float influenceRadius = 0.25 + phase * 0.13;
+    float influenceRadius = 0.29 + phase * 0.16;
     float pointerInfluence = 1.0 - smoothstep(0.0, influenceRadius, pointerDistance);
     vec2 pointerDirection = pointerDelta / max(pointerDistance, 0.018);
-    acceleration += pointerDirection * pointerInfluence * (1.55 + 2.8 * uImpulse) * (0.72 + phase);
+    acceleration += pointerDirection * pointerInfluence * (1.78 + 2.8 * uImpulse) * (0.72 + phase);
     acceleration += normal * pointerInfluence * uImpulse * (phase - 0.5) * 2.2;
 
     velocity.xy += acceleration * uDelta;
@@ -136,6 +135,7 @@ const particleVertexShader = /* glsl */ `
   varying float vTrail;
   varying float vBehind;
   varying float vEdgeFade;
+  varying float vLight;
 
   float hash12(vec2 p) {
     vec3 p3 = fract(vec3(p.xyx) * 0.1031);
@@ -156,17 +156,16 @@ const particleVertexShader = /* glsl */ `
     vec2 center = basePosition + positionState.xy;
     vec2 direction = normalize(velocity.xy + tangent * 0.0025);
     vec2 normal = vec2(-direction.y, direction.x);
-    float orbitDirection = mix(-1.0, 1.0, step(0.5, orbitSeed));
     float orbitSpeed = 0.16 + 0.31 * hash12(particleUv * 181.9 + particleSeed * 7.7);
-    float orbitAngle = phase * 6.2831853 + uTime * orbitSpeed * orbitDirection;
+    float orbitAngle = phase * 6.2831853 + uTime * orbitSpeed;
     orbitAngle += sin(uTime * (0.047 + orbitSeed * 0.034) + particleSeed * 43.0) * 0.34;
     float orbitDepth = cos(orbitAngle);
     float depthScale = 0.72 + 0.36 * (orbitDepth * 0.5 + 0.5);
     float trailClass = 0.0;
     float sizeSeed = hash12(particleUv * vec2(227.3, 419.1) + particleSeed * 71.0);
-    float sparkClass = smoothstep(0.91, 0.975, sizeSeed);
-    float heroClass = smoothstep(0.992, 0.999, sizeSeed);
-    float emberWidth = 0.0036 + sizeSeed * 0.0037 + sparkClass * 0.0075 + heroClass * 0.0085;
+    float sparkClass = smoothstep(0.84, 0.965, sizeSeed);
+    float heroClass = smoothstep(0.975, 0.998, sizeSeed);
+    float emberWidth = 0.0035 + sizeSeed * 0.0046 + sparkClass * 0.0088 + heroClass * 0.0115;
     float trailWidth = 0.0036 + particleSeed * 0.0012;
     float width = mix(emberWidth, trailWidth, trailClass) * depthScale;
     float emberLength = emberWidth;
@@ -184,6 +183,7 @@ const particleVertexShader = /* glsl */ `
     float structureGroup = smoothstep(0.89, 0.96, particleSeed);
     vBehind = (1.0 - smoothstep(-0.12, 0.12, orbitDepth)) * (1.0 - structureGroup * assemble);
     vEdgeFade = smoothstep(0.0, 0.075, min(worldProgress, 1.0 - worldProgress));
+    vLight = pow(hash12(particleUv * vec2(593.1, 271.7) + particleSeed * 97.0), 2.15);
   }
 `;
 
@@ -198,6 +198,7 @@ const particleFragmentShader = /* glsl */ `
   varying float vTrail;
   varying float vBehind;
   varying float vEdgeFade;
+  varying float vLight;
 
   void main() {
     vec2 p = vParticleUv - 0.5;
@@ -219,7 +220,9 @@ const particleFragmentShader = /* glsl */ `
     float strandCoverage = smoothstep(0.018, 0.12, strandDepth);
     float occlusion = strandCoverage * vBehind;
     color *= mix(1.0, 0.72, vBehind);
+    color *= 0.72 + vLight * 1.28;
     float alpha = mix(emberAlpha, trailAlpha, vTrail) * uOpacity * vEdgeFade;
+    alpha *= 0.72 + vLight * 0.72;
     alpha *= 1.0 - occlusion * 0.97;
     if (alpha < 0.008) discard;
     gl_FragColor = vec4(color, alpha);

@@ -132,7 +132,7 @@ export const carbonPassShader = /* glsl */ `
 
   void main() {
     float time = uTime * 0.72;
-    bounce = abs(fract(0.05 * time) - 0.5) * 20.0;
+    bounce = time;
 
     vec2 fragCoord = vUv * uResolution;
     vec2 screenPosition = (2.0 * fragCoord - uResolution) / uResolution.y;

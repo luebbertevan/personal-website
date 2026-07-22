@@ -32,6 +32,14 @@ const destinations = [
   },
 ];
 
+const DESTINATION_TRAVEL = 60;
+const DESTINATION_DURATION = 7.35;
+const CHAPTER_TRAVEL = 15.5;
+const CHAPTER_DURATION = 2.45;
+const MANUAL_SCROLL_SCALE = 0.014;
+const MANUAL_CHECKPOINT_DISTANCE = 4.8;
+const MANUAL_EDGE_DISTANCE = 3.2;
+
 type NavigationCommand =
   | { type: "destination"; value: number }
   | { type: "chapter"; value: number }
@@ -169,6 +177,7 @@ export function SignalPrototypeV4() {
     let impulse = 0;
     let elapsed = 0;
     let cameraX = 0;
+    let manualCameraTarget = 0;
     let cameraVelocity = 0;
     let currentDestination = 0;
     let currentChapter = 0;
@@ -176,7 +185,6 @@ export function SignalPrototypeV4() {
     let currentShaderPalette = new THREE.Vector3(...destinations[0].shaderColor);
     let currentCssPalette = [...destinations[0].cssColor];
     let transition: RouteTransition | null = null;
-    let lastWheelStep = 0;
     let previousTime = performance.now();
     let animationFrame = 0;
     let disposed = false;
@@ -227,10 +235,10 @@ export function SignalPrototypeV4() {
       event.preventDefault();
       if (transition || navigationCommandRef.current) return;
       const dominantDelta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
-      if (Math.abs(dominantDelta) < 12 || performance.now() - lastWheelStep < 620) return;
-      lastWheelStep = performance.now();
-      navigationCommandRef.current = { type: "step", value: dominantDelta > 0 ? 1 : -1 };
-      impulse = Math.min(1, impulse + 0.18);
+      if (Math.abs(dominantDelta) < 0.5) return;
+      const normalizedDelta = THREE.MathUtils.clamp(dominantDelta, -140, 140);
+      manualCameraTarget += normalizedDelta * MANUAL_SCROLL_SCALE;
+      impulse = Math.min(1, impulse + Math.abs(normalizedDelta) * 0.0015);
     };
 
     const keydown = (event: KeyboardEvent) => {
@@ -253,12 +261,13 @@ export function SignalPrototypeV4() {
         return;
       }
       const direction = targetDestination > currentDestination ? 1 : -1;
+      manualCameraTarget = cameraX;
       transition = {
         kind: "destination",
         elapsed: 0,
-        duration: 6.4,
+        duration: DESTINATION_DURATION,
         fromX: cameraX,
-        toX: cameraX + direction * 60,
+        toX: cameraX + direction * DESTINATION_TRAVEL,
         sourceDestination: currentDestination,
         targetDestination,
         sourceChapter: currentChapter,
@@ -273,12 +282,13 @@ export function SignalPrototypeV4() {
     const beginChapter = (index: number) => {
       const targetChapter = THREE.MathUtils.clamp(index, 0, destinations[currentDestination].chapters - 1);
       if (targetChapter === currentChapter) return;
+      manualCameraTarget = cameraX;
       transition = {
         kind: "chapter",
         elapsed: 0,
-        duration: 2.8,
+        duration: CHAPTER_DURATION,
         fromX: cameraX,
-        toX: currentAnchorX + targetChapter * 27,
+        toX: currentAnchorX + targetChapter * CHAPTER_TRAVEL,
         sourceDestination: currentDestination,
         targetDestination: currentDestination,
         sourceChapter: currentChapter,
@@ -302,6 +312,14 @@ export function SignalPrototypeV4() {
       }
     };
 
+    const canStep = (direction: -1 | 1) => {
+      const chapterCount = destinations[currentDestination].chapters;
+      if (direction > 0) {
+        return currentChapter < chapterCount - 1 || currentDestination < destinations.length - 1;
+      }
+      return currentChapter > 0 || currentDestination > 0;
+    };
+
     const animate = (now: number) => {
       if (disposed) return;
       const delta = Math.min(0.04, (now - previousTime) / 1000);
@@ -319,6 +337,22 @@ export function SignalPrototypeV4() {
       }
 
       const previousCameraX = cameraX;
+      if (!transition) {
+        cameraX = THREE.MathUtils.lerp(
+          cameraX,
+          manualCameraTarget,
+          1 - Math.exp(-delta * 5.2),
+        );
+        const currentStopX = currentAnchorX + currentChapter * CHAPTER_TRAVEL;
+        const targetOffset = manualCameraTarget - currentStopX;
+        const checkpointDirection: -1 | 1 = targetOffset >= 0 ? 1 : -1;
+        if (Math.abs(targetOffset) >= MANUAL_CHECKPOINT_DISTANCE && canStep(checkpointDirection)) {
+          manualCameraTarget = cameraX;
+          beginStep(checkpointDirection);
+        } else if (!canStep(checkpointDirection) && Math.abs(targetOffset) > MANUAL_EDGE_DISTANCE) {
+          manualCameraTarget = currentStopX + checkpointDirection * MANUAL_EDGE_DISTANCE;
+        }
+      }
       let transitionT = 0;
       let particleTransitionActive = 0;
       let particleTransitionProgress = 0;
@@ -350,6 +384,7 @@ export function SignalPrototypeV4() {
           currentCssPalette = [...transition.cssTo];
           carbonUniforms.uPaletteColor.value.copy(currentShaderPalette);
           shell.style.setProperty("--accent-rgb", currentCssPalette.join(", "));
+          manualCameraTarget = cameraX;
           transition = null;
           transitionT = 0;
         }
@@ -457,9 +492,11 @@ export function SignalPrototypeV4() {
         waypointDistanceRef.current.textContent = `${destinations[activeDestinationForUi].label} / ${String(activeChapterForUi + 1).padStart(2, "0")} OF ${String(chapterCount).padStart(2, "0")}`;
       }
       if (velocityRef.current) {
+        const currentStopX = currentAnchorX + currentChapter * CHAPTER_TRAVEL;
+        const manuallyTraveling = Math.abs(cameraX - currentStopX) > 0.08;
         velocityRef.current.textContent = transition
           ? transition.kind === "destination" ? "SEAMLESS DESTINATION TRANSFER" : "SNAPPING TO CHAPTER"
-          : "SCROLL · ARROWS · CLICK TABS";
+          : manuallyTraveling ? "MANUAL STRAND TRAVEL" : "SCROLL · ARROWS · CLICK TABS";
       }
 
       const atRouteStart = currentDestination === 0 && currentChapter === 0;
@@ -654,7 +691,7 @@ export function SignalPrototypeV4() {
       </button>
 
       <footer className={styles.footer}>
-        <span>SCROLL / SNAP</span><span>ARROWS / NAVIGATE</span><span>POINTER / DISTURB FIELD</span>
+        <span>SCROLL / MANUAL TRAVEL</span><span>ARROWS / NAVIGATE</span><span>POINTER / DISTURB FIELD</span>
         <span className={styles.palette}>AMBER · BLUE · PINK</span>
       </footer>
     </main>

@@ -32,9 +32,9 @@ const destinations = [
   },
 ];
 
-const DESTINATION_TRAVEL = 60;
+const DESTINATION_TRAVEL = 52;
 const DESTINATION_DURATION = 7.35;
-const CHAPTER_TRAVEL = 15.5;
+const CHAPTER_TRAVEL = 13;
 const CHAPTER_DURATION = 2.45;
 const MANUAL_SCROLL_SCALE = 0.02;
 const MANUAL_ARRIVAL_PROGRESS = 0.88;
@@ -536,12 +536,11 @@ export function SignalPrototypeV4() {
         } else if (transition?.kind === "chapter" && destinationIndex === currentDestination) {
           panelOpacity = 1;
           chapterOpacities.fill(0);
-          chapterOpacities[transition.sourceChapter] = transition.manualArrival
-            ? 0
-            : 1 - THREE.MathUtils.smoothstep(transitionT, 0.04, 0.20);
-          chapterOpacities[transition.targetChapter] = THREE.MathUtils.smoothstep(transitionT, 0.80, 0.96);
-          chapterShifts[transition.sourceChapter] = -16 * transitionT;
-          chapterShifts[transition.targetChapter] = 16 * (1 - transitionT);
+          const chapterCrossfade = THREE.MathUtils.smoothstep(transitionT, 0.12, 0.88);
+          chapterOpacities[transition.sourceChapter] = 1 - chapterCrossfade;
+          chapterOpacities[transition.targetChapter] = chapterCrossfade;
+          chapterShifts[transition.sourceChapter] = -12 * chapterCrossfade;
+          chapterShifts[transition.targetChapter] = 12 * (1 - chapterCrossfade);
         } else if (manualRoute && manualRouteProgress > 0 && destinationIndex === currentDestination) {
           if (manualRoute.kind === "destination") {
             panelOpacity = 1 - THREE.MathUtils.smoothstep(manualRouteProgress, 0.08, 0.22);
@@ -551,8 +550,8 @@ export function SignalPrototypeV4() {
           } else {
             panelOpacity = 1;
             chapterOpacities.fill(0);
-            chapterOpacities[currentChapter] = 1 - THREE.MathUtils.smoothstep(manualRouteProgress, 0.10, 0.28);
-            chapterShifts[currentChapter] = -16 * manualRoute.direction * manualRouteProgress;
+            chapterOpacities[currentChapter] = 1;
+            chapterShifts[currentChapter] = 0;
           }
         }
 

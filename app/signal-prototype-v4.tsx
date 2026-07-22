@@ -231,8 +231,8 @@ export function SignalPrototypeV4() {
         const right = ((panelRect.right - renderedEntryShift - shellRect.left) / width) * 2 - 1;
         const top = 1 - ((panelRect.top - shellRect.top) / height) * 2;
         const bottom = 1 - ((panelRect.bottom - shellRect.top) / height) * 2;
-        const horizontalParticleGap = 24 / width;
-        const verticalParticleGap = 24 / height;
+        const horizontalParticleGap = 8 / width;
+        const verticalParticleGap = 8 / height;
         panelBounds.set(
           left - horizontalParticleGap,
           right + horizontalParticleGap,
@@ -422,7 +422,7 @@ export function SignalPrototypeV4() {
       }
       const homeIntroT = THREE.MathUtils.clamp(homeIntroElapsed / HOME_INTRO_DURATION, 0, 1);
       const chromePresence = homeIntroActive
-        ? THREE.MathUtils.smoothstep(homeIntroT, 0.30, 0.46)
+        ? THREE.MathUtils.smoothstep(homeIntroT, 0.42, 0.54)
         : 1;
       shell.style.setProperty("--chrome-presence", chromePresence.toFixed(3));
       pointer.lerp(pointerTarget, 1.0 - Math.exp(-delta * 5.0));
@@ -475,7 +475,7 @@ export function SignalPrototypeV4() {
       let particleTravelDirection = 1;
       let particleStructurePresence = 1;
       if (homeIntroActive) {
-        const homeAssembly = THREE.MathUtils.smoothstep(homeIntroT, 0.30, 0.58);
+        const homeAssembly = THREE.MathUtils.smoothstep(homeIntroT, 0.42, 0.74);
         particleStructurePresence = homeAssembly;
       }
       if (transition) {
@@ -557,7 +557,7 @@ export function SignalPrototypeV4() {
         const chapterShifts = bundle.chapters.map(() => 0);
 
         if (homeIntroActive && destinationIndex === 0 && !transition) {
-          const homeReveal = THREE.MathUtils.smoothstep(homeIntroT, 0.62, 0.78);
+          const homeReveal = THREE.MathUtils.smoothstep(homeIntroT, 0.78, 0.91);
           panelOpacity = homeReveal;
           chapterOpacities.fill(0);
           chapterOpacities[0] = homeReveal;

@@ -36,8 +36,8 @@ const DESTINATION_TRAVEL = 60;
 const DESTINATION_DURATION = 7.35;
 const CHAPTER_TRAVEL = 15.5;
 const CHAPTER_DURATION = 2.45;
-const MANUAL_SCROLL_SCALE = 0.014;
-const MANUAL_CHECKPOINT_DISTANCE = 4.8;
+const MANUAL_SCROLL_SCALE = 0.02;
+const MANUAL_ARRIVAL_PROGRESS = 0.88;
 const MANUAL_EDGE_DISTANCE = 3.2;
 
 type NavigationCommand =
@@ -59,6 +59,16 @@ type RouteTransition = {
   shaderTo: THREE.Vector3;
   cssFrom: number[];
   cssTo: number[];
+  manualArrival: boolean;
+};
+
+type ManualRoute = {
+  kind: "destination" | "chapter";
+  direction: -1 | 1;
+  targetX: number;
+  distance: number;
+  targetDestination: number;
+  targetChapter: number;
 };
 
 export function SignalPrototypeV4() {
@@ -254,7 +264,10 @@ export function SignalPrototypeV4() {
       impulse = Math.min(1, impulse + 0.16);
     };
 
-    const beginDestination = (index: number) => {
+    const beginDestination = (
+      index: number,
+      arrival?: { toX: number; duration: number; manualArrival: boolean },
+    ) => {
       const targetDestination = THREE.MathUtils.clamp(index, 0, destinations.length - 1);
       if (targetDestination === currentDestination) {
         beginChapter(0);
@@ -265,9 +278,9 @@ export function SignalPrototypeV4() {
       transition = {
         kind: "destination",
         elapsed: 0,
-        duration: DESTINATION_DURATION,
+        duration: arrival?.duration ?? DESTINATION_DURATION,
         fromX: cameraX,
-        toX: cameraX + direction * DESTINATION_TRAVEL,
+        toX: arrival?.toX ?? cameraX + direction * DESTINATION_TRAVEL,
         sourceDestination: currentDestination,
         targetDestination,
         sourceChapter: currentChapter,
@@ -276,19 +289,23 @@ export function SignalPrototypeV4() {
         shaderTo: new THREE.Vector3(...destinations[targetDestination].shaderColor),
         cssFrom: [...currentCssPalette],
         cssTo: [...destinations[targetDestination].cssColor],
+        manualArrival: arrival?.manualArrival ?? false,
       };
     };
 
-    const beginChapter = (index: number) => {
+    const beginChapter = (
+      index: number,
+      arrival?: { toX: number; duration: number; manualArrival: boolean },
+    ) => {
       const targetChapter = THREE.MathUtils.clamp(index, 0, destinations[currentDestination].chapters - 1);
       if (targetChapter === currentChapter) return;
       manualCameraTarget = cameraX;
       transition = {
         kind: "chapter",
         elapsed: 0,
-        duration: CHAPTER_DURATION,
+        duration: arrival?.duration ?? CHAPTER_DURATION,
         fromX: cameraX,
-        toX: currentAnchorX + targetChapter * CHAPTER_TRAVEL,
+        toX: arrival?.toX ?? currentAnchorX + targetChapter * CHAPTER_TRAVEL,
         sourceDestination: currentDestination,
         targetDestination: currentDestination,
         sourceChapter: currentChapter,
@@ -297,6 +314,7 @@ export function SignalPrototypeV4() {
         shaderTo: currentShaderPalette.clone(),
         cssFrom: [...currentCssPalette],
         cssTo: [...currentCssPalette],
+        manualArrival: arrival?.manualArrival ?? false,
       };
     };
 
@@ -312,12 +330,70 @@ export function SignalPrototypeV4() {
       }
     };
 
-    const canStep = (direction: -1 | 1) => {
+    const getManualRoute = (direction: -1 | 1): ManualRoute | null => {
       const chapterCount = destinations[currentDestination].chapters;
+      const currentStopX = currentAnchorX + currentChapter * CHAPTER_TRAVEL;
       if (direction > 0) {
-        return currentChapter < chapterCount - 1 || currentDestination < destinations.length - 1;
+        if (currentChapter < chapterCount - 1) {
+          return {
+            kind: "chapter",
+            direction,
+            targetX: currentAnchorX + (currentChapter + 1) * CHAPTER_TRAVEL,
+            distance: CHAPTER_TRAVEL,
+            targetDestination: currentDestination,
+            targetChapter: currentChapter + 1,
+          };
+        }
+        if (currentDestination < destinations.length - 1) {
+          return {
+            kind: "destination",
+            direction,
+            targetX: currentStopX + DESTINATION_TRAVEL,
+            distance: DESTINATION_TRAVEL,
+            targetDestination: currentDestination + 1,
+            targetChapter: 0,
+          };
+        }
+      } else {
+        if (currentChapter > 0) {
+          return {
+            kind: "chapter",
+            direction,
+            targetX: currentAnchorX + (currentChapter - 1) * CHAPTER_TRAVEL,
+            distance: CHAPTER_TRAVEL,
+            targetDestination: currentDestination,
+            targetChapter: currentChapter - 1,
+          };
+        }
+        if (currentDestination > 0) {
+          return {
+            kind: "destination",
+            direction,
+            targetX: currentStopX - DESTINATION_TRAVEL,
+            distance: DESTINATION_TRAVEL,
+            targetDestination: currentDestination - 1,
+            targetChapter: 0,
+          };
+        }
       }
-      return currentChapter > 0 || currentDestination > 0;
+      return null;
+    };
+
+    const beginManualArrival = (route: ManualRoute) => {
+      const remaining = Math.abs(route.targetX - cameraX);
+      if (route.kind === "destination") {
+        beginDestination(route.targetDestination, {
+          toX: route.targetX,
+          duration: Math.max(1.45, DESTINATION_DURATION * remaining / DESTINATION_TRAVEL),
+          manualArrival: true,
+        });
+      } else {
+        beginChapter(route.targetChapter, {
+          toX: route.targetX,
+          duration: Math.max(0.85, CHAPTER_DURATION * remaining / CHAPTER_TRAVEL),
+          manualArrival: true,
+        });
+      }
     };
 
     const animate = (now: number) => {
@@ -337,20 +413,35 @@ export function SignalPrototypeV4() {
       }
 
       const previousCameraX = cameraX;
+      let manualRoute: ManualRoute | null = null;
+      let manualRouteProgress = 0;
       if (!transition) {
+        const currentStopX = currentAnchorX + currentChapter * CHAPTER_TRAVEL;
+        const targetOffset = manualCameraTarget - currentStopX;
+        const manualDirection: -1 | 1 = targetOffset >= 0 ? 1 : -1;
+        manualRoute = getManualRoute(manualDirection);
+        if (manualRoute) {
+          manualCameraTarget = manualDirection > 0
+            ? Math.min(manualCameraTarget, manualRoute.targetX)
+            : Math.max(manualCameraTarget, manualRoute.targetX);
+        } else if (Math.abs(targetOffset) > MANUAL_EDGE_DISTANCE) {
+          manualCameraTarget = currentStopX + manualDirection * MANUAL_EDGE_DISTANCE;
+        }
         cameraX = THREE.MathUtils.lerp(
           cameraX,
           manualCameraTarget,
           1 - Math.exp(-delta * 5.2),
         );
-        const currentStopX = currentAnchorX + currentChapter * CHAPTER_TRAVEL;
-        const targetOffset = manualCameraTarget - currentStopX;
-        const checkpointDirection: -1 | 1 = targetOffset >= 0 ? 1 : -1;
-        if (Math.abs(targetOffset) >= MANUAL_CHECKPOINT_DISTANCE && canStep(checkpointDirection)) {
+        if (manualRoute) {
+          manualRouteProgress = THREE.MathUtils.clamp(
+            Math.abs(cameraX - currentStopX) / manualRoute.distance,
+            0,
+            1,
+          );
+        }
+        if (manualRoute && manualRouteProgress >= MANUAL_ARRIVAL_PROGRESS) {
           manualCameraTarget = cameraX;
-          beginStep(checkpointDirection);
-        } else if (!canStep(checkpointDirection) && Math.abs(targetOffset) > MANUAL_EDGE_DISTANCE) {
-          manualCameraTarget = currentStopX + checkpointDirection * MANUAL_EDGE_DISTANCE;
+          beginManualArrival(manualRoute);
         }
       }
       let transitionT = 0;
@@ -429,7 +520,9 @@ export function SignalPrototypeV4() {
         if (transition?.kind === "destination") {
           panelOpacity = 0;
           if (destinationIndex === transition.sourceDestination) {
-            panelOpacity = 1 - THREE.MathUtils.smoothstep(transitionT, 0.02, 0.12);
+            panelOpacity = transition.manualArrival
+              ? 0
+              : 1 - THREE.MathUtils.smoothstep(transitionT, 0.02, 0.12);
             chapterOpacities.fill(0);
             chapterOpacities[transition.sourceChapter] = panelOpacity;
             chapterShifts[transition.sourceChapter] = -18 * transitionT;
@@ -441,17 +534,26 @@ export function SignalPrototypeV4() {
             chapterShifts[0] = 18 * (1 - transitionT);
           }
         } else if (transition?.kind === "chapter" && destinationIndex === currentDestination) {
-          panelOpacity = THREE.MathUtils.clamp(
-            1 - THREE.MathUtils.smoothstep(transitionT, 0.05, 0.24)
-              + THREE.MathUtils.smoothstep(transitionT, 0.76, 0.95),
-            0,
-            1,
-          );
+          panelOpacity = 1;
           chapterOpacities.fill(0);
-          chapterOpacities[transition.sourceChapter] = 1 - THREE.MathUtils.smoothstep(transitionT, 0.04, 0.20);
+          chapterOpacities[transition.sourceChapter] = transition.manualArrival
+            ? 0
+            : 1 - THREE.MathUtils.smoothstep(transitionT, 0.04, 0.20);
           chapterOpacities[transition.targetChapter] = THREE.MathUtils.smoothstep(transitionT, 0.80, 0.96);
           chapterShifts[transition.sourceChapter] = -16 * transitionT;
           chapterShifts[transition.targetChapter] = 16 * (1 - transitionT);
+        } else if (manualRoute && manualRouteProgress > 0 && destinationIndex === currentDestination) {
+          if (manualRoute.kind === "destination") {
+            panelOpacity = 1 - THREE.MathUtils.smoothstep(manualRouteProgress, 0.08, 0.22);
+            chapterOpacities.fill(0);
+            chapterOpacities[currentChapter] = panelOpacity;
+            chapterShifts[currentChapter] = -18 * manualRoute.direction * manualRouteProgress;
+          } else {
+            panelOpacity = 1;
+            chapterOpacities.fill(0);
+            chapterOpacities[currentChapter] = 1 - THREE.MathUtils.smoothstep(manualRouteProgress, 0.10, 0.28);
+            chapterShifts[currentChapter] = -16 * manualRoute.direction * manualRouteProgress;
+          }
         }
 
         bundle.panel.style.setProperty("--entry-presence", panelOpacity.toFixed(3));

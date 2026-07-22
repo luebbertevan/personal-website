@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { GPUComputationRenderer } from "three/examples/jsm/misc/GPUComputationRenderer.js";
 
-const SIMULATION_SIZE = 68;
+const SIMULATION_SIZE = 80;
 
 const positionShader = /* glsl */ `
   uniform float uDelta;
@@ -69,12 +69,14 @@ const velocityShader = /* glsl */ `
     vec2 basePosition = uAnchor + tangent * along;
 
     float orbitSpeed = 0.16 + 0.31 * hash12(uv * 181.9 + seed * 7.7);
-    float orbitAngle = phase * 6.2831853 + uTime * orbitSpeed;
+    float orbitAngle = phase * 6.2831853 - uTime * orbitSpeed;
     orbitAngle += sin(uTime * (0.047 + orbitSeed * 0.034) + seed * 43.0) * 0.34;
-    float orbitRadius = 0.078 + 0.52 * pow(orbitSeed, 1.55);
+    float cameraOrbit = 0.32 * sin(uCameraX * 0.11) + 0.92 * sin(uCameraX * 0.027);
+    float viewOrbitAngle = orbitAngle - cameraOrbit;
+    float orbitRadius = 0.082 + 0.58 * pow(orbitSeed, 0.72);
     orbitRadius *= 0.88 + 0.18 * sin(uTime * 0.09 + seed * 61.0);
-    vec2 ambientOffset = normal * sin(orbitAngle) * orbitRadius;
-    ambientOffset += tangent * cos(orbitAngle) * orbitRadius * (0.08 + phase * 0.11);
+    vec2 ambientOffset = normal * sin(viewOrbitAngle) * orbitRadius;
+    ambientOffset += tangent * cos(viewOrbitAngle) * orbitRadius * (0.08 + phase * 0.11);
     ambientOffset += tangent * sin(uTime * 0.071 + seed * 79.0) * (0.018 + phase * 0.055);
     vec2 actualPosition = basePosition + positionState.xy;
 
@@ -157,9 +159,10 @@ const particleVertexShader = /* glsl */ `
     vec2 direction = normalize(velocity.xy + tangent * 0.0025);
     vec2 normal = vec2(-direction.y, direction.x);
     float orbitSpeed = 0.16 + 0.31 * hash12(particleUv * 181.9 + particleSeed * 7.7);
-    float orbitAngle = phase * 6.2831853 + uTime * orbitSpeed;
+    float orbitAngle = phase * 6.2831853 - uTime * orbitSpeed;
     orbitAngle += sin(uTime * (0.047 + orbitSeed * 0.034) + particleSeed * 43.0) * 0.34;
-    float orbitDepth = cos(orbitAngle);
+    float cameraOrbit = 0.32 * sin(uCameraX * 0.11) + 0.92 * sin(uCameraX * 0.027);
+    float orbitDepth = cos(orbitAngle - cameraOrbit);
     float depthScale = 0.72 + 0.36 * (orbitDepth * 0.5 + 0.5);
     float trailClass = 0.0;
     float sizeSeed = hash12(particleUv * vec2(227.3, 419.1) + particleSeed * 71.0);
@@ -216,9 +219,19 @@ const particleFragmentShader = /* glsl */ `
     float trailHead = 1.0 - smoothstep(0.025, 0.20, length(vec2((vParticleUv.x - 0.84) * 0.72, p.y)));
     float trailAlpha = trailBody * 0.22 + trailHead * 0.66;
     vec2 screenUv = gl_FragCoord.xy / max(uResolution, vec2(1.0));
+    vec2 maskRadius = vec2(0.010 * uResolution.y / max(uResolution.x, 1.0), 0.010);
     float strandDepth = texture2D(uCarbonDepth, screenUv).a;
-    float strandCoverage = smoothstep(0.018, 0.12, strandDepth);
+    strandDepth = max(strandDepth, texture2D(uCarbonDepth, screenUv + vec2(maskRadius.x, 0.0)).a);
+    strandDepth = max(strandDepth, texture2D(uCarbonDepth, screenUv - vec2(maskRadius.x, 0.0)).a);
+    strandDepth = max(strandDepth, texture2D(uCarbonDepth, screenUv + vec2(0.0, maskRadius.y)).a);
+    strandDepth = max(strandDepth, texture2D(uCarbonDepth, screenUv - vec2(0.0, maskRadius.y)).a);
+    strandDepth = max(strandDepth, texture2D(uCarbonDepth, screenUv + maskRadius * 0.72).a);
+    strandDepth = max(strandDepth, texture2D(uCarbonDepth, screenUv - maskRadius * 0.72).a);
+    strandDepth = max(strandDepth, texture2D(uCarbonDepth, screenUv + vec2(maskRadius.x, -maskRadius.y) * 0.72).a);
+    strandDepth = max(strandDepth, texture2D(uCarbonDepth, screenUv + vec2(-maskRadius.x, maskRadius.y) * 0.72).a);
+    float strandCoverage = smoothstep(0.008, 0.065, strandDepth);
     float occlusion = strandCoverage * vBehind;
+    if (vBehind > 0.48 && strandCoverage > 0.08) discard;
     color *= mix(1.0, 0.72, vBehind);
     color *= 0.72 + vLight * 1.28;
     float alpha = mix(emberAlpha, trailAlpha, vTrail) * uOpacity * vEdgeFade;

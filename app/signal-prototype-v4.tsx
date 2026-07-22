@@ -39,6 +39,7 @@ const CHAPTER_DURATION = 2.45;
 const MANUAL_SCROLL_SCALE = 0.02;
 const MANUAL_ARRIVAL_PROGRESS = 0.88;
 const MANUAL_EDGE_DISTANCE = 3.2;
+const HOME_INTRO_DURATION = 5.4;
 
 type NavigationCommand =
   | { type: "destination"; value: number }
@@ -195,6 +196,8 @@ export function SignalPrototypeV4() {
     let currentShaderPalette = new THREE.Vector3(...destinations[0].shaderColor);
     let currentCssPalette = [...destinations[0].cssColor];
     let transition: RouteTransition | null = null;
+    let homeIntroElapsed = 0;
+    let homeIntroActive = true;
     let previousTime = performance.now();
     let animationFrame = 0;
     let disposed = false;
@@ -246,6 +249,7 @@ export function SignalPrototypeV4() {
       if (transition || navigationCommandRef.current) return;
       const dominantDelta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
       if (Math.abs(dominantDelta) < 0.5) return;
+      homeIntroActive = false;
       const normalizedDelta = THREE.MathUtils.clamp(dominantDelta, -140, 140);
       manualCameraTarget += normalizedDelta * MANUAL_SCROLL_SCALE;
       impulse = Math.min(1, impulse + Math.abs(normalizedDelta) * 0.0015);
@@ -260,6 +264,7 @@ export function SignalPrototypeV4() {
           : 0;
       if (!direction) return;
       event.preventDefault();
+      homeIntroActive = false;
       navigationCommandRef.current = { type: "step", value: direction as -1 | 1 };
       impulse = Math.min(1, impulse + 0.16);
     };
@@ -401,12 +406,18 @@ export function SignalPrototypeV4() {
       const delta = Math.min(0.04, (now - previousTime) / 1000);
       previousTime = now;
       if (!pausedRef.current) elapsed += delta;
+      if (homeIntroActive && !pausedRef.current) {
+        homeIntroElapsed = Math.min(HOME_INTRO_DURATION, homeIntroElapsed + delta);
+        if (homeIntroElapsed >= HOME_INTRO_DURATION) homeIntroActive = false;
+      }
+      const homeIntroT = THREE.MathUtils.clamp(homeIntroElapsed / HOME_INTRO_DURATION, 0, 1);
       pointer.lerp(pointerTarget, 1.0 - Math.exp(-delta * 5.0));
       impulse *= Math.exp(-delta * 2.3);
 
       if (!transition && navigationCommandRef.current) {
         const command = navigationCommandRef.current;
         navigationCommandRef.current = null;
+        homeIntroActive = false;
         if (command.type === "destination") beginDestination(command.value);
         else if (command.type === "chapter") beginChapter(command.value);
         else beginStep(command.value);
@@ -449,6 +460,11 @@ export function SignalPrototypeV4() {
       let particleTransitionProgress = 0;
       let particleTravelDirection = 1;
       let particleStructurePresence = currentDestination === 0 ? 0 : 1;
+      if (homeIntroActive) {
+        const homeAssembly = THREE.MathUtils.smoothstep(homeIntroT, 0.08, 0.50);
+        const homeRelease = 1 - THREE.MathUtils.smoothstep(homeIntroT, 0.68, 0.98);
+        particleStructurePresence = homeAssembly * homeRelease;
+      }
       if (transition) {
         particleTransitionActive = transition.kind === "destination" ? 1 : 0;
         transition.elapsed = Math.min(transition.duration, transition.elapsed + delta);
@@ -529,6 +545,14 @@ export function SignalPrototypeV4() {
         ));
         const chapterShifts = bundle.chapters.map(() => 0);
 
+        if (homeIntroActive && destinationIndex === 0 && !transition) {
+          const homeReveal = THREE.MathUtils.smoothstep(homeIntroT, 0.38, 0.66);
+          panelOpacity = homeReveal;
+          chapterOpacities.fill(0);
+          chapterOpacities[0] = homeReveal;
+          chapterShifts[0] = 18 * (1 - homeReveal);
+        }
+
         if (transition?.kind === "destination") {
           panelOpacity = 0;
           if (destinationIndex === transition.sourceDestination) {
@@ -607,7 +631,9 @@ export function SignalPrototypeV4() {
       if (velocityRef.current) {
         const currentStopX = currentAnchorX + currentChapter * CHAPTER_TRAVEL;
         const manuallyTraveling = Math.abs(cameraX - currentStopX) > 0.08;
-        velocityRef.current.textContent = transition
+        velocityRef.current.textContent = homeIntroActive
+          ? homeIntroT < 0.68 ? "ASSEMBLING HOME SIGNAL" : "HOME SIGNAL ONLINE"
+          : transition
           ? transition.kind === "destination" ? "SEAMLESS DESTINATION TRANSFER" : "SNAPPING TO CHAPTER"
           : manuallyTraveling ? "MANUAL STRAND TRAVEL" : "SCROLL · ARROWS · CLICK TABS";
       }

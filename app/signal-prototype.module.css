@@ -165,7 +165,7 @@
   transition: background 400ms ease;
   pointer-events: none;
 }
-.homeProject { --entry-presence: 1; }
+.homeProject { --entry-presence: 0; }
 .project::before {
   position: absolute;
   top: 0;

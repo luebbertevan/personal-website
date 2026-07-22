@@ -224,11 +224,14 @@ export function SignalPrototypeV4() {
       if (panel) {
         const shellRect = shell.getBoundingClientRect();
         const panelRect = panel.getBoundingClientRect();
-        const left = ((panelRect.left - shellRect.left) / width) * 2 - 1;
-        const right = ((panelRect.right - shellRect.left) / width) * 2 - 1;
+        const renderedEntryShift = Number.parseFloat(
+          getComputedStyle(panel).getPropertyValue("--entry-shift"),
+        ) || 0;
+        const left = ((panelRect.left - renderedEntryShift - shellRect.left) / width) * 2 - 1;
+        const right = ((panelRect.right - renderedEntryShift - shellRect.left) / width) * 2 - 1;
         const top = 1 - ((panelRect.top - shellRect.top) / height) * 2;
         const bottom = 1 - ((panelRect.bottom - shellRect.top) / height) * 2;
-        panelBounds.set(left + 0.018, right - 0.018, bottom + 0.025, top - 0.025);
+        panelBounds.set(left, right, bottom, top);
       }
     };
 
@@ -459,11 +462,10 @@ export function SignalPrototypeV4() {
       let particleTransitionActive = 0;
       let particleTransitionProgress = 0;
       let particleTravelDirection = 1;
-      let particleStructurePresence = currentDestination === 0 ? 0 : 1;
+      let particleStructurePresence = 1;
       if (homeIntroActive) {
         const homeAssembly = THREE.MathUtils.smoothstep(homeIntroT, 0.05, 0.34);
-        const homeRelease = 1 - THREE.MathUtils.smoothstep(homeIntroT, 0.76, 0.99);
-        particleStructurePresence = homeAssembly * homeRelease;
+        particleStructurePresence = homeAssembly;
       }
       if (transition) {
         particleTransitionActive = transition.kind === "destination" ? 1 : 0;
@@ -472,13 +474,11 @@ export function SignalPrototypeV4() {
         particleTransitionProgress = transitionT;
         particleTravelDirection = Math.sign(transition.toX - transition.fromX) || 1;
         if (transition.kind === "destination") {
-          const sourceStructure = transition.sourceDestination === 0 ? 0 : 1;
-          const targetStructure = transition.targetDestination === 0 ? 0 : 1;
-          const departureStructure = 1 - THREE.MathUtils.smoothstep(transitionT, 0.16, 0.44);
-          const arrivalStructure = THREE.MathUtils.smoothstep(transitionT, 0.26, 0.70);
+          const departureStructure = 1 - THREE.MathUtils.smoothstep(transitionT, 0.12, 0.32);
+          const arrivalStructure = THREE.MathUtils.smoothstep(transitionT, 0.38, 0.70);
           particleStructurePresence = transition.manualArrival
-            ? targetStructure * arrivalStructure
-            : Math.max(sourceStructure * departureStructure, targetStructure * arrivalStructure);
+            ? arrivalStructure
+            : Math.max(departureStructure, arrivalStructure);
         }
         const easedTravel = transitionT < 0.5
           ? 4 * transitionT * transitionT * transitionT
@@ -505,8 +505,8 @@ export function SignalPrototypeV4() {
           transition = null;
           transitionT = 0;
         }
-      } else if (manualRoute?.kind === "destination" && currentDestination > 0) {
-        particleStructurePresence = 1 - THREE.MathUtils.smoothstep(manualRouteProgress, 0.20, 0.44);
+      } else if (manualRoute?.kind === "destination") {
+        particleStructurePresence = 1 - THREE.MathUtils.smoothstep(manualRouteProgress, 0.22, 0.48);
       } else {
         carbonUniforms.uPaletteColor.value.copy(currentShaderPalette);
         shell.style.setProperty("--accent-rgb", currentCssPalette.join(", "));

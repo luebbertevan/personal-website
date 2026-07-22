@@ -90,8 +90,8 @@ const velocityShader = /* glsl */ `
       : vec2(1.0, 0.0);
     structureFlow = mix(structureFlow, vec2(1.0, 0.0), structureRail);
     vec2 structureNormal = vec2(-structureFlow.y, structureFlow.x);
-    float structureDrift = sin(uTime * (0.17 + phase * 0.11) + seed * 67.0) * (0.004 + phase * 0.006);
-    float structureBreath = cos(uTime * (0.23 + orbitSeed * 0.09) + seed * 41.0) * (0.0006 + phase * 0.0012);
+    float structureDrift = sin(uTime * (0.64 + phase * 0.48) + seed * 67.0) * (0.007 + phase * 0.011);
+    float structureBreath = cos(uTime * (0.72 + orbitSeed * 0.32) + seed * 41.0) * (0.0008 + phase * 0.0016);
     structureTarget += structureFlow * structureDrift + structureNormal * structureBreath;
     float structureGroup = smoothstep(0.12, 0.28, seed);
 

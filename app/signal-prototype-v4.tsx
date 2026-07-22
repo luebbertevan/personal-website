@@ -448,12 +448,22 @@ export function SignalPrototypeV4() {
       let particleTransitionActive = 0;
       let particleTransitionProgress = 0;
       let particleTravelDirection = 1;
+      let particleStructurePresence = currentDestination === 0 ? 0 : 1;
       if (transition) {
         particleTransitionActive = transition.kind === "destination" ? 1 : 0;
         transition.elapsed = Math.min(transition.duration, transition.elapsed + delta);
         transitionT = transition.elapsed / transition.duration;
         particleTransitionProgress = transitionT;
         particleTravelDirection = Math.sign(transition.toX - transition.fromX) || 1;
+        if (transition.kind === "destination") {
+          const sourceStructure = transition.sourceDestination === 0 ? 0 : 1;
+          const targetStructure = transition.targetDestination === 0 ? 0 : 1;
+          const departureStructure = 1 - THREE.MathUtils.smoothstep(transitionT, 0.16, 0.44);
+          const arrivalStructure = THREE.MathUtils.smoothstep(transitionT, 0.58, 0.94);
+          particleStructurePresence = transition.manualArrival
+            ? targetStructure * arrivalStructure
+            : Math.max(sourceStructure * departureStructure, targetStructure * arrivalStructure);
+        }
         const easedTravel = transitionT < 0.5
           ? 4 * transitionT * transitionT * transitionT
           : 1 - Math.pow(-2 * transitionT + 2, 3) / 2;
@@ -479,6 +489,8 @@ export function SignalPrototypeV4() {
           transition = null;
           transitionT = 0;
         }
+      } else if (manualRoute?.kind === "destination" && currentDestination > 0) {
+        particleStructurePresence = 1 - THREE.MathUtils.smoothstep(manualRouteProgress, 0.20, 0.44);
       } else {
         carbonUniforms.uPaletteColor.value.copy(currentShaderPalette);
         shell.style.setProperty("--accent-rgb", currentCssPalette.join(", "));
@@ -622,6 +634,7 @@ export function SignalPrototypeV4() {
         palette: carbonUniforms.uPaletteColor.value,
         transitionActive: particleTransitionActive,
         transitionProgress: particleTransitionProgress,
+        structurePresence: particleStructurePresence,
         travelDirection: particleTravelDirection,
         cameraX,
       });

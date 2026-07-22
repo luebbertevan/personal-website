@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { GPUComputationRenderer } from "three/examples/jsm/misc/GPUComputationRenderer.js";
 
-const SIMULATION_SIZE = 80;
+const SIMULATION_SIZE = 96;
 
 const positionShader = /* glsl */ `
   uniform float uDelta;
@@ -20,6 +20,7 @@ const velocityShader = /* glsl */ `
   uniform float uTime;
   uniform float uTransitionActive;
   uniform float uTransitionProgress;
+  uniform float uStructurePresence;
   uniform float uTravelDirection;
   uniform float uCameraX;
   uniform float uImpulse;
@@ -82,10 +83,10 @@ const velocityShader = /* glsl */ `
 
     vec2 structureTarget = frameTarget(seed + uv.x, lane);
     structureTarget += normal * sin(uTime * 0.42 + seed * 31.0) * 0.0025;
-    float structureGroup = smoothstep(0.89, 0.96, seed);
+    float structureGroup = smoothstep(0.72, 0.90, seed);
 
     float collapse = smoothstep(0.03, 0.34, uTransitionProgress) * uTransitionActive;
-    float assemble = smoothstep(0.55, 0.90, uTransitionProgress) * uTransitionActive;
+    float assemble = uStructurePresence;
     float inTransit = collapse * (1.0 - assemble);
     vec2 streamTarget = uAnchor
       + tangent * ((worldProgress - 0.5) * 2.20 - uTravelDirection * (0.14 + phase * 0.24))
@@ -129,6 +130,7 @@ const particleVertexShader = /* glsl */ `
   uniform float uTime;
   uniform float uTransitionActive;
   uniform float uTransitionProgress;
+  uniform float uStructurePresence;
   attribute vec2 particleUv;
   attribute float particleSeed;
   varying vec2 vParticleUv;
@@ -182,8 +184,8 @@ const particleVertexShader = /* glsl */ `
     vSpeed = speed;
     vSeed = particleSeed;
     vTrail = trailClass;
-    float assemble = smoothstep(0.55, 0.90, uTransitionProgress) * uTransitionActive;
-    float structureGroup = smoothstep(0.89, 0.96, particleSeed);
+    float assemble = uStructurePresence;
+    float structureGroup = smoothstep(0.72, 0.90, particleSeed);
     vBehind = (1.0 - smoothstep(-0.12, 0.12, orbitDepth)) * (1.0 - structureGroup * assemble);
     vEdgeFade = smoothstep(0.0, 0.075, min(worldProgress, 1.0 - worldProgress));
     vLight = pow(hash12(particleUv * vec2(593.1, 271.7) + particleSeed * 97.0), 2.15);
@@ -253,6 +255,7 @@ export type EmberLoomFrame = {
   palette: THREE.Vector3;
   transitionActive: number;
   transitionProgress: number;
+  structurePresence: number;
   travelDirection: number;
   cameraX: number;
 };
@@ -299,6 +302,7 @@ export function createEmberLoom(
   velocityVariable.material.uniforms.uTime = { value: 0 };
   velocityVariable.material.uniforms.uTransitionActive = { value: 0 };
   velocityVariable.material.uniforms.uTransitionProgress = { value: 0 };
+  velocityVariable.material.uniforms.uStructurePresence = { value: 0 };
   velocityVariable.material.uniforms.uTravelDirection = { value: 1 };
   velocityVariable.material.uniforms.uCameraX = { value: 0 };
   velocityVariable.material.uniforms.uImpulse = { value: 0 };
@@ -350,6 +354,7 @@ export function createEmberLoom(
     uTime: { value: 0 },
     uTransitionActive: { value: 0 },
     uTransitionProgress: { value: 0 },
+    uStructurePresence: { value: 0 },
     uPaletteColor: { value: new THREE.Vector3(1, 0.25, 0.0625) },
     uOpacity: { value: 0.74 },
     uCarbonDepth: { value: carbonDepthTexture },
@@ -378,6 +383,7 @@ export function createEmberLoom(
       velocityVariable.material.uniforms.uTime.value = frame.time;
       velocityVariable.material.uniforms.uTransitionActive.value = frame.transitionActive;
       velocityVariable.material.uniforms.uTransitionProgress.value = frame.transitionProgress;
+      velocityVariable.material.uniforms.uStructurePresence.value = frame.structurePresence;
       velocityVariable.material.uniforms.uTravelDirection.value = frame.travelDirection;
       velocityVariable.material.uniforms.uCameraX.value = frame.cameraX;
       velocityVariable.material.uniforms.uImpulse.value = frame.impulse;
@@ -391,6 +397,7 @@ export function createEmberLoom(
       renderUniforms.uTime.value = frame.time;
       renderUniforms.uTransitionActive.value = frame.transitionActive;
       renderUniforms.uTransitionProgress.value = frame.transitionProgress;
+      renderUniforms.uStructurePresence.value = frame.structurePresence;
       renderUniforms.uPaletteColor.value.copy(frame.palette);
       gpuCompute.compute();
       renderUniforms.texturePosition.value = gpuCompute.getCurrentRenderTarget(positionVariable).texture;

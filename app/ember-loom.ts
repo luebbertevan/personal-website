@@ -21,6 +21,7 @@ const velocityShader = /* glsl */ `
   uniform float uTransitionActive;
   uniform float uTransitionProgress;
   uniform float uStructurePresence;
+  uniform float uStructureDisturbance;
   uniform float uTravelDirection;
   uniform float uCameraX;
   uniform float uImpulse;
@@ -103,7 +104,17 @@ const velocityShader = /* glsl */ `
       hash12(uv.yx * vec2(359.3, 887.1) + seed * 37.0) - 0.5
     ) + vec2(0.001));
     vec2 cloudTarget = structureTarget
-      + approachDirection * formationArc * (0.035 + formationShape * 0.055);
+      + approachDirection * formationArc * (0.080 + formationShape * 0.120);
+    float disturbancePulse = uStructureDisturbance * (0.72 + 0.28 * sin(uTime * 1.7 + seed * 73.0));
+    vec2 disturbanceDirection = normalize(vec2(
+      hash12(uv * vec2(947.3, 263.1) + seed * 43.0) - 0.5,
+      hash12(uv.yx * vec2(173.9, 659.7) + seed * 89.0) - 0.5
+    ) + vec2(0.001));
+    cloudTarget += disturbanceDirection * disturbancePulse * (0.045 + formationShape * 0.095);
+    cloudTarget += structureNormal
+      * sin(uTime * (1.1 + phase * 0.8) + seed * 109.0)
+      * uStructureDisturbance
+      * (0.012 + phase * 0.026);
     float inTransit = collapse * (1.0 - assemble);
     vec2 streamTarget = uAnchor
       + tangent * ((worldProgress - 0.5) * 2.20 - uTravelDirection * (0.14 + phase * 0.24))
@@ -281,6 +292,7 @@ export type EmberLoomFrame = {
   transitionActive: number;
   transitionProgress: number;
   structurePresence: number;
+  structureDisturbance: number;
   travelDirection: number;
   cameraX: number;
 };
@@ -332,6 +344,7 @@ export function createEmberLoom(
   velocityVariable.material.uniforms.uTransitionActive = { value: 0 };
   velocityVariable.material.uniforms.uTransitionProgress = { value: 0 };
   velocityVariable.material.uniforms.uStructurePresence = { value: 0 };
+  velocityVariable.material.uniforms.uStructureDisturbance = { value: 0 };
   velocityVariable.material.uniforms.uTravelDirection = { value: 1 };
   velocityVariable.material.uniforms.uCameraX = { value: 0 };
   velocityVariable.material.uniforms.uImpulse = { value: 0 };
@@ -413,6 +426,7 @@ export function createEmberLoom(
       velocityVariable.material.uniforms.uTransitionActive.value = frame.transitionActive;
       velocityVariable.material.uniforms.uTransitionProgress.value = frame.transitionProgress;
       velocityVariable.material.uniforms.uStructurePresence.value = frame.structurePresence;
+      velocityVariable.material.uniforms.uStructureDisturbance.value = frame.structureDisturbance;
       velocityVariable.material.uniforms.uTravelDirection.value = frame.travelDirection;
       velocityVariable.material.uniforms.uCameraX.value = frame.cameraX;
       velocityVariable.material.uniforms.uImpulse.value = frame.impulse;

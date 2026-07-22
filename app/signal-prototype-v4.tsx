@@ -475,9 +475,11 @@ export function SignalPrototypeV4() {
       let particleTransitionProgress = 0;
       let particleTravelDirection = 1;
       let particleStructurePresence = 1;
+      let particleStructureDisturbance = 0;
       if (homeIntroActive) {
         const homeAssembly = THREE.MathUtils.smoothstep(homeIntroT, 0.50, 0.88);
         particleStructurePresence = homeAssembly;
+        particleStructureDisturbance = Math.sin(Math.PI * homeAssembly);
       }
       if (transition) {
         particleTransitionActive = transition.kind === "destination" ? 1 : 0;
@@ -491,6 +493,13 @@ export function SignalPrototypeV4() {
           particleStructurePresence = transition.manualArrival
             ? arrivalStructure
             : Math.max(departureStructure, arrivalStructure);
+          particleStructureDisturbance = transition.manualArrival
+            ? 1 - THREE.MathUtils.smoothstep(transitionT, 0.18, 0.88)
+            : Math.sin(Math.PI * THREE.MathUtils.smoothstep(transitionT, 0.02, 0.98));
+        } else {
+          particleStructureDisturbance = transition.manualArrival
+            ? 1 - THREE.MathUtils.smoothstep(transitionT, 0.16, 0.92)
+            : Math.sin(Math.PI * THREE.MathUtils.smoothstep(transitionT, 0.04, 0.96));
         }
         const easedTravel = transitionT < 0.5
           ? 4 * transitionT * transitionT * transitionT
@@ -519,6 +528,9 @@ export function SignalPrototypeV4() {
         }
       } else if (!homeIntroActive && manualRoute?.kind === "destination" && manualRouteProgress > 0) {
         particleStructurePresence = 1 - THREE.MathUtils.smoothstep(manualRouteProgress, 0.22, 0.48);
+        particleStructureDisturbance = THREE.MathUtils.smoothstep(manualRouteProgress, 0.10, 0.36);
+      } else if (!homeIntroActive && manualRoute?.kind === "chapter" && manualRouteProgress > 0) {
+        particleStructureDisturbance = THREE.MathUtils.smoothstep(manualRouteProgress, 0.05, 0.34);
       } else {
         carbonUniforms.uPaletteColor.value.copy(currentShaderPalette);
         shell.style.setProperty("--accent-rgb", currentCssPalette.join(", "));
@@ -673,6 +685,7 @@ export function SignalPrototypeV4() {
         transitionActive: particleTransitionActive,
         transitionProgress: particleTransitionProgress,
         structurePresence: particleStructurePresence,
+        structureDisturbance: particleStructureDisturbance,
         travelDirection: particleTravelDirection,
         cameraX,
       });

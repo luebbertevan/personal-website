@@ -60,3 +60,5 @@
 ## Project roadmap
 
 The canonical working task list lives in [TODO.md](./TODO.md). Keep this file focused on design decisions and historical rationale; update `TODO.md` as priorities, content, and completion status change.
+
+The concise implementation handoff for future chats lives in [PROJECT_CONTEXT.md](./PROJECT_CONTEXT.md).

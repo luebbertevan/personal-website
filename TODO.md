@@ -6,6 +6,15 @@ This is the canonical working task list for the portfolio. Design rationale and 
 
 The visual system and navigation proof are sufficiently mature. Use accurate content next so final layouts, chapter lengths, media needs, and responsive behavior are designed around reality rather than placeholders.
 
+### Connect the project to GitHub
+
+- [ ] Create or choose the GitHub repository that will own the Signal Spine source.
+- [ ] Decide whether the repository should be public or private before pushing any code or development history.
+- [ ] Connect the local project to that repository and push the complete intentional history without disturbing the existing Sites deployment workflow.
+- [ ] Replace the starter README with a project-specific overview, setup instructions, architecture notes, screenshots, credits, and the deployed-site link.
+- [ ] Add an appropriate license and confirm that no private content, credentials, restricted media, or confidential project assets are included.
+- [ ] Decide whether the finished “About this site” section should link directly to the source repository.
+
 ### Collect content
 
 - [ ] Finalize the Home introduction: name treatment, primary headline, short biography, location/availability if useful, and preferred call to action.

@@ -39,7 +39,7 @@ const CHAPTER_DURATION = 2.45;
 const MANUAL_SCROLL_SCALE = 0.02;
 const MANUAL_ARRIVAL_PROGRESS = 0.88;
 const MANUAL_EDGE_DISTANCE = 3.2;
-const HOME_INTRO_DURATION = 7.2;
+const HOME_INTRO_DURATION = 6;
 
 type NavigationCommand =
   | { type: "destination"; value: number }
@@ -256,16 +256,17 @@ export function SignalPrototypeV4() {
 
     const wheel = (event: WheelEvent) => {
       event.preventDefault();
+      if (homeIntroActive) return;
       if (transition || navigationCommandRef.current) return;
       const dominantDelta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
       if (Math.abs(dominantDelta) < 0.5) return;
-      homeIntroActive = false;
       const normalizedDelta = THREE.MathUtils.clamp(dominantDelta, -140, 140);
       manualCameraTarget += normalizedDelta * MANUAL_SCROLL_SCALE;
       impulse = Math.min(1, impulse + Math.abs(normalizedDelta) * 0.0015);
     };
 
     const keydown = (event: KeyboardEvent) => {
+      if (homeIntroActive) return;
       if (transition || navigationCommandRef.current) return;
       const direction = event.key === "ArrowRight" || event.key === "ArrowDown" || event.key === "PageDown"
         ? 1
@@ -274,7 +275,6 @@ export function SignalPrototypeV4() {
           : 0;
       if (!direction) return;
       event.preventDefault();
-      homeIntroActive = false;
       navigationCommandRef.current = { type: "step", value: direction as -1 | 1 };
       impulse = Math.min(1, impulse + 0.16);
     };
@@ -422,7 +422,7 @@ export function SignalPrototypeV4() {
       }
       const homeIntroT = THREE.MathUtils.clamp(homeIntroElapsed / HOME_INTRO_DURATION, 0, 1);
       const chromePresence = homeIntroActive
-        ? THREE.MathUtils.smoothstep(homeIntroT, 0.42, 0.54)
+        ? THREE.MathUtils.smoothstep(homeIntroT, 0.50, 0.62)
         : 1;
       shell.style.setProperty("--chrome-presence", chromePresence.toFixed(3));
       pointer.lerp(pointerTarget, 1.0 - Math.exp(-delta * 5.0));
@@ -431,10 +431,11 @@ export function SignalPrototypeV4() {
       if (!transition && navigationCommandRef.current) {
         const command = navigationCommandRef.current;
         navigationCommandRef.current = null;
-        homeIntroActive = false;
-        if (command.type === "destination") beginDestination(command.value);
-        else if (command.type === "chapter") beginChapter(command.value);
-        else beginStep(command.value);
+        if (!homeIntroActive) {
+          if (command.type === "destination") beginDestination(command.value);
+          else if (command.type === "chapter") beginChapter(command.value);
+          else beginStep(command.value);
+        }
       }
 
       const previousCameraX = cameraX;
@@ -475,7 +476,7 @@ export function SignalPrototypeV4() {
       let particleTravelDirection = 1;
       let particleStructurePresence = 1;
       if (homeIntroActive) {
-        const homeAssembly = THREE.MathUtils.smoothstep(homeIntroT, 0.42, 0.74);
+        const homeAssembly = THREE.MathUtils.smoothstep(homeIntroT, 0.50, 0.88);
         particleStructurePresence = homeAssembly;
       }
       if (transition) {
@@ -516,7 +517,7 @@ export function SignalPrototypeV4() {
           transition = null;
           transitionT = 0;
         }
-      } else if (manualRoute?.kind === "destination") {
+      } else if (!homeIntroActive && manualRoute?.kind === "destination" && manualRouteProgress > 0) {
         particleStructurePresence = 1 - THREE.MathUtils.smoothstep(manualRouteProgress, 0.22, 0.48);
       } else {
         carbonUniforms.uPaletteColor.value.copy(currentShaderPalette);
@@ -557,7 +558,7 @@ export function SignalPrototypeV4() {
         const chapterShifts = bundle.chapters.map(() => 0);
 
         if (homeIntroActive && destinationIndex === 0 && !transition) {
-          const homeReveal = THREE.MathUtils.smoothstep(homeIntroT, 0.78, 0.91);
+          const homeReveal = THREE.MathUtils.smoothstep(homeIntroT, 0.88, 0.92);
           panelOpacity = homeReveal;
           chapterOpacities.fill(0);
           chapterOpacities[0] = homeReveal;

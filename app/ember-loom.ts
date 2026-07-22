@@ -92,12 +92,24 @@ const velocityShader = /* glsl */ `
 
     float collapse = smoothstep(0.03, 0.34, uTransitionProgress) * uTransitionActive;
     float assemble = uStructurePresence;
+    float formationSeed = hash12(uv * vec2(421.7, 193.3) + seed * 117.0);
+    float formationShape = hash12(uv.yx * vec2(287.1, 613.9) + seed * 59.0);
+    float formationStart = formationSeed * 0.52;
+    float formationEnd = min(0.98, formationStart + 0.34 + formationShape * 0.10);
+    float localAssemble = smoothstep(formationStart, formationEnd, assemble);
+    float formationArc = 4.0 * localAssemble * (1.0 - localAssemble);
+    vec2 approachDirection = normalize(vec2(
+      hash12(uv * vec2(733.1, 101.7) + seed * 23.0) - 0.5,
+      hash12(uv.yx * vec2(359.3, 887.1) + seed * 37.0) - 0.5
+    ) + vec2(0.001));
+    vec2 cloudTarget = structureTarget
+      + approachDirection * formationArc * (0.035 + formationShape * 0.055);
     float inTransit = collapse * (1.0 - assemble);
     vec2 streamTarget = uAnchor
       + tangent * ((worldProgress - 0.5) * 2.20 - uTravelDirection * (0.14 + phase * 0.24))
       + normal * sin(uTime * 0.88 + seed * 41.0) * (0.10 + 0.19 * phase);
     vec2 targetOffset = mix(ambientOffset, streamTarget - basePosition, inTransit);
-    targetOffset = mix(targetOffset, structureTarget - basePosition, structureGroup * assemble);
+    targetOffset = mix(targetOffset, cloudTarget - basePosition, structureGroup * localAssemble);
 
     vec2 toTarget = targetOffset - positionState.xy;
     float spring = mix(5.4, 8.2, structureGroup);
@@ -192,10 +204,15 @@ const particleVertexShader = /* glsl */ `
     vTrail = trailClass;
     float assemble = uStructurePresence;
     float structureGroup = smoothstep(0.12, 0.28, particleSeed);
-    vBehind = (1.0 - smoothstep(-0.12, 0.12, orbitDepth)) * (1.0 - structureGroup * assemble);
+    float formationSeed = hash12(particleUv * vec2(421.7, 193.3) + particleSeed * 117.0);
+    float formationShape = hash12(particleUv.yx * vec2(287.1, 613.9) + particleSeed * 59.0);
+    float formationStart = formationSeed * 0.52;
+    float formationEnd = min(0.98, formationStart + 0.34 + formationShape * 0.10);
+    float localAssemble = smoothstep(formationStart, formationEnd, assemble);
+    vBehind = (1.0 - smoothstep(-0.12, 0.12, orbitDepth)) * (1.0 - structureGroup * localAssemble);
     vEdgeFade = smoothstep(0.0, 0.075, min(worldProgress, 1.0 - worldProgress));
     vLight = pow(hash12(particleUv * vec2(593.1, 271.7) + particleSeed * 97.0), 2.15);
-    vStructureGain = mix(1.0, mix(0.10, 1.08, assemble), structureGroup);
+    vStructureGain = mix(1.0, mix(0.10, 1.08, localAssemble), structureGroup);
   }
 `;
 

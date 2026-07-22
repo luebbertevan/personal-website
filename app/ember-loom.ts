@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { GPUComputationRenderer } from "three/examples/jsm/misc/GPUComputationRenderer.js";
 
-const SIMULATION_SIZE = 96;
+const SIMULATION_SIZE = 160;
 
 const positionShader = /* glsl */ `
   uniform float uDelta;
@@ -81,9 +81,19 @@ const velocityShader = /* glsl */ `
     ambientOffset += tangent * sin(uTime * 0.071 + seed * 79.0) * (0.018 + phase * 0.055);
     vec2 actualPosition = basePosition + positionState.xy;
 
-    vec2 structureTarget = frameTarget(seed + uv.x, lane);
-    structureTarget += normal * sin(uTime * 0.42 + seed * 31.0) * 0.0025;
-    float structureGroup = smoothstep(0.72, 0.90, seed);
+    float structureSelector = seed + uv.x;
+    vec2 structureTarget = frameTarget(structureSelector, lane);
+    float structureSide = floor(fract(structureSelector * 7.17) * 4.0);
+    float structureRail = step(0.78, fract(structureSelector * 13.31));
+    vec2 structureFlow = structureSide < 0.5 || (structureSide > 1.5 && structureSide < 2.5)
+      ? vec2(0.0, 1.0)
+      : vec2(1.0, 0.0);
+    structureFlow = mix(structureFlow, vec2(1.0, 0.0), structureRail);
+    vec2 structureNormal = vec2(-structureFlow.y, structureFlow.x);
+    float structureDrift = sin(uTime * (0.17 + phase * 0.11) + seed * 67.0) * (0.004 + phase * 0.006);
+    float structureBreath = cos(uTime * (0.23 + orbitSeed * 0.09) + seed * 41.0) * (0.0006 + phase * 0.0012);
+    structureTarget += structureFlow * structureDrift + structureNormal * structureBreath;
+    float structureGroup = smoothstep(0.12, 0.28, seed);
 
     float collapse = smoothstep(0.03, 0.34, uTransitionProgress) * uTransitionActive;
     float assemble = uStructurePresence;
@@ -140,6 +150,7 @@ const particleVertexShader = /* glsl */ `
   varying float vBehind;
   varying float vEdgeFade;
   varying float vLight;
+  varying float vStructureGain;
 
   float hash12(vec2 p) {
     vec3 p3 = fract(vec3(p.xyx) * 0.1031);
@@ -185,10 +196,11 @@ const particleVertexShader = /* glsl */ `
     vSeed = particleSeed;
     vTrail = trailClass;
     float assemble = uStructurePresence;
-    float structureGroup = smoothstep(0.72, 0.90, particleSeed);
+    float structureGroup = smoothstep(0.12, 0.28, particleSeed);
     vBehind = (1.0 - smoothstep(-0.12, 0.12, orbitDepth)) * (1.0 - structureGroup * assemble);
     vEdgeFade = smoothstep(0.0, 0.075, min(worldProgress, 1.0 - worldProgress));
     vLight = pow(hash12(particleUv * vec2(593.1, 271.7) + particleSeed * 97.0), 2.15);
+    vStructureGain = mix(1.0, mix(0.10, 1.08, assemble), structureGroup);
   }
 `;
 
@@ -204,6 +216,7 @@ const particleFragmentShader = /* glsl */ `
   varying float vBehind;
   varying float vEdgeFade;
   varying float vLight;
+  varying float vStructureGain;
 
   void main() {
     vec2 p = vParticleUv - 0.5;
@@ -236,7 +249,7 @@ const particleFragmentShader = /* glsl */ `
     if (vBehind > 0.48 && strandCoverage > 0.08) discard;
     color *= mix(1.0, 0.72, vBehind);
     color *= 0.72 + vLight * 1.28;
-    float alpha = mix(emberAlpha, trailAlpha, vTrail) * uOpacity * vEdgeFade;
+    float alpha = mix(emberAlpha, trailAlpha, vTrail) * uOpacity * vEdgeFade * vStructureGain;
     alpha *= 0.72 + vLight * 0.72;
     alpha *= 1.0 - occlusion * 0.97;
     if (alpha < 0.008) discard;

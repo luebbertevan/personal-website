@@ -461,8 +461,8 @@ export function SignalPrototypeV4() {
       let particleTravelDirection = 1;
       let particleStructurePresence = currentDestination === 0 ? 0 : 1;
       if (homeIntroActive) {
-        const homeAssembly = THREE.MathUtils.smoothstep(homeIntroT, 0.08, 0.50);
-        const homeRelease = 1 - THREE.MathUtils.smoothstep(homeIntroT, 0.68, 0.98);
+        const homeAssembly = THREE.MathUtils.smoothstep(homeIntroT, 0.05, 0.34);
+        const homeRelease = 1 - THREE.MathUtils.smoothstep(homeIntroT, 0.76, 0.99);
         particleStructurePresence = homeAssembly * homeRelease;
       }
       if (transition) {
@@ -475,7 +475,7 @@ export function SignalPrototypeV4() {
           const sourceStructure = transition.sourceDestination === 0 ? 0 : 1;
           const targetStructure = transition.targetDestination === 0 ? 0 : 1;
           const departureStructure = 1 - THREE.MathUtils.smoothstep(transitionT, 0.16, 0.44);
-          const arrivalStructure = THREE.MathUtils.smoothstep(transitionT, 0.58, 0.94);
+          const arrivalStructure = THREE.MathUtils.smoothstep(transitionT, 0.26, 0.70);
           particleStructurePresence = transition.manualArrival
             ? targetStructure * arrivalStructure
             : Math.max(sourceStructure * departureStructure, targetStructure * arrivalStructure);
@@ -546,7 +546,7 @@ export function SignalPrototypeV4() {
         const chapterShifts = bundle.chapters.map(() => 0);
 
         if (homeIntroActive && destinationIndex === 0 && !transition) {
-          const homeReveal = THREE.MathUtils.smoothstep(homeIntroT, 0.38, 0.66);
+          const homeReveal = THREE.MathUtils.smoothstep(homeIntroT, 0.46, 0.68);
           panelOpacity = homeReveal;
           chapterOpacities.fill(0);
           chapterOpacities[0] = homeReveal;
@@ -564,7 +564,7 @@ export function SignalPrototypeV4() {
             chapterShifts[transition.sourceChapter] = -18 * transitionT;
           }
           if (destinationIndex === transition.targetDestination) {
-            panelOpacity = THREE.MathUtils.smoothstep(transitionT, 0.90, 0.995);
+            panelOpacity = THREE.MathUtils.smoothstep(transitionT, 0.80, 0.985);
             chapterOpacities.fill(0);
             chapterOpacities[0] = panelOpacity;
             chapterShifts[0] = 18 * (1 - transitionT);

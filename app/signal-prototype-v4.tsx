@@ -3,7 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { createEmberLoom } from "./ember-loom";
-import { carbonPassShader, depthOfFieldShader, screenVertexShader } from "./signal-prototype";
+import {
+  carbonPassShader,
+  depthOfFieldShader,
+  getSignalCameraDistance,
+  screenVertexShader,
+} from "./signal-prototype";
 import styles from "./signal-prototype.module.css";
 
 const destinations = [
@@ -131,6 +136,7 @@ export function SignalPrototypeV4() {
       uPointer: { value: new THREE.Vector2(0, 0) },
       uTime: { value: 0 },
       uImpulse: { value: 0 },
+      uFocalDepth: { value: 0.5 },
     };
     const finalMaterial = new THREE.ShaderMaterial({
       uniforms: finalUniforms,
@@ -143,7 +149,7 @@ export function SignalPrototypeV4() {
     const finalQuad = new THREE.Mesh(geometry, finalMaterial);
     finalQuad.frustumCulled = false;
     finalScene.add(finalQuad);
-    const emberLoom = createEmberLoom(renderer);
+    const emberLoom = createEmberLoom(renderer, renderTarget.texture);
 
     const panelBundles = Array.from(shell.querySelectorAll<HTMLElement>("[data-destination-panel]")).map((panel) => ({
       panel,
@@ -363,6 +369,11 @@ export function SignalPrototypeV4() {
       finalUniforms.uTime.value = elapsed;
       finalUniforms.uPointer.value.copy(pointer);
       finalUniforms.uImpulse.value = impulse;
+      finalUniforms.uFocalDepth.value = THREE.MathUtils.clamp(
+        1 - 0.09 * getSignalCameraDistance(cameraX, 1),
+        0,
+        1,
+      );
 
       const activeDestinationForUi = transition?.kind === "destination" && transitionT > 0.5
         ? transition.targetDestination
@@ -474,7 +485,7 @@ export function SignalPrototypeV4() {
         transitionActive: particleTransitionActive,
         transitionProgress: particleTransitionProgress,
         travelDirection: particleTravelDirection,
-        cameraVelocity,
+        cameraX,
       });
 
       renderer.setRenderTarget(renderTarget);

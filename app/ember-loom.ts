@@ -10,7 +10,7 @@ const positionShader = /* glsl */ `
     vec2 uv = gl_FragCoord.xy / resolution.xy;
     vec4 positionState = texture2D(texturePosition, uv);
     vec3 velocity = texture2D(textureVelocity, uv).xyz;
-    positionState.xyz += velocity * uDelta;
+    positionState.xy += velocity.xy * uDelta;
     gl_FragColor = positionState;
   }
 `;
@@ -21,7 +21,7 @@ const velocityShader = /* glsl */ `
   uniform float uTransitionActive;
   uniform float uTransitionProgress;
   uniform float uTravelDirection;
-  uniform float uCameraVelocity;
+  uniform float uCameraX;
   uniform float uImpulse;
   uniform vec2 uPointer;
   uniform vec2 uAnchor;
@@ -57,26 +57,27 @@ const velocityShader = /* glsl */ `
     vec2 uv = gl_FragCoord.xy / resolution.xy;
     vec4 positionState = texture2D(texturePosition, uv);
     vec3 velocity = texture2D(textureVelocity, uv).xyz;
-    vec2 position = positionState.xy;
     float seed = positionState.w;
-    float lane = hash12(uv * 91.73 + seed * 17.0);
-    float phase = hash12(uv.yx * 47.11 + seed * 39.0);
+    float lane = hash12(uv * vec2(137.17, 211.73) + seed * 53.1);
+    float phase = hash12(uv.yx * vec2(73.91, 149.37) + seed * 31.7);
+    float orbitSeed = hash12(uv * vec2(319.17, 97.31) + seed * 19.3);
 
     vec2 tangent = normalize(uStrandTangent + vec2(0.0001, 0.0));
     vec2 normal = vec2(-tangent.y, tangent.x);
-    float along = (lane - 0.5) * 2.20;
-    float orbit = sin(uTime * (0.24 + phase * 0.30) + phase * 18.0);
-    float orbitWide = cos(uTime * 0.17 + lane * 25.0);
-    vec2 ambientTarget = uAnchor
-      + tangent * (along + 0.13 * orbitWide)
-      + normal * (orbit * (0.10 + 0.34 * phase));
+    float worldProgress = fract(lane - uCameraX * 0.0125);
+    float along = (worldProgress - 0.5) * 2.82;
+    vec2 basePosition = uAnchor + tangent * along;
 
-    float trailGroup = 0.0;
-    float trailAngle = uTime * (0.30 + phase * 0.27) + phase * 23.0;
-    vec2 trailTarget = uAnchor
-      + tangent * ((lane - 0.5) * 2.35 + cos(trailAngle) * (0.09 + phase * 0.16))
-      + normal * sin(trailAngle) * (0.18 + phase * 0.34);
-    ambientTarget = mix(ambientTarget, trailTarget, trailGroup);
+    float orbitDirection = mix(-1.0, 1.0, step(0.5, orbitSeed));
+    float orbitSpeed = 0.16 + 0.31 * hash12(uv * 181.9 + seed * 7.7);
+    float orbitAngle = phase * 6.2831853 + uTime * orbitSpeed * orbitDirection;
+    orbitAngle += sin(uTime * (0.047 + orbitSeed * 0.034) + seed * 43.0) * 0.34;
+    float orbitRadius = 0.075 + 0.40 * pow(orbitSeed, 1.55);
+    orbitRadius *= 0.88 + 0.18 * sin(uTime * 0.09 + seed * 61.0);
+    vec2 ambientOffset = normal * sin(orbitAngle) * orbitRadius;
+    ambientOffset += tangent * cos(orbitAngle) * orbitRadius * (0.08 + phase * 0.11);
+    ambientOffset += tangent * sin(uTime * 0.071 + seed * 79.0) * (0.018 + phase * 0.055);
+    vec2 actualPosition = basePosition + positionState.xy;
 
     vec2 structureTarget = frameTarget(seed + uv.x, lane);
     structureTarget += normal * sin(uTime * 0.42 + seed * 31.0) * 0.0025;
@@ -86,21 +87,21 @@ const velocityShader = /* glsl */ `
     float assemble = smoothstep(0.55, 0.90, uTransitionProgress) * uTransitionActive;
     float inTransit = collapse * (1.0 - assemble);
     vec2 streamTarget = uAnchor
-      + tangent * ((lane - 0.5) * 2.05 - uTravelDirection * (0.14 + phase * 0.24))
+      + tangent * ((worldProgress - 0.5) * 2.20 - uTravelDirection * (0.14 + phase * 0.24))
       + normal * sin(uTime * 0.88 + seed * 41.0) * (0.10 + 0.19 * phase);
-    vec2 target = mix(ambientTarget, streamTarget, inTransit);
-    target = mix(target, structureTarget, structureGroup * assemble);
+    vec2 targetOffset = mix(ambientOffset, streamTarget - basePosition, inTransit);
+    targetOffset = mix(targetOffset, structureTarget - basePosition, structureGroup * assemble);
 
-    vec2 toTarget = target - position;
-    float spring = mix(2.8, 6.8, structureGroup);
-    spring += inTransit * 1.9 + trailGroup * 0.8;
+    vec2 toTarget = targetOffset - positionState.xy;
+    float spring = mix(5.4, 8.2, structureGroup);
+    spring += inTransit * 2.0;
     vec2 acceleration = toTarget * spring;
 
-    float field = sin(position.x * 10.0 + uTime * 0.55 + seed * 27.0)
-      + cos(position.y * 13.0 - uTime * 0.43 + phase * 19.0);
-    acceleration += normal * field * mix(0.026, 0.075, 1.0 - structureGroup);
+    float field = sin(actualPosition.x * 10.0 + uTime * 0.41 + seed * 27.0)
+      + cos(actualPosition.y * 13.0 - uTime * 0.37 + phase * 19.0);
+    acceleration += normal * field * mix(0.018, 0.052, 1.0 - structureGroup);
 
-    vec2 pointerDelta = position - uPointer;
+    vec2 pointerDelta = actualPosition - uPointer;
     float pointerDistance = length(pointerDelta);
     float influenceRadius = 0.25 + phase * 0.13;
     float pointerInfluence = 1.0 - smoothstep(0.0, influenceRadius, pointerDistance);
@@ -108,12 +109,11 @@ const velocityShader = /* glsl */ `
     acceleration += pointerDirection * pointerInfluence * (1.55 + 2.8 * uImpulse) * (0.72 + phase);
     acceleration += normal * pointerInfluence * uImpulse * (phase - 0.5) * 2.2;
 
-    acceleration += tangent * clamp(uCameraVelocity * 0.003, -0.12, 0.12) * (0.25 + phase);
     velocity.xy += acceleration * uDelta;
-    velocity.xy *= exp(-mix(1.72, 3.1, structureGroup) * uDelta);
+    velocity.xy *= exp(-mix(2.55, 3.65, structureGroup) * uDelta);
     float speed = length(velocity.xy);
-    if (speed > 0.72) velocity.xy *= 0.72 / speed;
-    velocity.z = mix(velocity.z, orbit * 0.08, 1.0 - exp(-uDelta * 1.8));
+    if (speed > 0.82) velocity.xy *= 0.82 / speed;
+    velocity.z = 0.0;
     gl_FragColor = vec4(velocity, 1.0);
   }
 `;
@@ -122,24 +122,51 @@ const particleVertexShader = /* glsl */ `
   uniform sampler2D texturePosition;
   uniform sampler2D textureVelocity;
   uniform vec2 uResolution;
+  uniform vec2 uAnchor;
   uniform vec2 uStrandTangent;
+  uniform float uCameraX;
+  uniform float uTime;
+  uniform float uTransitionActive;
+  uniform float uTransitionProgress;
   attribute vec2 particleUv;
   attribute float particleSeed;
   varying vec2 vParticleUv;
   varying float vSpeed;
   varying float vSeed;
   varying float vTrail;
+  varying float vBehind;
+  varying float vEdgeFade;
+
+  float hash12(vec2 p) {
+    vec3 p3 = fract(vec3(p.xyx) * 0.1031);
+    p3 += dot(p3, p3.yzx + 33.33);
+    return fract((p3.x + p3.y) * p3.z);
+  }
 
   void main() {
     vec4 positionState = texture2D(texturePosition, particleUv);
     vec3 velocity = texture2D(textureVelocity, particleUv).xyz;
     float speed = length(velocity.xy);
-    vec2 direction = normalize(velocity.xy + normalize(uStrandTangent) * 0.0025);
+    float lane = hash12(particleUv * vec2(137.17, 211.73) + particleSeed * 53.1);
+    float phase = hash12(particleUv.yx * vec2(73.91, 149.37) + particleSeed * 31.7);
+    float orbitSeed = hash12(particleUv * vec2(319.17, 97.31) + particleSeed * 19.3);
+    vec2 tangent = normalize(uStrandTangent + vec2(0.0001, 0.0));
+    float worldProgress = fract(lane - uCameraX * 0.0125);
+    vec2 basePosition = uAnchor + tangent * ((worldProgress - 0.5) * 2.82);
+    vec2 center = basePosition + positionState.xy;
+    vec2 direction = normalize(velocity.xy + tangent * 0.0025);
     vec2 normal = vec2(-direction.y, direction.x);
-    float depthScale = 0.72 + 0.50 * positionState.z;
+    float orbitDirection = mix(-1.0, 1.0, step(0.5, orbitSeed));
+    float orbitSpeed = 0.16 + 0.31 * hash12(particleUv * 181.9 + particleSeed * 7.7);
+    float orbitAngle = phase * 6.2831853 + uTime * orbitSpeed * orbitDirection;
+    orbitAngle += sin(uTime * (0.047 + orbitSeed * 0.034) + particleSeed * 43.0) * 0.34;
+    float orbitDepth = cos(orbitAngle);
+    float depthScale = 0.72 + 0.36 * (orbitDepth * 0.5 + 0.5);
     float trailClass = 0.0;
-    float sparkClass = step(0.80, particleSeed) * (1.0 - step(0.87, particleSeed));
-    float emberWidth = 0.0040 + particleSeed * 0.0046 + sparkClass * 0.0048;
+    float sizeSeed = hash12(particleUv * vec2(227.3, 419.1) + particleSeed * 71.0);
+    float sparkClass = smoothstep(0.91, 0.975, sizeSeed);
+    float heroClass = smoothstep(0.992, 0.999, sizeSeed);
+    float emberWidth = 0.0036 + sizeSeed * 0.0037 + sparkClass * 0.0075 + heroClass * 0.0085;
     float trailWidth = 0.0036 + particleSeed * 0.0012;
     float width = mix(emberWidth, trailWidth, trailClass) * depthScale;
     float emberLength = emberWidth;
@@ -148,21 +175,29 @@ const particleVertexShader = /* glsl */ `
     vec2 offset = direction * position.x * trail + normal * position.y * width;
     offset.x *= uResolution.y / max(uResolution.x, 1.0);
 
-    gl_Position = vec4(positionState.xy + offset, 0.0, 1.0);
+    gl_Position = vec4(center + offset, 0.0, 1.0);
     vParticleUv = uv;
     vSpeed = speed;
     vSeed = particleSeed;
     vTrail = trailClass;
+    float assemble = smoothstep(0.55, 0.90, uTransitionProgress) * uTransitionActive;
+    float structureGroup = smoothstep(0.89, 0.96, particleSeed);
+    vBehind = (1.0 - smoothstep(-0.12, 0.12, orbitDepth)) * (1.0 - structureGroup * assemble);
+    vEdgeFade = smoothstep(0.0, 0.075, min(worldProgress, 1.0 - worldProgress));
   }
 `;
 
 const particleFragmentShader = /* glsl */ `
   uniform vec3 uPaletteColor;
   uniform float uOpacity;
+  uniform sampler2D uCarbonDepth;
+  uniform vec2 uResolution;
   varying vec2 vParticleUv;
   varying float vSpeed;
   varying float vSeed;
   varying float vTrail;
+  varying float vBehind;
+  varying float vEdgeFade;
 
   void main() {
     vec2 p = vParticleUv - 0.5;
@@ -179,7 +214,13 @@ const particleFragmentShader = /* glsl */ `
       * smoothstep(0.0, 0.88, vParticleUv.x);
     float trailHead = 1.0 - smoothstep(0.025, 0.20, length(vec2((vParticleUv.x - 0.84) * 0.72, p.y)));
     float trailAlpha = trailBody * 0.22 + trailHead * 0.66;
-    float alpha = mix(emberAlpha, trailAlpha, vTrail) * uOpacity;
+    vec2 screenUv = gl_FragCoord.xy / max(uResolution, vec2(1.0));
+    float strandDepth = texture2D(uCarbonDepth, screenUv).a;
+    float strandCoverage = smoothstep(0.018, 0.12, strandDepth);
+    float occlusion = strandCoverage * vBehind;
+    color *= mix(1.0, 0.72, vBehind);
+    float alpha = mix(emberAlpha, trailAlpha, vTrail) * uOpacity * vEdgeFade;
+    alpha *= 1.0 - occlusion * 0.97;
     if (alpha < 0.008) discard;
     gl_FragColor = vec4(color, alpha);
   }
@@ -197,7 +238,7 @@ export type EmberLoomFrame = {
   transitionActive: number;
   transitionProgress: number;
   travelDirection: number;
-  cameraVelocity: number;
+  cameraX: number;
 };
 
 export type EmberLoom = {
@@ -207,7 +248,10 @@ export type EmberLoom = {
   dispose: () => void;
 };
 
-export function createEmberLoom(renderer: THREE.WebGLRenderer): EmberLoom | null {
+export function createEmberLoom(
+  renderer: THREE.WebGLRenderer,
+  carbonDepthTexture: THREE.Texture,
+): EmberLoom | null {
   const gpuCompute = new GPUComputationRenderer(SIMULATION_SIZE, SIMULATION_SIZE, renderer);
   const positionTexture = gpuCompute.createTexture();
   const velocityTexture = gpuCompute.createTexture();
@@ -219,10 +263,8 @@ export function createEmberLoom(renderer: THREE.WebGLRenderer): EmberLoom | null
     const offset = i * 4;
     const seed = (Math.sin(i * 91.371) * 43758.5453) % 1;
     const normalizedSeed = seed < 0 ? seed + 1 : seed;
-    const angle = normalizedSeed * Math.PI * 2;
-    const radius = 0.08 + ((i * 17) % 97) / 97 * 0.62;
-    positionData[offset] = -0.28 + Math.cos(angle) * radius;
-    positionData[offset + 1] = Math.sin(angle) * radius * 0.32;
+    positionData[offset] = (normalizedSeed - 0.5) * 0.035;
+    positionData[offset + 1] = ((((i * 43) % 101) / 100) - 0.5) * 0.035;
     positionData[offset + 2] = ((i * 43) % 101) / 100;
     positionData[offset + 3] = normalizedSeed;
     velocityData[offset] = 0;
@@ -242,7 +284,7 @@ export function createEmberLoom(renderer: THREE.WebGLRenderer): EmberLoom | null
   velocityVariable.material.uniforms.uTransitionActive = { value: 0 };
   velocityVariable.material.uniforms.uTransitionProgress = { value: 0 };
   velocityVariable.material.uniforms.uTravelDirection = { value: 1 };
-  velocityVariable.material.uniforms.uCameraVelocity = { value: 0 };
+  velocityVariable.material.uniforms.uCameraX = { value: 0 };
   velocityVariable.material.uniforms.uImpulse = { value: 0 };
   velocityVariable.material.uniforms.uPointer = { value: new THREE.Vector2() };
   velocityVariable.material.uniforms.uAnchor = { value: new THREE.Vector2(-0.28, 0) };
@@ -286,9 +328,15 @@ export function createEmberLoom(renderer: THREE.WebGLRenderer): EmberLoom | null
     texturePosition: { value: gpuCompute.getCurrentRenderTarget(positionVariable).texture },
     textureVelocity: { value: gpuCompute.getCurrentRenderTarget(velocityVariable).texture },
     uResolution: { value: new THREE.Vector2(1, 1) },
+    uAnchor: { value: new THREE.Vector2(-0.28, 0) },
     uStrandTangent: { value: new THREE.Vector2(1, 0) },
+    uCameraX: { value: 0 },
+    uTime: { value: 0 },
+    uTransitionActive: { value: 0 },
+    uTransitionProgress: { value: 0 },
     uPaletteColor: { value: new THREE.Vector3(1, 0.25, 0.0625) },
     uOpacity: { value: 0.74 },
+    uCarbonDepth: { value: carbonDepthTexture },
   };
   const material = new THREE.ShaderMaterial({
     uniforms: renderUniforms,
@@ -315,13 +363,18 @@ export function createEmberLoom(renderer: THREE.WebGLRenderer): EmberLoom | null
       velocityVariable.material.uniforms.uTransitionActive.value = frame.transitionActive;
       velocityVariable.material.uniforms.uTransitionProgress.value = frame.transitionProgress;
       velocityVariable.material.uniforms.uTravelDirection.value = frame.travelDirection;
-      velocityVariable.material.uniforms.uCameraVelocity.value = frame.cameraVelocity;
+      velocityVariable.material.uniforms.uCameraX.value = frame.cameraX;
       velocityVariable.material.uniforms.uImpulse.value = frame.impulse;
       velocityVariable.material.uniforms.uPointer.value.copy(frame.pointer);
       velocityVariable.material.uniforms.uAnchor.value.copy(frame.anchor);
       velocityVariable.material.uniforms.uStrandTangent.value.copy(frame.strandTangent);
       velocityVariable.material.uniforms.uPanelBounds.value.copy(frame.panelBounds);
+      renderUniforms.uAnchor.value.copy(frame.anchor);
       renderUniforms.uStrandTangent.value.copy(frame.strandTangent);
+      renderUniforms.uCameraX.value = frame.cameraX;
+      renderUniforms.uTime.value = frame.time;
+      renderUniforms.uTransitionActive.value = frame.transitionActive;
+      renderUniforms.uTransitionProgress.value = frame.transitionProgress;
       renderUniforms.uPaletteColor.value.copy(frame.palette);
       gpuCompute.compute();
       renderUniforms.texturePosition.value = gpuCompute.getCurrentRenderTarget(positionVariable).texture;

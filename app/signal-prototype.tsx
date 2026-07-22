@@ -12,6 +12,19 @@ export const screenVertexShader = /* glsl */ `
   }
 `;
 
+export function getSignalCameraDistance(cameraX: number, projectPresence: number) {
+  const cameraRoll = 1.46 * Math.sin(cameraX * 0.055) + 0.34 * Math.sin(cameraX * 0.017);
+  const distanceDrift = 0.72 * (0.5 + 0.5 * Math.sin(cameraX * 0.071 + 1.4));
+  const verticalPullback = 2.8 * THREE.MathUtils.smoothstep(Math.abs(cameraRoll), 0.62, 1.3);
+  const scenicPhase = 0.5 + 0.5 * Math.sin(cameraX * 0.021 - 1.1);
+  const scenicPullback = 1.65 * THREE.MathUtils.smoothstep(scenicPhase, 0.58, 0.94);
+  return THREE.MathUtils.clamp(
+    3.55 + distanceDrift + verticalPullback + scenicPullback + 1.35 * projectPresence,
+    3.55,
+    8.65,
+  );
+}
+
 export const carbonPassShader = /* glsl */ `
   precision highp float;
 
@@ -206,9 +219,7 @@ export const carbonPassShader = /* glsl */ `
     surfaceLight += (1.0 - depth) * noise3(movingMist) * 0.1;
 
     vec3 finalColor = (volumeLight + 0.8 * surfaceLight) * 1.3;
-    float focalDepth = clamp(1.0 - 0.09 * cameraDistance, 0.0, 1.0);
-    float focusRadius = abs(focalDepth - depth) * 1.6;
-    gl_FragColor = vec4(finalColor, focusRadius);
+    gl_FragColor = vec4(finalColor, depth);
   }
 `;
 
@@ -220,6 +231,7 @@ export const depthOfFieldShader = /* glsl */ `
   uniform vec2 uPointer;
   uniform float uTime;
   uniform float uImpulse;
+  uniform float uFocalDepth;
   varying vec2 vUv;
 
   const float GOLDEN_ANGLE = 2.39996323;
@@ -238,7 +250,8 @@ export const depthOfFieldShader = /* glsl */ `
 
   void main() {
     vec2 uv = vUv;
-    float focus = texture2D(uSource, uv).a * 0.82;
+    float sourceDepth = texture2D(uSource, uv).a;
+    float focus = abs(uFocalDepth - sourceDepth) * 1.312;
     vec2 pixel = vec2(0.002 * uResolution.y / uResolution.x, 0.002);
     vec2 angle = vec2(0.0, focus);
     mat2 rot = rotation(GOLDEN_ANGLE);
@@ -343,6 +356,7 @@ export function SignalPrototype() {
       uPointer: { value: new THREE.Vector2(0, 0) },
       uTime: { value: 0 },
       uImpulse: { value: 0 },
+      uFocalDepth: { value: 0.5 },
     };
     const finalMaterial = new THREE.ShaderMaterial({
       uniforms: finalUniforms,
@@ -481,6 +495,11 @@ export function SignalPrototype() {
       finalUniforms.uTime.value = elapsed;
       finalUniforms.uPointer.value.copy(pointer);
       finalUniforms.uImpulse.value = impulse;
+      finalUniforms.uFocalDepth.value = THREE.MathUtils.clamp(
+        1 - 0.09 * getSignalCameraDistance(cameraX, projectPresence),
+        0,
+        1,
+      );
 
       if (projectRef.current) {
         projectRef.current.style.setProperty("--entry-presence", projectPresence.toFixed(3));

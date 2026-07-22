@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { GPUComputationRenderer } from "three/examples/jsm/misc/GPUComputationRenderer.js";
 
-const SIMULATION_SIZE = 128;
+const SIMULATION_SIZE = 48;
 
 const positionShader = /* glsl */ `
   uniform float uDelta;
@@ -71,7 +71,7 @@ const velocityShader = /* glsl */ `
       + tangent * (along + 0.13 * orbitWide)
       + normal * (orbit * (0.10 + 0.34 * phase));
 
-    float trailGroup = smoothstep(0.61, 0.66, seed) * (1.0 - smoothstep(0.84, 0.89, seed));
+    float trailGroup = 0.0;
     float trailAngle = uTime * (0.30 + phase * 0.27) + phase * 23.0;
     vec2 trailTarget = uAnchor
       + tangent * ((lane - 0.5) * 2.35 + cos(trailAngle) * (0.09 + phase * 0.16))
@@ -137,12 +137,13 @@ const particleVertexShader = /* glsl */ `
     vec2 direction = normalize(velocity.xy + normalize(uStrandTangent) * 0.0025);
     vec2 normal = vec2(-direction.y, direction.x);
     float depthScale = 0.72 + 0.50 * positionState.z;
-    float trailClass = smoothstep(0.61, 0.66, particleSeed) * (1.0 - smoothstep(0.84, 0.89, particleSeed));
-    float emberWidth = 0.0054 + particleSeed * 0.0032;
-    float trailWidth = 0.0032 + particleSeed * 0.0014;
+    float trailClass = 0.0;
+    float sparkClass = step(0.80, particleSeed) * (1.0 - step(0.87, particleSeed));
+    float emberWidth = 0.0040 + particleSeed * 0.0046 + sparkClass * 0.0048;
+    float trailWidth = 0.0036 + particleSeed * 0.0012;
     float width = mix(emberWidth, trailWidth, trailClass) * depthScale;
-    float emberLength = 0.010 + min(speed * 0.22, 0.062);
-    float orbitLength = 0.042 + min(speed * 0.38, 0.105);
+    float emberLength = emberWidth;
+    float orbitLength = 0.024 + min(speed * 0.15, 0.042);
     float trail = mix(emberLength, orbitLength, trailClass) * depthScale;
     vec2 offset = direction * position.x * trail + normal * position.y * width;
     offset.x *= uResolution.y / max(uResolution.x, 1.0);
@@ -165,14 +166,20 @@ const particleFragmentShader = /* glsl */ `
 
   void main() {
     vec2 p = vParticleUv - 0.5;
-    float radius = length(vec2(p.x * 0.66, p.y));
-    float halo = 1.0 - smoothstep(0.10, 0.53, radius);
-    float core = 1.0 - smoothstep(0.018, 0.19, radius);
+    float radius = length(p);
+    float halo = 1.0 - smoothstep(0.10, 0.50, radius);
+    float core = 1.0 - smoothstep(0.018, 0.18, radius);
     float heat = smoothstep(0.018, 0.24, vSpeed);
-    vec3 saturated = uPaletteColor * (1.25 + vSeed * 0.72);
-    vec3 hotColor = mix(saturated, vec3(1.0), 0.28 + heat * 0.26);
-    vec3 color = mix(saturated, hotColor, heat * 0.72 + core * 0.16);
-    float alpha = (halo * mix(0.22, 0.34, vTrail) + core * (0.70 + heat * 0.30)) * uOpacity;
+    vec3 saturated = uPaletteColor * (0.84 + vSeed * 0.34);
+    vec3 hotColor = mix(saturated, vec3(1.0), 0.035 + heat * 0.10);
+    vec3 color = mix(saturated, hotColor, heat * 0.32 + core * 0.06);
+
+    float emberAlpha = halo * 0.10 + core * (0.48 + heat * 0.18);
+    float trailBody = (1.0 - smoothstep(0.035, 0.30, abs(p.y)))
+      * smoothstep(0.0, 0.88, vParticleUv.x);
+    float trailHead = 1.0 - smoothstep(0.025, 0.20, length(vec2((vParticleUv.x - 0.84) * 0.72, p.y)));
+    float trailAlpha = trailBody * 0.22 + trailHead * 0.66;
+    float alpha = mix(emberAlpha, trailAlpha, vTrail) * uOpacity;
     if (alpha < 0.008) discard;
     gl_FragColor = vec4(color, alpha);
   }
@@ -281,7 +288,7 @@ export function createEmberLoom(renderer: THREE.WebGLRenderer): EmberLoom | null
     uResolution: { value: new THREE.Vector2(1, 1) },
     uStrandTangent: { value: new THREE.Vector2(1, 0) },
     uPaletteColor: { value: new THREE.Vector3(1, 0.25, 0.0625) },
-    uOpacity: { value: 0.96 },
+    uOpacity: { value: 0.74 },
   };
   const material = new THREE.ShaderMaterial({
     uniforms: renderUniforms,

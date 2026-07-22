@@ -1,5 +1,6 @@
 .shell {
   --accent-rgb: 255, 103, 49;
+  --chrome-presence: 0;
   position: relative;
   width: 100vw;
   height: 100svh;
@@ -44,6 +45,15 @@
   z-index: 2;
   font-family: var(--font-geist-mono), monospace;
   letter-spacing: 0.12em;
+}
+
+.header,
+.waypoint,
+.pause,
+.routeControls,
+.footer {
+  opacity: var(--chrome-presence);
+  transition: opacity 180ms linear;
 }
 
 .header {

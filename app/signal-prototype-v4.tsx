@@ -39,7 +39,7 @@ const CHAPTER_DURATION = 2.45;
 const MANUAL_SCROLL_SCALE = 0.02;
 const MANUAL_ARRIVAL_PROGRESS = 0.88;
 const MANUAL_EDGE_DISTANCE = 3.2;
-const HOME_INTRO_DURATION = 5.4;
+const HOME_INTRO_DURATION = 7.2;
 
 type NavigationCommand =
   | { type: "destination"; value: number }
@@ -231,7 +231,14 @@ export function SignalPrototypeV4() {
         const right = ((panelRect.right - renderedEntryShift - shellRect.left) / width) * 2 - 1;
         const top = 1 - ((panelRect.top - shellRect.top) / height) * 2;
         const bottom = 1 - ((panelRect.bottom - shellRect.top) / height) * 2;
-        panelBounds.set(left, right, bottom, top);
+        const horizontalParticleGap = 24 / width;
+        const verticalParticleGap = 24 / height;
+        panelBounds.set(
+          left - horizontalParticleGap,
+          right + horizontalParticleGap,
+          bottom - verticalParticleGap,
+          top + verticalParticleGap,
+        );
       }
     };
 
@@ -414,6 +421,10 @@ export function SignalPrototypeV4() {
         if (homeIntroElapsed >= HOME_INTRO_DURATION) homeIntroActive = false;
       }
       const homeIntroT = THREE.MathUtils.clamp(homeIntroElapsed / HOME_INTRO_DURATION, 0, 1);
+      const chromePresence = homeIntroActive
+        ? THREE.MathUtils.smoothstep(homeIntroT, 0.30, 0.46)
+        : 1;
+      shell.style.setProperty("--chrome-presence", chromePresence.toFixed(3));
       pointer.lerp(pointerTarget, 1.0 - Math.exp(-delta * 5.0));
       impulse *= Math.exp(-delta * 2.3);
 
@@ -464,7 +475,7 @@ export function SignalPrototypeV4() {
       let particleTravelDirection = 1;
       let particleStructurePresence = 1;
       if (homeIntroActive) {
-        const homeAssembly = THREE.MathUtils.smoothstep(homeIntroT, 0.05, 0.34);
+        const homeAssembly = THREE.MathUtils.smoothstep(homeIntroT, 0.30, 0.58);
         particleStructurePresence = homeAssembly;
       }
       if (transition) {
@@ -546,7 +557,7 @@ export function SignalPrototypeV4() {
         const chapterShifts = bundle.chapters.map(() => 0);
 
         if (homeIntroActive && destinationIndex === 0 && !transition) {
-          const homeReveal = THREE.MathUtils.smoothstep(homeIntroT, 0.46, 0.68);
+          const homeReveal = THREE.MathUtils.smoothstep(homeIntroT, 0.62, 0.78);
           panelOpacity = homeReveal;
           chapterOpacities.fill(0);
           chapterOpacities[0] = homeReveal;

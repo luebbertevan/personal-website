@@ -48,9 +48,6 @@ const velocityShader = /* glsl */ `
     if (side > 1.5 && side < 2.5) target = vec2(right, mix(top, bottom, edge));
     if (side > 2.5) target = vec2(mix(right, left, edge), bottom);
 
-    float rail = step(0.78, fract(selector * 13.31));
-    float railY = mix(top - 0.055, bottom + 0.07, step(0.5, fract(selector * 21.7)));
-    target = mix(target, vec2(mix(left + 0.02, right - 0.14, edge), railY), rail);
     return target;
   }
 
@@ -84,11 +81,9 @@ const velocityShader = /* glsl */ `
     float structureSelector = seed + uv.x;
     vec2 structureTarget = frameTarget(structureSelector, lane);
     float structureSide = floor(fract(structureSelector * 7.17) * 4.0);
-    float structureRail = step(0.78, fract(structureSelector * 13.31));
     vec2 structureFlow = structureSide < 0.5 || (structureSide > 1.5 && structureSide < 2.5)
       ? vec2(0.0, 1.0)
       : vec2(1.0, 0.0);
-    structureFlow = mix(structureFlow, vec2(1.0, 0.0), structureRail);
     vec2 structureNormal = vec2(-structureFlow.y, structureFlow.x);
     float structureDrift = sin(uTime * (0.64 + phase * 0.48) + seed * 67.0) * (0.007 + phase * 0.011);
     float structureBreath = cos(uTime * (0.72 + orbitSeed * 0.32) + seed * 41.0) * (0.0008 + phase * 0.0016);
@@ -295,8 +290,12 @@ export function createEmberLoom(
     const offset = i * 4;
     const seed = (Math.sin(i * 91.371) * 43758.5453) % 1;
     const normalizedSeed = seed < 0 ? seed + 1 : seed;
-    positionData[offset] = (normalizedSeed - 0.5) * 0.035;
-    positionData[offset + 1] = ((((i * 43) % 101) / 100) - 0.5) * 0.035;
+    const initialPhase = ((Math.sin(i * 17.713 + normalizedSeed * 83.17) * 43758.5453) % 1 + 1) % 1;
+    const initialOrbitSeed = ((Math.sin(i * 53.117 + normalizedSeed * 29.41) * 24634.6345) % 1 + 1) % 1;
+    const initialAngle = initialPhase * Math.PI * 2;
+    const initialRadius = 0.082 + 0.58 * Math.pow(initialOrbitSeed, 0.72);
+    positionData[offset] = Math.cos(initialAngle) * initialRadius * (0.08 + initialPhase * 0.11);
+    positionData[offset + 1] = Math.sin(initialAngle) * initialRadius;
     positionData[offset + 2] = ((i * 43) % 101) / 100;
     positionData[offset + 3] = normalizedSeed;
     velocityData[offset] = 0;

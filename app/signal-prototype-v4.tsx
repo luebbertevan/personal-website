@@ -14,7 +14,7 @@ import styles from "./signal-prototype.module.css";
 const destinations = [
   {
     label: "HOME",
-    chapters: 1,
+    chapters: 4,
     shaderColor: [1.0, 0.25, 0.0625] as const,
     cssColor: [255, 103, 49] as const,
   },
@@ -198,7 +198,7 @@ export function SignalPrototypeV4() {
     let transition: RouteTransition | null = null;
     let homeIntroElapsed = 0;
     let homeIntroActive = true;
-    let previousTime = performance.now();
+    let previousTime: number | null = null;
     let animationFrame = 0;
     let disposed = false;
 
@@ -413,7 +413,7 @@ export function SignalPrototypeV4() {
 
     const animate = (now: number) => {
       if (disposed) return;
-      const delta = Math.min(0.04, (now - previousTime) / 1000);
+      const delta = previousTime === null ? 0 : Math.min(0.04, (now - previousTime) / 1000);
       previousTime = now;
       if (!pausedRef.current) elapsed += delta;
       if (homeIntroActive && !pausedRef.current) {
@@ -753,20 +753,76 @@ export function SignalPrototypeV4() {
           <i>02</i><strong>VELVET CIRCUIT</strong><small>PINK</small>
         </button>
         <div><i ref={travelFillRef} /></div>
-        <b ref={waypointDistanceRef}>HOME / 01 OF 01</b>
+        <b ref={waypointDistanceRef}>HOME / 01 OF 04</b>
         <em ref={velocityRef}>SCROLL · ARROWS · CLICK TABS</em>
       </nav>
 
       <article className={`${styles.project} ${styles.homeProject}`} data-destination-panel="0" aria-hidden="false">
-        <section className={styles.chapter} data-project-chapter>
-          <div className={styles.projectMeta}><span>HOME / PERSONAL INTRODUCTION</span><span>00 / ORIGIN</span></div>
-          <p className={styles.eyebrow}>EVAN LUEBBERT / PORTFOLIO</p>
-          <h1>Evan<br />Luebbert</h1>
-          <p className={styles.homeHeadline}>Designer and creative technologist building expressive digital systems.</p>
-          <p className={styles.description}>Placeholder personal copy for the final introduction: who I am, what I make, and the kinds of ambitious problems I like to solve.</p>
+        <section className={`${styles.chapter} ${styles.homeIntroduction}`} data-project-chapter>
+          <div className={styles.projectMeta}><span>HOME / ABOUT</span><span>01 / INTRODUCTION</span></div>
+          <div className={styles.introductionGrid}>
+            <div className={styles.introductionCopy}>
+              <p className={styles.eyebrow}>EVAN LUEBBERT / SOFTWARE ENGINEER + DESIGNER</p>
+              <h1>Evan<br />Luebbert</h1>
+              <p className={styles.homeHeadline}>I’m a passion first software engineer and designer. I build software I believe in.</p>
+              <p className={styles.availability}>Based in New York City. Open to full-time roles and freelance projects.</p>
+            </div>
+            <figure className={styles.headshot}>
+              {/* The source is pre-cropped and optimized, so native image loading is intentional. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/images/evan-luebbert-headshot.webp"
+                alt="Evan Luebbert smiling outdoors."
+                width="960"
+                height="1200"
+              />
+            </figure>
+          </div>
+        </section>
+        <section className={`${styles.chapter} ${styles.homeApproach}`} data-project-chapter>
+          <div className={styles.projectMeta}><span>HOME / ABOUT</span><span>02 / APPROACH</span></div>
+          <p className={styles.eyebrow}>APPROACH</p>
+          <h2>Approach</h2>
+          <div className={styles.approachCopy}>
+            <p>Engineering provides the unique opportunity to take matters into my own hands and wield technology to build the solutions I wish existed. Being able to solve my own problems is a luxury. The ability to craft solutions for others is a privilege. I’m devoted to making well-designed tools for real people with complicated problems. I follow my imagination, explore unusual solutions, and look for the gaps where software could make a real difference.</p>
+            <p>Everyone has used badly designed software that makes their lives harder. I can fix that. I build clear, seamless workflows around the way real people actually work, so software can be an asset instead of a liability.</p>
+          </div>
+        </section>
+        <section className={`${styles.chapter} ${styles.homeInterests}`} data-project-chapter>
+          <div className={styles.projectMeta}><span>HOME / ABOUT</span><span>03 / INTERESTS</span></div>
+          <p className={styles.eyebrow}>WHAT I LIKE WORKING ON</p>
+          <h2>Interests</h2>
+          <div className={styles.interestsGrid}>
+            <ul className={styles.interestList}>
+              <li>Products built around real user needs</li>
+              <li>Mission-driven work with a clear practical impact</li>
+              <li>Full-stack systems with complicated workflows</li>
+              <li>Data-heavy tools and interactive visualizations</li>
+              <li>Creative interfaces that still feel clear and useful</li>
+              <li>Software where reliability and trust matter</li>
+            </ul>
+            <div className={styles.personalNote}>
+              <p className={styles.eyebrow}>OUTSIDE OF SOFTWARE</p>
+              <p>Outside of software, I’m usually rock climbing, fostering cats, playing tabletop RPGs, or getting way too into strategy games.</p>
+            </div>
+          </div>
+        </section>
+        <section className={`${styles.chapter} ${styles.homeContact}`} data-project-chapter>
+          <div className={styles.projectMeta}><span>HOME / ABOUT</span><span>04 / CONTACT</span></div>
+          <p className={styles.eyebrow}>CONTACT</p>
+          <h2>Contact</h2>
+          <p className={styles.contactCallout}>Working on something interesting? I’m always happy to talk about thoughtful products, tricky engineering problems, or mission-driven work. Send me an email or find me on LinkedIn.</p>
+          <div className={styles.contactLinks}>
+            <a href="mailto:luebbertevan@gmail.com"><span>EMAIL</span><strong>luebbertevan@gmail.com</strong><i aria-hidden="true">→</i></a>
+            <a href="https://www.linkedin.com/in/evan-luebbert/" target="_blank" rel="noreferrer"><span>LINKEDIN</span><strong>VIEW PROFILE</strong><i aria-hidden="true">↗</i></a>
+            <a href="https://github.com/luebbertevan" target="_blank" rel="noreferrer"><span>GITHUB</span><strong>VIEW PROFILE</strong><i aria-hidden="true">↗</i></a>
+            <a href="/documents/evan-luebbert-resume-2026.pdf" download="Evan-Luebbert-Resume-2026.pdf"><span>RÉSUMÉ</span><strong>DOWNLOAD PDF</strong><i aria-hidden="true">↓</i></a>
+          </div>
         </section>
         <ol className={styles.chapterRail} aria-label="Home sequence">
-          <li><button type="button" data-chapter-index onClick={() => navigateToChapter(0)}><span>00</span>HOME</button></li>
+          {['INTRODUCTION', 'APPROACH', 'INTERESTS', 'CONTACT'].map((label, index) => (
+            <li key={label}><button type="button" data-chapter-index onClick={() => navigateToChapter(index)}><span>{String(index + 1).padStart(2, '0')}</span>{label}</button></li>
+          ))}
         </ol>
       </article>
 

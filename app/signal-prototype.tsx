@@ -341,7 +341,7 @@ export function SignalPrototype() {
     carbonQuad.frustumCulled = false;
     carbonScene.add(carbonQuad);
 
-    let renderTarget = new THREE.WebGLRenderTarget(1, 1, {
+    const renderTarget = new THREE.WebGLRenderTarget(1, 1, {
       minFilter: THREE.LinearFilter,
       magFilter: THREE.LinearFilter,
       format: THREE.RGBAFormat,

@@ -35,76 +35,34 @@
   mix-blend-mode: soft-light;
 }
 
-.header,
 .waypoint,
 .project,
 .pause,
-.routeControls,
-.footer {
+.routeControls {
   position: absolute;
   z-index: 2;
   font-family: var(--font-geist-mono), monospace;
   letter-spacing: 0.12em;
 }
 
-.header,
 .waypoint,
 .pause,
-.routeControls,
-.footer {
+.routeControls {
   opacity: var(--chrome-presence);
   transition: opacity 180ms linear;
 }
 
-.header {
-  top: 0;
-  right: 0;
-  left: 0;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  padding: clamp(28px, 3.5vw, 58px);
-  pointer-events: none;
-}
-
-.header > div:first-child { display: grid; gap: 10px; }
-.header span,
-.live { font-size: clamp(14px, 0.82vw, 17px); }
-.header span { color: rgba(247, 244, 241, 0.55); }
-.header strong {
-  font-size: clamp(21px, 1.25vw, 26px);
-  font-weight: 540;
-  letter-spacing: 0.18em;
-}
-.live {
-  display: flex;
-  gap: 11px;
-  align-items: center;
-  color: rgba(247, 244, 241, 0.62);
-}
-.live i {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: rgb(var(--accent-rgb));
-  box-shadow: 0 0 18px rgba(var(--accent-rgb), 0.9);
-}
-
 .waypoint {
-  top: clamp(128px, 18vh, 190px);
+  top: clamp(40px, 7vh, 72px);
   left: clamp(28px, 3.5vw, 58px);
   display: grid;
   width: min(390px, 32vw);
   gap: 13px;
   pointer-events: auto;
 }
-.waypoint > span {
-  color: rgba(247, 244, 241, 0.48);
-  font-size: 14px;
-}
 .waypoint button {
   display: grid;
-  grid-template-columns: 42px 1fr auto;
+  grid-template-columns: 42px 1fr;
   gap: 12px;
   align-items: center;
   width: 100%;
@@ -137,30 +95,6 @@
   font-weight: 520;
   letter-spacing: 0.10em;
 }
-.waypoint button small { color: rgba(247, 244, 241, 0.52); font-size: 13px; }
-.waypoint > div {
-  height: 2px;
-  margin: 4px 0 2px;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.15);
-}
-.waypoint > div i {
-  display: block;
-  width: 100%;
-  height: 100%;
-  background: rgb(var(--accent-rgb));
-  box-shadow: 0 0 12px rgba(var(--accent-rgb), 0.85);
-  transform: scaleX(0);
-  transform-origin: left;
-}
-.waypoint b,
-.waypoint em {
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 430;
-}
-.waypoint b { color: rgba(var(--accent-rgb), 0.9); }
-.waypoint em { color: rgba(247, 244, 241, 0.48); }
 
 .project {
   --entry-presence: 0;
@@ -409,11 +343,68 @@
 }
 .contactLinks {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 1px;
   max-width: 700px;
-  margin-top: 30px;
+  margin-top: 1px;
   background: rgba(var(--accent-rgb), 0.28);
+}
+.emailContact {
+  display: grid;
+  max-width: 700px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 7px 24px;
+  margin-top: 30px;
+  padding: 15px 17px;
+  border: 1px solid rgba(var(--accent-rgb), 0.45);
+  background: rgba(3, 7, 14, 0.9);
+}
+.emailContact > span {
+  color: rgba(var(--accent-rgb), 0.78);
+  font-size: 11px;
+}
+.emailContact > strong {
+  overflow: hidden;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: clamp(16px, 1vw, 19px);
+  font-weight: 480;
+  letter-spacing: 0;
+  text-overflow: ellipsis;
+  user-select: text;
+  white-space: nowrap;
+}
+.emailContact > div {
+  display: flex;
+  grid-row: 1 / 3;
+  grid-column: 2;
+  gap: 16px;
+  align-items: center;
+}
+.emailContact button,
+.emailContact a {
+  padding: 7px 0;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.24);
+  color: rgba(247, 244, 241, 0.72);
+  background: transparent;
+  font: inherit;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 160ms ease, border-color 160ms ease;
+}
+.emailContact button:hover,
+.emailContact button:focus-visible,
+.emailContact a:hover,
+.emailContact a:focus-visible {
+  border-color: rgb(var(--accent-rgb));
+  color: rgb(var(--accent-rgb));
+  outline: none;
+}
+.emailContact i {
+  font-style: normal;
+  letter-spacing: 0;
 }
 .contactLinks a {
   display: grid;
@@ -622,52 +613,33 @@
 .routeControls button span { font-size: 22px; letter-spacing: 0; }
 
 .pause {
-  top: clamp(102px, 12vh, 130px);
   right: clamp(28px, 3.5vw, 58px);
+  bottom: clamp(28px, 3.5vw, 48px);
   display: flex;
-  width: 150px;
-  padding: 13px 0;
+  width: 190px;
+  padding: 13px 14px;
   align-items: center;
   justify-content: space-between;
-  border: 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.22);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   color: rgba(255, 255, 255, 0.78);
-  background: transparent;
+  background: rgba(3, 7, 14, 0.5);
   font-size: 14px;
   cursor: pointer;
-  transition: color 160ms ease, border-color 160ms ease;
+  transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
 }
-.pause:hover { color: white; border-color: rgba(var(--accent-rgb), 0.9); }
+.pause:hover,
+.pause:focus-visible {
+  border-color: rgba(var(--accent-rgb), 0.9);
+  color: white;
+  background: rgba(var(--accent-rgb), 0.1);
+  outline: none;
+}
 .pause i { color: rgb(var(--accent-rgb)); font-style: normal; font-size: 17px; letter-spacing: 0; }
-
-.footer {
-  right: 0;
-  bottom: 0;
-  left: 0;
-  display: flex;
-  gap: clamp(20px, 2.5vw, 42px);
-  align-items: center;
-  padding: clamp(28px, 3.5vw, 58px);
-  color: rgba(247, 244, 241, 0.48);
-  font-size: clamp(13px, 0.78vw, 16px);
-  pointer-events: none;
-}
-.palette {
-  margin-left: auto;
-  color: rgba(var(--accent-rgb), 0.76);
-}
 
 @media (max-width: 860px) {
   .shell { min-height: 660px; }
-  .header { padding: 24px 20px; }
-  .live { display: none; }
-  .waypoint { top: 102px; left: 20px; width: min(310px, calc(100vw - 150px)); }
-  .waypoint > span,
-  .waypoint b,
-  .waypoint em { font-size: 12px; }
+  .waypoint { top: 20px; left: 20px; width: min(310px, calc(100vw - 40px)); }
   .waypoint button { grid-template-columns: 32px 1fr; padding: 14px 0; }
-  .waypoint button small { display: none; }
   .waypoint strong { font-size: 16px; }
   .project {
     top: auto;
@@ -707,7 +679,9 @@
   .interestList li::before { top: 11px; }
   .personalNote { padding: 12px 14px; }
   .contactCallout { margin-top: 14px; }
-  .contactLinks { margin-top: 18px; }
+  .emailContact { margin-top: 18px; padding: 10px 12px; }
+  .emailContact > div { gap: 10px; }
+  .contactLinks { grid-template-columns: repeat(3, 1fr); }
   .contactLinks a { padding: 10px 12px; }
   .contactLinks strong { font-size: 11px; }
   .subtitle { margin-top: 16px; font-size: 20px; }
@@ -722,10 +696,7 @@
   .chapterRail button { padding: 9px 6px; }
   .routeControls { right: 20px; bottom: 72px; left: 20px; width: auto; }
   .routeControls button { min-height: 46px; padding: 0 12px; font-size: 12px; }
-  .pause { top: 96px; right: 20px; width: 110px; font-size: 12px; }
-  .footer { gap: 20px; padding: 24px 20px; font-size: 12px; }
-  .footer span:nth-child(2),
-  .footer span:nth-child(3) { display: none; }
+  .pause { right: 20px; bottom: 20px; width: 156px; font-size: 11px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

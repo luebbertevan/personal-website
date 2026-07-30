@@ -36,10 +36,9 @@ const DESTINATION_TRAVEL = 52;
 const DESTINATION_DURATION = 7.35;
 const CHAPTER_TRAVEL = 13;
 const CHAPTER_DURATION = 2.45;
-const MANUAL_SCROLL_SCALE = 0.02;
 const MANUAL_ARRIVAL_PROGRESS = 0.88;
 const MANUAL_EDGE_DISTANCE = 3.2;
-const HOME_INTRO_DURATION = 6;
+const HOME_INTRO_DURATION = 5;
 
 type NavigationCommand =
   | { type: "destination"; value: number }
@@ -75,11 +74,10 @@ type ManualRoute = {
 export function SignalPrototypeV4() {
   const shellRef = useRef<HTMLElement>(null);
   const mountRef = useRef<HTMLDivElement>(null);
-  const waypointDistanceRef = useRef<HTMLElement>(null);
-  const velocityRef = useRef<HTMLElement>(null);
-  const travelFillRef = useRef<HTMLElement>(null);
+  const emailRef = useRef<HTMLElement>(null);
   const navigationCommandRef = useRef<NavigationCommand | null>(null);
   const [paused, setPaused] = useState(false);
+  const [emailCopyStatus, setEmailCopyStatus] = useState<"idle" | "copied" | "selected">("idle");
   const pausedRef = useRef(false);
 
   const togglePause = () => {
@@ -97,6 +95,24 @@ export function SignalPrototypeV4() {
 
   const stepRoute = (direction: -1 | 1) => {
     navigationCommandRef.current = { type: "step", value: direction };
+  };
+
+  const copyEmail = async () => {
+    const email = "luebbertevan@gmail.com";
+    try {
+      await navigator.clipboard.writeText(email);
+      setEmailCopyStatus("copied");
+    } catch {
+      const emailElement = emailRef.current;
+      if (!emailElement) return;
+      const range = document.createRange();
+      range.selectNodeContents(emailElement);
+      const selection = window.getSelection();
+      selection?.removeAllRanges();
+      selection?.addRange(range);
+      setEmailCopyStatus("selected");
+    }
+    window.setTimeout(() => setEmailCopyStatus("idle"), 1800);
   };
 
   useEffect(() => {
@@ -259,10 +275,9 @@ export function SignalPrototypeV4() {
       if (homeIntroActive) return;
       if (transition || navigationCommandRef.current) return;
       const dominantDelta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
-      if (Math.abs(dominantDelta) < 0.5) return;
-      const normalizedDelta = THREE.MathUtils.clamp(dominantDelta, -140, 140);
-      manualCameraTarget += normalizedDelta * MANUAL_SCROLL_SCALE;
-      impulse = Math.min(1, impulse + Math.abs(normalizedDelta) * 0.0015);
+      if (Math.abs(dominantDelta) < 2) return;
+      navigationCommandRef.current = { type: "step", value: dominantDelta > 0 ? 1 : -1 };
+      impulse = Math.min(1, impulse + 0.16);
     };
 
     const keydown = (event: KeyboardEvent) => {
@@ -646,22 +661,6 @@ export function SignalPrototypeV4() {
         else button.removeAttribute("aria-current");
       });
 
-      const chapterCount = destinations[activeDestinationForUi].chapters;
-      const chapterProgress = chapterCount === 1 ? 1 : activeChapterForUi / (chapterCount - 1);
-      if (travelFillRef.current) travelFillRef.current.style.transform = `scaleX(${chapterProgress.toFixed(3)})`;
-      if (waypointDistanceRef.current) {
-        waypointDistanceRef.current.textContent = `${destinations[activeDestinationForUi].label} / ${String(activeChapterForUi + 1).padStart(2, "0")} OF ${String(chapterCount).padStart(2, "0")}`;
-      }
-      if (velocityRef.current) {
-        const currentStopX = currentAnchorX + currentChapter * CHAPTER_TRAVEL;
-        const manuallyTraveling = Math.abs(cameraX - currentStopX) > 0.08;
-        velocityRef.current.textContent = homeIntroActive
-          ? homeIntroT < 0.68 ? "ASSEMBLING HOME SIGNAL" : "HOME SIGNAL ONLINE"
-          : transition
-          ? transition.kind === "destination" ? "SEAMLESS DESTINATION TRANSFER" : "SNAPPING TO CHAPTER"
-          : manuallyTraveling ? "MANUAL STRAND TRAVEL" : "SCROLL · ARROWS · CLICK TABS";
-      }
-
       const atRouteStart = currentDestination === 0 && currentChapter === 0;
       const atRouteEnd = currentDestination === destinations.length - 1
         && currentChapter === destinations[currentDestination].chapters - 1;
@@ -733,28 +732,16 @@ export function SignalPrototypeV4() {
       <div ref={mountRef} className={styles.canvas} aria-hidden="true" />
       <div className={styles.grain} aria-hidden="true" />
 
-      <header className={styles.header}>
-        <div>
-          <span>PORTFOLIO PROTOTYPE / 04</span>
-          <strong>SIGNAL SPINE</strong>
-        </div>
-        <div className={styles.live}><i /> DYNAMIC ROUTE ONLINE</div>
-      </header>
-
       <nav className={styles.waypoint} aria-label="Portfolio table of contents">
-        <span>INDEX / HOME + 02 PROJECTS</span>
         <button type="button" data-destination-nav onClick={() => navigateToDestination(0)}>
-          <i>00</i><strong>HOME</strong><small>INTRO</small>
+          <i>00</i><strong>HOME</strong>
         </button>
         <button type="button" data-destination-nav onClick={() => navigateToDestination(1)}>
-          <i>01</i><strong>SIGNAL ATLAS</strong><small>BLUE</small>
+          <i>01</i><strong>SIGNAL ATLAS</strong>
         </button>
         <button type="button" data-destination-nav onClick={() => navigateToDestination(2)}>
-          <i>02</i><strong>VELVET CIRCUIT</strong><small>PINK</small>
+          <i>02</i><strong>VELVET CIRCUIT</strong>
         </button>
-        <div><i ref={travelFillRef} /></div>
-        <b ref={waypointDistanceRef}>HOME / 01 OF 04</b>
-        <em ref={velocityRef}>SCROLL · ARROWS · CLICK TABS</em>
       </nav>
 
       <article className={`${styles.project} ${styles.homeProject}`} data-destination-panel="0" aria-hidden="false">
@@ -812,8 +799,17 @@ export function SignalPrototypeV4() {
           <p className={styles.eyebrow}>CONTACT</p>
           <h2>Contact</h2>
           <p className={styles.contactCallout}>Working on something interesting? I’m always happy to talk about thoughtful products, tricky engineering problems, or mission-driven work. Send me an email or find me on LinkedIn.</p>
+          <div className={styles.emailContact}>
+            <span>EMAIL</span>
+            <strong ref={emailRef}>luebbertevan@gmail.com</strong>
+            <div>
+              <button type="button" onClick={copyEmail} aria-live="polite">
+                {emailCopyStatus === "copied" ? "COPIED" : emailCopyStatus === "selected" ? "SELECTED" : "COPY EMAIL"}
+              </button>
+              <a href="mailto:luebbertevan@gmail.com">OPEN MAIL <i aria-hidden="true">↗</i></a>
+            </div>
+          </div>
           <div className={styles.contactLinks}>
-            <a href="mailto:luebbertevan@gmail.com"><span>EMAIL</span><strong>luebbertevan@gmail.com</strong><i aria-hidden="true">→</i></a>
             <a href="https://www.linkedin.com/in/evan-luebbert/" target="_blank" rel="noreferrer"><span>LINKEDIN</span><strong>VIEW PROFILE</strong><i aria-hidden="true">↗</i></a>
             <a href="https://github.com/luebbertevan" target="_blank" rel="noreferrer"><span>GITHUB</span><strong>VIEW PROFILE</strong><i aria-hidden="true">↗</i></a>
             <a href="/documents/evan-luebbert-resume-2026.pdf" download="Evan-Luebbert-Resume-2026.pdf"><span>RÉSUMÉ</span><strong>DOWNLOAD PDF</strong><i aria-hidden="true">↓</i></a>
@@ -907,14 +903,9 @@ export function SignalPrototypeV4() {
         <button type="button" data-route-next onClick={() => stepRoute(1)}>NEXT <span aria-hidden="true">→</span></button>
       </div>
 
-      <button className={styles.pause} type="button" onClick={togglePause}>
-        <span>{paused ? "PLAY" : "PAUSE"}</span><i>{paused ? "▶" : "Ⅱ"}</i>
+      <button className={styles.pause} type="button" onClick={togglePause} aria-pressed={paused}>
+        <span>{paused ? "RESUME VISUALS" : "PAUSE VISUALS"}</span><i>{paused ? "▶" : "Ⅱ"}</i>
       </button>
-
-      <footer className={styles.footer}>
-        <span>SCROLL / MANUAL TRAVEL</span><span>ARROWS / NAVIGATE</span><span>POINTER / DISTURB FIELD</span>
-        <span className={styles.palette}>AMBER · BLUE · PINK</span>
-      </footer>
     </main>
   );
 }

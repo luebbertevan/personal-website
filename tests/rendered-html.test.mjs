@@ -37,11 +37,12 @@ test("server-renders the approved four-chapter About content", async () => {
   assert.match(html, /Approach/);
   assert.match(html, /Interests/);
   assert.match(html, /Contact/);
-  assert.match(html, /HOME \/ 01 OF 04/);
   assert.match(html, /Evan Luebbert smiling outdoors\./);
   assert.match(html, /<title>Evan Luebbert<\/title>/);
   assert.match(html, /\/og\.png/);
   assert.doesNotMatch(html, /Placeholder personal copy/i);
+  assert.doesNotMatch(html, /Signal Spine/i);
+  assert.doesNotMatch(html, /Portfolio Prototype|Dynamic Route Online|Index \/ Home|Scroll \/|Arrows \/|Pointer \//i);
 });
 
 test("Home navigation, contact actions, and public assets are wired correctly", async () => {
@@ -54,6 +55,10 @@ test("Home navigation, contact actions, and public assets are wired correctly", 
 
   assert.match(source, /label:\s*"HOME",\s*chapters:\s*4,/);
   assert.match(source, /\['INTRODUCTION', 'APPROACH', 'INTERESTS', 'CONTACT'\]/);
+  assert.match(source, /const HOME_INTRO_DURATION = 5;/);
+  assert.match(source, /navigationCommandRef\.current = \{ type: "step", value: dominantDelta > 0 \? 1 : -1 \};/);
+  assert.match(source, /ref=\{emailRef\}>luebbertevan@gmail\.com<\/strong>/);
+  assert.match(source, /onClick=\{copyEmail\}/);
   assert.match(source, /href="mailto:luebbertevan@gmail\.com"/);
   assert.match(source, /href="https:\/\/www\.linkedin\.com\/in\/evan-luebbert\/"\s+target="_blank"/);
   assert.match(source, /href="https:\/\/github\.com\/luebbertevan"\s+target="_blank"/);
@@ -63,6 +68,7 @@ test("Home navigation, contact actions, and public assets are wired correctly", 
   assert.equal(headshot.subarray(8, 12).toString("ascii"), "WEBP");
   assert.equal(resume.subarray(0, 4).toString("ascii"), "%PDF");
   assert.deepEqual([...socialImage.subarray(1, 4)], [80, 78, 71]);
+  assert.doesNotMatch(source, /SIGNAL SPINE|PORTFOLIO PROTOTYPE|DYNAMIC ROUTE ONLINE|SCROLL · ARROWS · CLICK TABS/);
 
   assert.ok(projectRoot);
 });

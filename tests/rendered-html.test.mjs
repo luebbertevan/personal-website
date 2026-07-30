@@ -55,7 +55,9 @@ test("Home navigation, contact actions, and public assets are wired correctly", 
 
   assert.match(source, /label:\s*"HOME",\s*chapters:\s*4,/);
   assert.match(source, /\['INTRODUCTION', 'APPROACH', 'INTERESTS', 'CONTACT'\]/);
-  assert.match(source, /const HOME_INTRO_DURATION = 5;/);
+  assert.match(source, /const HOME_INTRO_DURATION = 4;/);
+  assert.match(source, /const HOME_CHROME_REVEAL_START = 4\.15;/);
+  assert.match(source, /const HOME_OPENING_DURATION = 4\.75;/);
   assert.match(source, /navigationCommandRef\.current = \{ type: "step", value: dominantDelta > 0 \? 1 : -1 \};/);
   assert.match(source, /ref=\{emailRef\}>luebbertevan@gmail\.com<\/strong>/);
   assert.match(source, /onClick=\{copyEmail\}/);

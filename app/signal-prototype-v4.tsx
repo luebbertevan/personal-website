@@ -38,7 +38,9 @@ const CHAPTER_TRAVEL = 13;
 const CHAPTER_DURATION = 2.45;
 const MANUAL_ARRIVAL_PROGRESS = 0.88;
 const MANUAL_EDGE_DISTANCE = 3.2;
-const HOME_INTRO_DURATION = 5;
+const HOME_INTRO_DURATION = 4;
+const HOME_CHROME_REVEAL_START = 4.15;
+const HOME_OPENING_DURATION = 4.75;
 
 type NavigationCommand =
   | { type: "destination"; value: number }
@@ -432,12 +434,12 @@ export function SignalPrototypeV4() {
       previousTime = now;
       if (!pausedRef.current) elapsed += delta;
       if (homeIntroActive && !pausedRef.current) {
-        homeIntroElapsed = Math.min(HOME_INTRO_DURATION, homeIntroElapsed + delta);
-        if (homeIntroElapsed >= HOME_INTRO_DURATION) homeIntroActive = false;
+        homeIntroElapsed = Math.min(HOME_OPENING_DURATION, homeIntroElapsed + delta);
+        if (homeIntroElapsed >= HOME_OPENING_DURATION) homeIntroActive = false;
       }
       const homeIntroT = THREE.MathUtils.clamp(homeIntroElapsed / HOME_INTRO_DURATION, 0, 1);
       const chromePresence = homeIntroActive
-        ? THREE.MathUtils.smoothstep(homeIntroT, 0.50, 0.62)
+        ? THREE.MathUtils.smoothstep(homeIntroElapsed, HOME_CHROME_REVEAL_START, HOME_OPENING_DURATION)
         : 1;
       shell.style.setProperty("--chrome-presence", chromePresence.toFixed(3));
       pointer.lerp(pointerTarget, 1.0 - Math.exp(-delta * 5.0));

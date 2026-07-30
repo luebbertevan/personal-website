@@ -580,7 +580,7 @@
 .chapterRail button:disabled { cursor: default; }
 
 .routeControls {
-  bottom: clamp(92px, 10vh, 126px);
+  bottom: calc(clamp(28px, 3.5vw, 48px) + 64px);
   left: clamp(28px, 3.5vw, 58px);
   display: grid;
   width: min(430px, 34vw);
@@ -613,10 +613,10 @@
 .routeControls button span { font-size: 22px; letter-spacing: 0; }
 
 .pause {
-  right: clamp(28px, 3.5vw, 58px);
+  left: clamp(28px, 3.5vw, 58px);
   bottom: clamp(28px, 3.5vw, 48px);
   display: flex;
-  width: 190px;
+  width: min(430px, 34vw);
   padding: 13px 14px;
   align-items: center;
   justify-content: space-between;
@@ -694,9 +694,9 @@
   .chapter > a { min-width: 270px; margin-top: 18px; }
   .chapterRail { right: 16px; left: 24px; font-size: 10px; }
   .chapterRail button { padding: 9px 6px; }
-  .routeControls { right: 20px; bottom: 72px; left: 20px; width: auto; }
+  .routeControls { right: 20px; bottom: 76px; left: 20px; width: auto; }
   .routeControls button { min-height: 46px; padding: 0 12px; font-size: 12px; }
-  .pause { right: 20px; bottom: 20px; width: 156px; font-size: 11px; }
+  .pause { right: 20px; bottom: 20px; left: 20px; width: auto; font-size: 11px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

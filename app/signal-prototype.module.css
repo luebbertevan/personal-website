@@ -616,7 +616,7 @@
   left: clamp(28px, 3.5vw, 58px);
   bottom: clamp(28px, 3.5vw, 48px);
   display: flex;
-  width: min(430px, 34vw);
+  width: 190px;
   padding: 13px 14px;
   align-items: center;
   justify-content: space-between;
@@ -696,7 +696,7 @@
   .chapterRail button { padding: 9px 6px; }
   .routeControls { right: 20px; bottom: 76px; left: 20px; width: auto; }
   .routeControls button { min-height: 46px; padding: 0 12px; font-size: 12px; }
-  .pause { right: 20px; bottom: 20px; left: 20px; width: auto; font-size: 11px; }
+  .pause { right: auto; bottom: 20px; left: 20px; width: 156px; font-size: 11px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

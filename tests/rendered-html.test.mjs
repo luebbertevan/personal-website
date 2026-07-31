@@ -77,10 +77,13 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.doesNotMatch(source, /<i>0[012]<\/i>/);
   assert.match(css, /--surface-background: rgba\(5, 5, 7, 0\.76\);/);
   assert.match(css, /\.project \{[^}]*top: clamp\(112px, 12vh, 168px\);[^}]*bottom: clamp\(24px, 4vh, 52px\);/s);
-  assert.match(css, /\.chapter \{[^}]*top: 0;[^}]*transform: translate3d\(var\(--chapter-shift\), 0, 0\);/s);
+  assert.match(css, /\.chapter \{[^}]*top: 0;[^}]*right: clamp\(32px, 3vw, 52px\);[^}]*left: clamp\(32px, 3vw, 52px\);[^}]*transform: translate3d\(var\(--chapter-shift\), 0, 0\);/s);
+  assert.match(css, /\.projectMeta span:last-child \{ text-align: right; \}/);
+  assert.match(css, /\.chapterRail li \{[^}]*height: 100%;/s);
+  assert.match(css, /\.chapterRail button \{[^}]*width: 100%;[^}]*height: 100%;/s);
   assert.match(css, /\.routeControls button \{[^}]*background: var\(--surface-background\);/s);
   assert.match(css, /\.pause \{[^}]*background: var\(--surface-background\);/s);
-  assert.match(css, /padding-right: clamp\(24px, 2\.2vw, 38px\);/);
+  assert.doesNotMatch(css, /\.introductionGrid \{[^}]*padding-right:/s);
   assert.match(source, /const HOME_OPENING_DURATION = 4\.75;/);
   assert.match(source, /const PARTICLE_ARRIVAL_START = 0\.38;/);
   assert.match(source, /const PARTICLE_ARRIVAL_END = 0\.70;/);

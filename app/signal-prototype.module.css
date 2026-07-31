@@ -163,7 +163,7 @@
   --chapter-blur: 5px;
   position: absolute;
   top: 0;
-  right: 0;
+  right: clamp(32px, 3vw, 52px);
   bottom: calc(var(--chapter-rail-height) + clamp(18px, 2.4vh, 30px));
   left: clamp(32px, 3vw, 52px);
   padding-top: clamp(20px, 2.8vh, 34px);
@@ -187,6 +187,7 @@
   color: rgba(247, 244, 241, 0.48);
   font-size: 14px;
 }
+.projectMeta span:last-child { text-align: right; }
 .cardLabel {
   margin: 0 0 13px;
   color: rgba(var(--accent-rgb), 0.92);
@@ -241,7 +242,6 @@
   grid-template-columns: minmax(0, 1fr) clamp(220px, 20vw, 292px);
   gap: clamp(28px, 3vw, 54px);
   align-items: center;
-  padding-right: clamp(24px, 2.2vw, 38px);
 }
 .introductionCopy { min-width: 0; }
 .availability {
@@ -561,10 +561,15 @@
   list-style: none;
   background: rgba(255, 255, 255, 0.1);
 }
-.chapterRail li { min-width: 0; background: rgba(3, 7, 14, 0.82); }
+.chapterRail li {
+  min-width: 0;
+  height: 100%;
+  background: rgba(3, 7, 14, 0.82);
+}
 .chapterRail button {
   display: flex;
   width: 100%;
+  height: 100%;
   padding: 0 11px;
   align-items: center;
   border: 0;
@@ -673,7 +678,6 @@
   .introductionGrid {
     grid-template-columns: minmax(0, 1fr) 150px;
     gap: 18px;
-    padding-right: 10px;
   }
   .homeProject h1 { font-size: clamp(50px, 12vw, 68px); }
   .homeHeadline { margin-top: 15px; font-size: 18px; }

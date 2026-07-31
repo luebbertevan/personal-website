@@ -806,7 +806,7 @@ export function SignalPrototypeV4() {
                     <p>Being able to solve my own problems is a luxury.</p>
                     <p>The ability to craft solutions for others is a privilege.</p>
                   </div>
-                  <p>I’m devoted to making well-designed tools to tackle complicated problems. I follow my imagination, explore creative solutions, and fill the gaps where software can make a difference. Everyone has used badly designed software that makes their lives harder. I can fix that. I build clear, seamless workflows around the way people actually work, so software can be an asset instead of a liability.</p>
+                  <p>I’m devoted to making well-designed tools to tackle complicated problems. I embrace curiosity, explore creative solutions, and fill the gaps where software can make a difference. Everyone has used frustrating and poorly designed software. I can fix that. I build clear, seamless workflows around the way people actually work, so software can be an asset instead of a liability.</p>
                 </div>
               </section>
               <section className={styles.aboutInterests} aria-labelledby="about-interests-title">

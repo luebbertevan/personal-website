@@ -35,6 +35,8 @@ test("server-renders the approved single-panel About content", async () => {
   assert.match(html, /passion first software engineer and designer/);
   assert.match(html, /Based in New York City/);
   assert.match(html, /Engineering is my superpower/);
+  assert.match(html, /I embrace curiosity, explore creative solutions, and fill the gaps where software can make a difference\./);
+  assert.match(html, /Everyone has used frustrating and poorly designed software\./);
   assert.match(html, /Being able to solve my own problems is a luxury\./);
   assert.match(html, /The ability to craft solutions for others is a privilege\./);
   assert.match(html, /Innovative solutions for noble causes/);

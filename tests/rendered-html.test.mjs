@@ -108,6 +108,7 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.match(css, /\.approachCopy \{[^}]*max-width: 58ch;/s);
   assert.match(css, /@media \(min-width: 1400px\) and \(min-height: 900px\) \{[\s\S]*\.availability,[\s\S]*\.approachCopy \{[^}]*width: 100%;[^}]*max-width: none;/s);
   assert.match(css, /@media \(min-width: 1400px\) and \(min-height: 900px\) \{[\s\S]*\.shell \{ --chapter-rail-height: 72px; \}[\s\S]*\.chapterRail \{ font-size: 15px; \}/s);
+  assert.match(css, /@media \(min-width: 1400px\) and \(min-height: 900px\) \{[\s\S]*\.aboutSinglePanel \{[^}]*--about-body-size: 19\.2px;[^}]*--about-intro-title-size: 24px;[^}]*--about-section-label-size: 16px;/s);
   assert.match(css, /@media \(min-width: 861px\) and \(max-height: 900px\) \{/);
   assert.match(source, /const HOME_OPENING_DURATION = 4\.75;/);
   assert.match(source, /const PARTICLE_ARRIVAL_START = 0\.38;/);

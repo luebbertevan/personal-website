@@ -63,6 +63,7 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.doesNotMatch(source, /\['INTRODUCTION', 'INTERESTS', 'CONTACT'\]/);
   assert.match(pageSource, /<strong>Evan Luebbert<\/strong>\s*<span>Software Engineer<\/span>/);
   assert.doesNotMatch(source, /<span>ABOUT<\/span><span>APPROACH<\/span>/);
+  assert.doesNotMatch(source, /<span>PROFILE<\/span>/);
   assert.doesNotMatch(source, /<h2>Approach<\/h2>/);
   assert.doesNotMatch(source, /styles\.eyebrow|0[1-4] \//);
   assert.doesNotMatch(source, /data-chapter-index[^>]*><span>/);
@@ -77,6 +78,9 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.match(css, /\.aboutSidebar \{[^}]*grid-area: sidebar;[^}]*align-content: start;/s);
   assert.match(css, /\.headshot \{[^}]*position: relative;[^}]*width: 100%;/s);
   assert.match(css, /\.aboutContact \{[^}]*grid-template-columns: 1fr;[^}]*gap: 8px;/s);
+  assert.match(css, /\.aboutSinglePanel \{[^}]*--about-body-size: clamp\(18px, 1\.12vw, 25px\);[^}]*--about-section-label-size: clamp\(26px, 1\.75vw, 34px\);/s);
+  assert.match(css, /\.aboutInterests \.interestList \{\s*grid-template-columns: 1fr;/s);
+  assert.match(css, /\.minimalContactLinks a,[\s\S]*\.minimalContactLinks button \{[^}]*font-size: var\(--about-body-size\);/s);
   assert.match(globalCss, /\.site-identity strong \{[^}]*font-size: clamp\(52px, 3\.25vw, 68px\);/s);
   assert.match(globalCss, /\.site-identity span \{[^}]*font-size: clamp\(24px, 1\.44vw, 28px\);/s);
   assert.match(globalCss, /animation: identity-name-reveal 480ms[^;]*1s both;/);
@@ -89,6 +93,7 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.match(css, /--surface-background: rgba\(5, 5, 7, 0\.76\);/);
   assert.match(css, /\.project \{[^}]*top: clamp\(112px, 12vh, 168px\);[^}]*bottom: clamp\(24px, 4vh, 52px\);/s);
   assert.match(css, /\.project \{[^}]*width: 58vw;/s);
+  assert.match(css, /\.homeProject \{[^}]*top: clamp\(84px, 9vh, 112px\);[^}]*bottom: clamp\(16px, 2vh, 28px\);[^}]*width: 66vw;/s);
   assert.match(css, /\.chapter \{[^}]*top: 0;[^}]*right: clamp\(32px, 3vw, 52px\);[^}]*left: clamp\(32px, 3vw, 52px\);[^}]*transform: translate3d\(var\(--chapter-shift\), 0, 0\);/s);
   assert.match(css, /\.projectMeta span:last-child \{ text-align: right; \}/);
   assert.match(css, /\.chapterRail li \{[^}]*height: 100%;/s);

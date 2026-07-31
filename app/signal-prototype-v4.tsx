@@ -790,7 +790,7 @@ export function SignalPrototypeV4() {
 
       <article className={`${styles.project} ${styles.homeProject}`} data-destination-panel="0" aria-hidden="false">
         <section className={`${styles.chapter} ${styles.homeIntroduction} ${styles.aboutSinglePanel}`} data-project-chapter>
-          <div className={styles.projectMeta}><span>ABOUT</span><span>PROFILE</span></div>
+          <div className={styles.projectMeta}><span>ABOUT</span></div>
           <div className={styles.aboutLayout}>
             <div className={styles.aboutMain}>
               <div className={styles.introductionHeading}>

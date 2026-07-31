@@ -102,7 +102,7 @@
   top: clamp(112px, 12vh, 168px);
   right: clamp(32px, 3vw, 58px);
   bottom: clamp(24px, 4vh, 52px);
-  width: min(880px, 58vw);
+  width: 58vw;
   opacity: var(--entry-presence);
   background:
     linear-gradient(90deg, rgba(var(--accent-rgb), 0.035), transparent 72%),

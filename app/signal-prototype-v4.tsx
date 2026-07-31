@@ -833,7 +833,7 @@ export function SignalPrototypeV4() {
               </figure>
               <div className={styles.personalNote}>
                 <p className={styles.cardLabel}>OUTSIDE OF SOFTWARE</p>
-                <p>Outside of software, I’m usually rock climbing, fostering cats, playing tabletop RPGs, or obsessing over strategy games.</p>
+                <p>Outside of software, I’m usually rock climbing, fostering cats, playing tabletop RPGs, and obsessing over strategy games.</p>
               </div>
             </aside>
             <footer className={styles.aboutContact}>

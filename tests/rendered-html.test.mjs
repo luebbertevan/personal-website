@@ -40,7 +40,7 @@ test("server-renders the approved single-panel About content", async () => {
   assert.match(html, /Being able to solve my own problems is a luxury\./);
   assert.match(html, /The ability to craft solutions for others is a privilege\./);
   assert.match(html, /Innovative solutions for noble causes/);
-  assert.match(html, /obsessing over strategy games/);
+  assert.match(html, /playing tabletop RPGs, and obsessing over strategy games/);
   assert.match(html, /Working on something interesting\? Send me an email or find me on LinkedIn\./);
   assert.doesNotMatch(html, />Approach</);
   assert.match(html, /<span>Software Engineer<\/span>/);

@@ -81,10 +81,13 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.match(css, /\.routeControls button \{[^}]*background: var\(--surface-background\);/s);
   assert.match(css, /\.pause \{[^}]*background: var\(--surface-background\);/s);
   assert.match(css, /padding-right: clamp\(24px, 2\.2vw, 38px\);/);
-  assert.match(source, /const HOME_INTRO_DURATION = 4;/);
-  assert.match(source, /const PAGE_CONTENT_REVEAL_START = 3;/);
-  assert.match(source, /const PAGE_CONTENT_REVEAL_END = 3\.6;/);
   assert.match(source, /const HOME_OPENING_DURATION = 4\.75;/);
+  assert.match(source, /const PARTICLE_ARRIVAL_START = 0\.38;/);
+  assert.match(source, /const PARTICLE_ARRIVAL_END = 0\.70;/);
+  assert.match(source, /const PANEL_ARRIVAL_START = 0\.80;/);
+  assert.match(source, /const PANEL_ARRIVAL_END = 0\.985;/);
+  assert.match(source, /particleTransitionProgress = homeOpeningT;/);
+  assert.match(source, /chapterShifts\[0\] = 18 \* \(1 - homeOpeningT\);/);
   assert.match(source, /navigationCommandRef\.current = \{ type: "step", value: dominantDelta > 0 \? 1 : -1 \};/);
   assert.match(source, /ref=\{emailRef\}>luebbertevan@gmail\.com<\/strong>/);
   assert.match(source, /onClick=\{copyEmail\}/);

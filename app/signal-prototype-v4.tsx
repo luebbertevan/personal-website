@@ -38,10 +38,13 @@ const CHAPTER_TRAVEL = 13;
 const CHAPTER_DURATION = 2.45;
 const MANUAL_ARRIVAL_PROGRESS = 0.88;
 const MANUAL_EDGE_DISTANCE = 3.2;
-const HOME_INTRO_DURATION = 4;
-const PAGE_CONTENT_REVEAL_START = 3;
-const PAGE_CONTENT_REVEAL_END = 3.6;
 const HOME_OPENING_DURATION = 4.75;
+const PARTICLE_ARRIVAL_START = 0.38;
+const PARTICLE_ARRIVAL_END = 0.70;
+const PARTICLE_DISTURBANCE_START = 0.02;
+const PARTICLE_DISTURBANCE_END = 0.98;
+const PANEL_ARRIVAL_START = 0.80;
+const PANEL_ARRIVAL_END = 0.985;
 
 type NavigationCommand =
   | { type: "destination"; value: number }
@@ -452,11 +455,11 @@ export function SignalPrototypeV4() {
         homeIntroElapsed = Math.min(HOME_OPENING_DURATION, homeIntroElapsed + delta);
         if (homeIntroElapsed >= HOME_OPENING_DURATION) homeIntroActive = false;
       }
-      const homeIntroT = THREE.MathUtils.clamp(homeIntroElapsed / HOME_INTRO_DURATION, 0, 1);
+      const homeOpeningT = THREE.MathUtils.clamp(homeIntroElapsed / HOME_OPENING_DURATION, 0, 1);
       const pageContentPresence = THREE.MathUtils.smoothstep(
-        homeIntroElapsed,
-        PAGE_CONTENT_REVEAL_START,
-        PAGE_CONTENT_REVEAL_END,
+        homeOpeningT,
+        PANEL_ARRIVAL_START,
+        PANEL_ARRIVAL_END,
       );
       const chromePresence = homeIntroActive ? pageContentPresence : 1;
       shell.style.setProperty("--chrome-presence", chromePresence.toFixed(3));
@@ -512,9 +515,18 @@ export function SignalPrototypeV4() {
       let particleStructurePresence = 1;
       let particleStructureDisturbance = 0;
       if (homeIntroActive) {
-        const homeAssembly = THREE.MathUtils.smoothstep(homeIntroT, 0.50, 0.88);
-        particleStructurePresence = homeAssembly;
-        particleStructureDisturbance = Math.sin(Math.PI * homeAssembly);
+        particleTransitionActive = 1;
+        particleTransitionProgress = homeOpeningT;
+        particleStructurePresence = THREE.MathUtils.smoothstep(
+          homeOpeningT,
+          PARTICLE_ARRIVAL_START,
+          PARTICLE_ARRIVAL_END,
+        );
+        particleStructureDisturbance = Math.sin(Math.PI * THREE.MathUtils.smoothstep(
+          homeOpeningT,
+          PARTICLE_DISTURBANCE_START,
+          PARTICLE_DISTURBANCE_END,
+        ));
       }
       if (transition) {
         particleTransitionActive = transition.kind === "destination" ? 1 : 0;
@@ -524,13 +536,21 @@ export function SignalPrototypeV4() {
         particleTravelDirection = Math.sign(transition.toX - transition.fromX) || 1;
         if (transition.kind === "destination") {
           const departureStructure = 1 - THREE.MathUtils.smoothstep(transitionT, 0.12, 0.32);
-          const arrivalStructure = THREE.MathUtils.smoothstep(transitionT, 0.38, 0.70);
+          const arrivalStructure = THREE.MathUtils.smoothstep(
+            transitionT,
+            PARTICLE_ARRIVAL_START,
+            PARTICLE_ARRIVAL_END,
+          );
           particleStructurePresence = transition.manualArrival
             ? arrivalStructure
             : Math.max(departureStructure, arrivalStructure);
           particleStructureDisturbance = transition.manualArrival
             ? 1 - THREE.MathUtils.smoothstep(transitionT, 0.18, 0.88)
-            : Math.sin(Math.PI * THREE.MathUtils.smoothstep(transitionT, 0.02, 0.98));
+            : Math.sin(Math.PI * THREE.MathUtils.smoothstep(
+              transitionT,
+              PARTICLE_DISTURBANCE_START,
+              PARTICLE_DISTURBANCE_END,
+            ));
         } else {
           particleStructureDisturbance = transition.manualArrival
             ? 1 - THREE.MathUtils.smoothstep(transitionT, 0.16, 0.92)
@@ -609,7 +629,7 @@ export function SignalPrototypeV4() {
           panelOpacity = homeReveal;
           chapterOpacities.fill(0);
           chapterOpacities[0] = homeReveal;
-          chapterShifts[0] = 18 * (1 - homeReveal);
+          chapterShifts[0] = 18 * (1 - homeOpeningT);
         }
 
         if (transition?.kind === "destination") {
@@ -623,7 +643,11 @@ export function SignalPrototypeV4() {
             chapterShifts[transition.sourceChapter] = -18 * transitionT;
           }
           if (destinationIndex === transition.targetDestination) {
-            panelOpacity = THREE.MathUtils.smoothstep(transitionT, 0.80, 0.985);
+            panelOpacity = THREE.MathUtils.smoothstep(
+              transitionT,
+              PANEL_ARRIVAL_START,
+              PANEL_ARRIVAL_END,
+            );
             chapterOpacities.fill(0);
             chapterOpacities[0] = panelOpacity;
             chapterShifts[0] = 18 * (1 - transitionT);

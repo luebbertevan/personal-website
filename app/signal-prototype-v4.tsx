@@ -14,7 +14,7 @@ import styles from "./signal-prototype.module.css";
 const destinations = [
   {
     label: "ABOUT",
-    chapters: 3,
+    chapters: 1,
     shaderColor: [1.0, 0.25, 0.0625] as const,
     cssColor: [255, 103, 49] as const,
   },
@@ -789,12 +789,13 @@ export function SignalPrototypeV4() {
       </nav>
 
       <article className={`${styles.project} ${styles.homeProject}`} data-destination-panel="0" aria-hidden="false">
-        <section className={`${styles.chapter} ${styles.homeIntroduction}`} data-project-chapter>
-          <div className={styles.projectMeta}><span>ABOUT</span><span>INTRODUCTION</span></div>
-          <div className={styles.introductionGrid}>
+        <section className={`${styles.chapter} ${styles.homeIntroduction} ${styles.aboutSinglePanel}`} data-project-chapter>
+          <div className={styles.projectMeta}><span>ABOUT</span><span>PROFILE</span></div>
+          <div className={styles.aboutLayout}>
             <div className={styles.introductionHeading}>
               <h1 className={styles.introductionTitle}>I’m a passion first software engineer and designer.</h1>
               <p className={styles.introductionSubtitle}>I build software I believe in.</p>
+              <p className={styles.availability}>Based in New York City. Open to full-time roles and freelance projects.</p>
             </div>
             <figure className={styles.headshot}>
               {/* The source is pre-cropped and optimized, so native image loading is intentional. */}
@@ -806,58 +807,43 @@ export function SignalPrototypeV4() {
                 height="600"
               />
             </figure>
-            <div className={styles.introductionBodyCopy}>
-              <p className={styles.availability}>Based in New York City. Open to full-time roles and freelance projects.</p>
+            <section className={styles.aboutApproach} aria-labelledby="about-approach-title">
+              <p className={styles.cardLabel} id="about-approach-title">APPROACH</p>
               <div className={styles.approachCopy}>
-                <p>Engineering provides the unique opportunity to take matters into my own hands and wield technology to build the solutions I wish existed. Being able to solve my own problems is a luxury. The ability to craft solutions for others is a privilege. I’m devoted to making well-designed tools for real people with complicated problems. I follow my imagination, explore unusual solutions, and look for the gaps where software could make a real difference.</p>
-                <p>Everyone has used badly designed software that makes their lives harder. I can fix that. I build clear, seamless workflows around the way real people actually work, so software can be an asset instead of a liability.</p>
+                <p>Engineering is my superpower. It enables me to wield technology to build a better world.</p>
+                <p>The means to solve my own problems is a luxury. The ability to craft solutions for others is a privilege.</p>
+                <p>I’m devoted to making well-designed tools to tackle complicated problems. I follow my imagination, explore creative solutions, and fill the gaps where software can make a difference. Everyone has used badly designed software that makes their lives harder. I can fix that. I build clear, seamless workflows around the way people actually work, so software can be an asset instead of a liability.</p>
               </div>
-            </div>
-          </div>
-        </section>
-        <section className={`${styles.chapter} ${styles.homeInterests}`} data-project-chapter>
-          <div className={styles.projectMeta}><span>ABOUT</span><span>INTERESTS</span></div>
-          <h2>Interests</h2>
-          <div className={styles.interestsGrid}>
+            </section>
+            <section className={styles.aboutInterests} aria-labelledby="about-interests-title">
+              <p className={styles.cardLabel} id="about-interests-title">I LOVE BUILDING</p>
             <ul className={styles.interestList}>
-              <li>Products built around real user needs</li>
-              <li>Mission-driven work with a clear practical impact</li>
-              <li>Full-stack systems with complicated workflows</li>
-              <li>Data-heavy tools and interactive visualizations</li>
-              <li>Creative interfaces that still feel clear and useful</li>
+              <li>Innovative solutions for noble causes</li>
+              <li>Full-stack applications for complicated workflows</li>
+              <li>Data-heavy tools and visualizations</li>
+              <li>Intuitive and satisfying interfaces</li>
               <li>Software where reliability and trust matter</li>
             </ul>
-            <div className={styles.personalNote}>
+            </section>
+            <aside className={styles.personalNote}>
               <p className={styles.cardLabel}>OUTSIDE OF SOFTWARE</p>
-              <p>Outside of software, I’m usually rock climbing, fostering cats, playing tabletop RPGs, or getting way too into strategy games.</p>
-            </div>
+              <p>Outside of software, I’m usually rock climbing, fostering cats, playing tabletop RPGs, or obsessing over strategy games.</p>
+            </aside>
+            <footer className={styles.aboutContact}>
+              <p>Working on something interesting? Send me an email or find me on LinkedIn.</p>
+              <nav className={styles.minimalContactLinks} aria-label="Contact links">
+                <a href="https://github.com/luebbertevan" target="_blank" rel="noreferrer">GitHub <i aria-hidden="true">↗</i></a>
+                <a href="https://www.linkedin.com/in/evan-luebbert/" target="_blank" rel="noreferrer">LinkedIn <i aria-hidden="true">↗</i></a>
+                <a href="/documents/evan-luebbert-resume-2026.pdf" download="Evan-Luebbert-Resume-2026.pdf">Résumé <i aria-hidden="true">↓</i></a>
+                <button type="button" onClick={copyEmail} aria-live="polite">
+                  <span ref={emailRef}>luebbertevan@gmail.com</span>
+                  <i aria-hidden="true">{emailCopyStatus === "copied" ? "✓" : "⧉"}</i>
+                  <span className={styles.srOnly}>{emailCopyStatus === "copied" ? "Email copied" : emailCopyStatus === "selected" ? "Email selected" : "Copy email"}</span>
+                </button>
+              </nav>
+            </footer>
           </div>
         </section>
-        <section className={`${styles.chapter} ${styles.homeContact}`} data-project-chapter>
-          <div className={styles.projectMeta}><span>ABOUT</span><span>CONTACT</span></div>
-          <h2>Contact</h2>
-          <p className={styles.contactCallout}>Working on something interesting? I’m always happy to talk about thoughtful products, tricky engineering problems, or mission-driven work. Send me an email or find me on LinkedIn.</p>
-          <div className={styles.emailContact}>
-            <span>EMAIL</span>
-            <strong ref={emailRef}>luebbertevan@gmail.com</strong>
-            <div>
-              <button type="button" onClick={copyEmail} aria-live="polite">
-                {emailCopyStatus === "copied" ? "COPIED" : emailCopyStatus === "selected" ? "SELECTED" : "COPY EMAIL"}
-              </button>
-              <a href="mailto:luebbertevan@gmail.com">OPEN MAIL <i aria-hidden="true">↗</i></a>
-            </div>
-          </div>
-          <div className={styles.contactLinks}>
-            <a href="https://www.linkedin.com/in/evan-luebbert/" target="_blank" rel="noreferrer"><span>LINKEDIN</span><strong>VIEW PROFILE</strong><i aria-hidden="true">↗</i></a>
-            <a href="https://github.com/luebbertevan" target="_blank" rel="noreferrer"><span>GITHUB</span><strong>VIEW PROFILE</strong><i aria-hidden="true">↗</i></a>
-            <a href="/documents/evan-luebbert-resume-2026.pdf" download="Evan-Luebbert-Resume-2026.pdf"><span>RÉSUMÉ</span><strong>DOWNLOAD PDF</strong><i aria-hidden="true">↓</i></a>
-          </div>
-        </section>
-        <ol className={styles.chapterRail} aria-label="About sequence">
-          {['INTRODUCTION', 'INTERESTS', 'CONTACT'].map((label, index) => (
-            <li key={label}><button type="button" data-chapter-index onClick={() => navigateToChapter(index)}>{label}</button></li>
-          ))}
-        </ol>
       </article>
 
       <article className={styles.project} data-destination-panel="1" aria-hidden="true">

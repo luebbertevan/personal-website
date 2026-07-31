@@ -25,7 +25,7 @@ async function render() {
   );
 }
 
-test("server-renders the approved three-chapter About content", async () => {
+test("server-renders the approved single-panel About content", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
@@ -34,10 +34,11 @@ test("server-renders the approved three-chapter About content", async () => {
   assert.match(html, /Evan Luebbert/);
   assert.match(html, /passion first software engineer and designer/);
   assert.match(html, /Based in New York City/);
-  assert.match(html, /Engineering provides the unique opportunity/);
+  assert.match(html, /Engineering is my superpower/);
+  assert.match(html, /Innovative solutions for noble causes/);
+  assert.match(html, /obsessing over strategy games/);
+  assert.match(html, /Working on something interesting\? Send me an email or find me on LinkedIn\./);
   assert.doesNotMatch(html, />Approach</);
-  assert.match(html, /Interests/);
-  assert.match(html, /Contact/);
   assert.match(html, /<span>Software Engineer<\/span>/);
   assert.match(html, /Evan Luebbert smiling outdoors\./);
   assert.match(html, /<title>Evan Luebbert<\/title>/);
@@ -58,22 +59,21 @@ test("About navigation, contact actions, and public assets are wired correctly",
     readFile(new URL("../public/og.png", import.meta.url)),
   ]);
 
-  assert.match(source, /label:\s*"ABOUT",\s*chapters:\s*3,/);
-  assert.match(source, /\['INTRODUCTION', 'INTERESTS', 'CONTACT'\]/);
+  assert.match(source, /label:\s*"ABOUT",\s*chapters:\s*1,/);
+  assert.doesNotMatch(source, /\['INTRODUCTION', 'INTERESTS', 'CONTACT'\]/);
   assert.match(pageSource, /<strong>Evan Luebbert<\/strong>\s*<span>Software Engineer<\/span>/);
   assert.doesNotMatch(source, /<span>ABOUT<\/span><span>APPROACH<\/span>/);
   assert.doesNotMatch(source, /<h2>Approach<\/h2>/);
   assert.doesNotMatch(source, /styles\.eyebrow|0[1-4] \//);
   assert.doesNotMatch(source, /data-chapter-index[^>]*><span>/);
-  assert.match(css, /\.homeProject \.chapterRail \{ grid-template-columns: repeat\(3, 1fr\); \}/);
-  assert.match(css, /\.introductionGrid \{[^}]*--portrait-width: clamp\(146px, 12vw, 260px\);[^}]*padding-right: calc\(var\(--portrait-width\) \+ var\(--portrait-gap\)\);/s);
+  assert.match(css, /\.aboutLayout \{[^}]*--portrait-width: clamp\(146px, 12vw, 260px\);[^}]*grid-template-areas:/s);
   assert.match(source, /width="480"\s+height="600"/);
   assert.doesNotMatch(source, /<h1>Evan<br \/>Luebbert<\/h1>/);
   assert.match(source, /<h1 className=\{styles\.introductionTitle\}>I’m a passion first software engineer and designer\.<\/h1>/);
   assert.match(source, /<p className=\{styles\.introductionSubtitle\}>I build software I believe in\.<\/p>/);
   assert.match(css, /\.introductionTitle,\s*\.introductionSubtitle \{[^}]*white-space: nowrap;/s);
-  assert.match(source, /<div className=\{styles\.introductionBodyCopy\}>[\s\S]*className=\{styles\.availability\}[\s\S]*className=\{styles\.approachCopy\}/);
-  assert.match(css, /\.headshot \{[^}]*position: absolute;[^}]*top: 0;[^}]*right: 0;[^}]*width: var\(--portrait-width\);/s);
+  assert.match(source, /className=\{styles\.aboutLayout\}[\s\S]*className=\{styles\.availability\}[\s\S]*className=\{styles\.aboutApproach\}[\s\S]*className=\{styles\.aboutInterests\}[\s\S]*className=\{styles\.personalNote\}[\s\S]*className=\{styles\.aboutContact\}/);
+  assert.match(css, /\.headshot \{[^}]*position: relative;[^}]*grid-area: portrait;[^}]*width: 100%;/s);
   assert.match(globalCss, /\.site-identity strong \{[^}]*font-size: clamp\(52px, 3\.25vw, 68px\);/s);
   assert.match(globalCss, /\.site-identity span \{[^}]*font-size: clamp\(24px, 1\.44vw, 28px\);/s);
   assert.match(globalCss, /animation: identity-name-reveal 480ms[^;]*1s both;/);
@@ -95,6 +95,7 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.match(css, /\.approachCopy \{[^}]*max-width: 58ch;/s);
   assert.match(css, /@media \(min-width: 1400px\) and \(min-height: 900px\) \{[\s\S]*\.availability,[\s\S]*\.approachCopy \{[^}]*width: 100%;[^}]*max-width: none;/s);
   assert.match(css, /@media \(min-width: 1400px\) and \(min-height: 900px\) \{[\s\S]*\.shell \{ --chapter-rail-height: 72px; \}[\s\S]*\.chapterRail \{ font-size: 15px; \}/s);
+  assert.match(css, /@media \(min-width: 861px\) and \(max-height: 900px\) \{/);
   assert.match(source, /const HOME_OPENING_DURATION = 4\.75;/);
   assert.match(source, /const PARTICLE_ARRIVAL_START = 0\.38;/);
   assert.match(source, /const PARTICLE_ARRIVAL_END = 0\.70;/);
@@ -103,12 +104,13 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.match(source, /particleTransitionProgress = homeOpeningT;/);
   assert.match(source, /chapterShifts\[0\] = 18 \* \(1 - homeOpeningT\);/);
   assert.match(source, /navigationCommandRef\.current = \{ type: "step", value: dominantDelta > 0 \? 1 : -1 \};/);
-  assert.match(source, /ref=\{emailRef\}>luebbertevan@gmail\.com<\/strong>/);
+  assert.match(source, /<span ref=\{emailRef\}>luebbertevan@gmail\.com<\/span>/);
   assert.match(source, /onClick=\{copyEmail\}/);
-  assert.match(source, /href="mailto:luebbertevan@gmail\.com"/);
+  assert.doesNotMatch(source, /href="mailto:luebbertevan@gmail\.com"/);
   assert.match(source, /href="https:\/\/www\.linkedin\.com\/in\/evan-luebbert\/"\s+target="_blank"/);
   assert.match(source, /href="https:\/\/github\.com\/luebbertevan"\s+target="_blank"/);
   assert.match(source, /href="\/documents\/evan-luebbert-resume-2026\.pdf"\s+download="Evan-Luebbert-Resume-2026\.pdf"/);
+  assert.doesNotMatch(source, /className=\{styles\.homeInterests\}|className=\{styles\.homeContact\}|aria-label="About sequence"/);
 
   assert.equal(headshot.subarray(0, 4).toString("ascii"), "RIFF");
   assert.equal(headshot.subarray(8, 12).toString("ascii"), "WEBP");

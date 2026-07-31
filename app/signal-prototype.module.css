@@ -246,28 +246,38 @@
 .homeProject h2 { font-size: clamp(58px, 5vw, 88px); }
 .homeIntroduction {
   top: 0;
-  bottom: calc(var(--chapter-rail-height) + clamp(18px, 2.4vh, 30px));
+  bottom: 0;
   transform: translate3d(var(--chapter-shift), 0, 0);
 }
-.introductionGrid {
+.aboutSinglePanel {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: clamp(22px, 2.5vh, 32px);
+}
+.aboutLayout {
   --portrait-width: clamp(146px, 12vw, 260px);
   --portrait-gap: clamp(28px, 3vw, 64px);
-  position: relative;
-  padding-right: calc(var(--portrait-width) + var(--portrait-gap));
+  display: grid;
+  flex: 1;
+  grid-template-columns: minmax(0, 1fr) var(--portrait-width);
+  grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    "heading portrait"
+    "approach outside"
+    "interests outside"
+    ". ."
+    "contact contact";
+  gap: clamp(16px, 2vh, 26px) var(--portrait-gap);
+  align-content: stretch;
 }
 .introductionHeading {
-  min-width: 0;
-}
-.introductionBodyCopy {
-  display: grid;
-  gap: clamp(22px, 2.4vh, 28px);
-  margin-top: clamp(28px, 4vh, 52px);
+  grid-area: heading;
   min-width: 0;
 }
 .availability {
   max-width: 47ch;
-  margin: 0;
-  padding-top: 14px;
+  margin: clamp(14px, 1.8vh, 22px) 0 0;
+  padding-top: 10px;
   border-top: 1px solid rgba(var(--accent-rgb), 0.45);
   color: rgba(247, 244, 241, 0.72);
   font-family: var(--font-geist-sans), sans-serif;
@@ -276,10 +286,9 @@
   letter-spacing: 0;
 }
 .headshot {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: var(--portrait-width);
+  position: relative;
+  grid-area: portrait;
+  width: 100%;
   margin: 0;
   overflow: hidden;
   border: 1px solid rgba(var(--accent-rgb), 0.6);
@@ -313,7 +322,7 @@
 .approachCopy {
   display: grid;
   max-width: 58ch;
-  gap: 14px;
+  gap: 8px;
 }
 .approachCopy p,
 .personalNote > p:last-child,
@@ -321,16 +330,16 @@
   margin: 0;
   color: rgba(247, 244, 241, 0.76);
   font-family: var(--font-geist-sans), sans-serif;
-  font-size: clamp(18px, 1.2vw, 30px);
-  line-height: 1.52;
+  font-size: clamp(16px, 1vw, 23px);
+  line-height: 1.42;
   letter-spacing: 0;
 }
-.interestsGrid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(220px, 0.65fr);
-  gap: clamp(26px, 3.5vw, 54px);
-  align-items: end;
-  margin-top: 25px;
+.aboutApproach { grid-area: approach; min-width: 0; }
+.aboutInterests { grid-area: interests; min-width: 0; }
+.aboutApproach .cardLabel,
+.aboutInterests .cardLabel { margin-bottom: 8px; }
+.aboutInterests .interestList {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 .interestList {
   display: grid;
@@ -338,20 +347,20 @@
   margin: 0;
   padding: 0;
   font-family: var(--font-geist-sans), sans-serif;
-  font-size: clamp(17px, 1.05vw, 20px);
-  line-height: 1.28;
+  font-size: clamp(14px, 0.88vw, 18px);
+  line-height: 1.22;
   letter-spacing: 0;
   list-style: none;
 }
 .interestList li {
   position: relative;
-  padding: 11px 12px 11px 28px;
+  padding: 7px 10px 7px 24px;
   border-top: 1px solid rgba(255, 255, 255, 0.13);
 }
 .interestList li:last-child { border-bottom: 1px solid rgba(255, 255, 255, 0.13); }
 .interestList li::before {
   position: absolute;
-  top: 18px;
+  top: 12px;
   left: 6px;
   width: 7px;
   height: 7px;
@@ -360,11 +369,76 @@
   transform: rotate(45deg);
 }
 .personalNote {
-  padding: 22px;
+  grid-area: outside;
+  align-self: start;
+  padding: clamp(13px, 1.3vw, 20px);
   border: 1px solid rgba(var(--accent-rgb), 0.35);
   background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.12), rgba(3, 7, 14, 0.58));
 }
-.personalNote .cardLabel { margin-bottom: 12px; }
+.personalNote .cardLabel { margin-bottom: 8px; }
+.personalNote > p:last-child { font-size: clamp(14px, 0.9vw, 18px); }
+.aboutContact {
+  grid-area: contact;
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) auto;
+  gap: 18px 28px;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px solid rgba(var(--accent-rgb), 0.45);
+}
+.aboutContact > p {
+  margin: 0;
+  color: rgba(247, 244, 241, 0.76);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: clamp(15px, 0.95vw, 19px);
+  line-height: 1.35;
+}
+.minimalContactLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  align-items: center;
+  justify-content: flex-end;
+}
+.minimalContactLinks a,
+.minimalContactLinks button {
+  display: inline-flex;
+  gap: 7px;
+  padding: 6px 0;
+  align-items: center;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+  color: rgba(247, 244, 241, 0.88);
+  background: transparent;
+  font: inherit;
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  cursor: pointer;
+}
+.minimalContactLinks a:hover,
+.minimalContactLinks a:focus-visible,
+.minimalContactLinks button:hover,
+.minimalContactLinks button:focus-visible {
+  border-color: rgb(var(--accent-rgb));
+  color: rgb(var(--accent-rgb));
+  outline: none;
+}
+.minimalContactLinks i {
+  font-size: 15px;
+  font-style: normal;
+  letter-spacing: 0;
+}
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 .contactCallout {
   max-width: 55ch;
   margin-top: 24px;
@@ -670,7 +744,7 @@
 .pause i { color: rgb(var(--accent-rgb)); font-style: normal; font-size: 17px; letter-spacing: 0; }
 
 @media (min-width: 861px) and (max-width: 1200px) {
-  .introductionGrid {
+  .aboutLayout {
     --portrait-width: 110px;
     --portrait-gap: 24px;
   }
@@ -682,9 +756,13 @@
   .shell { --chapter-rail-height: 72px; }
   .chapterRail { font-size: 15px; }
   .chapterRail button { padding: 0 18px; }
-  .introductionGrid {
+  .aboutSinglePanel { padding-bottom: 10px; }
+  .aboutLayout {
     --portrait-gap: clamp(24px, 2vw, 36px);
+    row-gap: 8px;
   }
+  .aboutSinglePanel .projectMeta { margin-bottom: 20px; }
+  .aboutContact { padding-top: 8px; }
   .homeProject h1.introductionTitle { font-size: clamp(32px, 2vw, 46px); }
   .introductionSubtitle { font-size: clamp(26px, 1.65vw, 36px); }
   .availability,
@@ -692,6 +770,35 @@
     width: 100%;
     max-width: none;
   }
+}
+
+@media (min-width: 861px) and (max-height: 900px) {
+  .aboutSinglePanel { padding-top: 16px; padding-bottom: 16px; }
+  .aboutSinglePanel .projectMeta { margin-bottom: 10px; font-size: 11px; }
+  .aboutLayout {
+    --portrait-width: clamp(100px, 9vw, 150px);
+    --portrait-gap: 22px;
+    gap: 10px 22px;
+  }
+  .homeProject h1.introductionTitle { font-size: clamp(20px, 1.45vw, 28px); }
+  .introductionSubtitle { margin-top: 5px; font-size: clamp(17px, 1.2vw, 22px); }
+  .availability { margin-top: 9px; padding-top: 7px; font-size: 13px; }
+  .aboutApproach .cardLabel,
+  .aboutInterests .cardLabel,
+  .personalNote .cardLabel { margin-bottom: 5px; font-size: 10px; }
+  .approachCopy { gap: 4px; max-width: none; }
+  .approachCopy p { font-size: 13px; line-height: 1.28; }
+  .aboutInterests .interestList { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .interestList { font-size: 11px; }
+  .interestList li { padding: 4px 6px 4px 18px; }
+  .interestList li::before { top: 8px; left: 4px; width: 5px; height: 5px; }
+  .personalNote { padding: 10px; }
+  .personalNote > p:last-child { font-size: 11px; line-height: 1.3; }
+  .aboutContact { gap: 12px 20px; padding-top: 8px; }
+  .aboutContact > p { font-size: 12px; }
+  .minimalContactLinks { gap: 5px 13px; }
+  .minimalContactLinks a,
+  .minimalContactLinks button { padding: 4px 0; font-size: 11px; }
 }
 
 @media (max-width: 860px) {
@@ -720,12 +827,21 @@
   .chapter { right: 16px; left: 24px; }
   .homeIntroduction {
     top: 0;
-    bottom: calc(var(--chapter-rail-height) + 14px);
+    bottom: 0;
   }
-  .introductionGrid {
+  .aboutLayout {
     --portrait-width: 75px;
+    display: grid;
+    grid-template-columns: 1fr 75px;
+    grid-template-rows: auto auto auto auto auto;
+    grid-template-areas:
+      "heading portrait"
+      "approach approach"
+      "interests interests"
+      "outside outside"
+      "contact contact";
+    gap: 16px 14px;
   }
-  .introductionBodyCopy { gap: 18px; }
   .homeProject h1.introductionTitle { font-size: min(3.75vw, 26px); }
   .introductionSubtitle { margin-top: 7px; font-size: min(3.5vw, 20px); }
   .availability { margin-top: 13px; padding-top: 10px; font-size: 14px; }
@@ -733,7 +849,7 @@
   .approachCopy p,
   .personalNote > p:last-child,
   .contactCallout { font-size: 15px; line-height: 1.42; }
-  .interestsGrid { grid-template-columns: 1fr; gap: 14px; margin-top: 14px; }
+  .aboutInterests .interestList { grid-template-columns: 1fr; }
   .interestList { font-size: 14px; }
   .interestList li { padding: 6px 8px 6px 24px; }
   .interestList li::before { top: 11px; }
@@ -744,6 +860,8 @@
   .contactLinks { grid-template-columns: repeat(3, 1fr); }
   .contactLinks a { padding: 10px 12px; }
   .contactLinks strong { font-size: 11px; }
+  .aboutContact { grid-template-columns: 1fr; }
+  .minimalContactLinks { justify-content: flex-start; }
   .subtitle { margin-top: 16px; font-size: 20px; }
   .description { display: none; }
   .mediaFrame { margin-top: 18px; }
@@ -760,21 +878,7 @@
 }
 
 @media (max-width: 600px) {
-  .introductionGrid {
-    display: grid;
-    gap: 18px;
-    padding-right: 0;
-  }
-  .headshot {
-    position: relative;
-    top: auto;
-    right: auto;
-    width: 75px;
-    justify-self: end;
-  }
-  .introductionBodyCopy {
-    margin-top: 0;
-  }
+  .aboutLayout { grid-template-columns: 1fr 75px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

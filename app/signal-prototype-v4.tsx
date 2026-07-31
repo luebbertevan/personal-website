@@ -121,6 +121,12 @@ export function SignalPrototypeV4() {
     const shell = shellRef.current;
     const mount = mountRef.current;
     if (!mount || !shell) return;
+    const siteRoot = shell.closest<HTMLElement>("[data-site-root]");
+    const setAccentPalette = (palette: number[]) => {
+      const value = palette.join(", ");
+      shell.style.setProperty("--accent-rgb", value);
+      siteRoot?.style.setProperty("--accent-rgb", value);
+    };
 
     const renderer = new THREE.WebGLRenderer({
       antialias: false,
@@ -529,7 +535,7 @@ export function SignalPrototypeV4() {
         const cssPalette = transition.cssFrom.map((channel, index) => (
           Math.round(THREE.MathUtils.lerp(channel, transition!.cssTo[index], paletteT))
         ));
-        shell.style.setProperty("--accent-rgb", cssPalette.join(", "));
+        setAccentPalette(cssPalette);
 
         if (transitionT >= 1) {
           currentDestination = transition.targetDestination;
@@ -538,7 +544,7 @@ export function SignalPrototypeV4() {
           currentShaderPalette = transition.shaderTo.clone();
           currentCssPalette = [...transition.cssTo];
           carbonUniforms.uPaletteColor.value.copy(currentShaderPalette);
-          shell.style.setProperty("--accent-rgb", currentCssPalette.join(", "));
+          setAccentPalette(currentCssPalette);
           manualCameraTarget = cameraX;
           transition = null;
           transitionT = 0;
@@ -550,7 +556,7 @@ export function SignalPrototypeV4() {
         particleStructureDisturbance = THREE.MathUtils.smoothstep(manualRouteProgress, 0.05, 0.34);
       } else {
         carbonUniforms.uPaletteColor.value.copy(currentShaderPalette);
-        shell.style.setProperty("--accent-rgb", currentCssPalette.join(", "));
+        setAccentPalette(currentCssPalette);
       }
 
       const instantaneousVelocity = delta > 0 ? (cameraX - previousCameraX) / delta : 0;
@@ -733,11 +739,6 @@ export function SignalPrototypeV4() {
     <main ref={shellRef} className={styles.shell}>
       <div ref={mountRef} className={styles.canvas} aria-hidden="true" />
       <div className={styles.grain} aria-hidden="true" />
-
-      <div className={styles.siteIdentity}>
-        <strong>Evan Luebbert</strong>
-        <span>Software Engineer</span>
-      </div>
 
       <nav className={styles.waypoint} aria-label="Portfolio table of contents">
         <button type="button" data-destination-nav onClick={() => navigateToDestination(0)}>

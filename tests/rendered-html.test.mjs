@@ -48,9 +48,11 @@ test("server-renders the approved four-chapter About content", async () => {
 });
 
 test("Home navigation, contact actions, and public assets are wired correctly", async () => {
-  const [source, css, headshot, resume, socialImage] = await Promise.all([
+  const [source, pageSource, css, globalCss, headshot, resume, socialImage] = await Promise.all([
     readFile(new URL("../app/signal-prototype-v4.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/signal-prototype.module.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../public/images/evan-luebbert-headshot.webp", import.meta.url)),
     readFile(new URL("../public/documents/evan-luebbert-resume-2026.pdf", import.meta.url)),
     readFile(new URL("../public/og.png", import.meta.url)),
@@ -58,16 +60,18 @@ test("Home navigation, contact actions, and public assets are wired correctly", 
 
   assert.match(source, /label:\s*"HOME",\s*chapters:\s*4,/);
   assert.match(source, /\['INTRODUCTION', 'APPROACH', 'INTERESTS', 'CONTACT'\]/);
-  assert.match(source, /<strong>Evan Luebbert<\/strong>\s*<span>Software Engineer<\/span>/);
+  assert.match(pageSource, /<strong>Evan Luebbert<\/strong>\s*<span>Software Engineer<\/span>/);
   assert.match(source, /02 \/ APPROACH/);
   assert.match(source, /<h2>Approach<\/h2>/);
   assert.match(source, /<p className=\{styles\.eyebrow\}>SOFTWARE ENGINEER<\/p>\s*<h1>Evan<br \/>Luebbert<\/h1>/);
   assert.match(css, /\.homeProject \.chapterRail \{ grid-template-columns: repeat\(4, 1fr\); \}/);
-  assert.match(css, /\.siteIdentity strong \{[^}]*font-size: clamp\(46px, 2\.9vw, 60px\);/s);
-  assert.match(css, /\.siteIdentity span \{[^}]*font-size: clamp\(24px, 1\.44vw, 28px\);/s);
-  assert.match(css, /animation: identityNameReveal 480ms[^;]*500ms both;/);
-  assert.match(css, /animation: identityTitleReveal 480ms[^;]*700ms both;/);
-  assert.match(css, /\.siteIdentity span \{[^}]*border: 1px solid rgba\(var\(--accent-rgb\), 0\.58\);[^}]*text-shadow: 0 0 14px/s);
+  assert.match(globalCss, /\.site-identity strong \{[^}]*font-size: clamp\(46px, 2\.9vw, 60px\);/s);
+  assert.match(globalCss, /\.site-identity span \{[^}]*font-size: clamp\(24px, 1\.44vw, 28px\);/s);
+  assert.match(globalCss, /animation: identity-name-reveal 480ms[^;]*500ms both;/);
+  assert.match(globalCss, /animation: identity-title-reveal 480ms[^;]*700ms both;/);
+  assert.match(globalCss, /\.site-identity span \{[^}]*border: 1px solid rgba\(var\(--accent-rgb\), 0\.58\);[^}]*text-shadow: 0 0 14px/s);
+  assert.match(pageSource, /className="site-root" data-site-root/);
+  assert.match(source, /siteRoot\?\.style\.setProperty\("--accent-rgb", value\);/);
   assert.doesNotMatch(source, /<i>0[012]<\/i>/);
   assert.match(css, /\.waypoint button \{[^}]*grid-template-columns: 1fr;[^}]*rgba\(5, 5, 7, 0\.76\);/s);
   assert.match(css, /padding-right: clamp\(24px, 2\.2vw, 38px\);/);

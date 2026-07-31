@@ -93,6 +93,7 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.match(css, /\.routeControls button \{[^}]*background: var\(--surface-background\);/s);
   assert.match(css, /\.pause \{[^}]*background: var\(--surface-background\);/s);
   assert.match(css, /\.approachCopy \{[^}]*max-width: 58ch;/s);
+  assert.match(css, /@media \(min-width: 1400px\) and \(min-height: 900px\) \{[\s\S]*\.availability,[\s\S]*\.approachCopy \{[^}]*width: 100%;[^}]*max-width: none;/s);
   assert.match(source, /const HOME_OPENING_DURATION = 4\.75;/);
   assert.match(source, /const PARTICLE_ARRIVAL_START = 0\.38;/);
   assert.match(source, /const PARTICLE_ARRIVAL_END = 0\.70;/);

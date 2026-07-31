@@ -678,6 +678,19 @@
   .introductionSubtitle { font-size: clamp(16px, 1.5vw, 18px); }
 }
 
+@media (min-width: 1400px) and (min-height: 900px) {
+  .introductionGrid {
+    --portrait-gap: clamp(24px, 2vw, 36px);
+  }
+  .homeProject h1.introductionTitle { font-size: clamp(32px, 2vw, 46px); }
+  .introductionSubtitle { font-size: clamp(26px, 1.65vw, 36px); }
+  .availability,
+  .approachCopy {
+    width: 100%;
+    max-width: none;
+  }
+}
+
 @media (max-width: 860px) {
   .shell { min-height: 660px; }
   .waypoint { top: 134px; left: 20px; width: min(310px, calc(100vw - 40px)); }

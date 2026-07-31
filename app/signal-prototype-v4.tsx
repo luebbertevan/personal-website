@@ -14,7 +14,7 @@ import styles from "./signal-prototype.module.css";
 const destinations = [
   {
     label: "ABOUT",
-    chapters: 4,
+    chapters: 3,
     shaderColor: [1.0, 0.25, 0.0625] as const,
     cssColor: [255, 103, 49] as const,
   },
@@ -792,29 +792,26 @@ export function SignalPrototypeV4() {
         <section className={`${styles.chapter} ${styles.homeIntroduction}`} data-project-chapter>
           <div className={styles.projectMeta}><span>ABOUT</span><span>INTRODUCTION</span></div>
           <div className={styles.introductionGrid}>
-            <div className={styles.introductionCopy}>
-              <h1>Evan<br />Luebbert</h1>
-              <p className={styles.homeHeadline}>I’m a passion first software engineer and designer. I build software I believe in.</p>
-              <p className={styles.availability}>Based in New York City. Open to full-time roles and freelance projects.</p>
+            <div className={styles.introductionLead}>
+              <div className={styles.introductionCopy}>
+                <h1 className={styles.homeHeadline}>I’m a passion first software engineer and designer. I build software I believe in.</h1>
+                <p className={styles.availability}>Based in New York City. Open to full-time roles and freelance projects.</p>
+              </div>
+              <figure className={styles.headshot}>
+                {/* The source is pre-cropped and optimized, so native image loading is intentional. */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/images/evan-luebbert-headshot.webp"
+                  alt="Evan Luebbert smiling outdoors."
+                  width="480"
+                  height="600"
+                />
+              </figure>
             </div>
-            <figure className={styles.headshot}>
-              {/* The source is pre-cropped and optimized, so native image loading is intentional. */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/images/evan-luebbert-headshot.webp"
-                alt="Evan Luebbert smiling outdoors."
-                width="960"
-                height="1200"
-              />
-            </figure>
-          </div>
-        </section>
-        <section className={`${styles.chapter} ${styles.homeApproach}`} data-project-chapter>
-          <div className={styles.projectMeta}><span>ABOUT</span><span>APPROACH</span></div>
-          <h2>Approach</h2>
-          <div className={styles.approachCopy}>
-            <p>Engineering provides the unique opportunity to take matters into my own hands and wield technology to build the solutions I wish existed. Being able to solve my own problems is a luxury. The ability to craft solutions for others is a privilege. I’m devoted to making well-designed tools for real people with complicated problems. I follow my imagination, explore unusual solutions, and look for the gaps where software could make a real difference.</p>
-            <p>Everyone has used badly designed software that makes their lives harder. I can fix that. I build clear, seamless workflows around the way real people actually work, so software can be an asset instead of a liability.</p>
+            <div className={styles.approachCopy}>
+              <p>Engineering provides the unique opportunity to take matters into my own hands and wield technology to build the solutions I wish existed. Being able to solve my own problems is a luxury. The ability to craft solutions for others is a privilege. I’m devoted to making well-designed tools for real people with complicated problems. I follow my imagination, explore unusual solutions, and look for the gaps where software could make a real difference.</p>
+              <p>Everyone has used badly designed software that makes their lives harder. I can fix that. I build clear, seamless workflows around the way real people actually work, so software can be an asset instead of a liability.</p>
+            </div>
           </div>
         </section>
         <section className={`${styles.chapter} ${styles.homeInterests}`} data-project-chapter>
@@ -856,7 +853,7 @@ export function SignalPrototypeV4() {
           </div>
         </section>
         <ol className={styles.chapterRail} aria-label="About sequence">
-          {['INTRODUCTION', 'APPROACH', 'INTERESTS', 'CONTACT'].map((label, index) => (
+          {['INTRODUCTION', 'INTERESTS', 'CONTACT'].map((label, index) => (
             <li key={label}><button type="button" data-chapter-index onClick={() => navigateToChapter(index)}>{label}</button></li>
           ))}
         </ol>

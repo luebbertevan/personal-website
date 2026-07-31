@@ -25,7 +25,7 @@ async function render() {
   );
 }
 
-test("server-renders the approved four-chapter About content", async () => {
+test("server-renders the approved three-chapter About content", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
@@ -35,7 +35,7 @@ test("server-renders the approved four-chapter About content", async () => {
   assert.match(html, /passion first software engineer and designer/);
   assert.match(html, /Based in New York City/);
   assert.match(html, /Engineering provides the unique opportunity/);
-  assert.match(html, /Approach/);
+  assert.doesNotMatch(html, />Approach</);
   assert.match(html, /Interests/);
   assert.match(html, /Contact/);
   assert.match(html, /<span>Software Engineer<\/span>/);
@@ -58,14 +58,17 @@ test("About navigation, contact actions, and public assets are wired correctly",
     readFile(new URL("../public/og.png", import.meta.url)),
   ]);
 
-  assert.match(source, /label:\s*"ABOUT",\s*chapters:\s*4,/);
-  assert.match(source, /\['INTRODUCTION', 'APPROACH', 'INTERESTS', 'CONTACT'\]/);
+  assert.match(source, /label:\s*"ABOUT",\s*chapters:\s*3,/);
+  assert.match(source, /\['INTRODUCTION', 'INTERESTS', 'CONTACT'\]/);
   assert.match(pageSource, /<strong>Evan Luebbert<\/strong>\s*<span>Software Engineer<\/span>/);
-  assert.match(source, /<span>ABOUT<\/span><span>APPROACH<\/span>/);
-  assert.match(source, /<h2>Approach<\/h2>/);
+  assert.doesNotMatch(source, /<span>ABOUT<\/span><span>APPROACH<\/span>/);
+  assert.doesNotMatch(source, /<h2>Approach<\/h2>/);
   assert.doesNotMatch(source, /styles\.eyebrow|0[1-4] \//);
   assert.doesNotMatch(source, /data-chapter-index[^>]*><span>/);
-  assert.match(css, /\.homeProject \.chapterRail \{ grid-template-columns: repeat\(4, 1fr\); \}/);
+  assert.match(css, /\.homeProject \.chapterRail \{ grid-template-columns: repeat\(3, 1fr\); \}/);
+  assert.match(css, /\.introductionLead \{[^}]*grid-template-columns: minmax\(0, 1fr\) clamp\(110px, 10vw, 146px\);/s);
+  assert.match(source, /width="480"\s+height="600"/);
+  assert.doesNotMatch(source, /<h1>Evan<br \/>Luebbert<\/h1>/);
   assert.match(globalCss, /\.site-identity strong \{[^}]*font-size: clamp\(52px, 3\.25vw, 68px\);/s);
   assert.match(globalCss, /\.site-identity span \{[^}]*font-size: clamp\(24px, 1\.44vw, 28px\);/s);
   assert.match(globalCss, /animation: identity-name-reveal 480ms[^;]*1s both;/);

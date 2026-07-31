@@ -220,18 +220,29 @@
   line-height: 1.55;
   letter-spacing: 0;
 }
-.homeHeadline {
-  max-width: 22ch;
-  margin: 22px 0 0;
+.introductionTitle,
+.introductionSubtitle {
+  margin: 0;
   font-family: var(--font-geist-sans), sans-serif;
-  font-size: clamp(24px, 1.8vw, 34px);
-  line-height: 1.2;
+  white-space: nowrap;
+}
+.introductionTitle {
+  font-size: clamp(16px, 1.3vw, 24px);
+  font-weight: 430;
+  line-height: 1.15;
   letter-spacing: -0.025em;
+}
+.introductionSubtitle {
+  margin-top: 9px;
+  color: rgba(var(--accent-rgb), 0.9);
+  font-size: clamp(18px, 1.45vw, 26px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
 }
 .homeProject .description { max-width: 64ch; }
 .homeProject .chapterRail { grid-template-columns: repeat(3, 1fr); }
 .homeProject h1 { font-size: clamp(68px, 5.7vw, 98px); }
-.homeProject h1.homeHeadline { font-size: clamp(24px, 1.8vw, 34px); }
+.homeProject h1.introductionTitle { font-size: clamp(16px, 1.3vw, 24px); }
 .homeProject h2 { font-size: clamp(58px, 5vw, 88px); }
 .homeIntroduction {
   top: 0;
@@ -686,8 +697,8 @@
     grid-template-columns: minmax(0, 1fr) 75px;
     gap: 14px;
   }
-  .homeProject h1.homeHeadline { font-size: 18px; }
-  .homeHeadline { margin-top: 15px; font-size: 18px; }
+  .homeProject h1.introductionTitle { font-size: min(3vw, 18px); }
+  .introductionSubtitle { margin-top: 7px; font-size: min(3.5vw, 20px); }
   .availability { margin-top: 13px; padding-top: 10px; font-size: 14px; }
   .approachCopy { gap: 12px; }
   .approachCopy p,
@@ -717,6 +728,16 @@
   .routeControls { right: 20px; bottom: 76px; left: 20px; width: auto; }
   .routeControls button { min-height: 46px; padding: 0 12px; font-size: 12px; }
   .pause { right: auto; bottom: 20px; left: 20px; width: 156px; font-size: 11px; }
+}
+
+@media (max-width: 520px) {
+  .introductionLead {
+    grid-template-columns: 1fr;
+  }
+  .headshot {
+    width: 75px;
+    justify-self: end;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

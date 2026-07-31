@@ -794,7 +794,8 @@ export function SignalPrototypeV4() {
           <div className={styles.introductionGrid}>
             <div className={styles.introductionLead}>
               <div className={styles.introductionCopy}>
-                <h1 className={styles.homeHeadline}>I’m a passion first software engineer and designer. I build software I believe in.</h1>
+                <h1 className={styles.introductionTitle}>I’m a passion first software engineer and designer.</h1>
+                <p className={styles.introductionSubtitle}>I build software I believe in.</p>
                 <p className={styles.availability}>Based in New York City. Open to full-time roles and freelance projects.</p>
               </div>
               <figure className={styles.headshot}>

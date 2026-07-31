@@ -227,7 +227,7 @@
   white-space: nowrap;
 }
 .introductionTitle {
-  font-size: clamp(21px, 1.75vw, 33px);
+  font-size: clamp(21px, 1.75vw, 42px);
   font-weight: 430;
   line-height: 1.05;
   letter-spacing: -0.055em;
@@ -235,14 +235,14 @@
 .introductionSubtitle {
   margin-top: 9px;
   color: rgba(var(--accent-rgb), 0.9);
-  font-size: clamp(18px, 1.45vw, 26px);
+  font-size: clamp(18px, 1.45vw, 34px);
   line-height: 1.15;
   letter-spacing: -0.02em;
 }
 .homeProject .description { max-width: 64ch; }
 .homeProject .chapterRail { grid-template-columns: repeat(3, 1fr); }
 .homeProject h1 { font-size: clamp(68px, 5.7vw, 98px); }
-.homeProject h1.introductionTitle { font-size: clamp(21px, 1.75vw, 33px); }
+.homeProject h1.introductionTitle { font-size: clamp(21px, 1.75vw, 42px); }
 .homeProject h2 { font-size: clamp(58px, 5vw, 88px); }
 .homeIntroduction {
   top: 0;
@@ -250,22 +250,18 @@
   transform: translate3d(var(--chapter-shift), 0, 0);
 }
 .introductionGrid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) clamp(110px, 10vw, 146px);
-  column-gap: clamp(24px, 2.5vw, 42px);
-  row-gap: clamp(24px, 3vh, 34px);
-  align-items: start;
+  --portrait-width: clamp(146px, 12vw, 260px);
+  --portrait-gap: clamp(28px, 3vw, 64px);
+  position: relative;
+  padding-right: calc(var(--portrait-width) + var(--portrait-gap));
 }
 .introductionHeading {
-  grid-column: 1;
-  grid-row: 1;
   min-width: 0;
 }
 .introductionBodyCopy {
   display: grid;
-  grid-column: 1;
-  grid-row: 2;
   gap: clamp(22px, 2.4vh, 28px);
+  margin-top: clamp(28px, 4vh, 52px);
   min-width: 0;
 }
 .availability {
@@ -275,14 +271,15 @@
   border-top: 1px solid rgba(var(--accent-rgb), 0.45);
   color: rgba(247, 244, 241, 0.72);
   font-family: var(--font-geist-sans), sans-serif;
-  font-size: clamp(16px, 1vw, 19px);
+  font-size: clamp(16px, 1vw, 25px);
   line-height: 1.45;
   letter-spacing: 0;
 }
 .headshot {
-  position: relative;
-  grid-column: 2;
-  grid-row: 1;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: var(--portrait-width);
   margin: 0;
   overflow: hidden;
   border: 1px solid rgba(var(--accent-rgb), 0.6);
@@ -315,7 +312,7 @@
 }
 .approachCopy {
   display: grid;
-  max-width: 72ch;
+  max-width: 58ch;
   gap: 14px;
 }
 .approachCopy p,
@@ -324,7 +321,7 @@
   margin: 0;
   color: rgba(247, 244, 241, 0.76);
   font-family: var(--font-geist-sans), sans-serif;
-  font-size: clamp(18px, 1.2vw, 23px);
+  font-size: clamp(18px, 1.2vw, 30px);
   line-height: 1.52;
   letter-spacing: 0;
 }
@@ -672,6 +669,15 @@
 }
 .pause i { color: rgb(var(--accent-rgb)); font-style: normal; font-size: 17px; letter-spacing: 0; }
 
+@media (min-width: 861px) and (max-width: 1200px) {
+  .introductionGrid {
+    --portrait-width: 110px;
+    --portrait-gap: 24px;
+  }
+  .homeProject h1.introductionTitle { font-size: clamp(16px, 1.7vw, 20px); }
+  .introductionSubtitle { font-size: clamp(16px, 1.5vw, 18px); }
+}
+
 @media (max-width: 860px) {
   .shell { min-height: 660px; }
   .waypoint { top: 134px; left: 20px; width: min(310px, calc(100vw - 40px)); }
@@ -701,8 +707,7 @@
     bottom: calc(var(--chapter-rail-height) + 14px);
   }
   .introductionGrid {
-    grid-template-columns: minmax(0, 1fr) 75px;
-    gap: 18px 14px;
+    --portrait-width: 75px;
   }
   .introductionBodyCopy { gap: 18px; }
   .homeProject h1.introductionTitle { font-size: min(3.75vw, 26px); }
@@ -740,17 +745,19 @@
 
 @media (max-width: 600px) {
   .introductionGrid {
-    grid-template-columns: 1fr;
+    display: grid;
+    gap: 18px;
+    padding-right: 0;
   }
   .headshot {
-    grid-column: 1;
-    grid-row: 2;
+    position: relative;
+    top: auto;
+    right: auto;
     width: 75px;
     justify-self: end;
   }
   .introductionBodyCopy {
-    grid-column: 1;
-    grid-row: 3;
+    margin-top: 0;
   }
 }
 

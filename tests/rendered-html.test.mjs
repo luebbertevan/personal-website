@@ -66,14 +66,14 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.doesNotMatch(source, /styles\.eyebrow|0[1-4] \//);
   assert.doesNotMatch(source, /data-chapter-index[^>]*><span>/);
   assert.match(css, /\.homeProject \.chapterRail \{ grid-template-columns: repeat\(3, 1fr\); \}/);
-  assert.match(css, /\.introductionGrid \{[^}]*grid-template-columns: minmax\(0, 1fr\) clamp\(110px, 10vw, 146px\);/s);
+  assert.match(css, /\.introductionGrid \{[^}]*--portrait-width: clamp\(146px, 12vw, 260px\);[^}]*padding-right: calc\(var\(--portrait-width\) \+ var\(--portrait-gap\)\);/s);
   assert.match(source, /width="480"\s+height="600"/);
   assert.doesNotMatch(source, /<h1>Evan<br \/>Luebbert<\/h1>/);
   assert.match(source, /<h1 className=\{styles\.introductionTitle\}>I’m a passion first software engineer and designer\.<\/h1>/);
   assert.match(source, /<p className=\{styles\.introductionSubtitle\}>I build software I believe in\.<\/p>/);
   assert.match(css, /\.introductionTitle,\s*\.introductionSubtitle \{[^}]*white-space: nowrap;/s);
   assert.match(source, /<div className=\{styles\.introductionBodyCopy\}>[\s\S]*className=\{styles\.availability\}[\s\S]*className=\{styles\.approachCopy\}/);
-  assert.match(css, /\.headshot \{[^}]*grid-column: 2;[^}]*grid-row: 1;/s);
+  assert.match(css, /\.headshot \{[^}]*position: absolute;[^}]*top: 0;[^}]*right: 0;[^}]*width: var\(--portrait-width\);/s);
   assert.match(globalCss, /\.site-identity strong \{[^}]*font-size: clamp\(52px, 3\.25vw, 68px\);/s);
   assert.match(globalCss, /\.site-identity span \{[^}]*font-size: clamp\(24px, 1\.44vw, 28px\);/s);
   assert.match(globalCss, /animation: identity-name-reveal 480ms[^;]*1s both;/);
@@ -92,7 +92,7 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.match(css, /\.chapterRail button \{[^}]*width: 100%;[^}]*height: 100%;/s);
   assert.match(css, /\.routeControls button \{[^}]*background: var\(--surface-background\);/s);
   assert.match(css, /\.pause \{[^}]*background: var\(--surface-background\);/s);
-  assert.doesNotMatch(css, /\.introductionGrid \{[^}]*padding-right:/s);
+  assert.match(css, /\.approachCopy \{[^}]*max-width: 58ch;/s);
   assert.match(source, /const HOME_OPENING_DURATION = 4\.75;/);
   assert.match(source, /const PARTICLE_ARRIVAL_START = 0\.38;/);
   assert.match(source, /const PARTICLE_ARRIVAL_END = 0\.70;/);

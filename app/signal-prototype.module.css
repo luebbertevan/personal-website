@@ -253,8 +253,9 @@
 }
 .aboutSinglePanel {
   --about-body-size: clamp(18px, 1.12vw, 25px);
-  --about-approach-size: clamp(14.4px, 0.896vw, 20px);
-  --about-section-label-size: clamp(21px, 1.5vw, 30px);
+  --about-approach-size: var(--about-body-size);
+  --about-intro-title-size: clamp(21px, 1.5vw, 30px);
+  --about-section-label-size: clamp(14px, 1vw, 20px);
   display: flex;
   flex-direction: column;
   padding-bottom: clamp(22px, 2.5vh, 32px);
@@ -800,7 +801,15 @@
     overflow: visible;
   }
   .homeProject h1.introductionTitle {
-    font-size: var(--about-section-label-size);
+    font-size: var(--about-intro-title-size);
+  }
+}
+
+@media (min-width: 1200px) {
+  .availability {
+    width: 100%;
+    max-width: none;
+    white-space: nowrap;
   }
 }
 
@@ -812,12 +821,13 @@
   .aboutLayout {
     --portrait-width: 220px;
     --portrait-gap: clamp(24px, 2vw, 36px);
-    row-gap: 8px;
+    row-gap: 6px;
   }
-  .aboutMain { gap: 16px; }
-  .aboutSinglePanel .projectMeta { margin-bottom: 16px; }
+  .aboutMain { gap: 12px; }
+  .aboutSinglePanel .projectMeta { margin-bottom: 12px; }
   .aboutContact { padding-top: 8px; }
   .introductionSubtitle { font-size: clamp(26px, 1.65vw, 36px); }
+  .availability { margin-top: 14px; }
   .availability,
   .approachCopy {
     width: 100%;
@@ -828,8 +838,8 @@
 @media (min-width: 861px) and (max-height: 900px) {
   .aboutSinglePanel {
     --about-body-size: 16px;
-    --about-approach-size: 12.8px;
-    --about-section-label-size: clamp(20px, 1.45vw, 28px);
+    --about-intro-title-size: clamp(20px, 1.45vw, 28px);
+    --about-section-label-size: clamp(13.333px, 0.967vw, 18.667px);
     padding-top: 16px;
     padding-bottom: 16px;
   }
@@ -900,11 +910,12 @@
     gap: 16px 14px;
   }
   .aboutSinglePanel {
-    --about-section-label-size: clamp(16px, 3.75vw, 22px);
+    --about-intro-title-size: clamp(16px, 3.75vw, 22px);
+    --about-section-label-size: clamp(12px, 2.5vw, 14.667px);
   }
   .aboutMain { gap: 16px; }
   .aboutSidebar { gap: 10px; }
-  .homeProject h1.introductionTitle { font-size: var(--about-section-label-size); }
+  .homeProject h1.introductionTitle { font-size: var(--about-intro-title-size); }
   .introductionSubtitle { margin-top: 7px; font-size: min(3.5vw, 20px); }
   .availability { margin-top: 13px; padding-top: 10px; font-size: 14px; }
   .approachCopy { gap: 12px; }

@@ -80,7 +80,7 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.match(css, /\.aboutSidebar \{[^}]*grid-area: sidebar;[^}]*align-content: start;/s);
   assert.match(css, /\.headshot \{[^}]*position: relative;[^}]*width: 100%;/s);
   assert.match(css, /\.aboutContact \{[^}]*grid-template-columns: 1fr;[^}]*gap: 8px;/s);
-  assert.match(css, /\.aboutSinglePanel \{[^}]*--about-body-size: clamp\(18px, 1\.12vw, 25px\);[^}]*--about-approach-size: clamp\(14\.4px, 0\.896vw, 20px\);[^}]*--about-section-label-size: clamp\(21px, 1\.5vw, 30px\);/s);
+  assert.match(css, /\.aboutSinglePanel \{[^}]*--about-body-size: clamp\(18px, 1\.12vw, 25px\);[^}]*--about-approach-size: var\(--about-body-size\);[^}]*--about-intro-title-size: clamp\(21px, 1\.5vw, 30px\);[^}]*--about-section-label-size: clamp\(14px, 1vw, 20px\);/s);
   assert.match(css, /\.aboutInterests \.interestList \{\s*grid-template-columns: 1fr;/s);
   assert.match(css, /\.minimalContactLinks a,[\s\S]*\.minimalContactLinks button \{[^}]*font-size: var\(--about-body-size\);/s);
   assert.match(css, /\.minimalContactLinks i \{[^}]*font-size: 1em;/s);

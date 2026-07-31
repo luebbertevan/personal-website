@@ -13,7 +13,7 @@ import styles from "./signal-prototype.module.css";
 
 const destinations = [
   {
-    label: "HOME",
+    label: "ABOUT",
     chapters: 4,
     shaderColor: [1.0, 0.25, 0.0625] as const,
     cssColor: [255, 103, 49] as const,
@@ -39,7 +39,8 @@ const CHAPTER_DURATION = 2.45;
 const MANUAL_ARRIVAL_PROGRESS = 0.88;
 const MANUAL_EDGE_DISTANCE = 3.2;
 const HOME_INTRO_DURATION = 4;
-const HOME_CHROME_REVEAL_START = 4.15;
+const PAGE_CONTENT_REVEAL_START = 3;
+const PAGE_CONTENT_REVEAL_END = 3.6;
 const HOME_OPENING_DURATION = 4.75;
 
 type NavigationCommand =
@@ -279,6 +280,14 @@ export function SignalPrototypeV4() {
     };
 
     const wheel = (event: WheelEvent) => {
+      const verticalNavigation = Math.abs(event.deltaY) >= Math.abs(event.deltaX);
+      const chapter = (event.target as Element | null)?.closest<HTMLElement>("[data-project-chapter]");
+      const canScrollChapter = chapter && verticalNavigation && (
+        event.deltaY > 0
+          ? chapter.scrollTop + chapter.clientHeight < chapter.scrollHeight - 1
+          : chapter.scrollTop > 1
+      );
+      if (canScrollChapter) return;
       event.preventDefault();
       if (homeIntroActive) return;
       if (transition || navigationCommandRef.current) return;
@@ -444,9 +453,12 @@ export function SignalPrototypeV4() {
         if (homeIntroElapsed >= HOME_OPENING_DURATION) homeIntroActive = false;
       }
       const homeIntroT = THREE.MathUtils.clamp(homeIntroElapsed / HOME_INTRO_DURATION, 0, 1);
-      const chromePresence = homeIntroActive
-        ? THREE.MathUtils.smoothstep(homeIntroElapsed, HOME_CHROME_REVEAL_START, HOME_OPENING_DURATION)
-        : 1;
+      const pageContentPresence = THREE.MathUtils.smoothstep(
+        homeIntroElapsed,
+        PAGE_CONTENT_REVEAL_START,
+        PAGE_CONTENT_REVEAL_END,
+      );
+      const chromePresence = homeIntroActive ? pageContentPresence : 1;
       shell.style.setProperty("--chrome-presence", chromePresence.toFixed(3));
       pointer.lerp(pointerTarget, 1.0 - Math.exp(-delta * 5.0));
       impulse *= Math.exp(-delta * 2.3);
@@ -593,7 +605,7 @@ export function SignalPrototypeV4() {
         const chapterShifts = bundle.chapters.map(() => 0);
 
         if (homeIntroActive && destinationIndex === 0 && !transition) {
-          const homeReveal = THREE.MathUtils.smoothstep(homeIntroT, 0.88, 0.92);
+          const homeReveal = pageContentPresence;
           panelOpacity = homeReveal;
           chapterOpacities.fill(0);
           chapterOpacities[0] = homeReveal;
@@ -742,7 +754,7 @@ export function SignalPrototypeV4() {
 
       <nav className={styles.waypoint} aria-label="Portfolio table of contents">
         <button type="button" data-destination-nav onClick={() => navigateToDestination(0)}>
-          <strong>HOME</strong>
+          <strong>ABOUT</strong>
         </button>
         <button type="button" data-destination-nav onClick={() => navigateToDestination(1)}>
           <strong>SIGNAL ATLAS</strong>
@@ -754,10 +766,9 @@ export function SignalPrototypeV4() {
 
       <article className={`${styles.project} ${styles.homeProject}`} data-destination-panel="0" aria-hidden="false">
         <section className={`${styles.chapter} ${styles.homeIntroduction}`} data-project-chapter>
-          <div className={styles.projectMeta}><span>HOME / ABOUT</span><span>01 / INTRODUCTION</span></div>
+          <div className={styles.projectMeta}><span>ABOUT</span><span>INTRODUCTION</span></div>
           <div className={styles.introductionGrid}>
             <div className={styles.introductionCopy}>
-              <p className={styles.eyebrow}>SOFTWARE ENGINEER</p>
               <h1>Evan<br />Luebbert</h1>
               <p className={styles.homeHeadline}>I’m a passion first software engineer and designer. I build software I believe in.</p>
               <p className={styles.availability}>Based in New York City. Open to full-time roles and freelance projects.</p>
@@ -775,8 +786,7 @@ export function SignalPrototypeV4() {
           </div>
         </section>
         <section className={`${styles.chapter} ${styles.homeApproach}`} data-project-chapter>
-          <div className={styles.projectMeta}><span>HOME / ABOUT</span><span>02 / APPROACH</span></div>
-          <p className={styles.eyebrow}>APPROACH</p>
+          <div className={styles.projectMeta}><span>ABOUT</span><span>APPROACH</span></div>
           <h2>Approach</h2>
           <div className={styles.approachCopy}>
             <p>Engineering provides the unique opportunity to take matters into my own hands and wield technology to build the solutions I wish existed. Being able to solve my own problems is a luxury. The ability to craft solutions for others is a privilege. I’m devoted to making well-designed tools for real people with complicated problems. I follow my imagination, explore unusual solutions, and look for the gaps where software could make a real difference.</p>
@@ -784,8 +794,7 @@ export function SignalPrototypeV4() {
           </div>
         </section>
         <section className={`${styles.chapter} ${styles.homeInterests}`} data-project-chapter>
-          <div className={styles.projectMeta}><span>HOME / ABOUT</span><span>03 / INTERESTS</span></div>
-          <p className={styles.eyebrow}>WHAT I LIKE WORKING ON</p>
+          <div className={styles.projectMeta}><span>ABOUT</span><span>INTERESTS</span></div>
           <h2>Interests</h2>
           <div className={styles.interestsGrid}>
             <ul className={styles.interestList}>
@@ -797,14 +806,13 @@ export function SignalPrototypeV4() {
               <li>Software where reliability and trust matter</li>
             </ul>
             <div className={styles.personalNote}>
-              <p className={styles.eyebrow}>OUTSIDE OF SOFTWARE</p>
+              <p className={styles.cardLabel}>OUTSIDE OF SOFTWARE</p>
               <p>Outside of software, I’m usually rock climbing, fostering cats, playing tabletop RPGs, or getting way too into strategy games.</p>
             </div>
           </div>
         </section>
         <section className={`${styles.chapter} ${styles.homeContact}`} data-project-chapter>
-          <div className={styles.projectMeta}><span>HOME / ABOUT</span><span>04 / CONTACT</span></div>
-          <p className={styles.eyebrow}>CONTACT</p>
+          <div className={styles.projectMeta}><span>ABOUT</span><span>CONTACT</span></div>
           <h2>Contact</h2>
           <p className={styles.contactCallout}>Working on something interesting? I’m always happy to talk about thoughtful products, tricky engineering problems, or mission-driven work. Send me an email or find me on LinkedIn.</p>
           <div className={styles.emailContact}>
@@ -823,39 +831,35 @@ export function SignalPrototypeV4() {
             <a href="/documents/evan-luebbert-resume-2026.pdf" download="Evan-Luebbert-Resume-2026.pdf"><span>RÉSUMÉ</span><strong>DOWNLOAD PDF</strong><i aria-hidden="true">↓</i></a>
           </div>
         </section>
-        <ol className={styles.chapterRail} aria-label="Home sequence">
+        <ol className={styles.chapterRail} aria-label="About sequence">
           {['INTRODUCTION', 'APPROACH', 'INTERESTS', 'CONTACT'].map((label, index) => (
-            <li key={label}><button type="button" data-chapter-index onClick={() => navigateToChapter(index)}><span>{String(index + 1).padStart(2, '0')}</span>{label}</button></li>
+            <li key={label}><button type="button" data-chapter-index onClick={() => navigateToChapter(index)}>{label}</button></li>
           ))}
         </ol>
       </article>
 
       <article className={styles.project} data-destination-panel="1" aria-hidden="true">
         <section className={styles.chapter} data-project-chapter>
-          <div className={styles.projectMeta}><span>EXAMPLE PROJECT</span><span>01 / INTRODUCTION</span></div>
-          <p className={styles.eyebrow}>SIGNAL ATLAS / BLUE SYSTEM</p>
+          <div className={styles.projectMeta}><span>EXAMPLE PROJECT</span><span>INTRODUCTION</span></div>
           <h1>Signal Atlas</h1>
           <p className={styles.subtitle}>A test case for attaching a complete portfolio story to a living 3D material.</p>
           <p className={styles.continue}>NEXT / PROJECT MEDIA →</p>
         </section>
         <section className={styles.chapter} data-project-chapter>
-          <div className={styles.projectMeta}><span>PROJECT ARTIFACT</span><span>02 / MEDIA</span></div>
-          <p className={styles.eyebrow}>VISUAL SYSTEM / PLACEHOLDER</p>
+          <div className={styles.projectMeta}><span>PROJECT ARTIFACT</span><span>MEDIA</span></div>
           <h2>The work in motion.</h2>
           <div className={styles.mediaFrame} role="img" aria-label="Placeholder for Signal Atlas imagery or video">
             <span>PROJECT MEDIA / 16:9</span><strong>IMAGE OR VIDEO</strong><i />
           </div>
         </section>
         <section className={styles.chapter} data-project-chapter>
-          <div className={styles.projectMeta}><span>PROJECT CONTEXT</span><span>03 / IMPACT</span></div>
-          <p className={styles.eyebrow}>DESCRIPTION / CONTRIBUTION</p>
+          <div className={styles.projectMeta}><span>PROJECT CONTEXT</span><span>IMPACT</span></div>
           <h2>Designed to make complexity legible.</h2>
           <p className={styles.description}>This placeholder chapter shows where the problem, approach, personal contribution, and measurable result can be explained without crowding the visual arrival.</p>
           <dl className={styles.facts}><div><dt>ROLE</dt><dd>DESIGN + BUILD</dd></div><div><dt>FORMAT</dt><dd>INTERACTIVE</dd></div><div><dt>OUTCOME</dt><dd>CASE STUDY</dd></div></dl>
         </section>
         <section className={styles.chapter} data-project-chapter>
-          <div className={styles.projectMeta}><span>PROJECT DESTINATION</span><span>04 / LAUNCH</span></div>
-          <p className={styles.eyebrow}>END OF SIGNAL / EXTERNAL LINK</p>
+          <div className={styles.projectMeta}><span>PROJECT DESTINATION</span><span>LAUNCH</span></div>
           <h2>Explore the complete project.</h2>
           <p className={styles.subtitle}>The final chapter converts the visual journey into a clear next action.</p>
           <div className={styles.tags}><span>INTERACTION DESIGN</span><span>CREATIVE DEVELOPMENT</span></div>
@@ -863,37 +867,33 @@ export function SignalPrototypeV4() {
         </section>
         <ol className={styles.chapterRail} aria-label="Signal Atlas sequence">
           {['INTRO', 'MEDIA', 'IMPACT', 'LAUNCH'].map((label, index) => (
-            <li key={label}><button type="button" data-chapter-index onClick={() => navigateToChapter(index)}><span>{String(index + 1).padStart(2, '0')}</span>{label}</button></li>
+            <li key={label}><button type="button" data-chapter-index onClick={() => navigateToChapter(index)}>{label}</button></li>
           ))}
         </ol>
       </article>
 
       <article className={styles.project} data-destination-panel="2" aria-hidden="true">
         <section className={styles.chapter} data-project-chapter>
-          <div className={styles.projectMeta}><span>EXAMPLE PROJECT</span><span>01 / INTRODUCTION</span></div>
-          <p className={styles.eyebrow}>VELVET CIRCUIT / PINK SYSTEM</p>
+          <div className={styles.projectMeta}><span>EXAMPLE PROJECT</span><span>INTRODUCTION</span></div>
           <h1>Velvet Circuit</h1>
           <p className={styles.subtitle}>A second example showing that each project can own its palette and content rhythm.</p>
           <p className={styles.continue}>NEXT / PROJECT MEDIA →</p>
         </section>
         <section className={styles.chapter} data-project-chapter>
-          <div className={styles.projectMeta}><span>PROJECT ARTIFACT</span><span>02 / MEDIA</span></div>
-          <p className={styles.eyebrow}>IMMERSIVE SYSTEM / PLACEHOLDER</p>
+          <div className={styles.projectMeta}><span>PROJECT ARTIFACT</span><span>MEDIA</span></div>
           <h2>A different visual cadence.</h2>
           <div className={`${styles.mediaFrame} ${styles.mediaFramePink}`} role="img" aria-label="Placeholder for Velvet Circuit imagery or video">
             <span>PROJECT MEDIA / 16:9</span><strong>IMAGE OR VIDEO</strong><i />
           </div>
         </section>
         <section className={styles.chapter} data-project-chapter>
-          <div className={styles.projectMeta}><span>PROJECT CONTEXT</span><span>03 / IMPACT</span></div>
-          <p className={styles.eyebrow}>DESCRIPTION / CONTRIBUTION</p>
+          <div className={styles.projectMeta}><span>PROJECT CONTEXT</span><span>IMPACT</span></div>
           <h2>One framework, unique content.</h2>
           <p className={styles.description}>The structure remains dependable while the project’s typography, media balance, palette, and individual chapters can be tuned to fit its actual story.</p>
           <dl className={styles.facts}><div><dt>ROLE</dt><dd>CREATIVE DIRECTION</dd></div><div><dt>FORMAT</dt><dd>EXPERIENTIAL</dd></div><div><dt>OUTCOME</dt><dd>PROTOTYPE</dd></div></dl>
         </section>
         <section className={styles.chapter} data-project-chapter>
-          <div className={styles.projectMeta}><span>PROJECT DESTINATION</span><span>04 / LAUNCH</span></div>
-          <p className={styles.eyebrow}>END OF SIGNAL / EXTERNAL LINK</p>
+          <div className={styles.projectMeta}><span>PROJECT DESTINATION</span><span>LAUNCH</span></div>
           <h2>Enter Velvet Circuit.</h2>
           <p className={styles.subtitle}>Pink persists across the complete project until another destination is selected.</p>
           <div className={styles.tags}><span>CREATIVE DIRECTION</span><span>EXPERIENTIAL DESIGN</span></div>
@@ -901,7 +901,7 @@ export function SignalPrototypeV4() {
         </section>
         <ol className={styles.chapterRail} aria-label="Velvet Circuit sequence">
           {['INTRO', 'MEDIA', 'IMPACT', 'LAUNCH'].map((label, index) => (
-            <li key={label}><button type="button" data-chapter-index onClick={() => navigateToChapter(index)}><span>{String(index + 1).padStart(2, '0')}</span>{label}</button></li>
+            <li key={label}><button type="button" data-chapter-index onClick={() => navigateToChapter(index)}>{label}</button></li>
           ))}
         </ol>
       </article>

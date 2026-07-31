@@ -1,6 +1,8 @@
 .shell {
   --accent-rgb: 255, 103, 49;
   --chrome-presence: 0;
+  --surface-background: rgba(5, 5, 7, 0.76);
+  --chapter-rail-height: 52px;
   position: relative;
   width: 100vw;
   height: 100svh;
@@ -72,7 +74,7 @@
   color: rgba(247, 244, 241, 0.94);
   background:
     linear-gradient(90deg, rgba(var(--accent-rgb), 0.12), transparent 74%),
-    rgba(5, 5, 7, 0.76);
+    var(--surface-background);
   font-family: inherit;
   text-align: left;
   cursor: pointer;
@@ -97,13 +99,15 @@
 .project {
   --entry-presence: 0;
   --entry-shift: 42px;
-  top: 50%;
+  top: clamp(112px, 12vh, 168px);
   right: clamp(32px, 3vw, 58px);
+  bottom: clamp(24px, 4vh, 52px);
   width: min(880px, 58vw);
-  height: min(760px, 80vh);
   opacity: var(--entry-presence);
-  background: linear-gradient(90deg, rgba(4, 9, 17, 0.74), rgba(4, 9, 17, 0.16) 70%, transparent);
-  transform: translate3d(var(--entry-shift), -50%, 0);
+  background:
+    linear-gradient(90deg, rgba(var(--accent-rgb), 0.035), transparent 72%),
+    var(--surface-background);
+  transform: translate3d(var(--entry-shift), 0, 0);
   transition: background 400ms ease;
   pointer-events: none;
 }
@@ -158,13 +162,19 @@
   --chapter-wipe: 100%;
   --chapter-blur: 5px;
   position: absolute;
-  top: 50%;
+  top: 0;
   right: 0;
+  bottom: calc(var(--chapter-rail-height) + clamp(18px, 2.4vh, 30px));
   left: clamp(32px, 3vw, 52px);
+  padding-top: clamp(20px, 2.8vh, 34px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--accent-rgb), 0.38) transparent;
   opacity: var(--chapter-presence);
   clip-path: inset(0 var(--chapter-wipe) 0 0);
   filter: blur(var(--chapter-blur));
-  transform: translate3d(var(--chapter-shift), -50%, 0);
+  transform: translate3d(var(--chapter-shift), 0, 0);
   pointer-events: none;
   will-change: opacity, clip-path, filter, transform;
 }
@@ -173,11 +183,11 @@
   display: flex;
   gap: 18px;
   justify-content: space-between;
-  margin-bottom: clamp(24px, 3.5vh, 42px);
+  margin-bottom: clamp(18px, 2.5vh, 30px);
   color: rgba(247, 244, 241, 0.48);
   font-size: 14px;
 }
-.eyebrow {
+.cardLabel {
   margin: 0 0 13px;
   color: rgba(var(--accent-rgb), 0.92);
   font-size: 14px;
@@ -191,7 +201,7 @@
   letter-spacing: -0.055em;
 }
 .project h1 { font-size: clamp(72px, 6.6vw, 112px); }
-.project h2 { max-width: 12ch; font-size: clamp(54px, 4.7vw, 80px); }
+.project h2 { max-width: 12ch; font-size: clamp(58px, 5vw, 88px); }
 .subtitle {
   max-width: 43ch;
   margin: 24px 0 0;
@@ -220,10 +230,10 @@
 .homeProject .description { max-width: 64ch; }
 .homeProject .chapterRail { grid-template-columns: repeat(4, 1fr); }
 .homeProject h1 { font-size: clamp(68px, 5.7vw, 98px); }
-.homeProject h2 { font-size: clamp(52px, 4.25vw, 72px); }
+.homeProject h2 { font-size: clamp(58px, 5vw, 88px); }
 .homeIntroduction {
-  top: clamp(28px, 8.5vh, 78px);
-  bottom: 88px;
+  top: 0;
+  bottom: calc(var(--chapter-rail-height) + clamp(18px, 2.4vh, 30px));
   transform: translate3d(var(--chapter-shift), 0, 0);
 }
 .introductionGrid {
@@ -277,12 +287,9 @@
   aspect-ratio: 4 / 5;
   object-fit: cover;
 }
-.homeApproach .projectMeta,
-.homeInterests .projectMeta,
-.homeContact .projectMeta { margin-bottom: clamp(18px, 2.5vh, 30px); }
 .approachCopy {
   display: grid;
-  max-width: 66ch;
+  max-width: 58ch;
   gap: 18px;
   margin-top: 24px;
 }
@@ -292,7 +299,7 @@
   margin: 0;
   color: rgba(247, 244, 241, 0.76);
   font-family: var(--font-geist-sans), sans-serif;
-  font-size: clamp(17px, 1.1vw, 21px);
+  font-size: clamp(18px, 1.2vw, 23px);
   line-height: 1.52;
   letter-spacing: 0;
 }
@@ -335,7 +342,7 @@
   border: 1px solid rgba(var(--accent-rgb), 0.35);
   background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.12), rgba(3, 7, 14, 0.58));
 }
-.personalNote .eyebrow { margin-bottom: 12px; }
+.personalNote .cardLabel { margin-bottom: 12px; }
 .contactCallout {
   max-width: 55ch;
   margin-top: 24px;
@@ -544,6 +551,7 @@
   bottom: 0;
   left: clamp(32px, 3vw, 52px);
   display: grid;
+  height: var(--chapter-rail-height);
   grid-template-columns: repeat(4, 1fr);
   gap: 1px;
   margin: 0;
@@ -555,10 +563,10 @@
 }
 .chapterRail li { min-width: 0; background: rgba(3, 7, 14, 0.82); }
 .chapterRail button {
-  display: grid;
+  display: flex;
   width: 100%;
-  gap: 7px;
-  padding: 13px 11px;
+  padding: 0 11px;
+  align-items: center;
   border: 0;
   color: inherit;
   background: transparent;
@@ -568,7 +576,6 @@
   cursor: pointer;
   transition: color 180ms ease, background 180ms ease;
 }
-.chapterRail button span { color: rgba(var(--accent-rgb), 0.5); }
 .chapterRail button:hover,
 .chapterRail button:focus-visible,
 .chapterRail button[data-active] {
@@ -576,7 +583,6 @@
   background: rgba(var(--accent-rgb), 0.14);
   outline: none;
 }
-.chapterRail button[data-active] span { color: rgb(var(--accent-rgb)); }
 .chapterRail button:disabled { cursor: default; }
 
 .routeControls {
@@ -595,7 +601,7 @@
   justify-content: space-between;
   border: 1px solid rgba(255, 255, 255, 0.22);
   color: rgba(247, 244, 241, 0.78);
-  background: rgba(3, 7, 14, 0.42);
+  background: var(--surface-background);
   font-family: inherit;
   font-size: 14px;
   letter-spacing: 0.1em;
@@ -622,7 +628,7 @@
   justify-content: space-between;
   border: 1px solid rgba(255, 255, 255, 0.22);
   color: rgba(255, 255, 255, 0.78);
-  background: rgba(3, 7, 14, 0.5);
+  background: var(--surface-background);
   font-size: 14px;
   cursor: pointer;
   transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
@@ -649,18 +655,20 @@
     width: auto;
     height: min(470px, 62vh);
     padding: 0;
-    background: linear-gradient(90deg, rgba(4, 9, 17, 0.88), rgba(4, 9, 17, 0.42));
+    background:
+      linear-gradient(90deg, rgba(var(--accent-rgb), 0.035), transparent 72%),
+      var(--surface-background);
     transform: translate3d(0, var(--entry-shift), 0);
   }
   .connector { display: none; }
   .projectMeta { margin-bottom: 20px; font-size: 12px; }
-  .eyebrow { font-size: 12px; }
+  .cardLabel { font-size: 12px; }
   .project h1 { font-size: clamp(54px, 14vw, 78px); }
   .project h2 { font-size: clamp(42px, 11vw, 62px); }
   .chapter { right: 16px; left: 24px; }
   .homeIntroduction {
-    top: 28px;
-    bottom: 60px;
+    top: 0;
+    bottom: calc(var(--chapter-rail-height) + 14px);
   }
   .introductionGrid {
     grid-template-columns: minmax(0, 1fr) 150px;
@@ -694,7 +702,7 @@
   .tags { margin-top: 16px; }
   .chapter > a { min-width: 270px; margin-top: 18px; }
   .chapterRail { right: 16px; left: 24px; font-size: 10px; }
-  .chapterRail button { padding: 9px 6px; }
+  .chapterRail button { padding: 0 8px; }
   .routeControls { right: 20px; bottom: 76px; left: 20px; width: auto; }
   .routeControls button { min-height: 46px; padding: 0 12px; font-size: 12px; }
   .pause { right: auto; bottom: 20px; left: 20px; width: 156px; font-size: 11px; }

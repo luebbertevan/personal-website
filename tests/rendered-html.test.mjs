@@ -65,9 +65,11 @@ test("Home navigation, contact actions, and public assets are wired correctly", 
   assert.match(css, /\.homeProject \.chapterRail \{ grid-template-columns: repeat\(4, 1fr\); \}/);
   assert.match(css, /\.siteIdentity strong \{[^}]*font-size: clamp\(46px, 2\.9vw, 60px\);/s);
   assert.match(css, /\.siteIdentity span \{[^}]*font-size: clamp\(24px, 1\.44vw, 28px\);/s);
-  assert.match(css, /animation: identityNameReveal 480ms[^;]*3\.45s both;/);
-  assert.match(css, /animation: identityTitleReveal 480ms[^;]*3\.98s both;/);
+  assert.match(css, /animation: identityNameReveal 480ms[^;]*500ms both;/);
+  assert.match(css, /animation: identityTitleReveal 480ms[^;]*700ms both;/);
   assert.match(css, /\.siteIdentity span \{[^}]*border: 1px solid rgba\(var\(--accent-rgb\), 0\.58\);[^}]*text-shadow: 0 0 14px/s);
+  assert.doesNotMatch(source, /<i>0[012]<\/i>/);
+  assert.match(css, /\.waypoint button \{[^}]*grid-template-columns: 1fr;[^}]*rgba\(5, 5, 7, 0\.76\);/s);
   assert.match(css, /padding-right: clamp\(24px, 2\.2vw, 38px\);/);
   assert.match(source, /const HOME_INTRO_DURATION = 4;/);
   assert.match(source, /const HOME_CHROME_REVEAL_START = 4\.15;/);

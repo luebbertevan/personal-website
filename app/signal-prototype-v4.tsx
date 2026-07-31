@@ -741,13 +741,13 @@ export function SignalPrototypeV4() {
 
       <nav className={styles.waypoint} aria-label="Portfolio table of contents">
         <button type="button" data-destination-nav onClick={() => navigateToDestination(0)}>
-          <i>00</i><strong>HOME</strong>
+          <strong>HOME</strong>
         </button>
         <button type="button" data-destination-nav onClick={() => navigateToDestination(1)}>
-          <i>01</i><strong>SIGNAL ATLAS</strong>
+          <strong>SIGNAL ATLAS</strong>
         </button>
         <button type="button" data-destination-nav onClick={() => navigateToDestination(2)}>
-          <i>02</i><strong>VELVET CIRCUIT</strong>
+          <strong>VELVET CIRCUIT</strong>
         </button>
       </nav>
 

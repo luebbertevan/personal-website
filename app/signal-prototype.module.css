@@ -679,6 +679,9 @@
 }
 
 @media (min-width: 1400px) and (min-height: 900px) {
+  .shell { --chapter-rail-height: 72px; }
+  .chapterRail { font-size: 15px; }
+  .chapterRail button { padding: 0 18px; }
   .introductionGrid {
     --portrait-gap: clamp(24px, 2vw, 36px);
   }

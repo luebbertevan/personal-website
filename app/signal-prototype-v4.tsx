@@ -792,42 +792,46 @@ export function SignalPrototypeV4() {
         <section className={`${styles.chapter} ${styles.homeIntroduction} ${styles.aboutSinglePanel}`} data-project-chapter>
           <div className={styles.projectMeta}><span>ABOUT</span><span>PROFILE</span></div>
           <div className={styles.aboutLayout}>
-            <div className={styles.introductionHeading}>
-              <h1 className={styles.introductionTitle}>I’m a passion first software engineer and designer.</h1>
-              <p className={styles.introductionSubtitle}>I build software I believe in.</p>
-              <p className={styles.availability}>Based in New York City. Open to full-time roles and freelance projects.</p>
-            </div>
-            <figure className={styles.headshot}>
-              {/* The source is pre-cropped and optimized, so native image loading is intentional. */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/images/evan-luebbert-headshot.webp"
-                alt="Evan Luebbert smiling outdoors."
-                width="480"
-                height="600"
-              />
-            </figure>
-            <section className={styles.aboutApproach} aria-labelledby="about-approach-title">
-              <p className={styles.cardLabel} id="about-approach-title">APPROACH</p>
-              <div className={styles.approachCopy}>
-                <p>Engineering is my superpower. It enables me to wield technology to build a better world.</p>
-                <p>The means to solve my own problems is a luxury. The ability to craft solutions for others is a privilege.</p>
-                <p>I’m devoted to making well-designed tools to tackle complicated problems. I follow my imagination, explore creative solutions, and fill the gaps where software can make a difference. Everyone has used badly designed software that makes their lives harder. I can fix that. I build clear, seamless workflows around the way people actually work, so software can be an asset instead of a liability.</p>
+            <div className={styles.aboutMain}>
+              <div className={styles.introductionHeading}>
+                <h1 className={styles.introductionTitle}>I’m a passion first software engineer and designer.</h1>
+                <p className={styles.introductionSubtitle}>I build software I believe in.</p>
+                <p className={styles.availability}>Based in New York City. Open to full-time roles and freelance projects.</p>
               </div>
-            </section>
-            <section className={styles.aboutInterests} aria-labelledby="about-interests-title">
-              <p className={styles.cardLabel} id="about-interests-title">I LOVE BUILDING</p>
-            <ul className={styles.interestList}>
-              <li>Innovative solutions for noble causes</li>
-              <li>Full-stack applications for complicated workflows</li>
-              <li>Data-heavy tools and visualizations</li>
-              <li>Intuitive and satisfying interfaces</li>
-              <li>Software where reliability and trust matter</li>
-            </ul>
-            </section>
-            <aside className={styles.personalNote}>
-              <p className={styles.cardLabel}>OUTSIDE OF SOFTWARE</p>
-              <p>Outside of software, I’m usually rock climbing, fostering cats, playing tabletop RPGs, or obsessing over strategy games.</p>
+              <section className={styles.aboutApproach} aria-labelledby="about-approach-title">
+                <p className={styles.cardLabel} id="about-approach-title">APPROACH</p>
+                <div className={styles.approachCopy}>
+                  <p>Engineering is my superpower. It enables me to wield technology to build a better world.</p>
+                  <p>The means to solve my own problems is a luxury. The ability to craft solutions for others is a privilege.</p>
+                  <p>I’m devoted to making well-designed tools to tackle complicated problems. I follow my imagination, explore creative solutions, and fill the gaps where software can make a difference. Everyone has used badly designed software that makes their lives harder. I can fix that. I build clear, seamless workflows around the way people actually work, so software can be an asset instead of a liability.</p>
+                </div>
+              </section>
+              <section className={styles.aboutInterests} aria-labelledby="about-interests-title">
+                <p className={styles.cardLabel} id="about-interests-title">I LOVE BUILDING</p>
+                <ul className={styles.interestList}>
+                  <li>Innovative solutions for noble causes</li>
+                  <li>Full-stack applications for complicated workflows</li>
+                  <li>Data-heavy tools and visualizations</li>
+                  <li>Intuitive and satisfying interfaces</li>
+                  <li>Software where reliability and trust matter</li>
+                </ul>
+              </section>
+            </div>
+            <aside className={styles.aboutSidebar} aria-label="Profile details">
+              <figure className={styles.headshot}>
+                {/* The source is pre-cropped and optimized, so native image loading is intentional. */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/images/evan-luebbert-headshot.webp"
+                  alt="Evan Luebbert smiling outdoors."
+                  width="480"
+                  height="600"
+                />
+              </figure>
+              <div className={styles.personalNote}>
+                <p className={styles.cardLabel}>OUTSIDE OF SOFTWARE</p>
+                <p>Outside of software, I’m usually rock climbing, fostering cats, playing tabletop RPGs, or obsessing over strategy games.</p>
+              </div>
             </aside>
             <footer className={styles.aboutContact}>
               <p>Working on something interesting? Send me an email or find me on LinkedIn.</p>

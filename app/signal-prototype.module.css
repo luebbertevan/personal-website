@@ -260,18 +260,28 @@
   display: grid;
   flex: 1;
   grid-template-columns: minmax(0, 1fr) var(--portrait-width);
-  grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(0, 1fr) auto;
   grid-template-areas:
-    "heading portrait"
-    "approach outside"
-    "interests outside"
+    "main sidebar"
     ". ."
     "contact contact";
-  gap: clamp(16px, 2vh, 26px) var(--portrait-gap);
+  gap: clamp(14px, 1.8vh, 22px) var(--portrait-gap);
   align-content: stretch;
 }
+.aboutMain {
+  grid-area: main;
+  display: grid;
+  gap: clamp(15px, 1.8vh, 22px);
+  min-width: 0;
+  align-content: start;
+}
+.aboutSidebar {
+  grid-area: sidebar;
+  display: grid;
+  gap: clamp(10px, 1.2vh, 16px);
+  align-content: start;
+}
 .introductionHeading {
-  grid-area: heading;
   min-width: 0;
 }
 .availability {
@@ -287,7 +297,6 @@
 }
 .headshot {
   position: relative;
-  grid-area: portrait;
   width: 100%;
   margin: 0;
   overflow: hidden;
@@ -330,12 +339,12 @@
   margin: 0;
   color: rgba(247, 244, 241, 0.76);
   font-family: var(--font-geist-sans), sans-serif;
-  font-size: clamp(16px, 1vw, 23px);
-  line-height: 1.42;
+  font-size: clamp(18px, 1.12vw, 25px);
+  line-height: 1.4;
   letter-spacing: 0;
 }
-.aboutApproach { grid-area: approach; min-width: 0; }
-.aboutInterests { grid-area: interests; min-width: 0; }
+.aboutApproach,
+.aboutInterests { min-width: 0; }
 .aboutApproach .cardLabel,
 .aboutInterests .cardLabel { margin-bottom: 8px; }
 .aboutInterests .interestList {
@@ -347,7 +356,7 @@
   margin: 0;
   padding: 0;
   font-family: var(--font-geist-sans), sans-serif;
-  font-size: clamp(14px, 0.88vw, 18px);
+  font-size: clamp(16px, 1vw, 20px);
   line-height: 1.22;
   letter-spacing: 0;
   list-style: none;
@@ -369,20 +378,18 @@
   transform: rotate(45deg);
 }
 .personalNote {
-  grid-area: outside;
-  align-self: start;
   padding: clamp(13px, 1.3vw, 20px);
   border: 1px solid rgba(var(--accent-rgb), 0.35);
   background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.12), rgba(3, 7, 14, 0.58));
 }
 .personalNote .cardLabel { margin-bottom: 8px; }
-.personalNote > p:last-child { font-size: clamp(14px, 0.9vw, 18px); }
+.personalNote > p:last-child { font-size: clamp(16px, 1vw, 20px); }
 .aboutContact {
   grid-area: contact;
   display: grid;
-  grid-template-columns: minmax(220px, 1fr) auto;
-  gap: 18px 28px;
-  align-items: center;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  align-items: start;
   padding-top: 12px;
   border-top: 1px solid rgba(var(--accent-rgb), 0.45);
 }
@@ -390,7 +397,7 @@
   margin: 0;
   color: rgba(247, 244, 241, 0.76);
   font-family: var(--font-geist-sans), sans-serif;
-  font-size: clamp(15px, 0.95vw, 19px);
+  font-size: clamp(17px, 1.05vw, 21px);
   line-height: 1.35;
 }
 .minimalContactLinks {
@@ -398,7 +405,7 @@
   flex-wrap: wrap;
   gap: 8px 18px;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
 }
 .minimalContactLinks a,
 .minimalContactLinks button {
@@ -411,7 +418,7 @@
   color: rgba(247, 244, 241, 0.88);
   background: transparent;
   font: inherit;
-  font-size: 13px;
+  font-size: 14px;
   letter-spacing: 0.03em;
   text-decoration: none;
   cursor: pointer;
@@ -761,6 +768,7 @@
     --portrait-gap: clamp(24px, 2vw, 36px);
     row-gap: 8px;
   }
+  .aboutMain { gap: 16px; }
   .aboutSinglePanel .projectMeta { margin-bottom: 20px; }
   .aboutContact { padding-top: 8px; }
   .homeProject h1.introductionTitle { font-size: clamp(32px, 2vw, 46px); }
@@ -780,25 +788,27 @@
     --portrait-gap: 22px;
     gap: 10px 22px;
   }
+  .aboutMain { gap: 10px; }
+  .aboutSidebar { gap: 8px; }
   .homeProject h1.introductionTitle { font-size: clamp(20px, 1.45vw, 28px); }
   .introductionSubtitle { margin-top: 5px; font-size: clamp(17px, 1.2vw, 22px); }
   .availability { margin-top: 9px; padding-top: 7px; font-size: 13px; }
   .aboutApproach .cardLabel,
   .aboutInterests .cardLabel,
-  .personalNote .cardLabel { margin-bottom: 5px; font-size: 10px; }
-  .approachCopy { gap: 4px; max-width: none; }
-  .approachCopy p { font-size: 13px; line-height: 1.28; }
+  .personalNote .cardLabel { margin-bottom: 5px; font-size: 11px; }
+  .approachCopy { gap: 5px; max-width: none; }
+  .approachCopy p { font-size: 16px; line-height: 1.32; }
   .aboutInterests .interestList { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .interestList { font-size: 11px; }
+  .interestList { font-size: 14px; }
   .interestList li { padding: 4px 6px 4px 18px; }
   .interestList li::before { top: 8px; left: 4px; width: 5px; height: 5px; }
   .personalNote { padding: 10px; }
-  .personalNote > p:last-child { font-size: 11px; line-height: 1.3; }
-  .aboutContact { gap: 12px 20px; padding-top: 8px; }
-  .aboutContact > p { font-size: 12px; }
+  .personalNote > p:last-child { font-size: 14px; line-height: 1.34; }
+  .aboutContact { gap: 6px; padding-top: 8px; }
+  .aboutContact > p { font-size: 15px; }
   .minimalContactLinks { gap: 5px 13px; }
   .minimalContactLinks a,
-  .minimalContactLinks button { padding: 4px 0; font-size: 11px; }
+  .minimalContactLinks button { padding: 4px 0; font-size: 13px; }
 }
 
 @media (max-width: 860px) {
@@ -833,15 +843,15 @@
     --portrait-width: 75px;
     display: grid;
     grid-template-columns: 1fr 75px;
-    grid-template-rows: auto auto auto auto auto;
+    grid-template-rows: auto minmax(0, 1fr) auto;
     grid-template-areas:
-      "heading portrait"
-      "approach approach"
-      "interests interests"
-      "outside outside"
+      "main sidebar"
+      ". ."
       "contact contact";
     gap: 16px 14px;
   }
+  .aboutMain { gap: 16px; }
+  .aboutSidebar { gap: 10px; }
   .homeProject h1.introductionTitle { font-size: min(3.75vw, 26px); }
   .introductionSubtitle { margin-top: 7px; font-size: min(3.5vw, 20px); }
   .availability { margin-top: 13px; padding-top: 10px; font-size: 14px; }

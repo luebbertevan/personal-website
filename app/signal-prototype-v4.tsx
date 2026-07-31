@@ -247,6 +247,16 @@ export function SignalPrototypeV4() {
       finalUniforms.uResolution.value.set(pixelWidth, pixelHeight);
       emberLoom?.resize(pixelWidth, pixelHeight);
 
+      const aboutPanel = shell.querySelector<HTMLElement>('[data-destination-panel="0"]');
+      const examplePanel = shell.querySelector<HTMLElement>('[data-destination-panel="1"]');
+      const shouldScaleAboutPanel = window.matchMedia(
+        "(min-width: 2048px) and (min-height: 1152px)",
+      ).matches;
+      const aboutScale = shouldScaleAboutPanel && aboutPanel && examplePanel
+        ? examplePanel.offsetWidth / Math.max(aboutPanel.offsetWidth, 1)
+        : 1;
+      aboutPanel?.style.setProperty("--about-panel-scale", aboutScale.toFixed(4));
+
       strandAnchor.set(-0.54 * height / width, 0);
       const panel = shell.querySelector<HTMLElement>("[data-destination-panel]");
       if (panel) {

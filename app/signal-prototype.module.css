@@ -113,6 +113,9 @@
 }
 .homeProject {
   --entry-presence: 0;
+  --about-panel-scale: 1;
+  transform: translate3d(var(--entry-shift), 0, 0) scale(var(--about-panel-scale));
+  transform-origin: top right;
 }
 .project::before {
   position: absolute;

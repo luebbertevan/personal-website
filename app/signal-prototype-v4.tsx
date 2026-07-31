@@ -802,7 +802,10 @@ export function SignalPrototypeV4() {
                 <p className={styles.cardLabel} id="about-approach-title">APPROACH</p>
                 <div className={styles.approachCopy}>
                   <p>Engineering is my superpower. It enables me to wield technology to build a better world.</p>
-                  <p>The means to solve my own problems is a luxury. The ability to craft solutions for others is a privilege.</p>
+                  <div className={styles.approachPrinciples}>
+                    <p>Being able to solve my own problems is a luxury.</p>
+                    <p>The ability to craft solutions for others is a privilege.</p>
+                  </div>
                   <p>I’m devoted to making well-designed tools to tackle complicated problems. I follow my imagination, explore creative solutions, and fill the gaps where software can make a difference. Everyone has used badly designed software that makes their lives harder. I can fix that. I build clear, seamless workflows around the way people actually work, so software can be an asset instead of a liability.</p>
                 </div>
               </section>

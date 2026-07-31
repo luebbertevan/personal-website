@@ -35,6 +35,8 @@ test("server-renders the approved single-panel About content", async () => {
   assert.match(html, /passion first software engineer and designer/);
   assert.match(html, /Based in New York City/);
   assert.match(html, /Engineering is my superpower/);
+  assert.match(html, /Being able to solve my own problems is a luxury\./);
+  assert.match(html, /The ability to craft solutions for others is a privilege\./);
   assert.match(html, /Innovative solutions for noble causes/);
   assert.match(html, /obsessing over strategy games/);
   assert.match(html, /Working on something interesting\? Send me an email or find me on LinkedIn\./);
@@ -78,9 +80,10 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.match(css, /\.aboutSidebar \{[^}]*grid-area: sidebar;[^}]*align-content: start;/s);
   assert.match(css, /\.headshot \{[^}]*position: relative;[^}]*width: 100%;/s);
   assert.match(css, /\.aboutContact \{[^}]*grid-template-columns: 1fr;[^}]*gap: 8px;/s);
-  assert.match(css, /\.aboutSinglePanel \{[^}]*--about-body-size: clamp\(18px, 1\.12vw, 25px\);[^}]*--about-section-label-size: clamp\(22px, 1\.4vw, 28px\);/s);
+  assert.match(css, /\.aboutSinglePanel \{[^}]*--about-body-size: clamp\(18px, 1\.12vw, 25px\);[^}]*--about-approach-size: clamp\(14\.4px, 0\.896vw, 20px\);[^}]*--about-section-label-size: clamp\(21px, 1\.5vw, 30px\);/s);
   assert.match(css, /\.aboutInterests \.interestList \{\s*grid-template-columns: 1fr;/s);
   assert.match(css, /\.minimalContactLinks a,[\s\S]*\.minimalContactLinks button \{[^}]*font-size: var\(--about-body-size\);/s);
+  assert.match(css, /\.minimalContactLinks i \{[^}]*font-size: 1em;/s);
   assert.match(globalCss, /\.site-identity strong \{[^}]*font-size: clamp\(52px, 3\.25vw, 68px\);/s);
   assert.match(globalCss, /\.site-identity span \{[^}]*font-size: clamp\(24px, 1\.44vw, 28px\);/s);
   assert.match(globalCss, /animation: identity-name-reveal 480ms[^;]*1s both;/);
@@ -93,7 +96,7 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.match(css, /--surface-background: rgba\(5, 5, 7, 0\.76\);/);
   assert.match(css, /\.project \{[^}]*top: clamp\(112px, 12vh, 168px\);[^}]*bottom: clamp\(24px, 4vh, 52px\);/s);
   assert.match(css, /\.project \{[^}]*width: 58vw;/s);
-  assert.match(css, /\.homeProject \{[^}]*top: clamp\(84px, 9vh, 112px\);[^}]*bottom: clamp\(16px, 2vh, 28px\);[^}]*width: 66vw;/s);
+  assert.match(css, /@media \(min-width: 861px\) \{[\s\S]*\.homeProject \{[^}]*top: clamp\(112px, 12vh, 168px\);[^}]*bottom: auto;[^}]*width: min\(980px, 58vw\);/s);
   assert.match(css, /\.chapter \{[^}]*top: 0;[^}]*right: clamp\(32px, 3vw, 52px\);[^}]*left: clamp\(32px, 3vw, 52px\);[^}]*transform: translate3d\(var\(--chapter-shift\), 0, 0\);/s);
   assert.match(css, /\.projectMeta span:last-child \{ text-align: right; \}/);
   assert.match(css, /\.chapterRail li \{[^}]*height: 100%;/s);

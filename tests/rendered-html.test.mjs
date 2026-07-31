@@ -154,6 +154,7 @@ test("Fosty replaces both example projects with the Origin chapter", async () =>
   assert.equal((source.match(/<article[^>]+data-destination-panel="/g) ?? []).length, 2);
   assert.match(source, /\['PRODUCT', 'DESIGN', 'ENGINEERING', 'OUTCOME'\]/);
   assert.match(source, /href="https:\/\/www\.fosty\.us\/"/);
+  assert.match(source, />Demo Fosty <i aria-hidden="true">↗<\/i><\/a>/);
   assert.match(source, /href="https:\/\/www\.cokittycoalition\.com\/"/);
   assert.match(css, /\.fostyProject \{[\s\S]*--fosty-body-size:/);
   assert.match(css, /\.chapterRail\.fostyChapterRail \{\s*grid-template-columns: repeat\(5, minmax\(0, 1fr\)\);/s);

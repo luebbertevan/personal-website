@@ -25,7 +25,7 @@ async function render() {
   );
 }
 
-test("server-renders the approved four-chapter About content", async () => {
+test("server-renders the approved three-chapter About content", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
@@ -34,9 +34,10 @@ test("server-renders the approved four-chapter About content", async () => {
   assert.match(html, /Evan Luebbert/);
   assert.match(html, /passion first software engineer and designer/);
   assert.match(html, /Based in New York City/);
-  assert.match(html, /Approach/);
+  assert.match(html, /Engineering provides the unique opportunity/);
   assert.match(html, /Interests/);
   assert.match(html, /Contact/);
+  assert.match(html, /<span>Software Engineer<\/span>/);
   assert.match(html, /Evan Luebbert smiling outdoors\./);
   assert.match(html, /<title>Evan Luebbert<\/title>/);
   assert.match(html, /\/og\.png/);
@@ -46,15 +47,20 @@ test("server-renders the approved four-chapter About content", async () => {
 });
 
 test("Home navigation, contact actions, and public assets are wired correctly", async () => {
-  const [source, headshot, resume, socialImage] = await Promise.all([
+  const [source, css, headshot, resume, socialImage] = await Promise.all([
     readFile(new URL("../app/signal-prototype-v4.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/signal-prototype.module.css", import.meta.url), "utf8"),
     readFile(new URL("../public/images/evan-luebbert-headshot.webp", import.meta.url)),
     readFile(new URL("../public/documents/evan-luebbert-resume-2026.pdf", import.meta.url)),
     readFile(new URL("../public/og.png", import.meta.url)),
   ]);
 
-  assert.match(source, /label:\s*"HOME",\s*chapters:\s*4,/);
-  assert.match(source, /\['INTRODUCTION', 'APPROACH', 'INTERESTS', 'CONTACT'\]/);
+  assert.match(source, /label:\s*"HOME",\s*chapters:\s*3,/);
+  assert.match(source, /\['INTRODUCTION', 'INTERESTS', 'CONTACT'\]/);
+  assert.match(source, /<strong>Evan Luebbert<\/strong>\s*<span>Software Engineer<\/span>/);
+  assert.doesNotMatch(source, /02 \/ APPROACH|<h2>Approach<\/h2>/);
+  assert.match(css, /\.homeProject \.chapterRail \{ grid-template-columns: repeat\(3, 1fr\); \}/);
+  assert.match(css, /padding-right: clamp\(24px, 2\.2vw, 38px\);/);
   assert.match(source, /const HOME_INTRO_DURATION = 4;/);
   assert.match(source, /const HOME_CHROME_REVEAL_START = 4\.15;/);
   assert.match(source, /const HOME_OPENING_DURATION = 4\.75;/);

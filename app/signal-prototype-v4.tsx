@@ -14,7 +14,7 @@ import styles from "./signal-prototype.module.css";
 const destinations = [
   {
     label: "HOME",
-    chapters: 4,
+    chapters: 3,
     shaderColor: [1.0, 0.25, 0.0625] as const,
     cssColor: [255, 103, 49] as const,
   },
@@ -734,6 +734,11 @@ export function SignalPrototypeV4() {
       <div ref={mountRef} className={styles.canvas} aria-hidden="true" />
       <div className={styles.grain} aria-hidden="true" />
 
+      <div className={styles.siteIdentity}>
+        <strong>Evan Luebbert</strong>
+        <span>Software Engineer</span>
+      </div>
+
       <nav className={styles.waypoint} aria-label="Portfolio table of contents">
         <button type="button" data-destination-nav onClick={() => navigateToDestination(0)}>
           <i>00</i><strong>HOME</strong>
@@ -751,10 +756,12 @@ export function SignalPrototypeV4() {
           <div className={styles.projectMeta}><span>HOME / ABOUT</span><span>01 / INTRODUCTION</span></div>
           <div className={styles.introductionGrid}>
             <div className={styles.introductionCopy}>
-              <p className={styles.eyebrow}>EVAN LUEBBERT / SOFTWARE ENGINEER + DESIGNER</p>
-              <h1>Evan<br />Luebbert</h1>
               <p className={styles.homeHeadline}>I’m a passion first software engineer and designer. I build software I believe in.</p>
               <p className={styles.availability}>Based in New York City. Open to full-time roles and freelance projects.</p>
+              <div className={styles.introApproach}>
+                <p>Engineering provides the unique opportunity to take matters into my own hands and wield technology to build the solutions I wish existed. Being able to solve my own problems is a luxury. The ability to craft solutions for others is a privilege. I’m devoted to making well-designed tools for real people with complicated problems. I follow my imagination, explore unusual solutions, and look for the gaps where software could make a real difference.</p>
+                <p>Everyone has used badly designed software that makes their lives harder. I can fix that. I build clear, seamless workflows around the way real people actually work, so software can be an asset instead of a liability.</p>
+              </div>
             </div>
             <figure className={styles.headshot}>
               {/* The source is pre-cropped and optimized, so native image loading is intentional. */}
@@ -768,17 +775,8 @@ export function SignalPrototypeV4() {
             </figure>
           </div>
         </section>
-        <section className={`${styles.chapter} ${styles.homeApproach}`} data-project-chapter>
-          <div className={styles.projectMeta}><span>HOME / ABOUT</span><span>02 / APPROACH</span></div>
-          <p className={styles.eyebrow}>APPROACH</p>
-          <h2>Approach</h2>
-          <div className={styles.approachCopy}>
-            <p>Engineering provides the unique opportunity to take matters into my own hands and wield technology to build the solutions I wish existed. Being able to solve my own problems is a luxury. The ability to craft solutions for others is a privilege. I’m devoted to making well-designed tools for real people with complicated problems. I follow my imagination, explore unusual solutions, and look for the gaps where software could make a real difference.</p>
-            <p>Everyone has used badly designed software that makes their lives harder. I can fix that. I build clear, seamless workflows around the way real people actually work, so software can be an asset instead of a liability.</p>
-          </div>
-        </section>
         <section className={`${styles.chapter} ${styles.homeInterests}`} data-project-chapter>
-          <div className={styles.projectMeta}><span>HOME / ABOUT</span><span>03 / INTERESTS</span></div>
+          <div className={styles.projectMeta}><span>HOME / ABOUT</span><span>02 / INTERESTS</span></div>
           <p className={styles.eyebrow}>WHAT I LIKE WORKING ON</p>
           <h2>Interests</h2>
           <div className={styles.interestsGrid}>
@@ -797,7 +795,7 @@ export function SignalPrototypeV4() {
           </div>
         </section>
         <section className={`${styles.chapter} ${styles.homeContact}`} data-project-chapter>
-          <div className={styles.projectMeta}><span>HOME / ABOUT</span><span>04 / CONTACT</span></div>
+          <div className={styles.projectMeta}><span>HOME / ABOUT</span><span>03 / CONTACT</span></div>
           <p className={styles.eyebrow}>CONTACT</p>
           <h2>Contact</h2>
           <p className={styles.contactCallout}>Working on something interesting? I’m always happy to talk about thoughtful products, tricky engineering problems, or mission-driven work. Send me an email or find me on LinkedIn.</p>
@@ -818,7 +816,7 @@ export function SignalPrototypeV4() {
           </div>
         </section>
         <ol className={styles.chapterRail} aria-label="Home sequence">
-          {['INTRODUCTION', 'APPROACH', 'INTERESTS', 'CONTACT'].map((label, index) => (
+          {['INTRODUCTION', 'INTERESTS', 'CONTACT'].map((label, index) => (
             <li key={label}><button type="button" data-chapter-index onClick={() => navigateToChapter(index)}><span>{String(index + 1).padStart(2, '0')}</span>{label}</button></li>
           ))}
         </ol>

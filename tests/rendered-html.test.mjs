@@ -69,7 +69,8 @@ test("Home navigation, contact actions, and public assets are wired correctly", 
   assert.match(globalCss, /\.site-identity span \{[^}]*font-size: clamp\(24px, 1\.44vw, 28px\);/s);
   assert.match(globalCss, /animation: identity-name-reveal 480ms[^;]*1s both;/);
   assert.match(globalCss, /animation: identity-title-reveal 480ms[^;]*1\.5s both;/);
-  assert.match(globalCss, /\.site-identity span \{[^}]*border-bottom: 2px solid rgba\(var\(--accent-rgb\), 0\.9\);[^}]*color-mix\(in srgb, rgb\(var\(--accent-rgb\)\) 72%, white 28%\);[^}]*box-shadow: 0 10px 18px -12px rgba\(var\(--accent-rgb\), 0\.96\);/s);
+  assert.match(globalCss, /\.site-identity span \{[^}]*color-mix\(in srgb, rgb\(var\(--accent-rgb\)\) 72%, white 28%\);[^}]*text-shadow: 0 1px 3px rgba\(3, 3, 5, 0\.92\);/s);
+  assert.doesNotMatch(globalCss, /border-bottom: 2px solid rgba\(var\(--accent-rgb\), 0\.9\)|box-shadow: 0 10px 18px -12px/);
   assert.match(pageSource, /className="site-root" data-site-root/);
   assert.match(source, /siteRoot\?\.style\.setProperty\("--accent-rgb", value\);/);
   assert.doesNotMatch(source, /<i>0[012]<\/i>/);

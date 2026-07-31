@@ -227,10 +227,10 @@
   white-space: nowrap;
 }
 .introductionTitle {
-  font-size: clamp(16px, 1.3vw, 24px);
+  font-size: clamp(22px, 1.95vw, 36px);
   font-weight: 430;
-  line-height: 1.15;
-  letter-spacing: -0.025em;
+  line-height: 1.05;
+  letter-spacing: -0.055em;
 }
 .introductionSubtitle {
   margin-top: 9px;
@@ -242,7 +242,7 @@
 .homeProject .description { max-width: 64ch; }
 .homeProject .chapterRail { grid-template-columns: repeat(3, 1fr); }
 .homeProject h1 { font-size: clamp(68px, 5.7vw, 98px); }
-.homeProject h1.introductionTitle { font-size: clamp(16px, 1.3vw, 24px); }
+.homeProject h1.introductionTitle { font-size: clamp(22px, 1.95vw, 36px); }
 .homeProject h2 { font-size: clamp(58px, 5vw, 88px); }
 .homeIntroduction {
   top: 0;
@@ -253,16 +253,16 @@
   display: grid;
   gap: clamp(24px, 3vh, 34px);
 }
+.introductionHeading { min-width: 0; }
 .introductionLead {
   display: grid;
   grid-template-columns: minmax(0, 1fr) clamp(110px, 10vw, 146px);
   gap: clamp(24px, 2.5vw, 42px);
   align-items: center;
 }
-.introductionCopy { min-width: 0; }
 .availability {
   max-width: 47ch;
-  margin: 20px 0 0;
+  margin: 0;
   padding-top: 14px;
   border-top: 1px solid rgba(var(--accent-rgb), 0.45);
   color: rgba(247, 244, 241, 0.72);
@@ -697,7 +697,7 @@
     grid-template-columns: minmax(0, 1fr) 75px;
     gap: 14px;
   }
-  .homeProject h1.introductionTitle { font-size: min(3vw, 18px); }
+  .homeProject h1.introductionTitle { font-size: min(4vw, 28px); }
   .introductionSubtitle { margin-top: 7px; font-size: min(3.5vw, 20px); }
   .availability { margin-top: 13px; padding-top: 10px; font-size: 14px; }
   .approachCopy { gap: 12px; }

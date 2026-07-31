@@ -792,12 +792,12 @@ export function SignalPrototypeV4() {
         <section className={`${styles.chapter} ${styles.homeIntroduction}`} data-project-chapter>
           <div className={styles.projectMeta}><span>ABOUT</span><span>INTRODUCTION</span></div>
           <div className={styles.introductionGrid}>
+            <div className={styles.introductionHeading}>
+              <h1 className={styles.introductionTitle}>I’m a passion first software engineer and designer.</h1>
+              <p className={styles.introductionSubtitle}>I build software I believe in.</p>
+            </div>
             <div className={styles.introductionLead}>
-              <div className={styles.introductionCopy}>
-                <h1 className={styles.introductionTitle}>I’m a passion first software engineer and designer.</h1>
-                <p className={styles.introductionSubtitle}>I build software I believe in.</p>
-                <p className={styles.availability}>Based in New York City. Open to full-time roles and freelance projects.</p>
-              </div>
+              <p className={styles.availability}>Based in New York City. Open to full-time roles and freelance projects.</p>
               <figure className={styles.headshot}>
                 {/* The source is pre-cropped and optimized, so native image loading is intentional. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}

@@ -117,7 +117,7 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.match(source, /const PANEL_ARRIVAL_END = 0\.985;/);
   assert.match(source, /particleTransitionProgress = homeOpeningT;/);
   assert.match(source, /chapterShifts\[0\] = 18 \* \(1 - homeOpeningT\);/);
-  assert.match(source, /navigationCommandRef\.current = \{ type: "step", value: dominantDelta > 0 \? 1 : -1 \};/);
+  assert.doesNotMatch(source, /addEventListener\("wheel"|dominantDelta|const wheel =/);
   assert.match(source, /<span ref=\{emailRef\}>luebbertevan@gmail\.com<\/span>/);
   assert.match(source, /onClick=\{copyEmail\}/);
   assert.doesNotMatch(source, /href="mailto:luebbertevan@gmail\.com"/);
@@ -147,6 +147,7 @@ test("Fosty replaces both example projects with the Origin chapter", async () =>
   assert.match(html, /fostered 34 kittens through Colorado Kitty Coalition/);
   assert.match(html, /A project that is deeply meaningful to me and represents my character\./);
   assert.match(html, /We need you!/);
+  assert.doesNotMatch(html, /FOSTY \/ CASE STUDY|01 OF 05 \/ ORIGIN|BEFORE FOSTY|THE RESPONSE/);
   assert.doesNotMatch(html, /Signal Atlas|Velvet Circuit|EXAMPLE PROJECT/);
   assert.match(source, /label:\s*"FOSTY",\s*chapters:\s*1,/);
   assert.match(source, /cssColor:\s*\[236, 72, 153\]/);
@@ -156,7 +157,9 @@ test("Fosty replaces both example projects with the Origin chapter", async () =>
   assert.match(source, /href="https:\/\/www\.cokittycoalition\.com\/"/);
   assert.match(css, /\.fostyProject \{[\s\S]*--fosty-body-size:/);
   assert.match(css, /\.chapterRail\.fostyChapterRail \{\s*grid-template-columns: repeat\(5, minmax\(0, 1fr\)\);/s);
-  assert.match(css, /@media \(min-width: 2048px\) and \(min-height: 1152px\) \{\s*\.fostyProject \{ width: 58vw; \}/s);
+  assert.match(css, /@media \(min-width: 2048px\) and \(min-height: 1152px\) \{\s*\.fostyProject \{[^}]*width: 58vw;/s);
+  assert.match(css, /\.fostyCopy \{[^}]*width: 100%;[^}]*max-width: none;/s);
+  assert.match(source, /className=\{`\$\{styles\.minimalContactLinks\} \$\{styles\.fostyLinks\}`\}/);
   assert.match(source, /const aboutScale = shouldScaleAboutPanel && aboutPanel && fostyPanel/);
   assert.match(source, /--reference-panel-height/);
 });

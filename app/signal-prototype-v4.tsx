@@ -297,24 +297,6 @@ export function SignalPrototypeV4() {
       impulse = 1;
     };
 
-    const wheel = (event: WheelEvent) => {
-      const verticalNavigation = Math.abs(event.deltaY) >= Math.abs(event.deltaX);
-      const chapter = (event.target as Element | null)?.closest<HTMLElement>("[data-project-chapter]");
-      const canScrollChapter = chapter && verticalNavigation && (
-        event.deltaY > 0
-          ? chapter.scrollTop + chapter.clientHeight < chapter.scrollHeight - 1
-          : chapter.scrollTop > 1
-      );
-      if (canScrollChapter) return;
-      event.preventDefault();
-      if (homeIntroActive) return;
-      if (transition || navigationCommandRef.current) return;
-      const dominantDelta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
-      if (Math.abs(dominantDelta) < 2) return;
-      navigationCommandRef.current = { type: "step", value: dominantDelta > 0 ? 1 : -1 };
-      impulse = Math.min(1, impulse + 0.16);
-    };
-
     const keydown = (event: KeyboardEvent) => {
       if (homeIntroActive) return;
       if (transition || navigationCommandRef.current) return;
@@ -765,7 +747,6 @@ export function SignalPrototypeV4() {
     window.addEventListener("keydown", keydown);
     shell.addEventListener("pointermove", move);
     shell.addEventListener("pointerdown", excite);
-    shell.addEventListener("wheel", wheel, { passive: false });
     animationFrame = requestAnimationFrame(animate);
 
     return () => {
@@ -775,7 +756,6 @@ export function SignalPrototypeV4() {
       window.removeEventListener("keydown", keydown);
       shell.removeEventListener("pointermove", move);
       shell.removeEventListener("pointerdown", excite);
-      shell.removeEventListener("wheel", wheel);
       renderTarget.dispose();
       emberLoom?.dispose();
       carbonMaterial.dispose();
@@ -867,36 +847,22 @@ export function SignalPrototypeV4() {
 
       <article className={`${styles.project} ${styles.fostyProject}`} data-destination-panel="1" aria-hidden="true">
         <section className={`${styles.chapter} ${styles.fostyOrigin}`} data-project-chapter>
-          <div className={styles.projectMeta}><span>FOSTY / CASE STUDY</span><span>01 OF 05 / ORIGIN</span></div>
-          <div className={styles.fostyLayout}>
-            <div className={styles.fostyMain}>
-              <div className={styles.fostyHeading}>
-                <p className={styles.cardLabel}>FOUNDER · FULL-STACK ENGINEER · PRODUCT DESIGNER</p>
-                <h1>Fosty</h1>
-                <p className={styles.fostyDate}>2025 TO PRESENT</p>
-              </div>
-              <h2 className={styles.fostyStatement}>A project that is deeply meaningful to me and represents my character.</h2>
-              <div className={styles.fostyCopy}>
-                <p>Fosty is a foster coordination platform I founded and built for animal shelters and rescues. Before moving to NYC, I fostered 34 kittens through Colorado Kitty Coalition. I watched their team struggle with urgent care coordination split across texts, email chains, Instagram DMs, and messy Google Sheets.</p>
-                <p>In rescue, that friction can have a serious impact on outcomes. An animal in a critical condition deserves timely intervention, and disorganized communication can have tragic consequences. I reached out to the rescue with the proposal for Fosty, and they were ecstatic. I will always remember the response I got: <strong>“We need you!”</strong> So, I became their engineering and design partner.</p>
-              </div>
+          <div className={styles.projectMeta}><span>FOSTY</span></div>
+          <div className={styles.fostyMain}>
+            <div className={styles.fostyHeading}>
+              <p className={styles.cardLabel}>FOUNDER · FULL-STACK ENGINEER · PRODUCT DESIGNER</p>
+              <h1>Fosty</h1>
+              <p className={styles.fostyDate}>2025 TO PRESENT</p>
             </div>
-            <aside className={styles.fostySidebar} aria-label="Fosty origin highlights">
-              <div className={styles.fostyMetric}>
-                <span>BEFORE FOSTY</span>
-                <strong>34</strong>
-                <p>KITTENS FOSTERED</p>
-              </div>
-              <div className={styles.fostySignal}>
-                <span>THE RESPONSE</span>
-                <blockquote>“We need you!”</blockquote>
-                <p>COLORADO KITTY COALITION</p>
-              </div>
-              <div className={styles.fostyActions}>
-                <a href="https://www.fosty.us/" target="_blank" rel="noreferrer">OPEN FOSTY <i aria-hidden="true">↗</i></a>
-                <a href="https://www.cokittycoalition.com/" target="_blank" rel="noreferrer">VISIT COLORADO KITTY COALITION <i aria-hidden="true">↗</i></a>
-              </div>
-            </aside>
+            <h2 className={styles.fostyStatement}>A project that is deeply meaningful to me and represents my character.</h2>
+            <div className={styles.fostyCopy}>
+              <p>Fosty is a foster coordination platform I founded and built for animal shelters and rescues. Before moving to NYC, I fostered 34 kittens through Colorado Kitty Coalition. I watched their team struggle with urgent care coordination split across texts, email chains, Instagram DMs, and messy Google Sheets.</p>
+              <p>In rescue, that friction can have a serious impact on outcomes. An animal in a critical condition deserves timely intervention, and disorganized communication can have tragic consequences. I reached out to the rescue with the proposal for Fosty, and they were ecstatic. I will always remember the response I got: <strong>“We need you!”</strong> So, I became their engineering and design partner.</p>
+            </div>
+            <nav className={`${styles.minimalContactLinks} ${styles.fostyLinks}`} aria-label="Fosty links">
+              <a href="https://www.fosty.us/" target="_blank" rel="noreferrer">Open Fosty <i aria-hidden="true">↗</i></a>
+              <a href="https://www.cokittycoalition.com/" target="_blank" rel="noreferrer">Colorado Kitty Coalition <i aria-hidden="true">↗</i></a>
+            </nav>
           </div>
         </section>
         <ol className={`${styles.chapterRail} ${styles.fostyChapterRail}`} aria-label="Fosty case study chapters">

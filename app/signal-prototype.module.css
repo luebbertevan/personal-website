@@ -427,7 +427,7 @@
 }
 
 .fostyProject {
-  --fosty-body-size: clamp(16px, 0.98vw, 20px);
+  --fosty-body-size: clamp(18px, 1.12vw, 25px);
 }
 .fostyOrigin {
   padding-bottom: clamp(18px, 2.4vh, 30px);
@@ -441,6 +441,7 @@
 .fostyMain {
   display: grid;
   gap: clamp(18px, 2.2vh, 28px);
+  width: 100%;
   min-width: 0;
 }
 .fostyHeading {
@@ -465,14 +466,15 @@
   font-size: 12px;
 }
 .project h2.fostyStatement {
-  max-width: 20ch;
+  max-width: 28ch;
   font-size: clamp(31px, 2.55vw, 46px);
   line-height: 1.02;
   letter-spacing: -0.045em;
 }
 .fostyCopy {
   display: grid;
-  max-width: 62ch;
+  width: 100%;
+  max-width: none;
   gap: 12px;
 }
 .fostyCopy p {
@@ -486,6 +488,15 @@
 .fostyCopy strong {
   color: color-mix(in srgb, rgb(var(--accent-rgb)) 72%, white 28%);
   font-weight: 540;
+}
+.fostyLinks {
+  width: 100%;
+  gap: 8px clamp(24px, 2.2vw, 44px);
+  padding-top: clamp(12px, 1.5vh, 18px);
+  border-top: 1px solid rgba(var(--accent-rgb), 0.45);
+}
+.fostyLinks a {
+  font-size: var(--fosty-body-size);
 }
 .fostySidebar {
   display: grid;
@@ -993,7 +1004,6 @@
   .chapterRail > li > span { padding: 0 18px; }
   .fostyChapterRail button,
   .fostyChapterRail > li > span { padding: 0 10px; }
-  .fostyProject { --fosty-body-size: 18px; }
   .aboutSinglePanel {
     --about-body-size: 19.2px;
     --about-intro-title-size: 24px;
@@ -1033,7 +1043,12 @@
 }
 
 @media (min-width: 2048px) and (min-height: 1152px) {
-  .fostyProject { width: 58vw; }
+  .fostyProject {
+    --fosty-body-size: clamp(22px, 1.12vw, 34px);
+    width: 58vw;
+  }
+  .fostyHeading .cardLabel,
+  .fostyDate { font-size: clamp(15px, 0.72vw, 21px); }
 }
 
 @media (min-width: 861px) and (max-height: 900px) {

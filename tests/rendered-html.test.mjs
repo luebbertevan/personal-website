@@ -66,14 +66,14 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.doesNotMatch(source, /styles\.eyebrow|0[1-4] \//);
   assert.doesNotMatch(source, /data-chapter-index[^>]*><span>/);
   assert.match(css, /\.homeProject \.chapterRail \{ grid-template-columns: repeat\(3, 1fr\); \}/);
-  assert.match(css, /\.introductionLead \{[^}]*grid-template-columns: minmax\(0, 1fr\) clamp\(110px, 10vw, 146px\);/s);
+  assert.match(css, /\.introductionGrid \{[^}]*grid-template-columns: minmax\(0, 1fr\) clamp\(110px, 10vw, 146px\);/s);
   assert.match(source, /width="480"\s+height="600"/);
   assert.doesNotMatch(source, /<h1>Evan<br \/>Luebbert<\/h1>/);
   assert.match(source, /<h1 className=\{styles\.introductionTitle\}>I’m a passion first software engineer and designer\.<\/h1>/);
   assert.match(source, /<p className=\{styles\.introductionSubtitle\}>I build software I believe in\.<\/p>/);
   assert.match(css, /\.introductionTitle,\s*\.introductionSubtitle \{[^}]*white-space: nowrap;/s);
   assert.match(source, /<div className=\{styles\.introductionBodyCopy\}>[\s\S]*className=\{styles\.availability\}[\s\S]*className=\{styles\.approachCopy\}/);
-  assert.match(css, /\.introductionLead \{[^}]*align-items: start;/s);
+  assert.match(css, /\.headshot \{[^}]*grid-column: 2;[^}]*grid-row: 1;/s);
   assert.match(globalCss, /\.site-identity strong \{[^}]*font-size: clamp\(52px, 3\.25vw, 68px\);/s);
   assert.match(globalCss, /\.site-identity span \{[^}]*font-size: clamp\(24px, 1\.44vw, 28px\);/s);
   assert.match(globalCss, /animation: identity-name-reveal 480ms[^;]*1s both;/);

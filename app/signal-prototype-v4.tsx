@@ -796,25 +796,23 @@ export function SignalPrototypeV4() {
               <h1 className={styles.introductionTitle}>I’m a passion first software engineer and designer.</h1>
               <p className={styles.introductionSubtitle}>I build software I believe in.</p>
             </div>
-            <div className={styles.introductionLead}>
-              <div className={styles.introductionBodyCopy}>
-                <p className={styles.availability}>Based in New York City. Open to full-time roles and freelance projects.</p>
-                <div className={styles.approachCopy}>
-                  <p>Engineering provides the unique opportunity to take matters into my own hands and wield technology to build the solutions I wish existed. Being able to solve my own problems is a luxury. The ability to craft solutions for others is a privilege. I’m devoted to making well-designed tools for real people with complicated problems. I follow my imagination, explore unusual solutions, and look for the gaps where software could make a real difference.</p>
-                  <p>Everyone has used badly designed software that makes their lives harder. I can fix that. I build clear, seamless workflows around the way real people actually work, so software can be an asset instead of a liability.</p>
-                </div>
+            <div className={styles.introductionBodyCopy}>
+              <p className={styles.availability}>Based in New York City. Open to full-time roles and freelance projects.</p>
+              <div className={styles.approachCopy}>
+                <p>Engineering provides the unique opportunity to take matters into my own hands and wield technology to build the solutions I wish existed. Being able to solve my own problems is a luxury. The ability to craft solutions for others is a privilege. I’m devoted to making well-designed tools for real people with complicated problems. I follow my imagination, explore unusual solutions, and look for the gaps where software could make a real difference.</p>
+                <p>Everyone has used badly designed software that makes their lives harder. I can fix that. I build clear, seamless workflows around the way real people actually work, so software can be an asset instead of a liability.</p>
               </div>
-              <figure className={styles.headshot}>
-                {/* The source is pre-cropped and optimized, so native image loading is intentional. */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/images/evan-luebbert-headshot.webp"
-                  alt="Evan Luebbert smiling outdoors."
-                  width="480"
-                  height="600"
-                />
-              </figure>
             </div>
+            <figure className={styles.headshot}>
+              {/* The source is pre-cropped and optimized, so native image loading is intentional. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/images/evan-luebbert-headshot.webp"
+                alt="Evan Luebbert smiling outdoors."
+                width="480"
+                height="600"
+              />
+            </figure>
           </div>
         </section>
         <section className={`${styles.chapter} ${styles.homeInterests}`} data-project-chapter>

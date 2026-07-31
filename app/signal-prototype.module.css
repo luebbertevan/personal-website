@@ -251,17 +251,20 @@
 }
 .introductionGrid {
   display: grid;
-  gap: clamp(24px, 3vh, 34px);
-}
-.introductionHeading { min-width: 0; }
-.introductionLead {
-  display: grid;
   grid-template-columns: minmax(0, 1fr) clamp(110px, 10vw, 146px);
-  gap: clamp(24px, 2.5vw, 42px);
+  column-gap: clamp(24px, 2.5vw, 42px);
+  row-gap: clamp(24px, 3vh, 34px);
   align-items: start;
+}
+.introductionHeading {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
 }
 .introductionBodyCopy {
   display: grid;
+  grid-column: 1;
+  grid-row: 2;
   gap: clamp(22px, 2.4vh, 28px);
   min-width: 0;
 }
@@ -278,6 +281,8 @@
 }
 .headshot {
   position: relative;
+  grid-column: 2;
+  grid-row: 1;
   margin: 0;
   overflow: hidden;
   border: 1px solid rgba(var(--accent-rgb), 0.6);
@@ -696,11 +701,8 @@
     bottom: calc(var(--chapter-rail-height) + 14px);
   }
   .introductionGrid {
-    gap: 18px;
-  }
-  .introductionLead {
     grid-template-columns: minmax(0, 1fr) 75px;
-    gap: 14px;
+    gap: 18px 14px;
   }
   .introductionBodyCopy { gap: 18px; }
   .homeProject h1.introductionTitle { font-size: min(3.75vw, 26px); }
@@ -736,13 +738,19 @@
   .pause { right: auto; bottom: 20px; left: 20px; width: 156px; font-size: 11px; }
 }
 
-@media (max-width: 520px) {
-  .introductionLead {
+@media (max-width: 600px) {
+  .introductionGrid {
     grid-template-columns: 1fr;
   }
   .headshot {
+    grid-column: 1;
+    grid-row: 2;
     width: 75px;
     justify-self: end;
+  }
+  .introductionBodyCopy {
+    grid-column: 1;
+    grid-row: 3;
   }
 }
 

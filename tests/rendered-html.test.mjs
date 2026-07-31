@@ -65,11 +65,11 @@ test("Home navigation, contact actions, and public assets are wired correctly", 
   assert.match(source, /<h2>Approach<\/h2>/);
   assert.match(source, /<p className=\{styles\.eyebrow\}>SOFTWARE ENGINEER<\/p>\s*<h1>Evan<br \/>Luebbert<\/h1>/);
   assert.match(css, /\.homeProject \.chapterRail \{ grid-template-columns: repeat\(4, 1fr\); \}/);
-  assert.match(globalCss, /\.site-identity strong \{[^}]*font-size: clamp\(46px, 2\.9vw, 60px\);/s);
+  assert.match(globalCss, /\.site-identity strong \{[^}]*font-size: clamp\(52px, 3\.25vw, 68px\);/s);
   assert.match(globalCss, /\.site-identity span \{[^}]*font-size: clamp\(24px, 1\.44vw, 28px\);/s);
   assert.match(globalCss, /animation: identity-name-reveal 480ms[^;]*1s both;/);
   assert.match(globalCss, /animation: identity-title-reveal 480ms[^;]*1\.5s both;/);
-  assert.match(globalCss, /\.site-identity span \{[^}]*border-left: 2px solid rgba\(var\(--accent-rgb\), 0\.88\);[^}]*color-mix\(in srgb, rgb\(var\(--accent-rgb\)\) 72%, white 28%\);[^}]*0 0 34px rgba\(var\(--accent-rgb\), 0\.42\);/s);
+  assert.match(globalCss, /\.site-identity span \{[^}]*border-bottom: 2px solid rgba\(var\(--accent-rgb\), 0\.9\);[^}]*color-mix\(in srgb, rgb\(var\(--accent-rgb\)\) 72%, white 28%\);[^}]*box-shadow: 0 10px 18px -12px rgba\(var\(--accent-rgb\), 0\.96\);/s);
   assert.match(pageSource, /className="site-root" data-site-root/);
   assert.match(source, /siteRoot\?\.style\.setProperty\("--accent-rgb", value\);/);
   assert.doesNotMatch(source, /<i>0[012]<\/i>/);

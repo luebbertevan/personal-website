@@ -25,7 +25,7 @@ async function render() {
   );
 }
 
-test("server-renders the approved three-chapter About content", async () => {
+test("server-renders the approved four-chapter About content", async () => {
   const response = await render();
   assert.equal(response.status, 200);
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
@@ -35,6 +35,7 @@ test("server-renders the approved three-chapter About content", async () => {
   assert.match(html, /passion first software engineer and designer/);
   assert.match(html, /Based in New York City/);
   assert.match(html, /Engineering provides the unique opportunity/);
+  assert.match(html, /Approach/);
   assert.match(html, /Interests/);
   assert.match(html, /Contact/);
   assert.match(html, /<span>Software Engineer<\/span>/);
@@ -55,11 +56,15 @@ test("Home navigation, contact actions, and public assets are wired correctly", 
     readFile(new URL("../public/og.png", import.meta.url)),
   ]);
 
-  assert.match(source, /label:\s*"HOME",\s*chapters:\s*3,/);
-  assert.match(source, /\['INTRODUCTION', 'INTERESTS', 'CONTACT'\]/);
+  assert.match(source, /label:\s*"HOME",\s*chapters:\s*4,/);
+  assert.match(source, /\['INTRODUCTION', 'APPROACH', 'INTERESTS', 'CONTACT'\]/);
   assert.match(source, /<strong>Evan Luebbert<\/strong>\s*<span>Software Engineer<\/span>/);
-  assert.doesNotMatch(source, /02 \/ APPROACH|<h2>Approach<\/h2>/);
-  assert.match(css, /\.homeProject \.chapterRail \{ grid-template-columns: repeat\(3, 1fr\); \}/);
+  assert.match(source, /02 \/ APPROACH/);
+  assert.match(source, /<h2>Approach<\/h2>/);
+  assert.match(source, /<p className=\{styles\.eyebrow\}>SOFTWARE ENGINEER<\/p>\s*<h1>Evan<br \/>Luebbert<\/h1>/);
+  assert.match(css, /\.homeProject \.chapterRail \{ grid-template-columns: repeat\(4, 1fr\); \}/);
+  assert.match(css, /\.siteIdentity strong \{[^}]*font-size: clamp\(46px, 2\.9vw, 60px\);/s);
+  assert.match(css, /\.siteIdentity span \{[^}]*font-size: clamp\(24px, 1\.44vw, 28px\);/s);
   assert.match(css, /padding-right: clamp\(24px, 2\.2vw, 38px\);/);
   assert.match(source, /const HOME_INTRO_DURATION = 4;/);
   assert.match(source, /const HOME_CHROME_REVEAL_START = 4\.15;/);

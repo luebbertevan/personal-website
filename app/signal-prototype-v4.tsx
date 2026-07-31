@@ -797,7 +797,13 @@ export function SignalPrototypeV4() {
               <p className={styles.introductionSubtitle}>I build software I believe in.</p>
             </div>
             <div className={styles.introductionLead}>
-              <p className={styles.availability}>Based in New York City. Open to full-time roles and freelance projects.</p>
+              <div className={styles.introductionBodyCopy}>
+                <p className={styles.availability}>Based in New York City. Open to full-time roles and freelance projects.</p>
+                <div className={styles.approachCopy}>
+                  <p>Engineering provides the unique opportunity to take matters into my own hands and wield technology to build the solutions I wish existed. Being able to solve my own problems is a luxury. The ability to craft solutions for others is a privilege. I’m devoted to making well-designed tools for real people with complicated problems. I follow my imagination, explore unusual solutions, and look for the gaps where software could make a real difference.</p>
+                  <p>Everyone has used badly designed software that makes their lives harder. I can fix that. I build clear, seamless workflows around the way real people actually work, so software can be an asset instead of a liability.</p>
+                </div>
+              </div>
               <figure className={styles.headshot}>
                 {/* The source is pre-cropped and optimized, so native image loading is intentional. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -808,10 +814,6 @@ export function SignalPrototypeV4() {
                   height="600"
                 />
               </figure>
-            </div>
-            <div className={styles.approachCopy}>
-              <p>Engineering provides the unique opportunity to take matters into my own hands and wield technology to build the solutions I wish existed. Being able to solve my own problems is a luxury. The ability to craft solutions for others is a privilege. I’m devoted to making well-designed tools for real people with complicated problems. I follow my imagination, explore unusual solutions, and look for the gaps where software could make a real difference.</p>
-              <p>Everyone has used badly designed software that makes their lives harder. I can fix that. I build clear, seamless workflows around the way real people actually work, so software can be an asset instead of a liability.</p>
             </div>
           </div>
         </section>

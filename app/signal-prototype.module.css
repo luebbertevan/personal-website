@@ -258,7 +258,12 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) clamp(110px, 10vw, 146px);
   gap: clamp(24px, 2.5vw, 42px);
-  align-items: center;
+  align-items: start;
+}
+.introductionBodyCopy {
+  display: grid;
+  gap: clamp(22px, 2.4vh, 28px);
+  min-width: 0;
 }
 .availability {
   max-width: 47ch;
@@ -697,6 +702,7 @@
     grid-template-columns: minmax(0, 1fr) 75px;
     gap: 14px;
   }
+  .introductionBodyCopy { gap: 18px; }
   .homeProject h1.introductionTitle { font-size: min(3.75vw, 26px); }
   .introductionSubtitle { margin-top: 7px; font-size: min(3.5vw, 20px); }
   .availability { margin-top: 13px; padding-top: 10px; font-size: 14px; }

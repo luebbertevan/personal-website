@@ -72,6 +72,8 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.match(source, /<h1 className=\{styles\.introductionTitle\}>I’m a passion first software engineer and designer\.<\/h1>/);
   assert.match(source, /<p className=\{styles\.introductionSubtitle\}>I build software I believe in\.<\/p>/);
   assert.match(css, /\.introductionTitle,\s*\.introductionSubtitle \{[^}]*white-space: nowrap;/s);
+  assert.match(source, /<div className=\{styles\.introductionBodyCopy\}>[\s\S]*className=\{styles\.availability\}[\s\S]*className=\{styles\.approachCopy\}/);
+  assert.match(css, /\.introductionLead \{[^}]*align-items: start;/s);
   assert.match(globalCss, /\.site-identity strong \{[^}]*font-size: clamp\(52px, 3\.25vw, 68px\);/s);
   assert.match(globalCss, /\.site-identity span \{[^}]*font-size: clamp\(24px, 1\.44vw, 28px\);/s);
   assert.match(globalCss, /animation: identity-name-reveal 480ms[^;]*1s both;/);

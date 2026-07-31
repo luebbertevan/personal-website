@@ -160,6 +160,12 @@ test("Fosty replaces both example projects with the Origin chapter", async () =>
   assert.match(css, /@media \(min-width: 2048px\) and \(min-height: 1152px\) \{\s*\.fostyProject \{[^}]*width: 58vw;/s);
   assert.match(css, /\.fostyCopy \{[^}]*width: 100%;[^}]*max-width: none;/s);
   assert.match(source, /className=\{`\$\{styles\.minimalContactLinks\} \$\{styles\.fostyLinks\}`\}/);
+  assert.match(source, /data-about-reference-label/);
+  assert.match(source, /data-about-reference-link/);
+  assert.match(source, /--about-reference-label-size/);
+  assert.match(source, /--about-reference-link-size/);
+  assert.match(css, /\.fostyOrigin \.projectMeta \{\s*font-size: var\(--about-reference-label-size\);/s);
+  assert.match(css, /\.minimalContactLinks\.fostyLinks a \{\s*font-size: var\(--about-reference-link-size\);/s);
   assert.match(source, /const aboutScale = shouldScaleAboutPanel && aboutPanel && fostyPanel/);
   assert.match(source, /--reference-panel-height/);
 });

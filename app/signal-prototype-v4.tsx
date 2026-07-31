@@ -250,6 +250,14 @@ export function SignalPrototypeV4() {
         ? fostyPanel.offsetWidth / Math.max(aboutPanel.offsetWidth, 1)
         : 1;
       aboutPanel?.style.setProperty("--about-panel-scale", aboutScale.toFixed(4));
+      const aboutReferenceLabel = aboutPanel?.querySelector<HTMLElement>("[data-about-reference-label]");
+      const aboutReferenceLink = aboutPanel?.querySelector<HTMLElement>("[data-about-reference-link]");
+      if (fostyPanel && aboutReferenceLabel && aboutReferenceLink) {
+        const labelSize = Number.parseFloat(getComputedStyle(aboutReferenceLabel).fontSize) * aboutScale;
+        const linkSize = Number.parseFloat(getComputedStyle(aboutReferenceLink).fontSize) * aboutScale;
+        fostyPanel.style.setProperty("--about-reference-label-size", `${labelSize.toFixed(2)}px`);
+        fostyPanel.style.setProperty("--about-reference-link-size", `${linkSize.toFixed(2)}px`);
+      }
       if (aboutPanel && width > 860) {
         const renderedAboutHeight = aboutPanel.offsetHeight * aboutScale;
         const centeredAboutTop = (height - renderedAboutHeight) / 2;
@@ -782,7 +790,7 @@ export function SignalPrototypeV4() {
 
       <article className={`${styles.project} ${styles.homeProject}`} data-destination-panel="0" aria-hidden="false">
         <section className={`${styles.chapter} ${styles.homeIntroduction} ${styles.aboutSinglePanel}`} data-project-chapter>
-          <div className={styles.projectMeta}><span>ABOUT</span></div>
+          <div className={styles.projectMeta} data-about-reference-label><span>ABOUT</span></div>
           <div className={styles.aboutLayout}>
             <div className={styles.aboutMain}>
               <div className={styles.introductionHeading}>
@@ -831,7 +839,7 @@ export function SignalPrototypeV4() {
             <footer className={styles.aboutContact}>
               <p>Working on something interesting? Send me an email or find me on LinkedIn.</p>
               <nav className={styles.minimalContactLinks} aria-label="Contact links">
-                <a href="https://github.com/luebbertevan" target="_blank" rel="noreferrer">GitHub <i aria-hidden="true">↗</i></a>
+                <a href="https://github.com/luebbertevan" target="_blank" rel="noreferrer" data-about-reference-link>GitHub <i aria-hidden="true">↗</i></a>
                 <a href="https://www.linkedin.com/in/evan-luebbert/" target="_blank" rel="noreferrer">LinkedIn <i aria-hidden="true">↗</i></a>
                 <a href="/documents/evan-luebbert-resume-2026.pdf" download="Evan-Luebbert-Resume-2026.pdf">Résumé <i aria-hidden="true">↓</i></a>
                 <button type="button" onClick={copyEmail} aria-live="polite">

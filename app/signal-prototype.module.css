@@ -428,9 +428,14 @@
 
 .fostyProject {
   --fosty-body-size: clamp(18px, 1.12vw, 25px);
+  --about-reference-label-size: 14px;
+  --about-reference-link-size: 18px;
 }
 .fostyOrigin {
   padding-bottom: clamp(18px, 2.4vh, 30px);
+}
+.fostyOrigin .projectMeta {
+  font-size: var(--about-reference-label-size);
 }
 .fostyLayout {
   display: grid;
@@ -495,8 +500,8 @@
   padding-top: clamp(12px, 1.5vh, 18px);
   border-top: 1px solid rgba(var(--accent-rgb), 0.45);
 }
-.fostyLinks a {
-  font-size: var(--fosty-body-size);
+.minimalContactLinks.fostyLinks a {
+  font-size: var(--about-reference-link-size);
 }
 .fostySidebar {
   display: grid;

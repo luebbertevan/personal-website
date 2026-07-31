@@ -425,6 +425,157 @@
   padding-top: 12px;
   border-top: 1px solid rgba(var(--accent-rgb), 0.45);
 }
+
+.fostyProject {
+  --fosty-body-size: clamp(16px, 0.98vw, 20px);
+}
+.fostyOrigin {
+  padding-bottom: clamp(18px, 2.4vh, 30px);
+}
+.fostyLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(190px, 17vw, 280px);
+  gap: clamp(28px, 3.2vw, 62px);
+  align-items: start;
+}
+.fostyMain {
+  display: grid;
+  gap: clamp(18px, 2.2vh, 28px);
+  min-width: 0;
+}
+.fostyHeading {
+  position: relative;
+  padding-bottom: clamp(12px, 1.5vh, 18px);
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.48);
+}
+.fostyHeading .cardLabel {
+  margin-bottom: clamp(9px, 1.1vh, 14px);
+  font-size: clamp(11px, 0.7vw, 13px);
+  letter-spacing: 0.11em;
+}
+.fostyHeading h1 {
+  font-size: clamp(64px, 5.4vw, 96px);
+}
+.fostyDate {
+  position: absolute;
+  right: 0;
+  bottom: clamp(13px, 1.7vh, 20px);
+  margin: 0;
+  color: rgba(247, 244, 241, 0.5);
+  font-size: 12px;
+}
+.project h2.fostyStatement {
+  max-width: 20ch;
+  font-size: clamp(31px, 2.55vw, 46px);
+  line-height: 1.02;
+  letter-spacing: -0.045em;
+}
+.fostyCopy {
+  display: grid;
+  max-width: 62ch;
+  gap: 12px;
+}
+.fostyCopy p {
+  margin: 0;
+  color: rgba(247, 244, 241, 0.72);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fosty-body-size);
+  line-height: 1.47;
+  letter-spacing: 0;
+}
+.fostyCopy strong {
+  color: color-mix(in srgb, rgb(var(--accent-rgb)) 72%, white 28%);
+  font-weight: 540;
+}
+.fostySidebar {
+  display: grid;
+  gap: clamp(10px, 1.2vh, 15px);
+  min-width: 0;
+}
+.fostyMetric,
+.fostySignal {
+  position: relative;
+  padding: clamp(16px, 1.6vw, 24px);
+  overflow: hidden;
+  border: 1px solid rgba(var(--accent-rgb), 0.38);
+  background:
+    linear-gradient(135deg, rgba(var(--accent-rgb), 0.14), transparent 64%),
+    rgba(3, 7, 14, 0.64);
+}
+.fostyMetric::after {
+  position: absolute;
+  top: -25%;
+  right: -18%;
+  width: 120px;
+  aspect-ratio: 1;
+  border: 1px solid rgba(var(--accent-rgb), 0.22);
+  border-radius: 50%;
+  content: "";
+  box-shadow: 0 0 42px rgba(var(--accent-rgb), 0.14);
+}
+.fostyMetric span,
+.fostySignal span {
+  color: rgba(var(--accent-rgb), 0.82);
+  font-size: 11px;
+}
+.fostyMetric strong {
+  display: block;
+  margin-top: 5px;
+  color: rgba(247, 244, 241, 0.98);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: clamp(66px, 5.7vw, 100px);
+  font-weight: 420;
+  line-height: 0.9;
+  letter-spacing: -0.065em;
+}
+.fostyMetric p,
+.fostySignal p {
+  margin: 9px 0 0;
+  color: rgba(247, 244, 241, 0.52);
+  font-size: 11px;
+}
+.fostySignal blockquote {
+  margin: 12px 0 0;
+  color: rgba(247, 244, 241, 0.94);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: clamp(24px, 1.75vw, 33px);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+.fostyActions {
+  display: grid;
+  gap: 1px;
+  background: rgba(var(--accent-rgb), 0.28);
+}
+.fostyActions a {
+  display: flex;
+  gap: 14px;
+  min-height: 48px;
+  padding: 11px 13px;
+  align-items: center;
+  justify-content: space-between;
+  color: rgba(247, 244, 241, 0.82);
+  background: rgba(3, 7, 14, 0.9);
+  font-size: 10px;
+  line-height: 1.35;
+  text-decoration: none;
+  transition: color 160ms ease, background 160ms ease;
+}
+.fostyActions a:hover,
+.fostyActions a:focus-visible {
+  color: rgb(var(--accent-rgb));
+  background: rgba(var(--accent-rgb), 0.12);
+  outline: none;
+}
+.fostyActions i {
+  flex: 0 0 auto;
+  font-size: 17px;
+  font-style: normal;
+  letter-spacing: 0;
+}
+.fostyChapterRail {
+  grid-template-columns: repeat(5, 1fr);
+}
 .minimalContactLinks {
   display: flex;
   flex-wrap: wrap;
@@ -697,7 +848,8 @@
   height: 100%;
   background: rgba(3, 7, 14, 0.82);
 }
-.chapterRail button {
+.chapterRail button,
+.chapterRail > li > span {
   display: flex;
   width: 100%;
   height: 100%;
@@ -709,8 +861,14 @@
   font: inherit;
   letter-spacing: inherit;
   text-align: left;
+}
+.chapterRail button {
   cursor: pointer;
   transition: color 180ms ease, background 180ms ease;
+}
+.chapterRail > li > span {
+  color: rgba(247, 244, 241, 0.25);
+  cursor: default;
 }
 .chapterRail button:hover,
 .chapterRail button:focus-visible,
@@ -803,6 +961,12 @@
     margin: 0 clamp(32px, 3vw, 52px);
     overflow: visible;
   }
+  .fostyProject {
+    top: var(--reference-panel-top, clamp(112px, 12vh, 168px));
+    bottom: auto;
+    width: min(980px, 58vw);
+    height: var(--reference-panel-height, calc(100svh - clamp(224px, 24vh, 336px)));
+  }
   .homeProject h1.introductionTitle {
     font-size: var(--about-intro-title-size);
   }
@@ -820,6 +984,8 @@
   .shell { --chapter-rail-height: 72px; }
   .chapterRail { font-size: 15px; }
   .chapterRail button { padding: 0 18px; }
+  .chapterRail > li > span { padding: 0 18px; }
+  .fostyProject { --fosty-body-size: 18px; }
   .aboutSinglePanel {
     --about-body-size: 19.2px;
     --about-intro-title-size: 24px;
@@ -958,6 +1124,33 @@
   .contactLinks strong { font-size: 11px; }
   .aboutContact { grid-template-columns: 1fr; }
   .minimalContactLinks { justify-content: flex-start; }
+  .fostyProject { --fosty-body-size: 14px; }
+  .fostyOrigin { padding-top: 18px; }
+  .fostyLayout {
+    grid-template-columns: minmax(0, 1fr) 118px;
+    gap: 14px;
+  }
+  .fostyMain { gap: 13px; }
+  .fostyHeading { padding-bottom: 10px; }
+  .fostyHeading .cardLabel { margin-bottom: 7px; font-size: 9px; }
+  .fostyHeading h1 { font-size: clamp(48px, 12vw, 66px); }
+  .fostyDate { display: none; }
+  .project h2.fostyStatement { font-size: clamp(24px, 5.8vw, 33px); }
+  .fostyCopy { gap: 8px; }
+  .fostyCopy p { line-height: 1.4; }
+  .fostySidebar { gap: 8px; }
+  .fostyMetric,
+  .fostySignal { padding: 11px; }
+  .fostyMetric span,
+  .fostySignal span,
+  .fostyMetric p,
+  .fostySignal p { font-size: 8px; }
+  .fostyMetric strong { font-size: 48px; }
+  .fostySignal blockquote { margin-top: 8px; font-size: 18px; }
+  .fostyActions a { min-height: 40px; padding: 8px 9px; font-size: 8px; }
+  .fostyChapterRail { font-size: 8px; }
+  .fostyChapterRail button,
+  .fostyChapterRail > li > span { padding: 0 5px; }
   .subtitle { margin-top: 16px; font-size: 20px; }
   .description { display: none; }
   .mediaFrame { margin-top: 18px; }

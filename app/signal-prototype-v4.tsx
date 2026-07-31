@@ -19,16 +19,10 @@ const destinations = [
     cssColor: [255, 103, 49] as const,
   },
   {
-    label: "SIGNAL ATLAS",
-    chapters: 4,
-    shaderColor: [0.025, 0.42, 1.0] as const,
-    cssColor: [58, 169, 255] as const,
-  },
-  {
-    label: "VELVET CIRCUIT",
-    chapters: 4,
-    shaderColor: [1.0, 0.035, 0.48] as const,
-    cssColor: [255, 64, 164] as const,
+    label: "FOSTY",
+    chapters: 1,
+    shaderColor: [0.925, 0.282, 0.6] as const,
+    cssColor: [236, 72, 153] as const,
   },
 ];
 
@@ -248,20 +242,19 @@ export function SignalPrototypeV4() {
       emberLoom?.resize(pixelWidth, pixelHeight);
 
       const aboutPanel = shell.querySelector<HTMLElement>('[data-destination-panel="0"]');
-      const examplePanel = shell.querySelector<HTMLElement>('[data-destination-panel="1"]');
-      const shouldScaleAboutPanel = window.matchMedia(
-        "(min-width: 2048px) and (min-height: 1152px)",
-      ).matches;
-      const aboutScale = shouldScaleAboutPanel && aboutPanel && examplePanel
-        ? examplePanel.offsetWidth / Math.max(aboutPanel.offsetWidth, 1)
-        : 1;
-      aboutPanel?.style.setProperty("--about-panel-scale", aboutScale.toFixed(4));
+      const fostyPanel = shell.querySelector<HTMLElement>('[data-destination-panel="1"]');
+      const aboutScale = 1;
+      aboutPanel?.style.setProperty("--about-panel-scale", "1");
       if (aboutPanel && width > 860) {
         const renderedAboutHeight = aboutPanel.offsetHeight * aboutScale;
         const centeredAboutTop = (height - renderedAboutHeight) / 2;
         aboutPanel.style.setProperty("--about-panel-top", `${centeredAboutTop.toFixed(1)}px`);
+        fostyPanel?.style.setProperty("--reference-panel-top", `${centeredAboutTop.toFixed(1)}px`);
+        fostyPanel?.style.setProperty("--reference-panel-height", `${renderedAboutHeight.toFixed(1)}px`);
       } else {
         aboutPanel?.style.removeProperty("--about-panel-top");
+        fostyPanel?.style.removeProperty("--reference-panel-top");
+        fostyPanel?.style.removeProperty("--reference-panel-height");
       }
 
       strandAnchor.set(-0.54 * height / width, 0);
@@ -798,10 +791,7 @@ export function SignalPrototypeV4() {
           <strong>ABOUT</strong>
         </button>
         <button type="button" data-destination-nav onClick={() => navigateToDestination(1)}>
-          <strong>SIGNAL ATLAS</strong>
-        </button>
-        <button type="button" data-destination-nav onClick={() => navigateToDestination(2)}>
-          <strong>VELVET CIRCUIT</strong>
+          <strong>FOSTY</strong>
         </button>
       </nav>
 
@@ -870,70 +860,44 @@ export function SignalPrototypeV4() {
         </section>
       </article>
 
-      <article className={styles.project} data-destination-panel="1" aria-hidden="true">
-        <section className={styles.chapter} data-project-chapter>
-          <div className={styles.projectMeta}><span>EXAMPLE PROJECT</span><span>INTRODUCTION</span></div>
-          <h1>Signal Atlas</h1>
-          <p className={styles.subtitle}>A test case for attaching a complete portfolio story to a living 3D material.</p>
-          <p className={styles.continue}>NEXT / PROJECT MEDIA →</p>
-        </section>
-        <section className={styles.chapter} data-project-chapter>
-          <div className={styles.projectMeta}><span>PROJECT ARTIFACT</span><span>MEDIA</span></div>
-          <h2>The work in motion.</h2>
-          <div className={styles.mediaFrame} role="img" aria-label="Placeholder for Signal Atlas imagery or video">
-            <span>PROJECT MEDIA / 16:9</span><strong>IMAGE OR VIDEO</strong><i />
+      <article className={`${styles.project} ${styles.fostyProject}`} data-destination-panel="1" aria-hidden="true">
+        <section className={`${styles.chapter} ${styles.fostyOrigin}`} data-project-chapter>
+          <div className={styles.projectMeta}><span>FOSTY / CASE STUDY</span><span>01 OF 05 / ORIGIN</span></div>
+          <div className={styles.fostyLayout}>
+            <div className={styles.fostyMain}>
+              <div className={styles.fostyHeading}>
+                <p className={styles.cardLabel}>FOUNDER · FULL-STACK ENGINEER · PRODUCT DESIGNER</p>
+                <h1>Fosty</h1>
+                <p className={styles.fostyDate}>2025 TO PRESENT</p>
+              </div>
+              <h2 className={styles.fostyStatement}>A project that is deeply meaningful to me and represents my character.</h2>
+              <div className={styles.fostyCopy}>
+                <p>Fosty is a foster coordination platform I founded and built for animal shelters and rescues. Before moving to NYC, I fostered 34 kittens through Colorado Kitty Coalition. I watched their team struggle with urgent care coordination split across texts, email chains, Instagram DMs, and messy Google Sheets.</p>
+                <p>In rescue, that friction can have a serious impact on outcomes. An animal in a critical condition deserves timely intervention, and disorganized communication can have tragic consequences. I reached out to the rescue with the proposal for Fosty, and they were ecstatic. I will always remember the response I got: <strong>“We need you!”</strong> So, I became their engineering and design partner.</p>
+              </div>
+            </div>
+            <aside className={styles.fostySidebar} aria-label="Fosty origin highlights">
+              <div className={styles.fostyMetric}>
+                <span>BEFORE FOSTY</span>
+                <strong>34</strong>
+                <p>KITTENS FOSTERED</p>
+              </div>
+              <div className={styles.fostySignal}>
+                <span>THE RESPONSE</span>
+                <blockquote>“We need you!”</blockquote>
+                <p>COLORADO KITTY COALITION</p>
+              </div>
+              <div className={styles.fostyActions}>
+                <a href="https://www.fosty.us/" target="_blank" rel="noreferrer">OPEN FOSTY <i aria-hidden="true">↗</i></a>
+                <a href="https://www.cokittycoalition.com/" target="_blank" rel="noreferrer">VISIT COLORADO KITTY COALITION <i aria-hidden="true">↗</i></a>
+              </div>
+            </aside>
           </div>
         </section>
-        <section className={styles.chapter} data-project-chapter>
-          <div className={styles.projectMeta}><span>PROJECT CONTEXT</span><span>IMPACT</span></div>
-          <h2>Designed to make complexity legible.</h2>
-          <p className={styles.description}>This placeholder chapter shows where the problem, approach, personal contribution, and measurable result can be explained without crowding the visual arrival.</p>
-          <dl className={styles.facts}><div><dt>ROLE</dt><dd>DESIGN + BUILD</dd></div><div><dt>FORMAT</dt><dd>INTERACTIVE</dd></div><div><dt>OUTCOME</dt><dd>CASE STUDY</dd></div></dl>
-        </section>
-        <section className={styles.chapter} data-project-chapter>
-          <div className={styles.projectMeta}><span>PROJECT DESTINATION</span><span>LAUNCH</span></div>
-          <h2>Explore the complete project.</h2>
-          <p className={styles.subtitle}>The final chapter converts the visual journey into a clear next action.</p>
-          <div className={styles.tags}><span>INTERACTION DESIGN</span><span>CREATIVE DEVELOPMENT</span></div>
-          <a href="https://example.com" target="_blank" rel="noreferrer">OPEN EXAMPLE PROJECT <span aria-hidden="true">↗</span></a>
-        </section>
-        <ol className={styles.chapterRail} aria-label="Signal Atlas sequence">
-          {['INTRO', 'MEDIA', 'IMPACT', 'LAUNCH'].map((label, index) => (
-            <li key={label}><button type="button" data-chapter-index onClick={() => navigateToChapter(index)}>{label}</button></li>
-          ))}
-        </ol>
-      </article>
-
-      <article className={styles.project} data-destination-panel="2" aria-hidden="true">
-        <section className={styles.chapter} data-project-chapter>
-          <div className={styles.projectMeta}><span>EXAMPLE PROJECT</span><span>INTRODUCTION</span></div>
-          <h1>Velvet Circuit</h1>
-          <p className={styles.subtitle}>A second example showing that each project can own its palette and content rhythm.</p>
-          <p className={styles.continue}>NEXT / PROJECT MEDIA →</p>
-        </section>
-        <section className={styles.chapter} data-project-chapter>
-          <div className={styles.projectMeta}><span>PROJECT ARTIFACT</span><span>MEDIA</span></div>
-          <h2>A different visual cadence.</h2>
-          <div className={`${styles.mediaFrame} ${styles.mediaFramePink}`} role="img" aria-label="Placeholder for Velvet Circuit imagery or video">
-            <span>PROJECT MEDIA / 16:9</span><strong>IMAGE OR VIDEO</strong><i />
-          </div>
-        </section>
-        <section className={styles.chapter} data-project-chapter>
-          <div className={styles.projectMeta}><span>PROJECT CONTEXT</span><span>IMPACT</span></div>
-          <h2>One framework, unique content.</h2>
-          <p className={styles.description}>The structure remains dependable while the project’s typography, media balance, palette, and individual chapters can be tuned to fit its actual story.</p>
-          <dl className={styles.facts}><div><dt>ROLE</dt><dd>CREATIVE DIRECTION</dd></div><div><dt>FORMAT</dt><dd>EXPERIENTIAL</dd></div><div><dt>OUTCOME</dt><dd>PROTOTYPE</dd></div></dl>
-        </section>
-        <section className={styles.chapter} data-project-chapter>
-          <div className={styles.projectMeta}><span>PROJECT DESTINATION</span><span>LAUNCH</span></div>
-          <h2>Enter Velvet Circuit.</h2>
-          <p className={styles.subtitle}>Pink persists across the complete project until another destination is selected.</p>
-          <div className={styles.tags}><span>CREATIVE DIRECTION</span><span>EXPERIENTIAL DESIGN</span></div>
-          <a href="https://example.com" target="_blank" rel="noreferrer">OPEN EXAMPLE PROJECT <span aria-hidden="true">↗</span></a>
-        </section>
-        <ol className={styles.chapterRail} aria-label="Velvet Circuit sequence">
-          {['INTRO', 'MEDIA', 'IMPACT', 'LAUNCH'].map((label, index) => (
-            <li key={label}><button type="button" data-chapter-index onClick={() => navigateToChapter(index)}>{label}</button></li>
+        <ol className={`${styles.chapterRail} ${styles.fostyChapterRail}`} aria-label="Fosty case study chapters">
+          <li><button type="button" data-chapter-index onClick={() => navigateToChapter(0)}>ORIGIN</button></li>
+          {['PRODUCT', 'DESIGN', 'ENGINEERING', 'OUTCOME'].map((label) => (
+            <li key={label}><span aria-disabled="true">{label}</span></li>
           ))}
         </ol>
       </article>

@@ -98,11 +98,11 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.match(css, /--surface-background: rgba\(5, 5, 7, 0\.76\);/);
   assert.match(css, /\.project \{[^}]*top: clamp\(112px, 12vh, 168px\);[^}]*bottom: clamp\(24px, 4vh, 52px\);/s);
   assert.match(css, /\.project \{[^}]*width: 58vw;/s);
-  assert.match(css, /@media \(min-width: 861px\) \{[\s\S]*\.homeProject \{[^}]*top: clamp\(112px, 12vh, 168px\);[^}]*bottom: auto;[^}]*width: min\(980px, 58vw\);/s);
+  assert.match(css, /@media \(min-width: 861px\) \{[\s\S]*\.homeProject \{[^}]*top: var\(--about-panel-top, clamp\(112px, 12vh, 168px\)\);[^}]*bottom: auto;[^}]*width: min\(980px, 58vw\);/s);
   assert.match(css, /\.chapter \{[^}]*top: 0;[^}]*right: clamp\(32px, 3vw, 52px\);[^}]*left: clamp\(32px, 3vw, 52px\);[^}]*transform: translate3d\(var\(--chapter-shift\), 0, 0\);/s);
   assert.match(css, /\.projectMeta span:last-child \{ text-align: right; \}/);
   assert.match(css, /\.chapterRail li \{[^}]*height: 100%;/s);
-  assert.match(css, /\.chapterRail button \{[^}]*width: 100%;[^}]*height: 100%;/s);
+  assert.match(css, /\.chapterRail button,\s*\.chapterRail > li > span \{[^}]*width: 100%;[^}]*height: 100%;/s);
   assert.match(css, /\.routeControls button \{[^}]*background: var\(--surface-background\);/s);
   assert.match(css, /\.pause \{[^}]*background: var\(--surface-background\);/s);
   assert.match(css, /\.approachCopy \{[^}]*max-width: 58ch;/s);
@@ -133,4 +133,28 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.doesNotMatch(source, /SIGNAL SPINE|PORTFOLIO PROTOTYPE|DYNAMIC ROUTE ONLINE|SCROLL · ARROWS · CLICK TABS/);
 
   assert.ok(projectRoot);
+});
+
+test("Fosty replaces both example projects with the Origin chapter", async () => {
+  const response = await render();
+  const html = await response.text();
+  const [source, css] = await Promise.all([
+    readFile(new URL("../app/signal-prototype-v4.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/signal-prototype.module.css", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(html, /Fosty/);
+  assert.match(html, /fostered 34 kittens through Colorado Kitty Coalition/);
+  assert.match(html, /A project that is deeply meaningful to me and represents my character\./);
+  assert.match(html, /We need you!/);
+  assert.doesNotMatch(html, /Signal Atlas|Velvet Circuit|EXAMPLE PROJECT/);
+  assert.match(source, /label:\s*"FOSTY",\s*chapters:\s*1,/);
+  assert.match(source, /cssColor:\s*\[236, 72, 153\]/);
+  assert.equal((source.match(/<article[^>]+data-destination-panel="/g) ?? []).length, 2);
+  assert.match(source, /\['PRODUCT', 'DESIGN', 'ENGINEERING', 'OUTCOME'\]/);
+  assert.match(source, /href="https:\/\/www\.fosty\.us\/"/);
+  assert.match(source, /href="https:\/\/www\.cokittycoalition\.com\/"/);
+  assert.match(css, /\.fostyProject \{[\s\S]*--fosty-body-size:/);
+  assert.match(css, /\.fostyChapterRail \{\s*grid-template-columns: repeat\(5, 1fr\);/s);
+  assert.match(source, /--reference-panel-height/);
 });

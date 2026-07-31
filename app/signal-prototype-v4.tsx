@@ -243,8 +243,13 @@ export function SignalPrototypeV4() {
 
       const aboutPanel = shell.querySelector<HTMLElement>('[data-destination-panel="0"]');
       const fostyPanel = shell.querySelector<HTMLElement>('[data-destination-panel="1"]');
-      const aboutScale = 1;
-      aboutPanel?.style.setProperty("--about-panel-scale", "1");
+      const shouldScaleAboutPanel = window.matchMedia(
+        "(min-width: 2048px) and (min-height: 1152px)",
+      ).matches;
+      const aboutScale = shouldScaleAboutPanel && aboutPanel && fostyPanel
+        ? fostyPanel.offsetWidth / Math.max(aboutPanel.offsetWidth, 1)
+        : 1;
+      aboutPanel?.style.setProperty("--about-panel-scale", aboutScale.toFixed(4));
       if (aboutPanel && width > 860) {
         const renderedAboutHeight = aboutPanel.offsetHeight * aboutScale;
         const centeredAboutTop = (height - renderedAboutHeight) / 2;

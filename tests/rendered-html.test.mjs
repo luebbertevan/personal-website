@@ -155,6 +155,8 @@ test("Fosty replaces both example projects with the Origin chapter", async () =>
   assert.match(source, /href="https:\/\/www\.fosty\.us\/"/);
   assert.match(source, /href="https:\/\/www\.cokittycoalition\.com\/"/);
   assert.match(css, /\.fostyProject \{[\s\S]*--fosty-body-size:/);
-  assert.match(css, /\.fostyChapterRail \{\s*grid-template-columns: repeat\(5, 1fr\);/s);
+  assert.match(css, /\.chapterRail\.fostyChapterRail \{\s*grid-template-columns: repeat\(5, minmax\(0, 1fr\)\);/s);
+  assert.match(css, /@media \(min-width: 2048px\) and \(min-height: 1152px\) \{\s*\.fostyProject \{ width: 58vw; \}/s);
+  assert.match(source, /const aboutScale = shouldScaleAboutPanel && aboutPanel && fostyPanel/);
   assert.match(source, /--reference-panel-height/);
 });

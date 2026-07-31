@@ -573,9 +573,6 @@
   font-style: normal;
   letter-spacing: 0;
 }
-.fostyChapterRail {
-  grid-template-columns: repeat(5, 1fr);
-}
 .minimalContactLinks {
   display: flex;
   flex-wrap: wrap;
@@ -878,6 +875,15 @@
   outline: none;
 }
 .chapterRail button:disabled { cursor: default; }
+.chapterRail.fostyChapterRail {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.fostyChapterRail button,
+.fostyChapterRail > li > span {
+  padding-right: 8px;
+  padding-left: 8px;
+  white-space: nowrap;
+}
 
 .routeControls {
   bottom: calc(clamp(28px, 3.5vw, 48px) + 64px);
@@ -985,6 +991,8 @@
   .chapterRail { font-size: 15px; }
   .chapterRail button { padding: 0 18px; }
   .chapterRail > li > span { padding: 0 18px; }
+  .fostyChapterRail button,
+  .fostyChapterRail > li > span { padding: 0 10px; }
   .fostyProject { --fosty-body-size: 18px; }
   .aboutSinglePanel {
     --about-body-size: 19.2px;
@@ -1022,6 +1030,10 @@
   .minimalContactLinks { gap: 6px 16px; }
   .minimalContactLinks a,
   .minimalContactLinks button { padding: 5px 0; }
+}
+
+@media (min-width: 2048px) and (min-height: 1152px) {
+  .fostyProject { width: 58vw; }
 }
 
 @media (min-width: 861px) and (max-height: 900px) {

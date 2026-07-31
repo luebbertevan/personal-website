@@ -789,7 +789,7 @@
 
 @media (min-width: 861px) {
   .homeProject {
-    top: clamp(112px, 12vh, 168px);
+    top: var(--about-panel-top, clamp(112px, 12vh, 168px));
     bottom: auto;
     width: min(980px, 58vw);
   }

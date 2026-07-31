@@ -256,6 +256,13 @@ export function SignalPrototypeV4() {
         ? examplePanel.offsetWidth / Math.max(aboutPanel.offsetWidth, 1)
         : 1;
       aboutPanel?.style.setProperty("--about-panel-scale", aboutScale.toFixed(4));
+      if (aboutPanel && width > 860) {
+        const renderedAboutHeight = aboutPanel.offsetHeight * aboutScale;
+        const centeredAboutTop = (height - renderedAboutHeight) / 2;
+        aboutPanel.style.setProperty("--about-panel-top", `${centeredAboutTop.toFixed(1)}px`);
+      } else {
+        aboutPanel?.style.removeProperty("--about-panel-top");
+      }
 
       strandAnchor.set(-0.54 * height / width, 0);
       const panel = shell.querySelector<HTMLElement>("[data-destination-panel]");

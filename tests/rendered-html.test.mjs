@@ -69,7 +69,7 @@ test("Home navigation, contact actions, and public assets are wired correctly", 
   assert.match(globalCss, /\.site-identity span \{[^}]*font-size: clamp\(24px, 1\.44vw, 28px\);/s);
   assert.match(globalCss, /animation: identity-name-reveal 480ms[^;]*1s both;/);
   assert.match(globalCss, /animation: identity-title-reveal 480ms[^;]*1\.5s both;/);
-  assert.match(globalCss, /\.site-identity span \{[^}]*border-left: 1px solid rgba\(var\(--accent-rgb\), 0\.58\);[^}]*text-shadow: 0 0 10px rgba\(var\(--accent-rgb\), 0\.24\);/s);
+  assert.match(globalCss, /\.site-identity span \{[^}]*border-left: 2px solid rgba\(var\(--accent-rgb\), 0\.88\);[^}]*color-mix\(in srgb, rgb\(var\(--accent-rgb\)\) 72%, white 28%\);[^}]*0 0 34px rgba\(var\(--accent-rgb\), 0\.42\);/s);
   assert.match(pageSource, /className="site-root" data-site-root/);
   assert.match(source, /siteRoot\?\.style\.setProperty\("--accent-rgb", value\);/);
   assert.doesNotMatch(source, /<i>0[012]<\/i>/);

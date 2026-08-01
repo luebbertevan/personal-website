@@ -22,7 +22,7 @@ export async function generateMetadata(): Promise<Metadata> {
     ?? (host.startsWith("localhost") ? "http" : "https");
   const origin = `${protocol}://${host}`;
   const socialImage = `${origin}/og.png`;
-  const description = "I’m a passion first software engineer and designer. I build software I believe in.";
+  const description = "I build software I believe in. Software engineering and design is my superpower.";
 
   return {
     title: "Evan Luebbert",

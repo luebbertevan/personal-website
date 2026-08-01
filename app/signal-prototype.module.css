@@ -225,29 +225,20 @@
   line-height: 1.55;
   letter-spacing: 0;
 }
-.introductionTitle,
-.introductionSubtitle {
+.introductionTitle {
   margin: 0;
   font-family: var(--font-geist-sans), sans-serif;
-  white-space: nowrap;
 }
 .introductionTitle {
-  font-size: clamp(21px, 1.75vw, 42px);
+  font-size: clamp(42px, 3.5vw, 84px);
   font-weight: 430;
   line-height: 1.05;
   letter-spacing: -0.055em;
 }
-.introductionSubtitle {
-  margin-top: 9px;
-  color: rgba(var(--accent-rgb), 0.9);
-  font-size: clamp(18px, 1.45vw, 34px);
-  line-height: 1.15;
-  letter-spacing: -0.02em;
-}
 .homeProject .description { max-width: 64ch; }
 .homeProject .chapterRail { grid-template-columns: repeat(3, 1fr); }
 .homeProject h1 { font-size: clamp(68px, 5.7vw, 98px); }
-.homeProject h1.introductionTitle { font-size: clamp(21px, 1.75vw, 42px); }
+.homeProject h1.introductionTitle { font-size: clamp(42px, 3.5vw, 84px); }
 .homeProject h2 { font-size: clamp(58px, 5vw, 88px); }
 .homeIntroduction {
   top: 0;
@@ -257,7 +248,7 @@
 .aboutSinglePanel {
   --about-body-size: clamp(18px, 1.12vw, 25px);
   --about-approach-size: var(--about-body-size);
-  --about-intro-title-size: clamp(21px, 1.5vw, 30px);
+  --about-intro-title-size: clamp(42px, 3vw, 60px);
   --about-section-label-size: clamp(14px, 1vw, 20px);
   display: flex;
   flex-direction: column;
@@ -964,8 +955,7 @@
     --portrait-width: 110px;
     --portrait-gap: 24px;
   }
-  .homeProject h1.introductionTitle { font-size: clamp(16px, 1.7vw, 20px); }
-  .introductionSubtitle { font-size: clamp(16px, 1.5vw, 18px); }
+  .homeProject h1.introductionTitle { font-size: clamp(32px, 3.4vw, 40px); }
 }
 
 @media (min-width: 861px) {
@@ -1012,7 +1002,7 @@
   .fostyChapterRail > li > span { padding: 0 10px; }
   .aboutSinglePanel {
     --about-body-size: 19.2px;
-    --about-intro-title-size: 24px;
+    --about-intro-title-size: 48px;
     --about-section-label-size: 16px;
     padding-top: 19px;
     padding-bottom: 19px;
@@ -1025,7 +1015,6 @@
   .aboutMain { gap: 12px; }
   .aboutSidebar { gap: 10px; }
   .aboutSinglePanel .projectMeta { margin-bottom: 12px; }
-  .introductionSubtitle { margin-top: 6px; font-size: 20.4px; }
   .availability { margin-top: 11px; padding-top: 8px; font-size: 15.6px; }
   .aboutApproach .cardLabel,
   .aboutInterests .cardLabel,
@@ -1060,7 +1049,7 @@
 @media (min-width: 861px) and (max-height: 900px) {
   .aboutSinglePanel {
     --about-body-size: 16px;
-    --about-intro-title-size: clamp(20px, 1.45vw, 28px);
+    --about-intro-title-size: clamp(40px, 2.9vw, 56px);
     --about-section-label-size: clamp(13.333px, 0.967vw, 18.667px);
     padding-top: 16px;
     padding-bottom: 16px;
@@ -1073,7 +1062,6 @@
   }
   .aboutMain { gap: 10px; }
   .aboutSidebar { gap: 8px; }
-  .introductionSubtitle { margin-top: 5px; font-size: clamp(17px, 1.2vw, 22px); }
   .availability { margin-top: 9px; padding-top: 7px; font-size: 13px; }
   .aboutApproach .cardLabel,
   .aboutInterests .cardLabel,
@@ -1132,13 +1120,12 @@
     gap: 16px 14px;
   }
   .aboutSinglePanel {
-    --about-intro-title-size: clamp(16px, 3.75vw, 22px);
+    --about-intro-title-size: clamp(32px, 7.5vw, 44px);
     --about-section-label-size: clamp(12px, 2.5vw, 14.667px);
   }
   .aboutMain { gap: 16px; }
   .aboutSidebar { gap: 10px; }
   .homeProject h1.introductionTitle { font-size: var(--about-intro-title-size); }
-  .introductionSubtitle { margin-top: 7px; font-size: min(3.5vw, 20px); }
   .availability { margin-top: 13px; padding-top: 10px; font-size: 14px; }
   .approachCopy { gap: 12px; }
   .approachCopy p,

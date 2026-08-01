@@ -794,14 +794,13 @@ export function SignalPrototypeV4() {
           <div className={styles.aboutLayout}>
             <div className={styles.aboutMain}>
               <div className={styles.introductionHeading}>
-                <h1 className={styles.introductionTitle}>I’m a passion first software engineer and designer.</h1>
-                <p className={styles.introductionSubtitle}>I build software I believe in.</p>
+                <h1 className={styles.introductionTitle}>I build software I believe in.</h1>
                 <p className={styles.availability}>Based in New York City. Open to full-time roles and freelance projects.</p>
               </div>
               <section className={styles.aboutApproach} aria-labelledby="about-approach-title">
                 <p className={styles.cardLabel} id="about-approach-title">APPROACH</p>
                 <div className={styles.approachCopy}>
-                  <p>Engineering is my superpower. It enables me to wield technology to build a better world.</p>
+                  <p>Software engineering and design is my superpower. It enables me to wield technology to build a better world.</p>
                   <div className={styles.approachPrinciples}>
                     <p>Being able to solve my own problems is a luxury.</p>
                     <p>The ability to craft solutions for others is a privilege.</p>

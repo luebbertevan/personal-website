@@ -32,9 +32,10 @@ test("server-renders the approved single-panel About content", async () => {
 
   const html = await response.text();
   assert.match(html, /Evan Luebbert/);
-  assert.match(html, /passion first software engineer and designer/);
+  assert.match(html, /I build software I believe in\./);
+  assert.doesNotMatch(html, /passion first software engineer and designer/);
   assert.match(html, /Based in New York City/);
-  assert.match(html, /Engineering is my superpower/);
+  assert.match(html, /Software engineering and design is my superpower/);
   assert.match(html, /I embrace curiosity, explore creative solutions, and fill the gaps where software can make a difference\./);
   assert.match(html, /Everyone has used frustrating and poorly designed software\./);
   assert.match(html, /Being able to solve my own problems is a luxury\./);
@@ -74,15 +75,14 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.match(css, /\.aboutLayout \{[^}]*--portrait-width: clamp\(146px, 12vw, 260px\);[^}]*grid-template-areas:/s);
   assert.match(source, /width="480"\s+height="600"/);
   assert.doesNotMatch(source, /<h1>Evan<br \/>Luebbert<\/h1>/);
-  assert.match(source, /<h1 className=\{styles\.introductionTitle\}>I’m a passion first software engineer and designer\.<\/h1>/);
-  assert.match(source, /<p className=\{styles\.introductionSubtitle\}>I build software I believe in\.<\/p>/);
-  assert.match(css, /\.introductionTitle,\s*\.introductionSubtitle \{[^}]*white-space: nowrap;/s);
+  assert.match(source, /<h1 className=\{styles\.introductionTitle\}>I build software I believe in\.<\/h1>/);
+  assert.doesNotMatch(source, /styles\.introductionSubtitle/);
   assert.match(source, /className=\{styles\.aboutLayout\}[\s\S]*className=\{styles\.aboutMain\}[\s\S]*className=\{styles\.availability\}[\s\S]*className=\{styles\.aboutApproach\}[\s\S]*className=\{styles\.aboutInterests\}[\s\S]*className=\{styles\.aboutSidebar\}[\s\S]*className=\{styles\.personalNote\}[\s\S]*className=\{styles\.aboutContact\}/);
   assert.match(css, /\.aboutMain \{[^}]*grid-area: main;[^}]*align-content: start;/s);
   assert.match(css, /\.aboutSidebar \{[^}]*grid-area: sidebar;[^}]*align-content: start;/s);
   assert.match(css, /\.headshot \{[^}]*position: relative;[^}]*width: 100%;/s);
   assert.match(css, /\.aboutContact \{[^}]*grid-template-columns: 1fr;[^}]*gap: 8px;/s);
-  assert.match(css, /\.aboutSinglePanel \{[^}]*--about-body-size: clamp\(18px, 1\.12vw, 25px\);[^}]*--about-approach-size: var\(--about-body-size\);[^}]*--about-intro-title-size: clamp\(21px, 1\.5vw, 30px\);[^}]*--about-section-label-size: clamp\(14px, 1vw, 20px\);/s);
+  assert.match(css, /\.aboutSinglePanel \{[^}]*--about-body-size: clamp\(18px, 1\.12vw, 25px\);[^}]*--about-approach-size: var\(--about-body-size\);[^}]*--about-intro-title-size: clamp\(42px, 3vw, 60px\);[^}]*--about-section-label-size: clamp\(14px, 1vw, 20px\);/s);
   assert.match(css, /\.aboutInterests \.interestList \{\s*grid-template-columns: 1fr;/s);
   assert.match(css, /\.minimalContactLinks a,[\s\S]*\.minimalContactLinks button \{[^}]*font-size: var\(--about-body-size\);/s);
   assert.match(css, /\.minimalContactLinks i \{[^}]*font-size: 1em;/s);
@@ -108,7 +108,7 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.match(css, /\.approachCopy \{[^}]*max-width: 58ch;/s);
   assert.match(css, /@media \(min-width: 1400px\) and \(min-height: 900px\) \{[\s\S]*\.availability,[\s\S]*\.approachCopy \{[^}]*width: 100%;[^}]*max-width: none;/s);
   assert.match(css, /@media \(min-width: 1400px\) and \(min-height: 900px\) \{[\s\S]*\.shell \{ --chapter-rail-height: 72px; \}[\s\S]*\.chapterRail \{ font-size: 15px; \}/s);
-  assert.match(css, /@media \(min-width: 1400px\) and \(min-height: 900px\) \{[\s\S]*\.aboutSinglePanel \{[^}]*--about-body-size: 19\.2px;[^}]*--about-intro-title-size: 24px;[^}]*--about-section-label-size: 16px;/s);
+  assert.match(css, /@media \(min-width: 1400px\) and \(min-height: 900px\) \{[\s\S]*\.aboutSinglePanel \{[^}]*--about-body-size: 19\.2px;[^}]*--about-intro-title-size: 48px;[^}]*--about-section-label-size: 16px;/s);
   assert.match(css, /@media \(min-width: 861px\) and \(max-height: 900px\) \{/);
   assert.match(source, /const HOME_OPENING_DURATION = 4\.75;/);
   assert.match(source, /const PARTICLE_ARRIVAL_START = 0\.38;/);

@@ -471,7 +471,8 @@
   font-size: 12px;
 }
 .project h2.fostyStatement {
-  max-width: 28ch;
+  width: 100%;
+  max-width: none;
   font-size: clamp(31px, 2.55vw, 46px);
   line-height: 1.02;
   letter-spacing: -0.045em;

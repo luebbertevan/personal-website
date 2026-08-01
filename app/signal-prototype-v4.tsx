@@ -862,10 +862,10 @@ export function SignalPrototypeV4() {
               <h1>Fosty</h1>
               <p className={styles.fostyDate}>2025 TO PRESENT</p>
             </div>
-            <h2 className={styles.fostyStatement}>A project that is deeply meaningful to me and represents my character.</h2>
+            <h2 className={styles.fostyStatement}>Built for animals in need and the people devoted to helping them.</h2>
             <div className={styles.fostyCopy}>
               <p>Fosty is a foster coordination platform I founded and built for animal shelters and rescues. Before moving to NYC, I fostered 34 kittens through Colorado Kitty Coalition. I watched their team struggle with urgent care coordination split across texts, email chains, Instagram DMs, and messy Google Sheets.</p>
-              <p>In rescue, that friction can have a serious impact on outcomes. An animal in a critical condition deserves timely intervention, and disorganized communication can have tragic consequences. I reached out to the rescue with the proposal for Fosty, and they were ecstatic. I will always remember the response I got: <strong>“We need you!”</strong> So, I became their engineering and design partner.</p>
+              <p>In rescue, that friction can have a serious impact on outcomes. An animal in a critical condition deserves timely intervention, and disorganized communication can have tragic consequences. I saw the friction in animal rescue and I knew it was a system I could improve. I was inspired to create Fosty, a custom platform to organize foster communication and record keeping. I reached out to the rescue with the proposal for Fosty, and they were ecstatic. I will always remember the response I got: <strong>“We need you!”</strong> So, I became their engineering and design partner.</p>
             </div>
             <nav className={`${styles.minimalContactLinks} ${styles.fostyLinks}`} aria-label="Fosty links">
               <a href="https://www.fosty.us/" target="_blank" rel="noreferrer">Demo Fosty <i aria-hidden="true">↗</i></a>

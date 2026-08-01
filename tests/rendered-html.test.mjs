@@ -145,7 +145,8 @@ test("Fosty replaces both example projects with the Origin chapter", async () =>
 
   assert.match(html, /Fosty/);
   assert.match(html, /fostered 34 kittens through Colorado Kitty Coalition/);
-  assert.match(html, /A project that is deeply meaningful to me and represents my character\./);
+  assert.match(html, /Built for animals in need and the people devoted to helping them\./);
+  assert.match(html, /I was inspired to create Fosty, a custom platform to organize foster communication and record keeping\./);
   assert.match(html, /We need you!/);
   assert.doesNotMatch(html, /FOSTY \/ CASE STUDY|01 OF 05 \/ ORIGIN|BEFORE FOSTY|THE RESPONSE/);
   assert.doesNotMatch(html, /Signal Atlas|Velvet Circuit|EXAMPLE PROJECT/);
@@ -160,6 +161,7 @@ test("Fosty replaces both example projects with the Origin chapter", async () =>
   assert.match(css, /\.chapterRail\.fostyChapterRail \{\s*grid-template-columns: repeat\(5, minmax\(0, 1fr\)\);/s);
   assert.match(css, /@media \(min-width: 2048px\) and \(min-height: 1152px\) \{\s*\.fostyProject \{[^}]*width: 58vw;/s);
   assert.match(css, /\.fostyCopy \{[^}]*width: 100%;[^}]*max-width: none;/s);
+  assert.match(css, /\.project h2\.fostyStatement \{[^}]*width: 100%;[^}]*max-width: none;/s);
   assert.match(source, /className=\{`\$\{styles\.minimalContactLinks\} \$\{styles\.fostyLinks\}`\}/);
   assert.match(source, /data-about-reference-label/);
   assert.match(source, /data-about-reference-link/);

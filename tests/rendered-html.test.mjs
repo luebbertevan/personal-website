@@ -148,6 +148,8 @@ test("Fosty replaces both example projects with the Origin chapter", async () =>
   assert.match(html, /Built for animals in need and the people devoted to helping them\./);
   assert.match(html, /I was inspired to create Fosty, a custom platform to organize foster communication and record keeping\./);
   assert.match(html, /We need you!/);
+  assert.match(source, /<blockquote className=\{styles\.fostyQuote\}>“We need you!”<\/blockquote>/);
+  assert.match(css, /\.fostyQuote \{[^}]*border-left: 2px solid rgba\(var\(--accent-rgb\), 0\.78\);/s);
   assert.doesNotMatch(html, /FOSTY \/ CASE STUDY|01 OF 05 \/ ORIGIN|BEFORE FOSTY|THE RESPONSE/);
   assert.doesNotMatch(html, /Signal Atlas|Velvet Circuit|EXAMPLE PROJECT/);
   assert.match(source, /label:\s*"FOSTY",\s*chapters:\s*1,/);

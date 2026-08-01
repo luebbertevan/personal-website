@@ -216,7 +216,7 @@ export function SignalPrototypeV4() {
     let currentChapter = 0;
     let currentAnchorX = 0;
     let currentShaderPalette = new THREE.Vector3(...destinations[0].shaderColor);
-    let currentCssPalette = [...destinations[0].cssColor];
+    let currentCssPalette: number[] = [...destinations[0].cssColor];
     let transition: RouteTransition | null = null;
     let homeIntroElapsed = 0;
     let homeIntroActive = true;
@@ -624,7 +624,7 @@ export function SignalPrototypeV4() {
 
       panelBundles.forEach((bundle, destinationIndex) => {
         let panelOpacity = destinationIndex === currentDestination ? 1 : 0;
-        const chapterOpacities = bundle.chapters.map((_, chapterIndex) => (
+        const chapterOpacities: number[] = bundle.chapters.map((_, chapterIndex) => (
           destinationIndex === currentDestination && chapterIndex === currentChapter ? 1 : 0
         ));
         const chapterShifts = bundle.chapters.map(() => 0);
@@ -864,7 +864,9 @@ export function SignalPrototypeV4() {
             <h2 className={styles.fostyStatement}>Built for animals in need and the people devoted to helping them.</h2>
             <div className={styles.fostyCopy}>
               <p>Fosty is a foster coordination platform I founded and built for animal shelters and rescues. Before moving to NYC, I fostered 34 kittens through Colorado Kitty Coalition. I watched their team struggle with urgent care coordination split across texts, email chains, Instagram DMs, and messy Google Sheets.</p>
-              <p>In rescue, that friction can have a serious impact on outcomes. An animal in a critical condition deserves timely intervention, and disorganized communication can have tragic consequences. I saw the friction in animal rescue and I knew it was a system I could improve. I was inspired to create Fosty, a custom platform to organize foster communication and record keeping. I reached out to the rescue with the proposal for Fosty, and they were ecstatic. I will always remember the response I got: <strong>“We need you!”</strong> So, I became their engineering and design partner.</p>
+              <p>In rescue, that friction can have a serious impact on outcomes. An animal in a critical condition deserves timely intervention, and disorganized communication can have tragic consequences. I knew the struggles they faced were caused by a broken system and I knew I could build them something better. I was inspired to create Fosty, a custom platform to organize foster communication and record keeping. I reached out to the rescue with the proposal for Fosty, and they were ecstatic. I will always remember the response I got:</p>
+              <blockquote className={styles.fostyQuote}>“We need you!”</blockquote>
+              <p>So, I became their engineering and design partner.</p>
             </div>
             <nav className={`${styles.minimalContactLinks} ${styles.fostyLinks}`} aria-label="Fosty links">
               <a href="https://www.fosty.us/" target="_blank" rel="noreferrer">Demo Fosty <i aria-hidden="true">↗</i></a>

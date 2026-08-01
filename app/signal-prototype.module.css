@@ -464,6 +464,7 @@
 .project h2.fostyStatement {
   width: 100%;
   max-width: none;
+  color: rgb(var(--accent-rgb));
   font-size: clamp(31px, 2.55vw, 46px);
   line-height: 1.02;
   letter-spacing: -0.045em;

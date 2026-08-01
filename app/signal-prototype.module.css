@@ -447,7 +447,7 @@
 }
 .fostyHeading .cardLabel {
   margin-bottom: clamp(9px, 1.1vh, 14px);
-  font-size: clamp(11px, 0.7vw, 13px);
+  font-size: var(--about-reference-label-size);
   letter-spacing: 0.11em;
 }
 .fostyHeading h1 {
@@ -459,7 +459,7 @@
   bottom: clamp(13px, 1.7vh, 20px);
   margin: 0;
   color: rgba(247, 244, 241, 0.5);
-  font-size: 12px;
+  font-size: var(--about-reference-label-size);
 }
 .project h2.fostyStatement {
   width: 100%;
@@ -1043,8 +1043,6 @@
     --fosty-body-size: clamp(22px, 1.12vw, 34px);
     width: 58vw;
   }
-  .fostyHeading .cardLabel,
-  .fostyDate { font-size: clamp(15px, 0.72vw, 21px); }
 }
 
 @media (min-width: 861px) and (max-height: 900px) {

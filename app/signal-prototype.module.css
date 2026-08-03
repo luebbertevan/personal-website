@@ -168,10 +168,11 @@
   --chapter-blur: 5px;
   position: absolute;
   top: 0;
-  right: clamp(32px, 3vw, 52px);
+  right: max(12px, calc(clamp(32px, 3vw, 52px) - 15px));
   bottom: calc(var(--chapter-rail-height) + clamp(18px, 2.4vh, 30px));
   left: clamp(32px, 3vw, 52px);
   padding-top: clamp(20px, 2.8vh, 34px);
+  padding-right: 15px;
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
@@ -1113,7 +1114,7 @@
   .cardLabel { font-size: 12px; }
   .project h1 { font-size: clamp(54px, 14vw, 78px); }
   .project h2 { font-size: clamp(42px, 11vw, 62px); }
-  .chapter { right: 16px; left: 24px; }
+  .chapter { right: 16px; left: 24px; padding-right: 0; }
   .homeIntroduction {
     top: 0;
     bottom: 0;

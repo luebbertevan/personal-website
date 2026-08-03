@@ -99,7 +99,7 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.match(css, /\.project \{[^}]*top: clamp\(112px, 12vh, 168px\);[^}]*bottom: clamp\(24px, 4vh, 52px\);/s);
   assert.match(css, /\.project \{[^}]*width: 58vw;/s);
   assert.match(css, /@media \(min-width: 861px\) \{[\s\S]*\.homeProject \{[^}]*top: var\(--about-panel-top, clamp\(112px, 12vh, 168px\)\);[^}]*bottom: auto;[^}]*width: min\(980px, 58vw\);/s);
-  assert.match(css, /\.chapter \{[^}]*top: 0;[^}]*right: clamp\(32px, 3vw, 52px\);[^}]*left: clamp\(32px, 3vw, 52px\);[^}]*transform: translate3d\(var\(--chapter-shift\), 0, 0\);/s);
+  assert.match(css, /\.chapter \{[^}]*top: 0;[^}]*right: max\(12px, calc\(clamp\(32px, 3vw, 52px\) - 15px\)\);[^}]*left: clamp\(32px, 3vw, 52px\);[^}]*padding-right: 15px;[^}]*transform: translate3d\(var\(--chapter-shift\), 0, 0\);/s);
   assert.match(css, /\.projectMeta span:last-child \{ text-align: right; \}/);
   assert.match(css, /\.chapterRail li \{[^}]*height: 100%;/s);
   assert.match(css, /\.chapterRail button,\s*\.chapterRail > li > span \{[^}]*width: 100%;[^}]*height: 100%;/s);

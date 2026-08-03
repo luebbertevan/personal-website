@@ -251,11 +251,14 @@ export function SignalPrototypeV4() {
         : 1;
       aboutPanel?.style.setProperty("--about-panel-scale", aboutScale.toFixed(4));
       const aboutReferenceLabel = aboutPanel?.querySelector<HTMLElement>("[data-about-reference-label]");
+      const aboutReferenceTitle = aboutPanel?.querySelector<HTMLElement>("[data-about-reference-title]");
       const aboutReferenceLink = aboutPanel?.querySelector<HTMLElement>("[data-about-reference-link]");
-      if (fostyPanel && aboutReferenceLabel && aboutReferenceLink) {
+      if (fostyPanel && aboutReferenceLabel && aboutReferenceTitle && aboutReferenceLink) {
         const labelSize = Number.parseFloat(getComputedStyle(aboutReferenceLabel).fontSize) * aboutScale;
+        const titleSize = Number.parseFloat(getComputedStyle(aboutReferenceTitle).fontSize) * aboutScale;
         const linkSize = Number.parseFloat(getComputedStyle(aboutReferenceLink).fontSize) * aboutScale;
         fostyPanel.style.setProperty("--about-reference-label-size", `${labelSize.toFixed(2)}px`);
+        fostyPanel.style.setProperty("--about-reference-title-size", `${titleSize.toFixed(2)}px`);
         fostyPanel.style.setProperty("--about-reference-link-size", `${linkSize.toFixed(2)}px`);
       }
       if (aboutPanel && width > 860) {
@@ -794,7 +797,7 @@ export function SignalPrototypeV4() {
           <div className={styles.aboutLayout}>
             <div className={styles.aboutMain}>
               <div className={styles.introductionHeading}>
-                <h1 className={styles.introductionTitle}>I build software I believe in.</h1>
+                <h1 className={styles.introductionTitle} data-about-reference-title>I build software I believe in.</h1>
                 <p className={styles.availability}>Based in New York City. Open to full-time roles and freelance projects.</p>
               </div>
               <section className={styles.aboutApproach} aria-labelledby="about-approach-title">

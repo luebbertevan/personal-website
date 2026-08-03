@@ -421,6 +421,7 @@
 .fostyProject {
   --fosty-body-size: clamp(18px, 1.12vw, 25px);
   --about-reference-label-size: 14px;
+  --about-reference-title-size: 30px;
   --about-reference-link-size: 18px;
 }
 .fostyOrigin {
@@ -452,7 +453,7 @@
   letter-spacing: 0.11em;
 }
 .fostyHeading h1 {
-  font-size: clamp(64px, 5.4vw, 96px);
+  font-size: var(--about-reference-title-size);
 }
 .fostyDate {
   position: absolute;
@@ -466,7 +467,7 @@
   width: 100%;
   max-width: none;
   color: rgb(var(--accent-rgb));
-  font-size: clamp(31px, 2.55vw, 46px);
+  font-size: var(--fosty-body-size);
   line-height: 1.02;
   letter-spacing: -0.045em;
 }
@@ -1164,9 +1165,7 @@
   .fostyMain { gap: 13px; }
   .fostyHeading { padding-bottom: 10px; }
   .fostyHeading .cardLabel { margin-bottom: 7px; font-size: 9px; }
-  .fostyHeading h1 { font-size: clamp(48px, 12vw, 66px); }
   .fostyDate { display: none; }
-  .project h2.fostyStatement { font-size: clamp(24px, 5.8vw, 33px); }
   .fostyCopy { gap: 8px; }
   .fostyCopy p { line-height: 1.4; }
   .fostySidebar { gap: 8px; }

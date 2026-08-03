@@ -467,7 +467,7 @@
   width: 100%;
   max-width: none;
   color: rgb(var(--accent-rgb));
-  font-size: var(--fosty-body-size);
+  font-size: calc(var(--fosty-body-size) * 2);
   line-height: 1.02;
   letter-spacing: -0.045em;
 }

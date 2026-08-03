@@ -503,8 +503,8 @@
 .fostyLinks {
   width: 100%;
   gap: 8px clamp(24px, 2.2vw, 44px);
-  padding-top: clamp(12px, 1.5vh, 18px);
-  border-top: 1px solid rgba(var(--accent-rgb), 0.45);
+  padding-top: 0;
+  border-top: 0;
 }
 .minimalContactLinks.fostyLinks a {
   font-size: var(--about-reference-link-size);

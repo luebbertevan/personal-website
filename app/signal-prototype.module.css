@@ -426,26 +426,30 @@
   --about-reference-link-size: 18px;
 }
 .fostyOrigin {
+  display: flex;
+  flex-direction: column;
   padding-bottom: clamp(18px, 2.4vh, 30px);
 }
 .fostyOrigin .projectMeta {
-  margin-bottom: clamp(14px, 1.8vh, 22px);
   font-size: var(--about-reference-label-size);
+  margin-bottom: clamp(14px, 1.8vh, 22px);
   line-height: 1;
 }
 .fostyLayout {
   display: grid;
+  flex: 1;
   grid-template-columns: minmax(0, 1fr) clamp(176px, 14vw, 218px);
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    "heading heading"
+    "statement statement"
+    "copy photo"
+    "links links";
   gap: clamp(12px, 1.4vh, 17px) clamp(22px, 2.2vw, 40px);
   align-items: start;
 }
-.fostyMain {
-  display: grid;
-  gap: clamp(14px, 1.7vh, 21px);
-  width: 100%;
-  min-width: 0;
-}
 .fostyHeading {
+  grid-area: heading;
   padding-bottom: clamp(12px, 1.5vh, 18px);
   border-bottom: 1px solid rgba(var(--accent-rgb), 0.48);
 }
@@ -471,6 +475,7 @@
   line-height: 1;
 }
 .project h2.fostyStatement {
+  grid-area: statement;
   width: 100%;
   max-width: none;
   color: rgb(var(--accent-rgb));
@@ -479,6 +484,7 @@
   letter-spacing: -0.045em;
 }
 .fostyCopy {
+  grid-area: copy;
   display: grid;
   width: 100%;
   max-width: none;
@@ -508,24 +514,22 @@
   letter-spacing: -0.02em;
 }
 .fostyLinks {
+  grid-area: links;
   display: grid;
   width: 100%;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 2px;
   padding-top: clamp(9px, 1.1vh, 13px);
   border-top: 1px solid rgba(var(--accent-rgb), 0.4);
 }
 .minimalContactLinks.fostyLinks a {
+  font-size: var(--about-reference-link-size);
   width: 100%;
   justify-content: space-between;
-  font-size: var(--about-reference-link-size);
-}
-.fostySidebar {
-  display: grid;
-  gap: 0;
-  min-width: 0;
 }
 .fostyPhoto {
   position: relative;
+  grid-area: photo;
   width: 100%;
   aspect-ratio: 4 / 5;
   margin: 0;
@@ -1215,13 +1219,12 @@
     grid-template-columns: minmax(0, 1fr) 118px;
     gap: 14px;
   }
-  .fostyMain { gap: 13px; }
   .fostyHeading { padding-bottom: 10px; }
   .fostyHeading .cardLabel { margin-bottom: 7px; font-size: 9px; }
   .fostyDate { display: none; }
   .fostyCopy { gap: 8px; }
   .fostyCopy p { line-height: 1.4; }
-  .fostySidebar { gap: 8px; }
+  .fostyLinks { grid-template-columns: 1fr; }
   .fostyMetric,
   .fostySignal { padding: 11px; }
   .fostyMetric span,

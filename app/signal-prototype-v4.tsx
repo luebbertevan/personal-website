@@ -868,37 +868,33 @@ export function SignalPrototypeV4() {
         <section className={`${styles.chapter} ${styles.fostyOrigin}`} data-project-chapter>
           <div className={styles.projectMeta}><span>FOSTY</span></div>
           <div className={styles.fostyLayout}>
-            <div className={styles.fostyMain}>
-              <div className={styles.fostyHeading}>
-                <p className={styles.cardLabel}>FOUNDER · FULL-STACK ENGINEER · PRODUCT DESIGNER</p>
-                <div className={styles.fostyTitleRow}>
-                  <h1>Fosty</h1>
-                  <p className={styles.fostyDate}>2025 TO PRESENT</p>
-                </div>
-              </div>
-              <h2 className={styles.fostyStatement}>Built for animals in need and the people devoted to helping them.</h2>
-              <div className={styles.fostyCopy}>
-                <p>Fosty is a foster coordination platform I founded and built for animal shelters and rescues. Before moving to NYC, I fostered 34 kittens through Colorado Kitty Coalition. I watched their team struggle with urgent care coordination split across texts, emails, DMs, and messy Google Sheets.</p>
-                <p>That friction can have a serious impact on outcomes. An animal in a critical condition deserves timely intervention, and disorganized communication can have tragic consequences. I saw a broken system and I knew I could build them something better. I was inspired to create Fosty, a custom platform to organize foster communication and record keeping. I reached out to the rescue with the proposal for Fosty, and they were ecstatic. I will always remember their response:</p>
-                <blockquote className={styles.fostyQuote}>“We need you!”</blockquote>
+            <div className={styles.fostyHeading}>
+              <p className={styles.cardLabel}>FOUNDER · FULL-STACK ENGINEER · PRODUCT DESIGNER</p>
+              <div className={styles.fostyTitleRow}>
+                <h1>Fosty</h1>
+                <p className={styles.fostyDate}>2025 TO PRESENT</p>
               </div>
             </div>
-            <aside className={styles.fostySidebar}>
-              <figure className={styles.fostyPhoto}>
-                {/* The source is optimized for this compact editorial crop. */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/images/evan-fostering-kitten.webp"
-                  alt="Evan holding a foster kitten."
-                  width="1040"
-                  height="1384"
-                />
-              </figure>
-              <nav className={`${styles.minimalContactLinks} ${styles.fostyLinks}`} aria-label="Fosty links">
-                <a href="https://www.fosty.us/" target="_blank" rel="noreferrer">Demo Fosty <i aria-hidden="true">↗</i></a>
-                <a href="https://www.cokittycoalition.com/" target="_blank" rel="noreferrer">Colorado Kitty Coalition <i aria-hidden="true">↗</i></a>
-              </nav>
-            </aside>
+            <h2 className={styles.fostyStatement}>Built for animals in need and the people devoted to helping them.</h2>
+            <div className={styles.fostyCopy}>
+              <p>Fosty is a foster coordination platform I founded and built for animal shelters and rescues. Before moving to NYC, I fostered 34 kittens through Colorado Kitty Coalition. I watched their team struggle with urgent care coordination split across texts, emails, DMs, and messy Google Sheets.</p>
+              <p>That friction can have a serious impact on outcomes. An animal in a critical condition deserves timely intervention, and disorganized communication can have tragic consequences. I saw a broken system and I knew I could build them something better. I was inspired to create Fosty, a custom platform to organize foster communication and record keeping. I reached out to the rescue with the proposal for Fosty, and they were ecstatic. I will always remember their response:</p>
+              <blockquote className={styles.fostyQuote}>“We need you!”</blockquote>
+            </div>
+            <figure className={styles.fostyPhoto}>
+              {/* The source is optimized for this compact editorial crop. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/images/evan-fostering-kitten.webp"
+                alt="Evan holding a foster kitten."
+                width="1040"
+                height="1384"
+              />
+            </figure>
+            <nav className={`${styles.minimalContactLinks} ${styles.fostyLinks}`} aria-label="Fosty links">
+              <a href="https://www.fosty.us/" target="_blank" rel="noreferrer">Demo Fosty <i aria-hidden="true">↗</i></a>
+              <a href="https://www.cokittycoalition.com/" target="_blank" rel="noreferrer">Colorado Kitty Coalition <i aria-hidden="true">↗</i></a>
+            </nav>
           </div>
         </section>
         <ol className={`${styles.chapterRail} ${styles.fostyChapterRail}`} aria-label="Fosty case study chapters">

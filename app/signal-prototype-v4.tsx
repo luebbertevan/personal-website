@@ -862,12 +862,16 @@ export function SignalPrototypeV4() {
             <div className={styles.fostyMain}>
               <div className={styles.fostyHeading}>
                 <p className={styles.cardLabel}>FOUNDER · FULL-STACK ENGINEER · PRODUCT DESIGNER</p>
-                <h1>Fosty</h1>
-                <p className={styles.fostyDate}>2025 TO PRESENT</p>
+                <div className={styles.fostyTitleRow}>
+                  <h1>Fosty</h1>
+                  <p className={styles.fostyDate}>2025 TO PRESENT</p>
+                </div>
               </div>
               <h2 className={styles.fostyStatement}>Built for animals in need and the people devoted to helping them.</h2>
               <div className={styles.fostyCopy}>
                 <p>Fosty is a foster coordination platform I founded and built for animal shelters and rescues. Before moving to NYC, I fostered 34 kittens through Colorado Kitty Coalition. I watched their team struggle with urgent care coordination split across texts, emails, DMs, and messy Google Sheets.</p>
+                <p>That friction can have a serious impact on outcomes. An animal in a critical condition deserves timely intervention, and disorganized communication can have tragic consequences. I saw a broken system and I knew I could build them something better. I was inspired to create Fosty, a custom platform to organize foster communication and record keeping. I reached out to the rescue with the proposal for Fosty, and they were ecstatic. I will always remember their response:</p>
+                <blockquote className={styles.fostyQuote}>“We need you!”</blockquote>
               </div>
             </div>
             <aside className={styles.fostySidebar}>
@@ -886,10 +890,6 @@ export function SignalPrototypeV4() {
                 <a href="https://www.cokittycoalition.com/" target="_blank" rel="noreferrer">Colorado Kitty Coalition <i aria-hidden="true">↗</i></a>
               </nav>
             </aside>
-            <div className={styles.fostyContinuation}>
-              <p>That friction can have a serious impact on outcomes. An animal in a critical condition deserves timely intervention, and disorganized communication can have tragic consequences. I saw a broken system and I knew I could build them something better. I was inspired to create Fosty, a custom platform to organize foster communication and record keeping. I reached out to the rescue with the proposal for Fosty, and they were ecstatic. I will always remember their response:</p>
-              <blockquote className={styles.fostyQuote}>“We need you!”</blockquote>
-            </div>
           </div>
         </section>
         <ol className={`${styles.chapterRail} ${styles.fostyChapterRail}`} aria-label="Fosty case study chapters">

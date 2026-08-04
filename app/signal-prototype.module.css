@@ -454,8 +454,15 @@
 .fostyHeading h1 {
   font-size: var(--about-reference-title-size);
 }
+.fostyTitleRow {
+  display: flex;
+  gap: 18px;
+  align-items: baseline;
+  justify-content: space-between;
+}
 .fostyDate {
-  margin: clamp(8px, 1vh, 12px) 0 0;
+  flex: 0 0 auto;
+  margin: 0;
   color: rgba(247, 244, 241, 0.5);
   font-size: var(--about-reference-label-size);
   line-height: 1;
@@ -496,19 +503,6 @@
   font-weight: 540;
   line-height: 1.25;
   letter-spacing: -0.02em;
-}
-.fostyContinuation {
-  display: grid;
-  grid-column: 1 / -1;
-  gap: 7px;
-}
-.fostyContinuation p {
-  margin: 0;
-  color: rgba(247, 244, 241, 0.72);
-  font-family: var(--font-geist-sans), sans-serif;
-  font-size: var(--fosty-body-size);
-  line-height: 1.4;
-  letter-spacing: 0;
 }
 .fostyLinks {
   display: grid;
@@ -1219,8 +1213,6 @@
   .fostyDate { display: none; }
   .fostyCopy { gap: 8px; }
   .fostyCopy p { line-height: 1.4; }
-  .fostyContinuation { gap: 6px; }
-  .fostyContinuation p { line-height: 1.4; }
   .fostySidebar { gap: 8px; }
   .fostyMetric,
   .fostySignal { padding: 11px; }

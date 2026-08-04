@@ -419,7 +419,7 @@
 }
 
 .fostyProject {
-  --fosty-body-size: clamp(18px, 1.12vw, 25px);
+  --fosty-body-size: clamp(16px, 1vw, 22px);
   --about-reference-label-size: 14px;
   --about-reference-title-size: 30px;
   --about-reference-link-size: 18px;
@@ -432,18 +432,17 @@
 }
 .fostyLayout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) clamp(190px, 17vw, 280px);
-  gap: clamp(28px, 3.2vw, 62px);
+  grid-template-columns: minmax(0, 1fr) clamp(176px, 14vw, 218px);
+  gap: clamp(12px, 1.4vh, 17px) clamp(22px, 2.2vw, 40px);
   align-items: start;
 }
 .fostyMain {
   display: grid;
-  gap: clamp(18px, 2.2vh, 28px);
+  gap: clamp(14px, 1.7vh, 21px);
   width: 100%;
   min-width: 0;
 }
 .fostyHeading {
-  position: relative;
   padding-bottom: clamp(12px, 1.5vh, 18px);
   border-bottom: 1px solid rgba(var(--accent-rgb), 0.48);
 }
@@ -456,12 +455,10 @@
   font-size: var(--about-reference-title-size);
 }
 .fostyDate {
-  position: absolute;
-  right: 0;
-  bottom: clamp(13px, 1.7vh, 20px);
-  margin: 0;
+  margin: clamp(8px, 1vh, 12px) 0 0;
   color: rgba(247, 244, 241, 0.5);
   font-size: var(--about-reference-label-size);
+  line-height: 1;
 }
 .project h2.fostyStatement {
   width: 100%;
@@ -482,7 +479,7 @@
   color: rgba(247, 244, 241, 0.72);
   font-family: var(--font-geist-sans), sans-serif;
   font-size: var(--fosty-body-size);
-  line-height: 1.47;
+  line-height: 1.4;
   letter-spacing: 0;
 }
 .fostyCopy strong {
@@ -500,19 +497,69 @@
   line-height: 1.25;
   letter-spacing: -0.02em;
 }
+.fostyContinuation {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: 7px;
+}
+.fostyContinuation p {
+  margin: 0;
+  color: rgba(247, 244, 241, 0.72);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fosty-body-size);
+  line-height: 1.4;
+  letter-spacing: 0;
+}
 .fostyLinks {
+  display: grid;
   width: 100%;
-  gap: 8px clamp(24px, 2.2vw, 44px);
-  padding-top: 0;
-  border-top: 0;
+  gap: 2px;
+  padding-top: clamp(9px, 1.1vh, 13px);
+  border-top: 1px solid rgba(var(--accent-rgb), 0.4);
 }
 .minimalContactLinks.fostyLinks a {
+  width: 100%;
+  justify-content: space-between;
   font-size: var(--about-reference-link-size);
 }
 .fostySidebar {
   display: grid;
-  gap: clamp(10px, 1.2vh, 15px);
+  gap: 0;
   min-width: 0;
+}
+.fostyPhoto {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(var(--accent-rgb), 0.62);
+  background: rgba(4, 9, 17, 0.7);
+  box-shadow: 0 0 42px rgba(var(--accent-rgb), 0.16);
+}
+.fostyPhoto::before,
+.fostyPhoto::after {
+  position: absolute;
+  z-index: 1;
+  content: "";
+  pointer-events: none;
+}
+.fostyPhoto::before {
+  inset: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+.fostyPhoto::after {
+  inset: 0;
+  background:
+    linear-gradient(180deg, transparent 66%, rgba(7, 5, 4, 0.24)),
+    repeating-linear-gradient(0deg, transparent 0 4px, rgba(var(--accent-rgb), 0.025) 4px 5px);
+}
+.fostyPhoto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 48%;
 }
 .fostyMetric,
 .fostySignal {
@@ -994,6 +1041,10 @@
     width: min(980px, 58vw);
     height: var(--reference-panel-height, calc(100svh - clamp(224px, 24vh, 336px)));
   }
+  .fostyOrigin {
+    bottom: var(--chapter-rail-height);
+    padding-bottom: 0;
+  }
   .homeProject h1.introductionTitle {
     font-size: var(--about-intro-title-size);
   }
@@ -1168,6 +1219,8 @@
   .fostyDate { display: none; }
   .fostyCopy { gap: 8px; }
   .fostyCopy p { line-height: 1.4; }
+  .fostyContinuation { gap: 6px; }
+  .fostyContinuation p { line-height: 1.4; }
   .fostySidebar { gap: 8px; }
   .fostyMetric,
   .fostySignal { padding: 11px; }

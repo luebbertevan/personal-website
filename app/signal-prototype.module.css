@@ -428,7 +428,9 @@
   padding-bottom: clamp(18px, 2.4vh, 30px);
 }
 .fostyOrigin .projectMeta {
+  margin-bottom: clamp(14px, 1.8vh, 22px);
   font-size: var(--about-reference-label-size);
+  line-height: 1;
 }
 .fostyLayout {
   display: grid;
@@ -1074,6 +1076,7 @@
   .aboutMain { gap: 12px; }
   .aboutSidebar { gap: 10px; }
   .aboutSinglePanel .projectMeta { margin-bottom: 12px; }
+  .fostyOrigin .projectMeta { margin-bottom: 12px; }
   .availability { margin-top: 11px; padding-top: 8px; font-size: 15.6px; }
   .aboutApproach .cardLabel,
   .aboutInterests .cardLabel,
@@ -1112,6 +1115,7 @@
     padding-bottom: 16px;
   }
   .aboutSinglePanel .projectMeta { margin-bottom: 10px; }
+  .fostyOrigin .projectMeta { margin-bottom: 10px; }
   .aboutLayout {
     --portrait-width: 200px;
     --portrait-gap: 22px;

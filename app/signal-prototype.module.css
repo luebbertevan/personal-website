@@ -99,6 +99,7 @@
 .project {
   --entry-presence: 0;
   --entry-shift: 42px;
+  --content-panel-scale: 1;
   top: clamp(112px, 12vh, 168px);
   right: clamp(32px, 3vw, 58px);
   bottom: clamp(24px, 4vh, 52px);
@@ -107,14 +108,14 @@
   background:
     linear-gradient(90deg, rgba(var(--accent-rgb), 0.035), transparent 72%),
     var(--surface-background);
-  transform: translate3d(var(--entry-shift), 0, 0);
+  transform: translate3d(var(--entry-shift), 0, 0) scale(var(--content-panel-scale));
+  transform-origin: top right;
   transition: background 400ms ease;
   pointer-events: none;
 }
 .homeProject {
   --entry-presence: 0;
-  --about-panel-scale: 1;
-  transform: translate3d(var(--entry-shift), 0, 0) scale(var(--about-panel-scale));
+  transform: translate3d(var(--entry-shift), 0, 0) scale(var(--content-panel-scale));
   transform-origin: top right;
 }
 .project::before {
@@ -1016,6 +1017,9 @@
 }
 
 @media (min-width: 861px) {
+  .project {
+    --content-panel-scale: 1.15;
+  }
   .homeProject {
     top: var(--about-panel-top, clamp(112px, 12vh, 168px));
     bottom: auto;

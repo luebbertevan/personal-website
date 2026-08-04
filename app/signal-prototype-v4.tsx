@@ -243,13 +243,19 @@ export function SignalPrototypeV4() {
 
       const aboutPanel = shell.querySelector<HTMLElement>('[data-destination-panel="0"]');
       const fostyPanel = shell.querySelector<HTMLElement>('[data-destination-panel="1"]');
+      const contentPanelScale = Number.parseFloat(
+        getComputedStyle(fostyPanel ?? aboutPanel ?? shell).getPropertyValue("--content-panel-scale"),
+      ) || 1;
       const shouldScaleAboutPanel = window.matchMedia(
         "(min-width: 2048px) and (min-height: 1152px)",
       ).matches;
       const aboutScale = shouldScaleAboutPanel && aboutPanel && fostyPanel
         ? fostyPanel.offsetWidth / Math.max(aboutPanel.offsetWidth, 1)
         : 1;
-      aboutPanel?.style.setProperty("--about-panel-scale", aboutScale.toFixed(4));
+      aboutPanel?.style.setProperty(
+        "--content-panel-scale",
+        (contentPanelScale * aboutScale).toFixed(4),
+      );
       const aboutReferenceLabel = aboutPanel?.querySelector<HTMLElement>("[data-about-reference-label]");
       const aboutReferenceTitle = aboutPanel?.querySelector<HTMLElement>("[data-about-reference-title]");
       const aboutReferenceLink = aboutPanel?.querySelector<HTMLElement>("[data-about-reference-link]");
@@ -262,11 +268,14 @@ export function SignalPrototypeV4() {
         fostyPanel.style.setProperty("--about-reference-link-size", `${linkSize.toFixed(2)}px`);
       }
       if (aboutPanel && width > 860) {
-        const renderedAboutHeight = aboutPanel.offsetHeight * aboutScale;
+        const renderedAboutHeight = aboutPanel.offsetHeight * aboutScale * contentPanelScale;
         const centeredAboutTop = (height - renderedAboutHeight) / 2;
         aboutPanel.style.setProperty("--about-panel-top", `${centeredAboutTop.toFixed(1)}px`);
         fostyPanel?.style.setProperty("--reference-panel-top", `${centeredAboutTop.toFixed(1)}px`);
-        fostyPanel?.style.setProperty("--reference-panel-height", `${renderedAboutHeight.toFixed(1)}px`);
+        fostyPanel?.style.setProperty(
+          "--reference-panel-height",
+          `${(renderedAboutHeight / contentPanelScale).toFixed(1)}px`,
+        );
       } else {
         aboutPanel?.style.removeProperty("--about-panel-top");
         fostyPanel?.style.removeProperty("--reference-panel-top");

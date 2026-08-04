@@ -518,14 +518,13 @@
   display: grid;
   width: 100%;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 2px;
-  padding-top: clamp(9px, 1.1vh, 13px);
-  border-top: 1px solid rgba(var(--accent-rgb), 0.4);
+  gap: clamp(18px, 2.2vw, 40px);
 }
 .minimalContactLinks.fostyLinks a {
   font-size: var(--about-reference-link-size);
   width: 100%;
   justify-content: space-between;
+  border-bottom: 0;
 }
 .fostyPhoto {
   position: relative;
@@ -1224,7 +1223,6 @@
   .fostyDate { display: none; }
   .fostyCopy { gap: 8px; }
   .fostyCopy p { line-height: 1.4; }
-  .fostyLinks { grid-template-columns: 1fr; }
   .fostyMetric,
   .fostySignal { padding: 11px; }
   .fostyMetric span,

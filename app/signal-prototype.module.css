@@ -1018,7 +1018,7 @@
 
 @media (min-width: 861px) {
   .project {
-    --content-panel-scale: 1.15;
+    --content-panel-scale: 1.1;
   }
   .homeProject {
     top: var(--about-panel-top, clamp(112px, 12vh, 168px));

@@ -898,6 +898,7 @@ export function SignalPrototypeV4() {
               </div>
               <nav className={`${styles.minimalContactLinks} ${styles.fostyLinks}`} aria-label="Fosty links">
                 <a href="https://www.fosty.us/" target="_blank" rel="noreferrer">Demo Fosty <i aria-hidden="true">↗</i></a>
+                <a href="https://github.com/luebbertevan/animal-shelter-management-platform" target="_blank" rel="noreferrer">GitHub <i aria-hidden="true">↗</i></a>
                 <a href="https://www.cokittycoalition.com/" target="_blank" rel="noreferrer">Colorado Kitty Coalition <i aria-hidden="true">↗</i></a>
               </nav>
             </div>

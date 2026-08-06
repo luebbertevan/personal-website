@@ -75,6 +75,7 @@ export function SignalPrototypeV4() {
   const shellRef = useRef<HTMLElement>(null);
   const mountRef = useRef<HTMLDivElement>(null);
   const emailRef = useRef<HTMLElement>(null);
+  const lightboxCloseRef = useRef<HTMLButtonElement>(null);
   const navigationCommandRef = useRef<NavigationCommand | null>(null);
   const [paused, setPaused] = useState(false);
   const [emailCopyStatus, setEmailCopyStatus] = useState<"idle" | "copied" | "selected">("idle");
@@ -88,6 +89,7 @@ export function SignalPrototypeV4() {
       if (event.key === "Escape") setExpandedMedia(false);
     };
 
+    lightboxCloseRef.current?.focus();
     window.addEventListener("keydown", closeOnEscape);
     return () => window.removeEventListener("keydown", closeOnEscape);
   }, [expandedMedia]);
@@ -918,7 +920,6 @@ export function SignalPrototypeV4() {
           </div>
           <div className={styles.fostyProductLayout}>
             <header className={styles.fostyProductIntro}>
-              <p className={styles.cardLabel}>THE PRODUCT</p>
               <h2>Fosty is the platform to fix that.</h2>
               <p>
                 Animal rescues coordinate care across staff and volunteer foster homes. Fosty brings intake,
@@ -946,8 +947,7 @@ export function SignalPrototypeV4() {
                     <span>EXPAND <i aria-hidden="true">↗</i></span>
                   </button>
                   <figcaption className={styles.productCaption}>
-                    <span>01 / FOSTERS NEEDED</span>
-                    <h3>See where help is needed.</h3>
+                    <span>FOSTERS NEEDED</span>
                     <p>
                       The Fosters Needed page gives volunteers one place to see animals waiting for a foster home.
                       Essential details are visible at a glance, helping volunteers quickly understand where they
@@ -966,27 +966,28 @@ export function SignalPrototypeV4() {
             <li key={label}><span aria-disabled="true">{label}</span></li>
           ))}
         </ol>
+        {expandedMedia && (
+          <div
+            className={styles.mediaLightbox}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Expanded Fosters Needed page screenshot"
+            onClick={() => setExpandedMedia(false)}
+          >
+            <button ref={lightboxCloseRef} type="button" onClick={() => setExpandedMedia(false)}>
+              CLOSE <span aria-hidden="true">×</span>
+            </button>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/fosty-fosters-needed.webp"
+              alt="Fosty’s Fosters Needed page showing a searchable grid of cats waiting for foster homes."
+              width="2254"
+              height="1712"
+              onClick={(event) => event.stopPropagation()}
+            />
+          </div>
+        )}
       </article>
-
-      {expandedMedia && (
-        <div
-          className={styles.mediaLightbox}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Expanded Fosters Needed page screenshot"
-          onClick={() => setExpandedMedia(false)}
-        >
-          <button type="button" onClick={() => setExpandedMedia(false)}>CLOSE <span aria-hidden="true">×</span></button>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/images/fosty-fosters-needed.webp"
-            alt="Fosty’s Fosters Needed page showing a searchable grid of cats waiting for foster homes."
-            width="2254"
-            height="1712"
-            onClick={(event) => event.stopPropagation()}
-          />
-        </div>
-      )}
 
       <div className={styles.routeControls} aria-label="Portfolio navigation">
         <button type="button" data-route-previous onClick={() => stepRoute(-1)}><span aria-hidden="true">←</span> PREVIOUS</button>

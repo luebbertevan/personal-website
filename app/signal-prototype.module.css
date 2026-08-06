@@ -566,6 +566,187 @@
   object-fit: cover;
   object-position: 50% 48%;
 }
+.fostyProductChapter {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: clamp(18px, 2.4vh, 30px);
+}
+.fostyProductChapter .projectMeta {
+  margin-bottom: clamp(14px, 1.8vh, 22px);
+  font-size: var(--about-reference-label-size);
+  line-height: 1;
+}
+.fostyProductLayout {
+  display: grid;
+  gap: clamp(24px, 3vh, 38px);
+}
+.fostyProductIntro {
+  display: grid;
+  grid-template-columns: minmax(250px, 0.92fr) minmax(320px, 1.08fr);
+  grid-template-areas:
+    "label copy"
+    "title copy";
+  gap: 6px clamp(28px, 3vw, 54px);
+  padding-bottom: clamp(20px, 2.4vh, 30px);
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.48);
+}
+.fostyProductIntro .cardLabel {
+  grid-area: label;
+  margin: 0;
+  align-self: end;
+  font-size: var(--about-reference-label-size);
+}
+.project .fostyProductIntro h2 {
+  grid-area: title;
+  max-width: 11ch;
+  color: color-mix(in srgb, rgb(var(--accent-rgb)) 84%, white 16%);
+  font-size: clamp(38px, 3.25vw, 58px);
+  line-height: 0.98;
+}
+.fostyProductIntro > p:last-child {
+  grid-area: copy;
+  margin: 0;
+  align-self: end;
+  color: rgba(247, 244, 241, 0.72);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fosty-body-size);
+  line-height: 1.48;
+  letter-spacing: 0;
+}
+.productVisualList {
+  display: grid;
+  gap: clamp(28px, 3vw, 46px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.productVisual {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(210px, 0.72fr);
+  gap: clamp(24px, 2.8vw, 46px);
+  margin: 0;
+  align-items: center;
+}
+.productScreenshot {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid rgba(var(--accent-rgb), 0.58);
+  color: rgba(247, 244, 241, 0.94);
+  background: rgba(4, 9, 17, 0.78);
+  box-shadow: 0 0 38px rgba(var(--accent-rgb), 0.12);
+  cursor: zoom-in;
+}
+.productScreenshot::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background: linear-gradient(180deg, transparent 72%, rgba(7, 5, 4, 0.32));
+  pointer-events: none;
+  transition: background 180ms ease;
+}
+.productScreenshot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: transform 240ms ease;
+}
+.productScreenshot > span {
+  position: absolute;
+  z-index: 1;
+  right: 13px;
+  bottom: 12px;
+  padding: 7px 9px;
+  border: 1px solid rgba(var(--accent-rgb), 0.64);
+  background: rgba(4, 4, 7, 0.82);
+  color: rgba(247, 244, 241, 0.84);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+}
+.productScreenshot i { color: rgb(var(--accent-rgb)); font-style: normal; }
+.productScreenshot:hover img,
+.productScreenshot:focus-visible img { transform: scale(1.012); }
+.productScreenshot:hover::after,
+.productScreenshot:focus-visible::after { background: linear-gradient(180deg, rgba(var(--accent-rgb), 0.04), rgba(7, 5, 4, 0.4)); }
+.productScreenshot:focus-visible { outline: 1px solid rgb(var(--accent-rgb)); outline-offset: 4px; }
+.productCaption {
+  position: relative;
+  display: grid;
+  gap: 12px;
+  padding: 20px 0 20px clamp(18px, 1.8vw, 30px);
+  border-left: 1px solid rgba(var(--accent-rgb), 0.48);
+}
+.productCaption::before {
+  position: absolute;
+  top: 23px;
+  left: -4px;
+  width: 7px;
+  height: 7px;
+  border: 1px solid rgb(var(--accent-rgb));
+  content: "";
+  background: rgba(5, 5, 7, 0.95);
+  transform: rotate(45deg);
+}
+.productCaption > span {
+  color: rgba(var(--accent-rgb), 0.9);
+  font-size: 11px;
+}
+.productCaption h3 {
+  margin: 0;
+  color: rgba(247, 244, 241, 0.94);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: clamp(24px, 1.8vw, 34px);
+  font-weight: 450;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+}
+.productCaption p {
+  margin: 0;
+  color: rgba(247, 244, 241, 0.64);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: clamp(15px, 0.92vw, 19px);
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+.mediaLightbox {
+  position: fixed;
+  z-index: 10;
+  inset: 0;
+  display: grid;
+  padding: clamp(62px, 7vh, 94px) clamp(20px, 4vw, 70px) clamp(24px, 4vh, 52px);
+  place-items: center;
+  background: rgba(3, 3, 5, 0.94);
+  backdrop-filter: blur(14px);
+  cursor: zoom-out;
+}
+.mediaLightbox > button {
+  position: absolute;
+  top: clamp(18px, 3vh, 32px);
+  right: clamp(20px, 4vw, 70px);
+  display: flex;
+  gap: 12px;
+  padding: 10px 0;
+  border: 0;
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.62);
+  color: rgba(247, 244, 241, 0.84);
+  background: transparent;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+}
+.mediaLightbox > button span { color: rgb(var(--accent-rgb)); font-size: 18px; line-height: 0.7; }
+.mediaLightbox > img {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  border: 1px solid rgba(var(--accent-rgb), 0.7);
+  box-shadow: 0 0 80px rgba(var(--accent-rgb), 0.2);
+  cursor: default;
+  object-fit: contain;
+}
 .fostyMetric,
 .fostySignal {
   position: relative;
@@ -1053,6 +1234,10 @@
     bottom: var(--chapter-rail-height);
     padding-bottom: 0;
   }
+  .fostyProductChapter {
+    bottom: var(--chapter-rail-height);
+    padding-bottom: 0;
+  }
   .homeProject h1.introductionTitle {
     font-size: var(--about-intro-title-size);
   }
@@ -1219,6 +1404,20 @@
   .minimalContactLinks { justify-content: flex-start; }
   .fostyProject { --fosty-body-size: 14px; }
   .fostyOrigin { padding-top: 18px; }
+  .fostyProductChapter { padding-top: 18px; }
+  .fostyProductLayout { gap: 24px; }
+  .fostyProductIntro {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "label"
+      "title"
+      "copy";
+    gap: 10px;
+  }
+  .project .fostyProductIntro h2 { max-width: 13ch; font-size: clamp(34px, 9vw, 48px); }
+  .productVisual { grid-template-columns: 1fr; gap: 18px; }
+  .productCaption { padding-top: 12px; padding-bottom: 12px; }
+  .productCaption::before { top: 15px; }
   .fostyLayout {
     grid-template-columns: minmax(0, 1fr) 118px;
     gap: 14px;

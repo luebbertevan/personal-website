@@ -20,7 +20,7 @@ const destinations = [
   },
   {
     label: "FOSTY",
-    chapters: 1,
+    chapters: 2,
     shaderColor: [0.925, 0.282, 0.6] as const,
     cssColor: [236, 72, 153] as const,
   },
@@ -78,7 +78,19 @@ export function SignalPrototypeV4() {
   const navigationCommandRef = useRef<NavigationCommand | null>(null);
   const [paused, setPaused] = useState(false);
   const [emailCopyStatus, setEmailCopyStatus] = useState<"idle" | "copied" | "selected">("idle");
+  const [expandedMedia, setExpandedMedia] = useState(false);
   const pausedRef = useRef(false);
+
+  useEffect(() => {
+    if (!expandedMedia) return;
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setExpandedMedia(false);
+    };
+
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [expandedMedia]);
 
   const togglePause = () => {
     pausedRef.current = !pausedRef.current;
@@ -899,13 +911,82 @@ export function SignalPrototypeV4() {
             </figure>
           </div>
         </section>
+        <section className={`${styles.chapter} ${styles.fostyProductChapter}`} data-project-chapter>
+          <div className={styles.projectMeta}>
+            <span>FOSTY</span>
+            <span>THE PRODUCT</span>
+          </div>
+          <div className={styles.fostyProductLayout}>
+            <header className={styles.fostyProductIntro}>
+              <p className={styles.cardLabel}>THE PRODUCT</p>
+              <h2>Fosty is the platform to fix that.</h2>
+              <p>
+                Animal rescues coordinate care across staff and volunteer foster homes. Fosty brings intake,
+                records, foster requests, assignments, and real-time communication into one place, so teams can
+                spend less time piecing together information and more time caring for animals.
+              </p>
+            </header>
+            <ol className={styles.productVisualList} aria-label="Fosty product screens">
+              <li>
+                <figure className={styles.productVisual}>
+                  <button
+                    className={styles.productScreenshot}
+                    type="button"
+                    onClick={() => setExpandedMedia(true)}
+                    aria-label="Expand the Fosters Needed page screenshot"
+                  >
+                    {/* This is a product screenshot, so native image loading preserves the authored pixels. */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="/images/fosty-fosters-needed.webp"
+                      alt="Fosty’s Fosters Needed page showing a searchable grid of cats waiting for foster homes."
+                      width="2254"
+                      height="1712"
+                    />
+                    <span>EXPAND <i aria-hidden="true">↗</i></span>
+                  </button>
+                  <figcaption className={styles.productCaption}>
+                    <span>01 / FOSTERS NEEDED</span>
+                    <h3>See where help is needed.</h3>
+                    <p>
+                      The Fosters Needed page gives volunteers one place to see animals waiting for a foster home.
+                      Essential details are visible at a glance, helping volunteers quickly understand where they
+                      can help.
+                    </p>
+                  </figcaption>
+                </figure>
+              </li>
+            </ol>
+          </div>
+        </section>
         <ol className={`${styles.chapterRail} ${styles.fostyChapterRail}`} aria-label="Fosty case study chapters">
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(0)}>ORIGIN</button></li>
-          {['PRODUCT', 'DESIGN', 'ENGINEERING', 'OUTCOME'].map((label) => (
+          <li><button type="button" data-chapter-index onClick={() => navigateToChapter(1)}>PRODUCT</button></li>
+          {['DESIGN', 'ENGINEERING', 'OUTCOME'].map((label) => (
             <li key={label}><span aria-disabled="true">{label}</span></li>
           ))}
         </ol>
       </article>
+
+      {expandedMedia && (
+        <div
+          className={styles.mediaLightbox}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Expanded Fosters Needed page screenshot"
+          onClick={() => setExpandedMedia(false)}
+        >
+          <button type="button" onClick={() => setExpandedMedia(false)}>CLOSE <span aria-hidden="true">×</span></button>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/images/fosty-fosters-needed.webp"
+            alt="Fosty’s Fosters Needed page showing a searchable grid of cats waiting for foster homes."
+            width="2254"
+            height="1712"
+            onClick={(event) => event.stopPropagation()}
+          />
+        </div>
+      )}
 
       <div className={styles.routeControls} aria-label="Portfolio navigation">
         <button type="button" data-route-previous onClick={() => stepRoute(-1)}><span aria-hidden="true">←</span> PREVIOUS</button>

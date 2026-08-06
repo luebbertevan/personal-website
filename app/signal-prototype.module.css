@@ -613,8 +613,8 @@
 }
 .productVisual {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
-  gap: clamp(24px, 2.8vw, 46px);
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  gap: clamp(18px, 1.8vw, 30px);
   margin: 0;
   align-items: center;
 }
@@ -663,22 +663,9 @@
 .productScreenshot:focus-visible::after { background: linear-gradient(180deg, rgba(var(--accent-rgb), 0.04), rgba(7, 5, 4, 0.4)); }
 .productScreenshot:focus-visible { outline: 1px solid rgb(var(--accent-rgb)); outline-offset: 4px; }
 .productCaption {
-  position: relative;
   display: grid;
   gap: 12px;
-  padding: 20px 0 20px clamp(18px, 1.8vw, 30px);
-  border-left: 1px solid rgba(var(--accent-rgb), 0.48);
-}
-.productCaption::before {
-  position: absolute;
-  top: 23px;
-  left: -4px;
-  width: 7px;
-  height: 7px;
-  border: 1px solid rgb(var(--accent-rgb));
-  content: "";
-  background: rgba(5, 5, 7, 0.95);
-  transform: rotate(45deg);
+  padding: 16px 0;
 }
 .productCaption > span {
   color: rgba(var(--accent-rgb), 0.9);
@@ -1398,7 +1385,6 @@
   .project .fostyProductIntro h2 { font-size: clamp(34px, 9vw, 48px); }
   .productVisual { grid-template-columns: 1fr; gap: 18px; }
   .productCaption { padding-top: 12px; padding-bottom: 12px; }
-  .productCaption::before { top: 15px; }
   .fostyLayout {
     grid-template-columns: minmax(0, 1fr) 118px;
     gap: 14px;

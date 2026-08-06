@@ -975,8 +975,13 @@ export function SignalPrototypeV4() {
             aria-label="Expanded Fosters Needed page screenshot"
             onClick={() => setExpandedMedia(false)}
           >
-            <button ref={lightboxCloseRef} type="button" onClick={() => setExpandedMedia(false)}>
-              CLOSE <span aria-hidden="true">×</span>
+            <button
+              ref={lightboxCloseRef}
+              type="button"
+              aria-label="Close expanded screenshot"
+              onClick={() => setExpandedMedia(false)}
+            >
+              <span aria-hidden="true">×</span>
             </button>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img

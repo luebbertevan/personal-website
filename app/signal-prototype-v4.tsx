@@ -26,6 +26,57 @@ const destinations = [
   },
 ];
 
+const fostyProductMedia = [
+  {
+    title: "FOSTERS NEEDED",
+    description: "The Fosters Needed page gives volunteers one place to see animals waiting for a foster home. Essential details are visible at a glance, helping volunteers quickly understand where they can help.",
+    src: "/images/fosty-fosters-needed.webp",
+    alt: "Fosty’s Fosters Needed page showing a searchable grid of cats waiting for foster homes.",
+    width: 2254,
+    height: 1712,
+  },
+  {
+    title: "ANIMAL DETAILS",
+    description: "Each animal profile brings care needs and history into one clear record. Volunteers can understand the level of care required before offering to foster, helping rescues make better matches.",
+    src: "/images/fosty-animal-details.webp",
+    alt: "Fosty’s coordinator view of an animal profile with status, age, care needs, photos, and adoption information.",
+    width: 1628,
+    height: 1540,
+  },
+  {
+    title: "GROUP DETAILS",
+    description: "Animals that should stay together, such as a litter of kittens, can be managed as a group. Shared care information stays consistent while each animal keeps an individual record.",
+    src: "/images/fosty-group-details.webp",
+    alt: "Fosty’s coordinator view of a two-kitten group with shared details and individual animal cards.",
+    width: 1632,
+    height: 1514,
+  },
+  {
+    title: "INTAKE",
+    description: "Intake is designed for the unpredictable flow of rescue work. Staff can enter animals in batches and create useful records even when details are incomplete, so care is not delayed by missing information.",
+    src: "/images/fosty-intake.webp",
+    alt: "Fosty’s Create New Animal intake form with optional fields, status controls, and photo tools.",
+    width: 1632,
+    height: 1558,
+  },
+  {
+    title: "REQUEST A GROUP",
+    description: "Volunteers can request a group directly from its profile. This turns interest into a clear, trackable step while keeping animals that belong together connected to one placement.",
+    src: "/images/fosty-group-request.webp",
+    alt: "Fosty’s volunteer view of a kitten group with a Request to Foster action.",
+    width: 1652,
+    height: 1352,
+  },
+  {
+    title: "REQUEST AN ANIMAL",
+    description: "Volunteers can request an individual animal from the same place they review its care needs. Staff receive a clear record of interest instead of piecing together another message.",
+    src: "/images/fosty-animal-request.webp",
+    alt: "Fosty’s volunteer view of an individual animal profile with a Request to Foster action.",
+    width: 1636,
+    height: 1552,
+  },
+] as const;
+
 const DESTINATION_TRAVEL = 52;
 const DESTINATION_DURATION = 7.35;
 const CHAPTER_TRAVEL = 13;
@@ -79,14 +130,14 @@ export function SignalPrototypeV4() {
   const navigationCommandRef = useRef<NavigationCommand | null>(null);
   const [paused, setPaused] = useState(false);
   const [emailCopyStatus, setEmailCopyStatus] = useState<"idle" | "copied" | "selected">("idle");
-  const [expandedMedia, setExpandedMedia] = useState(false);
+  const [expandedMedia, setExpandedMedia] = useState<(typeof fostyProductMedia)[number] | null>(null);
   const pausedRef = useRef(false);
 
   useEffect(() => {
     if (!expandedMedia) return;
 
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setExpandedMedia(false);
+      if (event.key === "Escape") setExpandedMedia(null);
     };
 
     lightboxCloseRef.current?.focus();
@@ -100,17 +151,17 @@ export function SignalPrototypeV4() {
   };
 
   const navigateToDestination = (index: number) => {
-    setExpandedMedia(false);
+    setExpandedMedia(null);
     navigationCommandRef.current = { type: "destination", value: index };
   };
 
   const navigateToChapter = (index: number) => {
-    setExpandedMedia(false);
+    setExpandedMedia(null);
     navigationCommandRef.current = { type: "chapter", value: index };
   };
 
   const stepRoute = (direction: -1 | 1) => {
-    setExpandedMedia(false);
+    setExpandedMedia(null);
     navigationCommandRef.current = { type: "step", value: direction };
   };
 
@@ -344,7 +395,7 @@ export function SignalPrototypeV4() {
           : 0;
       if (!direction) return;
       event.preventDefault();
-      setExpandedMedia(false);
+      setExpandedMedia(null);
       navigationCommandRef.current = { type: "step", value: direction as -1 | 1 };
       impulse = Math.min(1, impulse + 0.16);
     };
@@ -933,34 +984,33 @@ export function SignalPrototypeV4() {
               </p>
             </header>
             <ol className={styles.productVisualList} aria-label="Fosty product screens">
-              <li>
-                <figure className={styles.productVisual}>
-                  <button
-                    className={styles.productScreenshot}
-                    type="button"
-                    onClick={() => setExpandedMedia(true)}
-                    aria-label="Expand the Fosters Needed page screenshot"
-                  >
-                    {/* This is a product screenshot, so native image loading preserves the authored pixels. */}
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src="/images/fosty-fosters-needed.webp"
-                      alt="Fosty’s Fosters Needed page showing a searchable grid of cats waiting for foster homes."
-                      width="2254"
-                      height="1712"
-                    />
-                    <span>EXPAND <i aria-hidden="true">↗</i></span>
-                  </button>
-                  <figcaption className={styles.productCaption}>
-                    <span>FOSTERS NEEDED</span>
-                    <p>
-                      The Fosters Needed page gives volunteers one place to see animals waiting for a foster home.
-                      Essential details are visible at a glance, helping volunteers quickly understand where they
-                      can help.
-                    </p>
-                  </figcaption>
-                </figure>
-              </li>
+              {fostyProductMedia.map((item) => (
+                <li key={item.title}>
+                  <figure className={styles.productVisual}>
+                    <button
+                      className={styles.productScreenshot}
+                      type="button"
+                      onClick={() => setExpandedMedia(item)}
+                      aria-label={`Expand the ${item.title.toLowerCase()} screenshot`}
+                    >
+                      {/* These are product screenshots, so native image loading preserves the authored pixels. */}
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={item.src}
+                        alt={item.alt}
+                        width={item.width}
+                        height={item.height}
+                        loading="lazy"
+                      />
+                      <span>EXPAND <i aria-hidden="true">↗</i></span>
+                    </button>
+                    <figcaption className={styles.productCaption}>
+                      <span>{item.title}</span>
+                      <p>{item.description}</p>
+                    </figcaption>
+                  </figure>
+                </li>
+              ))}
             </ol>
           </div>
         </section>
@@ -976,23 +1026,23 @@ export function SignalPrototypeV4() {
             className={styles.mediaLightbox}
             role="dialog"
             aria-modal="true"
-            aria-label="Expanded Fosters Needed page screenshot"
-            onClick={() => setExpandedMedia(false)}
+            aria-label={`Expanded ${expandedMedia.title.toLowerCase()} screenshot`}
+            onClick={() => setExpandedMedia(null)}
           >
             <button
               ref={lightboxCloseRef}
               type="button"
               aria-label="Close expanded screenshot"
-              onClick={() => setExpandedMedia(false)}
+              onClick={() => setExpandedMedia(null)}
             >
               <span aria-hidden="true">×</span>
             </button>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/images/fosty-fosters-needed.webp"
-              alt="Fosty’s Fosters Needed page showing a searchable grid of cats waiting for foster homes."
-              width="2254"
-              height="1712"
+              src={expandedMedia.src}
+              alt={expandedMedia.alt}
+              width={expandedMedia.width}
+              height={expandedMedia.height}
               onClick={(event) => event.stopPropagation()}
             />
           </div>

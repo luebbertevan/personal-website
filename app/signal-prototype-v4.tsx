@@ -60,20 +60,28 @@ const fostyProductMedia = [
     height: 1558,
   },
   {
-    title: "REQUEST A GROUP",
-    description: "Volunteers can request a group directly from its profile. This turns interest into a clear, trackable step while keeping animals that belong together connected to one placement.",
-    src: "/images/fosty-group-request.webp",
-    alt: "Fosty’s volunteer view of a kitten group with a Request to Foster action.",
-    width: 1652,
-    height: 1352,
-  },
-  {
-    title: "REQUEST AN ANIMAL",
-    description: "Volunteers can request an individual animal from the same place they review its care needs. Staff receive a clear record of interest instead of piecing together another message.",
+    title: "REQUEST",
+    description: "Volunteers can request an animal or group directly from its profile. This turns interest into a clear, trackable step instead of another message staff must piece together.",
     src: "/images/fosty-animal-request.webp",
     alt: "Fosty’s volunteer view of an individual animal profile with a Request to Foster action.",
     width: 1636,
     height: 1552,
+  },
+  {
+    title: "ASSIGNMENT",
+    description: "Staff can review every request in one place and match animals with the right foster homes. Decisions stay visible, reducing confusion and helping animals move into care faster.",
+    src: "/images/fosty-assignment.webp",
+    alt: "Fosty’s Pending Foster Requests page showing animals and groups awaiting assignment.",
+    width: 2314,
+    height: 1144,
+  },
+  {
+    title: "COMMUNICATION",
+    description: "Each foster home has a dedicated group chat with rescue staff, so questions can reach the right person without leaving anyone out of the loop. Animal and group tags, requests and assignments updates, and shared photos keep each conversation connected to the care it supports.",
+    src: "/images/fosty-communication.webp",
+    alt: "A Fosty group chat between a foster volunteer and rescue staff with shared animal cards and photos.",
+    width: 2330,
+    height: 1548,
   },
 ] as const;
 

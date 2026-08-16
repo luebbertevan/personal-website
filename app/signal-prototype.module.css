@@ -611,7 +611,7 @@
 }
 .productVisual {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  grid-template-columns: minmax(0, 6fr) minmax(0, 19fr);
   gap: clamp(18px, 1.8vw, 30px);
   margin: 0;
   align-items: center;

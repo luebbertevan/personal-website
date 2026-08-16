@@ -63,9 +63,9 @@ const fostyProductMedia = [
     title: "REQUEST",
     description: "Volunteers can request an animal or group directly from its profile. This turns interest into a clear, trackable step instead of another message staff must piece together.",
     src: "/images/fosty-animal-request.webp",
-    alt: "Fosty’s volunteer view of an individual animal profile with a Request to Foster action.",
-    width: 1636,
-    height: 1552,
+    alt: "Fosty’s Request to Foster dialog for sending a foster request with an optional message.",
+    width: 996,
+    height: 782,
   },
   {
     title: "ASSIGNMENT",

@@ -585,13 +585,12 @@
   grid-template-columns: minmax(0, 1fr);
   gap: clamp(14px, 1.6vh, 20px);
   padding-bottom: clamp(20px, 2.4vh, 30px);
-  border-bottom: 1px solid rgba(var(--accent-rgb), 0.48);
 }
 .project .fostyProductIntro h2 {
   width: 100%;
   max-width: none;
   color: color-mix(in srgb, rgb(var(--accent-rgb)) 84%, white 16%);
-  font-size: clamp(38px, 3.25vw, 58px);
+  font-size: var(--about-reference-title-size);
   line-height: 0.98;
 }
 .fostyProductIntro > p:last-child {
@@ -1395,7 +1394,7 @@
   .fostyProductIntro {
     gap: 10px;
   }
-  .project .fostyProductIntro h2 { font-size: clamp(34px, 9vw, 48px); }
+  .project .fostyProductIntro h2 { font-size: var(--about-reference-title-size); }
   .productVisual { grid-template-columns: 1fr; gap: 18px; }
   .productCaption { padding-top: 12px; padding-bottom: 12px; }
   .fostyLayout {

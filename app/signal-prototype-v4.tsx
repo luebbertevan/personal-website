@@ -925,7 +925,7 @@ export function SignalPrototypeV4() {
           </div>
           <div className={styles.fostyProductLayout}>
             <header className={styles.fostyProductIntro}>
-              <h2>Fosty is the platform to fix that.</h2>
+              <h2>A dedicated platform for foster care.</h2>
               <p>
                 Animal rescues coordinate care across staff and volunteer foster homes. Fosty brings intake,
                 records, foster requests, assignments, and real-time communication into one place, so teams can

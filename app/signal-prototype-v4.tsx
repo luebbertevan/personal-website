@@ -100,14 +100,17 @@ export function SignalPrototypeV4() {
   };
 
   const navigateToDestination = (index: number) => {
+    setExpandedMedia(false);
     navigationCommandRef.current = { type: "destination", value: index };
   };
 
   const navigateToChapter = (index: number) => {
+    setExpandedMedia(false);
     navigationCommandRef.current = { type: "chapter", value: index };
   };
 
   const stepRoute = (direction: -1 | 1) => {
+    setExpandedMedia(false);
     navigationCommandRef.current = { type: "step", value: direction };
   };
 
@@ -341,6 +344,7 @@ export function SignalPrototypeV4() {
           : 0;
       if (!direction) return;
       event.preventDefault();
+      setExpandedMedia(false);
       navigationCommandRef.current = { type: "step", value: direction as -1 | 1 };
       impulse = Math.min(1, impulse + 0.16);
     };

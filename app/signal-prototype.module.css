@@ -694,8 +694,8 @@
 .mediaLightbox > button {
   position: absolute;
   z-index: 1;
-  top: clamp(16px, 1.3vw, 22px);
-  right: clamp(16px, 1.3vw, 22px);
+  top: clamp(5px, 0.4vw, 8px);
+  right: clamp(5px, 0.4vw, 8px);
   display: grid;
   width: clamp(28px, 1.8vw, 34px);
   height: clamp(28px, 1.8vw, 34px);

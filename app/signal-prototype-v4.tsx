@@ -999,7 +999,7 @@ export function SignalPrototypeV4() {
           <div className={styles.fostyProductLayout}>
             <header className={styles.fostyProductIntro}>
               <div className={styles.fostyChapterHeading}>
-                <h2>A dedicated platform for foster care.</h2>
+                <h2>A dedicated platform for foster care</h2>
               </div>
               <p>
                 Animal rescues coordinate care across staff and volunteer foster homes. Fosty brings intake,

@@ -1157,31 +1157,14 @@ export function SignalPrototypeV4() {
           </div>
         </section>
         <section className={`${styles.chapter} ${styles.fostyOutcomeChapter}`} data-project-chapter>
-          <div className={styles.projectMeta}>
-            <span>FOSTY</span>
-            <span>OUTCOME</span>
-          </div>
           <div className={styles.fostyOutcomeLayout}>
-            <header className={styles.fostyOutcomeHeading}>
-              <h1>Fosty eases the burden of rescues and improves care for the animals</h1>
-            </header>
-            <div className={styles.fostyOutcomeProgress}>
-              <section>
-                <p className={styles.cardLabel}>PILOT ROLLOUT</p>
-                <p>
-                  I am actively rolling out Fosty with Colorado Kitty Coalition as my pilot partner. My primary
-                  objective is to ensure Fosty works reliably in their day-to-day environment.
-                </p>
-              </section>
-              <section>
-                <p className={styles.cardLabel}>NEXT BENCHMARK</p>
-                <p>
-                  The next benchmark is full adoption by CKC, with the platform tailored to fulfill their
-                  foster-management needs.
-                </p>
-              </section>
-            </div>
-            <div className={styles.fostyOutcomeNarrative}>
+            <h1>Fosty eases the burden of rescues and improves care for the animals</h1>
+            <div className={styles.fostyOutcomeBody}>
+              <p>
+                I am actively rolling out Fosty with Colorado Kitty Coalition as my pilot partner. My primary
+                objective is to ensure Fosty works reliably in their day-to-day environment. The next benchmark is
+                full adoption by CKC, with the platform tailored to fulfill their foster-management needs.
+              </p>
               <p>
                 The broken system extends beyond CKC. Once Fosty is proven in a rescue environment, I plan to find
                 more partners and reach out to rescues and shelters interested in Fosty. I believe Fosty can fill a
@@ -1198,15 +1181,13 @@ export function SignalPrototypeV4() {
                 Fosty represents who I am as a designer and engineer. I like to build software close to users,
                 grounded in real operations, and engineered for trust in high-stakes environments.
               </p>
-            </div>
-            <footer className={styles.fostyOutcomeClosing}>
               <p>
                 If you want to help with the Fosty mission or follow the journey, please reach out. There is always a
                 demand for foster volunteers, so if you are interested in fostering, connect with your local animal
                 shelter. I made Fosty to serve a community that I am passionate about, and I hope I inspire others to
                 explore projects that make the world a better place.
               </p>
-            </footer>
+            </div>
           </div>
         </section>
         <ol className={`${styles.chapterRail} ${styles.fostyChapterRail}`} aria-label="Fosty case study chapters">

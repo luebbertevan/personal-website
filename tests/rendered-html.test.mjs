@@ -160,6 +160,8 @@ test("Fosty replaces both example projects with the Origin chapter", async () =>
   assert.match(html, /The next benchmark is full adoption by CKC/);
   assert.match(html, /Fosty represents who I am as a designer and engineer\./);
   assert.match(css, /\.fostyOutcomeLayout \{[^}]*display: grid;/s);
+  assert.match(source, /className=\{styles\.fostyOutcomeBody\}/);
+  assert.doesNotMatch(source, /PILOT ROLLOUT|NEXT BENCHMARK|fostyOutcomeProgress|fostyOutcomeNarrative|fostyOutcomeClosing/);
   assert.match(source, /href="https:\/\/www\.fosty\.us\/"/);
   assert.match(source, />Demo Fosty <i aria-hidden="true">↗<\/i><\/a>/);
   assert.match(source, /href="https:\/\/www\.cokittycoalition\.com\/"/);
@@ -167,7 +169,7 @@ test("Fosty replaces both example projects with the Origin chapter", async () =>
   assert.match(css, /\.chapterRail\.fostyChapterRail \{\s*grid-template-columns: repeat\(5, minmax\(0, 1fr\)\);/s);
   assert.match(css, /@media \(min-width: 2048px\) and \(min-height: 1152px\) \{\s*\.fostyProject \{[^}]*width: 58vw;/s);
   assert.match(css, /\.fostyCopy \{[^}]*width: 100%;[^}]*max-width: none;/s);
-  assert.match(css, /\.project h2\.fostyStatement,\s*\.project h2\.fostyEngineeringTitle \{[^}]*width: 100%;[^}]*max-width: none;[^}]*color: rgb\(var\(--accent-rgb\)\);/s);
+  assert.match(css, /\.project h2\.fostyStatement \{[^}]*width: 100%;[^}]*max-width: none;[^}]*color: rgb\(var\(--accent-rgb\)\);/s);
   assert.match(source, /className=\{`\$\{styles\.minimalContactLinks\} \$\{styles\.fostyLinks\}`\}/);
   assert.match(source, /data-about-reference-label/);
   assert.match(source, /data-about-reference-title/);
@@ -179,7 +181,7 @@ test("Fosty replaces both example projects with the Origin chapter", async () =>
   assert.match(css, /\.fostyHeading \.cardLabel \{[^}]*font-size: var\(--about-reference-label-size\);/s);
   assert.match(css, /\.fostyDate \{[^}]*font-size: var\(--about-reference-label-size\);/s);
   assert.match(css, /\.fostyHeading h1 \{[^}]*font-size: var\(--about-reference-title-size\);/s);
-  assert.match(css, /\.project h2\.fostyStatement,\s*\.project h2\.fostyEngineeringTitle \{[^}]*font-size: calc\(var\(--fosty-body-size\) \* 1\.5\);/s);
+  assert.match(css, /\.project h2\.fostyStatement \{[^}]*font-size: calc\(var\(--fosty-body-size\) \* 1\.5\);/s);
   assert.match(css, /\.minimalContactLinks\.fostyLinks a \{\s*font-size: var\(--about-reference-link-size\);/s);
   assert.match(source, /const aboutScale = shouldScaleAboutPanel && aboutPanel && fostyPanel/);
   assert.match(source, /--reference-panel-height/);

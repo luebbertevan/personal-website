@@ -732,70 +732,30 @@
   flex-direction: column;
   padding-bottom: clamp(18px, 2.4vh, 30px);
 }
-.fostyOutcomeChapter .projectMeta {
-  margin-bottom: clamp(14px, 1.8vh, 22px);
-  font-size: var(--about-reference-label-size);
-  line-height: 1;
-}
 .fostyOutcomeLayout {
   display: grid;
-  gap: clamp(15px, 1.8vh, 22px);
+  gap: clamp(20px, 2.6vh, 34px);
+  max-width: 72ch;
 }
-.fostyOutcomeHeading {
-  padding-bottom: clamp(12px, 1.5vh, 18px);
-  border-bottom: 1px solid rgba(var(--accent-rgb), 0.48);
-}
-.fostyOutcomeHeading h1 {
+.fostyOutcomeLayout h1 {
   width: 100%;
   max-width: none;
   color: color-mix(in srgb, rgb(var(--accent-rgb)) 84%, white 16%);
   font-size: var(--about-reference-title-size);
-  line-height: 1;
+  line-height: 1.05;
   letter-spacing: -0.04em;
 }
-.fostyOutcomeProgress {
+.fostyOutcomeBody {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(230px, 0.8fr);
-  gap: clamp(14px, 1.5vw, 24px);
+  gap: clamp(14px, 1.6vh, 20px);
 }
-.fostyOutcomeProgress section {
-  display: grid;
-  gap: 8px;
-  padding: clamp(12px, 1.25vw, 18px);
-  border: 1px solid rgba(var(--accent-rgb), 0.36);
-  background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.12), rgba(3, 7, 14, 0.58));
-}
-.fostyOutcomeProgress .cardLabel {
-  margin: 0;
-  font-size: var(--about-reference-label-size);
-  letter-spacing: 0.11em;
-}
-.fostyOutcomeProgress p:last-child,
-.fostyOutcomeNarrative p,
-.fostyOutcomeClosing p {
+.fostyOutcomeBody p {
   margin: 0;
   color: rgba(247, 244, 241, 0.72);
   font-family: var(--font-geist-sans), sans-serif;
   font-size: var(--fosty-body-size);
   line-height: 1.4;
   letter-spacing: 0;
-}
-.fostyOutcomeNarrative {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(12px, 1.5vw, 24px) clamp(20px, 2vw, 34px);
-}
-.fostyOutcomeNarrative p:first-child {
-  grid-row: span 2;
-  padding-right: clamp(20px, 2vw, 34px);
-  border-right: 1px solid rgba(var(--accent-rgb), 0.42);
-}
-.fostyOutcomeClosing {
-  padding-top: clamp(12px, 1.4vh, 18px);
-  border-top: 1px solid rgba(var(--accent-rgb), 0.48);
-}
-.fostyOutcomeClosing p {
-  color: rgba(247, 244, 241, 0.82);
 }
 .productVisualList {
   display: grid;
@@ -1613,17 +1573,6 @@
     padding-left: 0;
     border-top: 1px solid rgba(var(--accent-rgb), 0.42);
     border-left: 0;
-  }
-  .fostyOutcomeProgress,
-  .fostyOutcomeNarrative {
-    grid-template-columns: 1fr;
-  }
-  .fostyOutcomeNarrative p:first-child {
-    grid-row: auto;
-    padding-right: 0;
-    padding-bottom: 14px;
-    border-right: 0;
-    border-bottom: 1px solid rgba(var(--accent-rgb), 0.42);
   }
   .fostyProductLayout { gap: 16px; }
   .fostyProductIntro {

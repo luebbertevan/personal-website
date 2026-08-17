@@ -1071,30 +1071,23 @@ export function SignalPrototypeV4() {
               </figure>
               <p>
                 The goal of Fosty is to provide features and workflows that fit naturally into existing rescue
-                operations, reducing administrative chaos and helping teams make faster, clearer care decisions.
-              </p>
-              <p>
-                There was no existing animal foster-care platform to use as a blueprint. I had to invent the product
-                model, workflows, and interaction patterns for this problem space, translating CKC’s fragmented
+                operations, reducing administrative chaos and helping teams make faster, clearer care decisions. There
+                was no existing animal foster-care platform to use as a blueprint, so I had to invent the product
+                model, workflows, and interaction patterns for this problem space—translating CKC’s fragmented
                 real-world process into a structured, coherent system.
               </p>
               <p>
                 The platform serves two distinct user groups: coordinators who need operational visibility across
-                many volunteers, and foster caregivers who need to see their assignments and stay in contact with staff.
-              </p>
-              <p>
-                I worked directly with the rescue team to identify pain points, define requirements, and scope
+                many volunteers, and foster caregivers who need to see their assignments and stay in contact with
+                staff. I worked directly with the rescue team to identify pain points, define requirements, and scope
                 solutions that could be built and tested.
               </p>
               <p>
                 Fosty’s data model is designed around the core relationships in rescue operations. Animals can belong
                 to groups such as litters, move through placement states, carry care and medical histories, and stay
                 linked to relevant conversations. I designed an interface around that model that feels natural to both
-                coordinators and foster caregivers.
-              </p>
-              <p>
-                I tested and refined the workflows through usability reviews with the rescue team, foster volunteer
-                test users, designer colleagues, and UX advisors.
+                coordinators and foster caregivers. I tested and refined the workflows through usability reviews with
+                the rescue team, foster volunteer test users, designer colleagues, and UX advisors.
               </p>
             </div>
           </div>

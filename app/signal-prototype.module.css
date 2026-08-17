@@ -643,8 +643,8 @@
 .fostyDesignBody > p:last-child { margin-bottom: 0; }
 .fostyDesignArtifact {
   float: right;
-  width: clamp(250px, 42%, 370px);
-  margin: 0 0 12px clamp(18px, 2vw, 30px);
+  width: clamp(230px, 36%, 325px);
+  margin: 0 0 10px clamp(14px, 1.6vw, 22px);
 }
 .fostyDesignArtifact figcaption {
   display: grid;

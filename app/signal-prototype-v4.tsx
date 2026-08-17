@@ -20,7 +20,7 @@ const destinations = [
   },
   {
     label: "FOSTY",
-    chapters: 4,
+    chapters: 5,
     shaderColor: [0.925, 0.282, 0.6] as const,
     cssColor: [236, 72, 153] as const,
   },
@@ -1152,12 +1152,65 @@ export function SignalPrototypeV4() {
             </div>
           </div>
         </section>
+        <section className={`${styles.chapter} ${styles.fostyOutcomeChapter}`} data-project-chapter>
+          <div className={styles.projectMeta}>
+            <span>FOSTY</span>
+            <span>OUTCOME</span>
+          </div>
+          <div className={styles.fostyOutcomeLayout}>
+            <header className={styles.fostyOutcomeHeading}>
+              <h1>Fosty eases the burden of rescues and improves care for the animals</h1>
+            </header>
+            <div className={styles.fostyOutcomeProgress}>
+              <section>
+                <p className={styles.cardLabel}>PILOT ROLLOUT</p>
+                <p>
+                  I am actively rolling out Fosty with Colorado Kitty Coalition as my pilot partner. My primary
+                  objective is to ensure Fosty works reliably in their day-to-day environment.
+                </p>
+              </section>
+              <section>
+                <p className={styles.cardLabel}>NEXT BENCHMARK</p>
+                <p>
+                  The next benchmark is full adoption by CKC, with the platform tailored to fulfill their
+                  foster-management needs.
+                </p>
+              </section>
+            </div>
+            <div className={styles.fostyOutcomeNarrative}>
+              <p>
+                The broken system extends beyond CKC. Once Fosty is proven in a rescue environment, I plan to find
+                more partners and reach out to rescues and shelters interested in Fosty. I believe Fosty can fill a
+                missing piece in animal rescue management and that shelters deserve a dedicated platform for foster
+                operations.
+              </p>
+              <p>
+                Every design decision has a real user on the other end caring for a living animal. My personal
+                connection to the problem, the organization, and the animals means I’m never satisfied. I am building
+                an app that I would use myself. I am devoted to making product and technical decisions that improve
+                the lives of the animals I love.
+              </p>
+              <p>
+                Fosty represents who I am as a designer and engineer. I like to build software close to users,
+                grounded in real operations, and engineered for trust in high-stakes environments.
+              </p>
+            </div>
+            <footer className={styles.fostyOutcomeClosing}>
+              <p>
+                If you want to help with the Fosty mission or follow the journey, please reach out. There is always a
+                demand for foster volunteers, so if you are interested in fostering, connect with your local animal
+                shelter. I made Fosty to serve a community that I am passionate about, and I hope I inspire others to
+                explore projects that make the world a better place.
+              </p>
+            </footer>
+          </div>
+        </section>
         <ol className={`${styles.chapterRail} ${styles.fostyChapterRail}`} aria-label="Fosty case study chapters">
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(0)}>ORIGIN</button></li>
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(1)}>PRODUCT</button></li>
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(2)}>DESIGN</button></li>
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(3)}>ENGINEERING</button></li>
-          <li><span aria-disabled="true">OUTCOME</span></li>
+          <li><button type="button" data-chapter-index onClick={() => navigateToChapter(4)}>OUTCOME</button></li>
         </ol>
         {expandedMedia && (
           <div

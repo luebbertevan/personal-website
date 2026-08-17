@@ -1293,10 +1293,10 @@
 }
 
 .routeControls {
-  bottom: calc(clamp(28px, 3.5vw, 48px) + 54px);
+  bottom: calc(clamp(28px, 3.5vw, 48px) + 64px);
   left: clamp(28px, 3.5vw, 58px);
   display: grid;
-  width: 190px;
+  width: 114px;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
 }
@@ -1618,7 +1618,7 @@
   .chapter > a { min-width: 270px; margin-top: 18px; }
   .chapterRail { right: 16px; left: 24px; font-size: 10px; }
   .chapterRail button { padding: 0 8px; }
-  .routeControls { right: auto; bottom: 69px; left: 20px; width: 156px; }
+  .routeControls { right: auto; bottom: 76px; left: 20px; width: 93.6px; }
   .routeControls button { min-height: 38px; padding: 0; font-size: 12px; }
   .pause { right: auto; bottom: 20px; left: 20px; width: 156px; font-size: 11px; }
 }

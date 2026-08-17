@@ -20,7 +20,7 @@ const destinations = [
   },
   {
     label: "FOSTY",
-    chapters: 3,
+    chapters: 4,
     shaderColor: [0.925, 0.282, 0.6] as const,
     cssColor: [236, 72, 153] as const,
   },
@@ -1088,13 +1088,74 @@ export function SignalPrototypeV4() {
             </figure>
           </div>
         </section>
+        <section className={`${styles.chapter} ${styles.fostyEngineeringChapter}`} data-project-chapter>
+          <div className={styles.projectMeta}>
+            <span>FOSTY</span>
+            <span>ENGINEERING</span>
+          </div>
+          <div className={styles.fostyEngineeringLayout}>
+            <div className={styles.fostyHeading}>
+              <h1>A platform rescue teams can trust.</h1>
+            </div>
+            <div className={styles.fostyEngineeringColumns}>
+              <div className={styles.fostyCopy}>
+                <p>
+                  Building software for a cause I care about means its quality reflects my values, not just my
+                  skills. I designed reliability into the workflows rescue teams depend on. For request approvals,
+                  a transactional PostgreSQL function locks the request and updates assignment, status, and visibility
+                  records together. Row-level security and organization-scoped permissions isolate each rescue’s data.
+                  The goal was not a prototype that looked convincing in a demo, but a platform teams could trust with
+                  time-sensitive information.
+                </p>
+                <p>
+                  I architected and built the full-stack application around two role-specific experiences:
+                  coordinators manage the roster and placement pipeline, while foster volunteers see opportunities,
+                  assignments, and direct communication with staff.
+                </p>
+                <p>
+                  Messaging is part of the coordination model rather than a separate inbox. Animal and group tags
+                  carry record context into each foster’s shared conversation with staff, keeping updates anchored to
+                  the care they support.
+                </p>
+              </div>
+              <div className={styles.fostyEngineeringDetails}>
+                <section className={styles.fostyEngineeringSection}>
+                  <p className={styles.cardLabel}>TECHNICAL HIGHLIGHTS</p>
+                  <ul className={styles.fostyEngineeringHighlights}>
+                    <li>Role-specific coordinator and foster workflows</li>
+                    <li>Animal lifecycle, litter and placement management</li>
+                    <li>Transactional request-approval workflows with assignment conflict safeguards</li>
+                    <li>Contextual, real-time messaging with animal and group tags</li>
+                    <li>Organization-scoped permissions and row-level security</li>
+                  </ul>
+                </section>
+                <section className={styles.fostyEngineeringSection}>
+                  <p className={styles.cardLabel}>TECHNOLOGY</p>
+                  <ul className={styles.fostyTechnologyTags} aria-label="Fosty technology">
+                    {[
+                      "React",
+                      "TypeScript",
+                      "Vite",
+                      "TanStack Query",
+                      "React Router",
+                      "Supabase",
+                      "PostgreSQL",
+                      "Realtime",
+                      "Row-Level Security",
+                      "Progressive Web App",
+                    ].map((technology) => <li key={technology}>{technology}</li>)}
+                  </ul>
+                </section>
+              </div>
+            </div>
+          </div>
+        </section>
         <ol className={`${styles.chapterRail} ${styles.fostyChapterRail}`} aria-label="Fosty case study chapters">
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(0)}>ORIGIN</button></li>
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(1)}>PRODUCT</button></li>
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(2)}>DESIGN</button></li>
-          {['ENGINEERING', 'OUTCOME'].map((label) => (
-            <li key={label}><span aria-disabled="true">{label}</span></li>
-          ))}
+          <li><button type="button" data-chapter-index onClick={() => navigateToChapter(3)}>ENGINEERING</button></li>
+          <li><span aria-disabled="true">OUTCOME</span></li>
         </ol>
         {expandedMedia && (
           <div

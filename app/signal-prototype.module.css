@@ -629,6 +629,76 @@
 .fostyDesignPhoto img {
   object-position: center;
 }
+.fostyEngineeringChapter {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: clamp(18px, 2.4vh, 30px);
+}
+.fostyEngineeringChapter .projectMeta {
+  margin-bottom: clamp(14px, 1.8vh, 22px);
+  font-size: var(--about-reference-label-size);
+  line-height: 1;
+}
+.fostyEngineeringLayout {
+  display: grid;
+  gap: clamp(16px, 2vh, 24px);
+}
+.fostyEngineeringLayout .fostyHeading h1 {
+  width: 100%;
+  max-width: none;
+  font-size: var(--about-reference-title-size);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+.fostyEngineeringColumns {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(220px, 0.85fr);
+  gap: clamp(26px, 2.8vw, 48px);
+  align-items: start;
+}
+.fostyEngineeringDetails {
+  display: grid;
+  gap: clamp(20px, 2.2vh, 28px);
+  padding-left: clamp(20px, 2vw, 34px);
+  border-left: 1px solid rgba(var(--accent-rgb), 0.42);
+}
+.fostyEngineeringSection {
+  display: grid;
+  gap: 10px;
+}
+.fostyEngineeringSection .cardLabel {
+  margin: 0;
+  font-size: var(--about-reference-label-size);
+  letter-spacing: 0.11em;
+}
+.fostyEngineeringHighlights {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 1.1em;
+  color: rgba(247, 244, 241, 0.7);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: clamp(14px, 0.88vw, 18px);
+  line-height: 1.38;
+}
+.fostyEngineeringHighlights li::marker {
+  color: rgb(var(--accent-rgb));
+}
+.fostyTechnologyTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.fostyTechnologyTags li {
+  padding: 5px 7px;
+  border: 1px solid rgba(var(--accent-rgb), 0.34);
+  color: rgba(247, 244, 241, 0.68);
+  font-size: clamp(10px, 0.66vw, 13px);
+  line-height: 1;
+}
 .productVisualList {
   display: grid;
   gap: clamp(10px, 1vw, 16px);
@@ -1258,6 +1328,10 @@
     bottom: var(--chapter-rail-height);
     padding-bottom: 0;
   }
+  .fostyEngineeringChapter {
+    bottom: var(--chapter-rail-height);
+    padding-bottom: 0;
+  }
   .homeProject h1.introductionTitle {
     font-size: var(--about-intro-title-size);
   }
@@ -1426,6 +1500,17 @@
   .fostyOrigin { padding-top: 18px; }
   .fostyProductChapter { padding-top: 18px; }
   .fostyDesignChapter { padding-top: 18px; }
+  .fostyEngineeringChapter { padding-top: 18px; }
+  .fostyEngineeringColumns {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .fostyEngineeringDetails {
+    padding-top: 18px;
+    padding-left: 0;
+    border-top: 1px solid rgba(var(--accent-rgb), 0.42);
+    border-left: 0;
+  }
   .fostyProductLayout { gap: 16px; }
   .fostyProductIntro {
     gap: 10px;

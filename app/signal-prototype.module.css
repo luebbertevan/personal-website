@@ -679,7 +679,11 @@
   display: grid;
   gap: clamp(16px, 2vh, 24px);
 }
-.fostyEngineeringLayout .fostyHeading h1 {
+.fostyEngineeringHeading {
+  padding-bottom: clamp(12px, 1.5vh, 18px);
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.48);
+}
+.fostyEngineeringHeading h1 {
   width: 100%;
   max-width: none;
   font-size: var(--about-reference-title-size);

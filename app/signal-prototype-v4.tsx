@@ -1103,7 +1103,7 @@ export function SignalPrototypeV4() {
             <header className={styles.fostyChapterHeading}>
               <h2>A platform animal rescues can trust.</h2>
             </header>
-            <div className={styles.fostyEngineeringColumns}>
+            <div className={styles.fostyEngineeringFlow}>
               <div className={styles.fostyCopy}>
                 <p>
                   Building software for a cause I care about means its quality reflects my values, not just my

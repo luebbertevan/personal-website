@@ -614,91 +614,20 @@
   line-height: 1;
 }
 .fostyDesignLayout {
-  display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  grid-template-areas:
-    "intro artifact"
-    "narrative narrative";
-  gap: clamp(20px, 2.2vh, 30px) clamp(24px, 2.4vw, 42px);
-  align-items: start;
+  grid-template-columns: minmax(0, 1fr) clamp(150px, 12vw, 190px);
 }
-.fostyDesignIntro {
-  grid-area: intro;
-  display: grid;
-  gap: clamp(12px, 1.4vh, 18px);
-  min-width: 0;
-  align-content: start;
-}
-.fostyDesignIntro .cardLabel {
-  margin: 0;
-  font-size: var(--about-reference-label-size);
-  line-height: 1.15;
-}
-.project .fostyDesignIntro h2 {
-  width: 100%;
-  max-width: 15ch;
-  color: color-mix(in srgb, rgb(var(--accent-rgb)) 84%, white 16%);
+.fostyHeading h1.fostyDesignTitle {
+  max-width: 22ch;
   font-size: var(--about-reference-title-size);
-  line-height: 1.02;
+  line-height: 1;
+  letter-spacing: -0.04em;
 }
-.fostyDesignIntro > p:last-child,
-.fostyDesignNarrative p,
-.fostyDesignArtifact figcaption p {
-  margin: 0;
-  color: rgba(247, 244, 241, 0.7);
-  font-family: var(--font-geist-sans), sans-serif;
-  font-size: var(--fosty-body-size);
-  line-height: 1.46;
-  letter-spacing: 0;
+.fostyDesignPhoto {
+  align-self: start;
+  aspect-ratio: 16 / 9;
 }
-.fostyDesignArtifact {
-  grid-area: artifact;
-  min-width: 0;
-  margin: 0;
-}
-.fostyDesignScreenshot img {
-  aspect-ratio: 1600 / 918;
-  object-fit: cover;
-}
-.fostyDesignArtifact figcaption {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 14px;
-  align-items: baseline;
-  padding: 11px 0 0;
-}
-.fostyDesignArtifact figcaption span {
-  color: rgba(var(--accent-rgb), 0.9);
-  font-size: 10px;
-  line-height: 1.2;
-  letter-spacing: 0.12em;
-  white-space: nowrap;
-}
-.fostyDesignArtifact figcaption p {
-  color: rgba(247, 244, 241, 0.52);
-  font-size: clamp(12px, 0.78vw, 15px);
-  line-height: 1.4;
-}
-.fostyDesignNarrative {
-  grid-area: narrative;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(24px, 2.6vw, 46px);
-  padding-top: clamp(16px, 1.8vh, 24px);
-  border-top: 1px solid rgba(var(--accent-rgb), 0.42);
-}
-.fostyDesignNarrative > div {
-  display: grid;
-  gap: clamp(12px, 1.35vh, 18px);
-  align-content: start;
-}
-.fostyDesignNarrative p {
-  color: rgba(247, 244, 241, 0.66);
-}
-.fostyDesignNarrative .fostyPioneerStatement {
-  color: rgba(247, 244, 241, 0.9);
-  font-size: calc(var(--fosty-body-size) * 1.08);
-  line-height: 1.42;
+.fostyDesignPhoto img {
+  object-position: center;
 }
 .productVisualList {
   display: grid;
@@ -1504,25 +1433,6 @@
   .project .fostyProductIntro h2 { font-size: var(--about-reference-title-size); }
   .productVisual { grid-template-columns: 1fr; gap: 18px; }
   .productCaption { padding-top: 12px; padding-bottom: 12px; }
-  .fostyDesignLayout {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "intro"
-      "artifact"
-      "narrative";
-    gap: 18px;
-  }
-  .project .fostyDesignIntro h2 { max-width: none; font-size: var(--about-reference-title-size); }
-  .fostyDesignArtifact figcaption {
-    grid-template-columns: 1fr;
-    gap: 6px;
-  }
-  .fostyDesignNarrative {
-    grid-template-columns: 1fr;
-    gap: 14px;
-    padding-top: 16px;
-  }
-  .fostyDesignNarrative > div { gap: 12px; }
   .fostyLayout {
     grid-template-columns: minmax(0, 1fr) 118px;
     gap: 14px;

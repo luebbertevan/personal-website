@@ -159,7 +159,10 @@ test("Fosty replaces both example projects with the Origin chapter", async () =>
   assert.match(html, /I am actively rolling out Fosty with Colorado Kitty Coalition as my pilot partner\./);
   assert.match(html, /The next benchmark is full adoption by CKC/);
   assert.match(html, /Fosty represents who I am as a designer and engineer\./);
+  assert.match(html, /The future of Fosty/);
+  assert.match(html, /Providing relief to rescues everywhere\./);
   assert.match(css, /\.fostyOutcomeLayout \{[^}]*display: grid;/s);
+  assert.match(css, /\.fostyOutcomeSubtitle \{/);
   assert.match(source, /className=\{styles\.fostyOutcomeBody\}/);
   assert.doesNotMatch(source, /PILOT ROLLOUT|NEXT BENCHMARK|fostyOutcomeProgress|fostyOutcomeNarrative|fostyOutcomeClosing/);
   assert.match(source, /href="https:\/\/www\.fosty\.us\/"/);

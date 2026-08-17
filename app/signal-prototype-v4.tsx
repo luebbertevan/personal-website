@@ -1158,7 +1158,8 @@ export function SignalPrototypeV4() {
         </section>
         <section className={`${styles.chapter} ${styles.fostyOutcomeChapter}`} data-project-chapter>
           <div className={styles.fostyOutcomeLayout}>
-            <h1>Fosty eases the burden of rescues and improves care for the animals</h1>
+            <h1>The future of Fosty</h1>
+            <p className={styles.fostyOutcomeSubtitle}>Providing relief to rescues everywhere.</p>
             <div className={styles.fostyOutcomeBody}>
               <p>
                 I am actively rolling out Fosty with Colorado Kitty Coalition as my pilot partner. My primary

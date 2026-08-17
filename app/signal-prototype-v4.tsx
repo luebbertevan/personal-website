@@ -1107,21 +1107,21 @@ export function SignalPrototypeV4() {
               <div className={styles.fostyCopy}>
                 <p>
                   Building software for a cause I care about means its quality reflects my values, not just my
-                  skills. I designed reliability into the workflows rescue teams depend on. For request approvals,
-                  a transactional PostgreSQL function locks the request and updates assignment, status, and visibility
-                  records together. Row-level security and organization-scoped permissions isolate each rescue’s data.
-                  The goal was not a prototype that looked convincing in a demo, but a platform teams could trust with
-                  time-sensitive information.
-                </p>
-                <p>
-                  I architected and built the full-stack application around two role-specific experiences:
-                  coordinators manage the roster and placement pipeline, while foster volunteers see opportunities,
-                  assignments, and direct communication with staff.
+                  skills. I architected the full-stack application around two roles: coordinators manage animal
+                  records and coordinate the entire placement pipeline, while volunteers see fostering opportunities
+                  and make requests.
                 </p>
                 <p>
                   Messaging is part of the coordination model rather than a separate inbox. Animal and group tags
                   carry record context into each foster’s shared conversation with staff, keeping updates anchored to
                   the care they support.
+                </p>
+                <p>
+                  I designed reliability into the workflows rescue teams depend on. For request approvals, a
+                  transactional PostgreSQL function locks the request and updates assignment, status, and visibility
+                  records together. Row-level security and organization-scoped permissions isolate each rescue’s data.
+                  The goal was not a prototype that looked convincing in a demo, but a platform teams could trust with
+                  time-sensitive information.
                 </p>
               </div>
               <div className={styles.fostyEngineeringDetails}>
@@ -1129,7 +1129,7 @@ export function SignalPrototypeV4() {
                   <p className={styles.cardLabel}>TECHNICAL HIGHLIGHTS</p>
                   <ul className={styles.fostyEngineeringHighlights}>
                     <li>Role-specific coordinator and foster workflows</li>
-                    <li>Animal lifecycle, litter and placement management</li>
+                    <li>Animal lifecycle, group and placement management</li>
                     <li>Transactional request-approval workflows with assignment conflict safeguards</li>
                     <li>Contextual, real-time messaging with animal and group tags</li>
                     <li>Organization-scoped permissions and row-level security</li>
@@ -1146,9 +1146,6 @@ export function SignalPrototypeV4() {
                       "React Router",
                       "Supabase",
                       "PostgreSQL",
-                      "Realtime",
-                      "Row-Level Security",
-                      "Progressive Web App",
                     ].map((technology) => <li key={technology}>{technology}</li>)}
                   </ul>
                 </section>
@@ -1227,8 +1224,8 @@ export function SignalPrototypeV4() {
       </article>
 
       <div className={styles.routeControls} aria-label="Portfolio navigation">
-        <button type="button" data-route-previous onClick={() => stepRoute(-1)}><span aria-hidden="true">←</span> PREVIOUS</button>
-        <button type="button" data-route-next onClick={() => stepRoute(1)}>NEXT <span aria-hidden="true">→</span></button>
+        <button type="button" data-route-previous onClick={() => stepRoute(-1)} aria-label="Previous"><span aria-hidden="true">←</span></button>
+        <button type="button" data-route-next onClick={() => stepRoute(1)} aria-label="Next"><span aria-hidden="true">→</span></button>
       </div>
 
       <button className={styles.pause} type="button" onClick={togglePause} aria-pressed={paused}>

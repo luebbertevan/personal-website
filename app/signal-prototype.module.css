@@ -68,7 +68,7 @@
   grid-template-columns: 1fr;
   align-items: center;
   width: 100%;
-  padding: 17px 16px;
+  padding: 10.2px 16px;
   border: 0;
   border-top: 1px solid rgba(255, 255, 255, 0.22);
   border-bottom: 1px solid rgba(255, 255, 255, 0.22);
@@ -722,10 +722,10 @@
   list-style: none;
 }
 .fostyTechnologyTags li {
-  padding: 4px 6px;
+  padding: 5px 8px;
   border: 1px solid rgba(var(--accent-rgb), 0.34);
   color: rgba(247, 244, 241, 0.68);
-  font-size: clamp(10px, 0.66vw, 13px);
+  font-size: clamp(13px, 0.82vw, 16px);
   line-height: 1;
 }
 .fostyOutcomeChapter {
@@ -1293,19 +1293,19 @@
 }
 
 .routeControls {
-  bottom: calc(clamp(28px, 3.5vw, 48px) + 64px);
+  bottom: calc(clamp(28px, 3.5vw, 48px) + 54px);
   left: clamp(28px, 3.5vw, 58px);
   display: grid;
-  width: min(430px, 34vw);
+  width: 190px;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 8px;
 }
 .routeControls button {
   display: flex;
-  min-height: 52px;
-  padding: 0 16px;
+  min-height: 38px;
+  padding: 0;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   border: 1px solid rgba(255, 255, 255, 0.22);
   color: rgba(247, 244, 241, 0.78);
   background: var(--surface-background);
@@ -1505,7 +1505,7 @@
 @media (max-width: 860px) {
   .shell { min-height: 660px; }
   .waypoint { top: 134px; left: 20px; width: min(310px, calc(100vw - 40px)); }
-  .waypoint button { padding: 14px; }
+  .waypoint button { padding: 8.4px 14px; }
   .waypoint strong { font-size: 16px; }
   .project {
     top: auto;
@@ -1618,8 +1618,8 @@
   .chapter > a { min-width: 270px; margin-top: 18px; }
   .chapterRail { right: 16px; left: 24px; font-size: 10px; }
   .chapterRail button { padding: 0 8px; }
-  .routeControls { right: 20px; bottom: 76px; left: 20px; width: auto; }
-  .routeControls button { min-height: 46px; padding: 0 12px; font-size: 12px; }
+  .routeControls { right: auto; bottom: 69px; left: 20px; width: 156px; }
+  .routeControls button { min-height: 38px; padding: 0; font-size: 12px; }
   .pause { right: auto; bottom: 20px; left: 20px; width: 156px; font-size: 11px; }
 }
 

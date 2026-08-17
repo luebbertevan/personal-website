@@ -1101,7 +1101,7 @@ export function SignalPrototypeV4() {
           </div>
           <div className={styles.fostyEngineeringLayout}>
             <header className={styles.fostyChapterHeading}>
-              <h2>A platform animal rescues can trust.</h2>
+              <h2>A platform animal rescues can trust</h2>
             </header>
             <div className={styles.fostyEngineeringFlow}>
               <div className={styles.fostyCopy}>

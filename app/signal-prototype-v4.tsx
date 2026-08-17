@@ -998,7 +998,9 @@ export function SignalPrototypeV4() {
           </div>
           <div className={styles.fostyProductLayout}>
             <header className={styles.fostyProductIntro}>
-              <h2>A dedicated platform for foster care.</h2>
+              <div className={styles.fostyChapterHeading}>
+                <h2>A dedicated platform for foster care.</h2>
+              </div>
               <p>
                 Animal rescues coordinate care across staff and volunteer foster homes. Fosty brings intake,
                 records, foster requests, assignments, and real-time communication into one place, so teams can
@@ -1042,7 +1044,7 @@ export function SignalPrototypeV4() {
             <span>DESIGN</span>
           </div>
           <div className={styles.fostyDesignLayout}>
-            <header className={styles.fostyDesignHeading}>
+            <header className={styles.fostyChapterHeading}>
               <h2>Designed with the rescue team</h2>
             </header>
             <div className={styles.fostyDesignBody}>
@@ -1098,7 +1100,9 @@ export function SignalPrototypeV4() {
             <span>ENGINEERING</span>
           </div>
           <div className={styles.fostyEngineeringLayout}>
-            <h2 className={styles.fostyEngineeringTitle}>A platform rescue teams can trust.</h2>
+            <header className={styles.fostyChapterHeading}>
+              <h2>A platform animal rescues can trust.</h2>
+            </header>
             <div className={styles.fostyEngineeringColumns}>
               <div className={styles.fostyCopy}>
                 <p>

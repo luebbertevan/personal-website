@@ -1098,9 +1098,7 @@ export function SignalPrototypeV4() {
             <span>ENGINEERING</span>
           </div>
           <div className={styles.fostyEngineeringLayout}>
-            <div className={styles.fostyEngineeringHeading}>
-              <h1>A platform rescue teams can trust.</h1>
-            </div>
+            <h2 className={styles.fostyEngineeringTitle}>A platform rescue teams can trust.</h2>
             <div className={styles.fostyEngineeringColumns}>
               <div className={styles.fostyCopy}>
                 <p>

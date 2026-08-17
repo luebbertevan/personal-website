@@ -474,14 +474,17 @@
   font-size: var(--about-reference-label-size);
   line-height: 1;
 }
-.project h2.fostyStatement {
-  grid-area: statement;
+.project h2.fostyStatement,
+.project h2.fostyEngineeringTitle {
   width: 100%;
   max-width: none;
   color: rgb(var(--accent-rgb));
   font-size: calc(var(--fosty-body-size) * 1.5);
   line-height: 1.02;
   letter-spacing: -0.045em;
+}
+.project h2.fostyStatement {
+  grid-area: statement;
 }
 .fostyStory {
   grid-area: story;
@@ -678,17 +681,6 @@
 .fostyEngineeringLayout {
   display: grid;
   gap: clamp(10px, 1.3vh, 15px);
-}
-.fostyEngineeringHeading {
-  padding-bottom: clamp(8px, 1vh, 12px);
-  border-bottom: 1px solid rgba(var(--accent-rgb), 0.48);
-}
-.fostyEngineeringHeading h1 {
-  width: 100%;
-  max-width: none;
-  font-size: var(--about-reference-title-size);
-  line-height: 1;
-  letter-spacing: -0.04em;
 }
 .fostyEngineeringColumns {
   display: grid;

@@ -748,6 +748,7 @@
 }
 .fostyOutcomeSubtitle {
   margin: 0;
+  color: rgba(247, 244, 241, 0.92);
 }
 .fostyOutcomeLayout .fostyCopy {
   gap: 8px;

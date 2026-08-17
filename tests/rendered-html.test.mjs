@@ -167,6 +167,7 @@ test("Fosty replaces both example projects with the Origin chapter", async () =>
   assert.match(source, /<h2 className=\{styles\.fostyOutcomeSubtitle\}>Providing relief to rescues everywhere\.<\/h2>/);
   assert.match(source, /className=\{styles\.fostyCopy\}/);
   assert.match(css, /\.project h2\.fostyStatement,\s*\.project h2\.fostyOutcomeSubtitle \{/s);
+  assert.match(css, /\.fostyOutcomeSubtitle \{[^}]*color: rgba\(247, 244, 241, 0\.92\);/s);
   assert.doesNotMatch(source, /PILOT ROLLOUT|NEXT BENCHMARK|fostyOutcomeProgress|fostyOutcomeNarrative|fostyOutcomeClosing/);
   assert.match(source, /href="https:\/\/www\.fosty\.us\/"/);
   assert.match(source, />Demo Fosty <i aria-hidden="true">↗<\/i><\/a>/);

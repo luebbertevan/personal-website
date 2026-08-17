@@ -614,20 +614,56 @@
   line-height: 1;
 }
 .fostyDesignLayout {
-  grid-template-columns: minmax(0, 1fr) clamp(150px, 12vw, 190px);
+  display: grid;
+  gap: clamp(16px, 1.8vh, 24px);
 }
-.fostyHeading h1.fostyDesignTitle {
-  max-width: 22ch;
-  font-size: var(--about-reference-title-size);
-  line-height: 1;
-  letter-spacing: -0.04em;
+.fostyDesignHeading {
+  padding-bottom: clamp(12px, 1.5vh, 18px);
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.48);
 }
-.fostyDesignPhoto {
-  align-self: start;
-  aspect-ratio: 16 / 9;
+.project .fostyDesignHeading h2 {
+  width: 100%;
+  max-width: none;
+  color: color-mix(in srgb, rgb(var(--accent-rgb)) 84%, white 16%);
+  font-size: clamp(28px, 3vw, 40px);
+  line-height: 0.98;
+  white-space: nowrap;
 }
-.fostyDesignPhoto img {
-  object-position: center;
+.fostyDesignBody {
+  display: flow-root;
+}
+.fostyDesignBody > p {
+  margin: 0 0 12px;
+  color: rgba(247, 244, 241, 0.72);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--fosty-body-size);
+  line-height: 1.4;
+  letter-spacing: 0;
+}
+.fostyDesignBody > p:last-child { margin-bottom: 0; }
+.fostyDesignArtifact {
+  float: right;
+  width: clamp(250px, 42%, 370px);
+  margin: 0 0 12px clamp(18px, 2vw, 30px);
+}
+.fostyDesignArtifact figcaption {
+  display: grid;
+  gap: 5px;
+  padding-top: 8px;
+}
+.fostyDesignArtifact figcaption span {
+  color: rgba(var(--accent-rgb), 0.9);
+  font-size: 10px;
+  line-height: 1.2;
+  letter-spacing: 0.12em;
+}
+.fostyDesignArtifact figcaption p {
+  margin: 0;
+  color: rgba(247, 244, 241, 0.52);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: clamp(12px, 0.76vw, 15px);
+  line-height: 1.38;
+  letter-spacing: 0;
 }
 .fostyEngineeringChapter {
   display: flex;
@@ -1518,6 +1554,14 @@
   .project .fostyProductIntro h2 { font-size: var(--about-reference-title-size); }
   .productVisual { grid-template-columns: 1fr; gap: 18px; }
   .productCaption { padding-top: 12px; padding-bottom: 12px; }
+  .project .fostyDesignHeading h2 {
+    font-size: clamp(17px, 5vw, 26px);
+  }
+  .fostyDesignArtifact {
+    float: none;
+    width: 100%;
+    margin: 0 0 14px;
+  }
   .fostyLayout {
     grid-template-columns: minmax(0, 1fr) 118px;
     gap: 14px;

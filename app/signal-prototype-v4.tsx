@@ -86,11 +86,15 @@ const fostyProductMedia = [
 ] as const;
 
 const fostyDesignMedia = {
+  title: "USABILITY REVIEW",
+  description: "A live usability review focused on friction, discoverability, and efficiency across core foster workflows.",
   src: "/images/fosty-usability-review.webp",
   alt: "A Fosty usability review call showing a structured workflow checklist alongside participants in Google Meet.",
   width: 1600,
   height: 918,
 } as const;
+
+type FostyMedia = (typeof fostyProductMedia)[number] | typeof fostyDesignMedia;
 
 const DESTINATION_TRAVEL = 52;
 const DESTINATION_DURATION = 7.35;
@@ -145,7 +149,7 @@ export function SignalPrototypeV4() {
   const navigationCommandRef = useRef<NavigationCommand | null>(null);
   const [paused, setPaused] = useState(false);
   const [emailCopyStatus, setEmailCopyStatus] = useState<"idle" | "copied" | "selected">("idle");
-  const [expandedMedia, setExpandedMedia] = useState<(typeof fostyProductMedia)[number] | null>(null);
+  const [expandedMedia, setExpandedMedia] = useState<FostyMedia | null>(null);
   const pausedRef = useRef(false);
 
   useEffect(() => {
@@ -1037,55 +1041,62 @@ export function SignalPrototypeV4() {
             <span>FOSTY</span>
             <span>DESIGN</span>
           </div>
-          <div className={`${styles.fostyLayout} ${styles.fostyDesignLayout}`}>
-            <div className={styles.fostyHeading}>
-              <div className={styles.fostyTitleRow}>
-                <h1 className={styles.fostyDesignTitle}>DESIGNED WITH THE RESCUE TEAM</h1>
-              </div>
+          <div className={styles.fostyDesignLayout}>
+            <header className={styles.fostyDesignHeading}>
+              <h2>Designed with the rescue team</h2>
+            </header>
+            <div className={styles.fostyDesignBody}>
+              <figure className={styles.fostyDesignArtifact}>
+                <button
+                  className={styles.productScreenshot}
+                  type="button"
+                  onClick={() => setExpandedMedia(fostyDesignMedia)}
+                  aria-label="Expand the Fosty usability review screenshot"
+                >
+                  {/* This process artifact is kept at its authored aspect ratio. */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={fostyDesignMedia.src}
+                    alt={fostyDesignMedia.alt}
+                    width={fostyDesignMedia.width}
+                    height={fostyDesignMedia.height}
+                    loading="lazy"
+                  />
+                  <span>EXPAND <i aria-hidden="true">↗</i></span>
+                </button>
+                <figcaption>
+                  <span>{fostyDesignMedia.title}</span>
+                  <p>{fostyDesignMedia.description}</p>
+                </figcaption>
+              </figure>
+              <p>
+                The goal of Fosty is to provide features and workflows that fit naturally into existing rescue
+                operations, reducing administrative chaos and helping teams make faster, clearer care decisions.
+              </p>
+              <p>
+                There was no existing animal foster-care platform to use as a blueprint. I had to invent the product
+                model, workflows, and interaction patterns for this problem space, translating CKC’s fragmented
+                real-world process into a structured, coherent system.
+              </p>
+              <p>
+                The platform serves two distinct user groups: coordinators who need operational visibility across
+                many volunteers, and foster caregivers who need to see their assignments and stay in contact with staff.
+              </p>
+              <p>
+                I worked directly with the rescue team to identify pain points, define requirements, and scope
+                solutions that could be built and tested.
+              </p>
+              <p>
+                Fosty’s data model is designed around the core relationships in rescue operations. Animals can belong
+                to groups such as litters, move through placement states, carry care and medical histories, and stay
+                linked to relevant conversations. I designed an interface around that model that feels natural to both
+                coordinators and foster caregivers.
+              </p>
+              <p>
+                I tested and refined the workflows through usability reviews with the rescue team, foster volunteer
+                test users, designer colleagues, and UX advisors.
+              </p>
             </div>
-            <h2 className={styles.fostyStatement}>I designed the platform in close collaboration with CKC.</h2>
-            <div className={styles.fostyStory}>
-              <div className={styles.fostyCopy}>
-                <p>
-                  The goal of Fosty is to provide features and workflows that fit naturally into existing rescue
-                  operations, reducing administrative chaos and helping teams make faster, clearer care decisions.
-                </p>
-                <p>
-                  There was no existing animal foster-care platform to use as a blueprint. I had to invent the
-                  product model, workflows, and interaction patterns for this problem space, translating CKC’s
-                  fragmented real-world process into a structured, coherent system.
-                </p>
-                <p>
-                  The platform serves two distinct user groups: coordinators who need operational visibility across
-                  many volunteers, and foster caregivers who need to see their assignments and stay in contact with staff.
-                </p>
-                <p>
-                  I worked directly with the rescue team to identify pain points, define requirements, and scope
-                  solutions that could be built and tested.
-                </p>
-                <p>
-                  Fosty’s data model is designed around the core relationships in rescue operations. Animals can
-                  belong to groups such as litters, move through placement states, carry care and medical histories,
-                  and stay linked to relevant conversations. I designed an interface around that model that feels
-                  natural to both coordinators and foster caregivers.
-                </p>
-                <p>
-                  I tested and refined the workflows through usability reviews with the rescue team, foster volunteer
-                  test users, designer colleagues, and UX advisors.
-                </p>
-              </div>
-            </div>
-            <figure className={`${styles.fostyPhoto} ${styles.fostyDesignPhoto}`}>
-              {/* This process artifact is optimized for the compact editorial placement. */}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={fostyDesignMedia.src}
-                alt={fostyDesignMedia.alt}
-                width={fostyDesignMedia.width}
-                height={fostyDesignMedia.height}
-                loading="lazy"
-              />
-            </figure>
           </div>
         </section>
         <section className={`${styles.chapter} ${styles.fostyEngineeringChapter}`} data-project-chapter>

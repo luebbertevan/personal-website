@@ -40,3 +40,6 @@ next-env.d.ts
 /.wrangler/
 /outputs/
 /work/
+
+# Keep raw screen captures out of the deployable public media folder.
+/public/videos/Screen Recording*.mov

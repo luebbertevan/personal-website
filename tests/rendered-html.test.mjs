@@ -154,7 +154,7 @@ test("Fosty replaces both example projects with the Origin chapter", async () =>
   assert.doesNotMatch(html, /Signal Atlas|Velvet Circuit|EXAMPLE PROJECT/);
   assert.match(source, /label:\s*"FOSTY",\s*chapters:\s*5,/);
   assert.match(source, /cssColor:\s*\[236, 72, 153\]/);
-  assert.equal((source.match(/<article[^>]+data-destination-panel="/g) ?? []).length, 2);
+  assert.equal((source.match(/<article[^>]+data-destination-panel="/g) ?? []).length, 3);
   assert.match(source, /onClick=\{\(\) => navigateToChapter\(4\)\}>OUTCOME<\/button>/);
   assert.match(html, /I am actively rolling out Fosty with Colorado Kitty Coalition as my pilot partner\./);
   assert.match(html, /The next benchmark is full adoption by CKC/);
@@ -192,4 +192,33 @@ test("Fosty replaces both example projects with the Origin chapter", async () =>
   assert.match(css, /\.minimalContactLinks\.fostyLinks a \{\s*font-size: var\(--about-reference-link-size\);/s);
   assert.match(source, /const aboutScale = shouldScaleAboutPanel && aboutPanel && fostyPanel/);
   assert.match(source, /--reference-panel-height/);
+});
+
+test("Crux Vision renders the Origin chapter with persistent video actions", async () => {
+  const response = await render();
+  const html = await response.text();
+  const [source, css, video, poster] = await Promise.all([
+    readFile(new URL("../app/signal-prototype-v4.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/signal-prototype.module.css", import.meta.url), "utf8"),
+    readFile(new URL("../public/videos/crux-vision-origin-overlay.mp4", import.meta.url)),
+    readFile(new URL("../public/images/crux-vision-origin-overlay-poster.webp", import.meta.url)),
+  ]);
+
+  assert.match(html, /Crux Vision is a movement-review tool I created to turn climbing footage into a workspace/);
+  assert.match(html, /technical theory represented visually/);
+  assert.match(html, /microscope for video analysis/);
+  assert.match(source, /label:\s*"CRUX VISION",\s*chapters:\s*1,/);
+  assert.match(source, /cssColor:\s*\[188, 255, 112\]/);
+  assert.match(source, /src="\/videos\/crux-vision-origin-overlay\.mp4"/);
+  assert.match(source, /poster="\/images\/crux-vision-origin-overlay-poster\.webp"/);
+  assert.match(source, /href="https:\/\/crux-vision-rebuild\.vercel\.app\/"/);
+  assert.match(source, /href="https:\/\/github\.com\/luebbertevan\/crux-vision"/);
+  assert.equal((source.match(/data-future-chapter disabled/g) ?? []).length, 3);
+  assert.match(css, /\.cruxBody \{[^}]*grid-template-columns: minmax\(0, 1\.58fr\) minmax\(230px, 0\.95fr\);/s);
+  assert.match(css, /\.cruxStoryScroll \{[^}]*overflow-y: auto;/s);
+  assert.match(css, /\.cruxMediaColumn \{[^}]*grid-template-rows: minmax\(0, 1fr\) auto;/s);
+  assert.match(css, /\.cruxChapterRail \{\s*grid-template-columns: repeat\(4, minmax\(0, 1fr\)\);/s);
+  assert.equal(video.subarray(4, 8).toString("ascii"), "ftyp");
+  assert.equal(poster.subarray(0, 4).toString("ascii"), "RIFF");
+  assert.equal(poster.subarray(8, 12).toString("ascii"), "WEBP");
 });

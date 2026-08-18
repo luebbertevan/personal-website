@@ -27,8 +27,8 @@ const destinations = [
   {
     label: "CRUX VISION",
     chapters: 1,
-    shaderColor: [0.737, 1.0, 0.439] as const,
-    cssColor: [188, 255, 112] as const,
+    shaderColor: [0.561, 0.902, 0.376] as const,
+    cssColor: [143, 230, 96] as const,
   },
 ];
 
@@ -156,13 +156,11 @@ export function SignalPrototypeV4() {
   const cruxExpandedVideoRef = useRef<HTMLVideoElement>(null);
   const navigationCommandRef = useRef<NavigationCommand | null>(null);
   const activeDestinationRef = useRef(0);
-  const cruxVideoManuallyPausedRef = useRef(false);
   const cruxVideoExpandedRef = useRef(false);
   const prefersReducedMotionRef = useRef(false);
   const [paused, setPaused] = useState(false);
   const [emailCopyStatus, setEmailCopyStatus] = useState<"idle" | "copied" | "selected">("idle");
   const [expandedMedia, setExpandedMedia] = useState<FostyMedia | null>(null);
-  const [cruxVideoPaused, setCruxVideoPaused] = useState(true);
   const [cruxVideoExpanded, setCruxVideoExpanded] = useState(false);
   const pausedRef = useRef(false);
 
@@ -177,12 +175,10 @@ export function SignalPrototypeV4() {
         setCruxVideoExpanded(false);
         if (
           activeDestinationRef.current === 2
-          && !cruxVideoManuallyPausedRef.current
           && !prefersReducedMotionRef.current
         ) {
           window.requestAnimationFrame(() => {
             void cruxVideoRef.current?.play().catch(() => undefined);
-            setCruxVideoPaused(false);
           });
         }
       }
@@ -219,19 +215,6 @@ export function SignalPrototypeV4() {
     navigationCommandRef.current = { type: "step", value: direction };
   };
 
-  const toggleCruxVideo = () => {
-    const video = cruxVideoRef.current;
-    if (!video) return;
-    if (video.paused) {
-      cruxVideoManuallyPausedRef.current = false;
-      void video.play().then(() => setCruxVideoPaused(false)).catch(() => undefined);
-    } else {
-      cruxVideoManuallyPausedRef.current = true;
-      video.pause();
-      setCruxVideoPaused(true);
-    }
-  };
-
   const openCruxVideo = () => {
     cruxVideoRef.current?.pause();
     cruxVideoExpandedRef.current = true;
@@ -243,12 +226,10 @@ export function SignalPrototypeV4() {
     setCruxVideoExpanded(false);
     if (
       activeDestinationRef.current === 2
-      && !cruxVideoManuallyPausedRef.current
       && !prefersReducedMotionRef.current
     ) {
       window.requestAnimationFrame(() => {
         void cruxVideoRef.current?.play().catch(() => undefined);
-        setCruxVideoPaused(false);
       });
     }
   };
@@ -276,7 +257,6 @@ export function SignalPrototypeV4() {
     const mount = mountRef.current;
     if (!mount || !shell) return;
     prefersReducedMotionRef.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (prefersReducedMotionRef.current) setCruxVideoPaused(true);
     const siteRoot = shell.closest<HTMLElement>("[data-site-root]");
     const setAccentPalette = (palette: number[]) => {
       const value = palette.join(", ");
@@ -812,14 +792,12 @@ export function SignalPrototypeV4() {
         activeDestinationRef.current = activeDestinationForUi;
         const cruxVideo = cruxVideoRef.current;
         const shouldPlayCruxVideo = activeDestinationForUi === 2
-          && !cruxVideoManuallyPausedRef.current
           && !cruxVideoExpandedRef.current
           && !prefersReducedMotionRef.current;
         if (shouldPlayCruxVideo) {
-          void cruxVideo?.play().then(() => setCruxVideoPaused(false)).catch(() => undefined);
+          void cruxVideo?.play().catch(() => undefined);
         } else {
           cruxVideo?.pause();
-          if (activeDestinationForUi === 2) setCruxVideoPaused(true);
         }
       }
 
@@ -1346,13 +1324,13 @@ export function SignalPrototypeV4() {
             </header>
             <div className={styles.cruxBody}>
               <section className={styles.cruxNarrative} aria-label="Crux Vision origin story">
-                <p className={styles.cruxLead}>
-                  Crux Vision is a movement-review tool I created to turn climbing footage into a workspace for
-                  examining motion and technique. It uses pose data to create video overlays that reveal new layers
-                  of visual information, helping climbers examine movement holistically and magnify subtleties that
-                  ordinary playback can obscure.
-                </p>
-                <div className={styles.cruxStoryScroll} tabIndex={0} aria-label="Continue reading the Crux Vision origin story">
+                <div className={styles.cruxStoryScroll} tabIndex={0} aria-label="Read the Crux Vision origin story">
+                  <p>
+                    Crux Vision is a movement-review tool I created to turn climbing footage into a workspace for
+                    examining motion and technique. It uses pose data to create video overlays that reveal new layers
+                    of visual information, helping climbers examine movement holistically and magnify subtleties that
+                    ordinary playback can obscure.
+                  </p>
                   <p>
                     Climbers are always trying to improve—whether we are building strength, refining our technique,
                     or working to complete a route at the edge of our ability. We are constantly looking to learn and
@@ -1401,23 +1379,13 @@ export function SignalPrototypeV4() {
                   >
                     Your browser does not support embedded video.
                   </video>
-                  <figcaption>MOVEMENT OVERLAY · LIVE POSE</figcaption>
                   <div className={styles.cruxVideoControls}>
-                    <button
-                      type="button"
-                      onClick={toggleCruxVideo}
-                      aria-label={cruxVideoPaused ? "Play the Crux Vision overlay video" : "Pause the Crux Vision overlay video"}
-                      aria-pressed={!cruxVideoPaused}
-                    >
-                      <span aria-hidden="true">{cruxVideoPaused ? "▶" : "Ⅱ"}</span>
-                      {cruxVideoPaused ? "PLAY" : "PAUSE"}
-                    </button>
                     <button type="button" onClick={openCruxVideo} aria-label="Expand the Crux Vision overlay video">
                       EXPAND <span aria-hidden="true">↗</span>
                     </button>
                   </div>
                 </figure>
-                <nav className={styles.cruxMediaActions} aria-label="Crux Vision links">
+                <nav className={`${styles.minimalContactLinks} ${styles.cruxMediaActions}`} aria-label="Crux Vision links">
                   <a href="https://crux-vision-rebuild.vercel.app/" target="_blank" rel="noreferrer">
                     Try the public beta <i aria-hidden="true">↗</i>
                   </a>
@@ -1460,6 +1428,8 @@ export function SignalPrototypeV4() {
               loop
               playsInline
               controls
+              width="926"
+              height="1656"
               onClick={(event) => event.stopPropagation()}
             >
               Your browser does not support embedded video.

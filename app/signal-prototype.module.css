@@ -624,36 +624,25 @@
   display: grid;
   flex: 1;
   min-height: 0;
-  grid-template-columns: minmax(0, 1.58fr) minmax(230px, 0.95fr);
-  gap: clamp(22px, 2.35vw, 42px);
+  grid-template-columns: minmax(0, 1.62fr) minmax(210px, 0.82fr);
+  gap: clamp(12px, 1.4vw, 24px);
   padding-top: clamp(14px, 1.65vh, 20px);
   align-items: stretch;
 }
 .cruxNarrative {
-  display: grid;
   min-width: 0;
   min-height: 0;
-  grid-template-rows: auto minmax(0, 1fr);
-  gap: clamp(12px, 1.4vh, 18px);
 }
-.cruxLead,
 .cruxStoryScroll p {
   margin: 0;
   font-family: var(--font-geist-sans), sans-serif;
   letter-spacing: 0;
 }
-.cruxLead {
-  padding: 0 0 clamp(11px, 1.25vh, 15px) clamp(14px, 1.2vw, 20px);
-  border-bottom: 1px solid rgba(var(--accent-rgb), 0.24);
-  border-left: 1px solid rgba(var(--accent-rgb), 0.72);
-  color: rgba(247, 244, 241, 0.9);
-  font-size: calc(var(--crux-body-size) * 1.06);
-  line-height: 1.38;
-}
 .cruxStoryScroll {
   min-width: 0;
   min-height: 0;
-  padding: 1px clamp(12px, 1vw, 18px) 18px 0;
+  height: 100%;
+  padding: 1px clamp(8px, 0.7vw, 12px) 18px 0;
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
@@ -677,15 +666,16 @@
   min-width: 0;
   min-height: 0;
   grid-template-rows: minmax(0, 1fr) auto;
-  gap: clamp(9px, 1vh, 12px);
+  gap: clamp(5px, 0.7vh, 8px);
 }
 .cruxVideoFrame {
   position: relative;
   justify-self: center;
   box-sizing: border-box;
-  width: auto;
+  width: 100%;
   max-width: 100%;
-  height: 100%;
+  height: auto;
+  max-height: 100%;
   min-height: 0;
   aspect-ratio: 926 / 1656;
   margin: 0;
@@ -710,26 +700,11 @@
   background: #050705;
   object-fit: contain;
 }
-.cruxVideoFrame figcaption {
-  position: absolute;
-  z-index: 2;
-  top: 12px;
-  left: 12px;
-  padding: 6px 8px;
-  border: 1px solid rgba(var(--accent-rgb), 0.42);
-  color: rgba(247, 244, 241, 0.76);
-  background: rgba(3, 6, 3, 0.74);
-  font-size: 8px;
-  line-height: 1;
-  letter-spacing: 0.11em;
-  backdrop-filter: blur(8px);
-}
 .cruxVideoControls {
   position: absolute;
   z-index: 2;
   right: 9px;
   bottom: 9px;
-  left: 9px;
   display: flex;
   gap: 5px;
   justify-content: flex-end;
@@ -759,39 +734,18 @@
 }
 .cruxVideoControls button span { font-size: 11px; letter-spacing: 0; }
 .cruxMediaActions {
-  display: grid;
-  grid-template-columns: minmax(0, 1.55fr) minmax(0, 0.8fr);
-  gap: 1px;
-  flex: 0 0 auto;
-  background: rgba(var(--accent-rgb), 0.3);
-}
-.cruxMediaActions a {
   display: flex;
-  min-width: 0;
-  min-height: 38px;
-  padding: 8px 9px;
-  align-items: center;
-  justify-content: space-between;
-  gap: 7px;
-  color: rgba(247, 244, 241, 0.86);
-  background: rgba(3, 7, 4, 0.88);
-  font-size: clamp(8px, 0.58vw, 11px);
-  line-height: 1.2;
-  text-decoration: none;
-  transition: color 160ms ease, background 160ms ease;
-}
-.cruxMediaActions a:hover,
-.cruxMediaActions a:focus-visible {
-  color: rgb(var(--accent-rgb));
-  background: rgba(var(--accent-rgb), 0.1);
-  outline: none;
-}
-.cruxMediaActions i {
+  gap: 5px clamp(12px, 1vw, 18px);
   flex: 0 0 auto;
-  color: rgb(var(--accent-rgb));
-  font-size: 1.1em;
-  font-style: normal;
-  letter-spacing: 0;
+  flex-wrap: wrap;
+  background: transparent;
+}
+.minimalContactLinks.cruxMediaActions a {
+  width: auto;
+  padding: 4px 0;
+  border-bottom: 0;
+  font-size: var(--about-reference-link-size);
+  white-space: nowrap;
 }
 .cruxChapterRail {
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -809,15 +763,17 @@
 }
 .mediaLightbox.cruxVideoLightbox {
   display: grid;
+  box-sizing: border-box;
   place-items: center;
   cursor: zoom-out;
 }
 .mediaLightbox.cruxVideoLightbox > video {
   display: block;
-  width: auto;
-  max-width: 100%;
+  box-sizing: border-box;
+  width: 100%;
   height: 100%;
-  max-height: 100%;
+  min-width: 0;
+  min-height: 0;
   border: 1px solid rgba(var(--accent-rgb), 0.48);
   background: #030503;
   box-shadow: 0 0 80px rgba(var(--accent-rgb), 0.2);
@@ -1630,7 +1586,7 @@
   .cruxProject {
     top: var(--reference-panel-top, clamp(112px, 12vh, 168px));
     bottom: auto;
-    width: min(1040px, 62vw);
+    width: min(980px, 58vw);
     height: var(--reference-panel-height, calc(100svh - clamp(224px, 24vh, 336px)));
   }
   .fostyOrigin {
@@ -1722,7 +1678,7 @@
   }
   .cruxProject {
     --crux-body-size: clamp(20px, 1vw, 30px);
-    width: 62vw;
+    width: 58vw;
   }
 }
 
@@ -1861,19 +1817,14 @@
     gap: 13px;
     padding-top: 11px;
   }
-  .cruxNarrative { gap: 9px; }
-  .cruxLead { padding: 0 0 9px 11px; line-height: 1.36; }
   .cruxStoryScroll { padding-right: 8px; }
   .cruxStoryScroll p { line-height: 1.42; }
   .cruxStoryScroll p + p { margin-top: 9px; }
   .cruxMediaColumn { gap: 7px; }
-  .cruxVideoFrame figcaption { display: none; }
-  .cruxVideoControls { right: 5px; bottom: 5px; left: 5px; }
+  .cruxVideoControls { right: 5px; bottom: 5px; }
   .cruxVideoControls button { min-height: 25px; padding: 4px 5px; font-size: 6px; }
-  .cruxVideoControls button:first-child { width: 27px; font-size: 0; }
-  .cruxVideoControls button:first-child span { font-size: 10px; }
-  .cruxMediaActions { grid-template-columns: 1fr; }
-  .cruxMediaActions a { min-height: 28px; padding: 5px 6px; font-size: 7px; }
+  .minimalContactLinks.cruxMediaActions { gap: 5px 10px; }
+  .minimalContactLinks.cruxMediaActions a { padding: 3px 0; font-size: 9px; }
   .cruxChapterRail { font-size: 7px; }
   .cruxChapterRail button { padding: 0 4px; line-height: 1.2; }
   .fostyHeading { padding-bottom: 10px; }

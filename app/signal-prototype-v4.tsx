@@ -1576,28 +1576,47 @@ export function SignalPrototypeV4() {
 
             <ol className={styles.cruxMovementFeatureList} aria-label="Crux Vision movement-review features">
               <li className={styles.cruxMovementFeature}>
-                <div className={`${styles.cruxFeatureMedia} ${styles.cruxFeatureMediaStack}`}>
-                  {[cruxMovementMedia[1], cruxMovementMedia[2]].map((item) => (
-                    <button
-                      key={item.title}
-                      className={styles.productScreenshot}
-                      type="button"
-                      onClick={() => setExpandedCruxMedia(item)}
-                      aria-label={`Expand the ${item.title.toLowerCase()} screenshot`}
-                    >
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={item.src} alt={item.alt} width={item.width} height={item.height} />
-                      <span>EXPAND <i aria-hidden="true">↗</i></span>
-                    </button>
-                  ))}
+                <div className={styles.cruxFeatureMedia}>
+                  <button
+                    className={styles.productScreenshot}
+                    type="button"
+                    onClick={() => setExpandedCruxMedia(cruxMovementMedia[1])}
+                    aria-label="Expand the checkpoints screenshot"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={cruxMovementMedia[1].src}
+                      alt={cruxMovementMedia[1].alt}
+                      width={cruxMovementMedia[1].width}
+                      height={cruxMovementMedia[1].height}
+                    />
+                    <span>EXPAND <i aria-hidden="true">↗</i></span>
+                  </button>
                 </div>
-                <div className={styles.productCaption}>
-                  <span>REVIEW WITH PRECISION</span>
-                  <p>
-                    Loop the selected range, slow down playback, step through analyzed frames, and create named
-                    checkpoints for important positions. Repeat a movement, inspect individual moments, and return
-                    quickly to the parts of an attempt that deserve closer attention.
-                  </p>
+                <div className={styles.cruxPrecisionDetails}>
+                  <div className={styles.productCaption}>
+                    <span>REVIEW WITH PRECISION</span>
+                    <p>
+                      Loop the selected range, slow down playback, step through analyzed frames, and create named
+                      checkpoints for important positions. Repeat a movement, inspect individual moments, and return
+                      quickly to the parts of an attempt that deserve closer attention.
+                    </p>
+                  </div>
+                  <button
+                    className={styles.productScreenshot}
+                    type="button"
+                    onClick={() => setExpandedCruxMedia(cruxMovementMedia[2])}
+                    aria-label="Expand the precision playback screenshot"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={cruxMovementMedia[2].src}
+                      alt={cruxMovementMedia[2].alt}
+                      width={cruxMovementMedia[2].width}
+                      height={cruxMovementMedia[2].height}
+                    />
+                    <span>EXPAND <i aria-hidden="true">↗</i></span>
+                  </button>
                 </div>
               </li>
 

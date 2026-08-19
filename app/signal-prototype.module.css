@@ -780,6 +780,107 @@
   cursor: default;
   object-fit: contain;
 }
+.cruxMovementChapter {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: clamp(18px, 2.4vh, 30px);
+}
+.cruxMovementChapter .projectMeta {
+  flex: 0 0 auto;
+  margin-bottom: clamp(12px, 1.5vh, 18px);
+  font-size: var(--about-reference-label-size);
+  line-height: 1;
+}
+.cruxMovementLayout {
+  display: grid;
+  gap: clamp(18px, 2.2vh, 28px);
+}
+.cruxMovementIntro {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(150px, 21%, 205px);
+  gap: clamp(18px, 2vw, 30px);
+  align-items: stretch;
+  padding-bottom: clamp(18px, 2vh, 26px);
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.48);
+}
+.cruxMovementIntroCopy {
+  display: grid;
+  min-width: 0;
+  gap: clamp(12px, 1.5vh, 18px);
+  align-content: center;
+}
+.project .cruxMovementIntro h2 {
+  width: 100%;
+  max-width: none;
+  color: color-mix(in srgb, rgb(var(--accent-rgb)) 84%, white 16%);
+  font-size: clamp(30px, 3.2vw, 46px);
+  line-height: 0.98;
+}
+.cruxMovementIntroCopy p {
+  max-width: 66ch;
+  margin: 0;
+  color: rgba(247, 244, 241, 0.72);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--crux-body-size);
+  line-height: 1.48;
+  letter-spacing: 0;
+}
+.cruxMovementVideoFrame {
+  width: auto;
+  max-width: 100%;
+  height: clamp(240px, 34vh, 330px);
+  aspect-ratio: 562 / 934;
+}
+.cruxMovementFeatureList {
+  display: grid;
+  gap: clamp(16px, 2vh, 24px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.cruxMovementFeature {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  gap: clamp(18px, 2vw, 30px);
+  align-items: center;
+  padding-top: clamp(16px, 1.8vh, 22px);
+  border-top: 1px solid rgba(255, 255, 255, 0.11);
+}
+.cruxMovementFeature:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+.cruxFeatureMedia {
+  display: grid;
+  min-width: 0;
+  gap: clamp(8px, 0.8vw, 12px);
+}
+.cruxFeatureMediaStack {
+  grid-template-columns: 1fr;
+}
+.cruxFeatureMediaTall {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+}
+.cruxFeatureMediaTall .productScreenshot {
+  height: clamp(270px, 33vw, 430px);
+}
+.cruxFeatureMediaTall .productScreenshot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+.cruxMovementFeature .productCaption {
+  align-content: center;
+}
+.cruxMovementFeature .productCaption > span {
+  font-size: clamp(20px, 2vw, 30px);
+}
+.cruxMovementFeature .productCaption p {
+  font-size: var(--crux-body-size);
+  line-height: 1.48;
+}
 .fostyProductChapter {
   display: flex;
   flex-direction: column;
@@ -1597,6 +1698,10 @@
     bottom: var(--chapter-rail-height);
     padding-bottom: 0;
   }
+  .cruxMovementChapter {
+    bottom: var(--chapter-rail-height);
+    padding-bottom: 0;
+  }
   .fostyProductChapter {
     bottom: var(--chapter-rail-height);
     padding-bottom: 0;
@@ -1785,6 +1890,7 @@
   .cruxProject { --crux-body-size: 13px; }
   .fostyOrigin { padding-top: 18px; }
   .cruxOrigin { padding-top: 18px; }
+  .cruxMovementChapter { padding-top: 18px; }
   .fostyProductChapter { padding-top: 18px; }
   .fostyDesignChapter { padding-top: 18px; }
   .fostyEngineeringChapter { padding-top: 18px; }
@@ -1827,6 +1933,23 @@
   .minimalContactLinks.cruxMediaActions a { padding: 3px 0; font-size: 9px; }
   .cruxChapterRail { font-size: 7px; }
   .cruxChapterRail button { padding: 0 4px; line-height: 1.2; }
+  .cruxMovementIntro {
+    grid-template-columns: minmax(0, 1fr) 108px;
+    gap: 13px;
+    padding-bottom: 14px;
+  }
+  .project .cruxMovementIntro h2 { font-size: clamp(22px, 6vw, 30px); }
+  .cruxMovementIntroCopy { gap: 9px; }
+  .cruxMovementIntroCopy p { font-size: 13px; line-height: 1.42; }
+  .cruxMovementVideoFrame { height: 180px; }
+  .cruxMovementFeature {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    gap: 13px;
+  }
+  .cruxMovementFeature .productCaption { gap: 7px; padding: 8px 0; }
+  .cruxMovementFeature .productCaption > span { font-size: 16px; }
+  .cruxMovementFeature .productCaption p { font-size: 12px; line-height: 1.4; }
+  .cruxFeatureMediaTall .productScreenshot { height: 250px; }
   .fostyHeading { padding-bottom: 10px; }
   .fostyHeading .cardLabel { margin-bottom: 7px; font-size: 9px; }
   .fostyDate { display: none; }
@@ -1861,6 +1984,10 @@
 
 @media (max-width: 600px) {
   .aboutLayout { grid-template-columns: 1fr 75px; }
+  .cruxMovementIntro { grid-template-columns: minmax(0, 1fr) 92px; }
+  .cruxMovementVideoFrame { height: 154px; }
+  .cruxMovementFeature { grid-template-columns: 1fr; }
+  .cruxFeatureMediaTall .productScreenshot { height: 300px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

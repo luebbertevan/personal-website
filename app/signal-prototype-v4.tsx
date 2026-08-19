@@ -26,7 +26,7 @@ const destinations = [
   },
   {
     label: "CRUX VISION",
-    chapters: 1,
+    chapters: 2,
     shaderColor: [0.561, 0.902, 0.376] as const,
     cssColor: [143, 230, 96] as const,
   },
@@ -102,6 +102,70 @@ const fostyDesignMedia = {
 
 type FostyMedia = (typeof fostyProductMedia)[number] | typeof fostyDesignMedia;
 
+const cruxMovementMedia = [
+  {
+    title: "ANALYSIS RANGE",
+    src: "/images/crux-vision-analyze-range.webp",
+    alt: "Crux Vision’s clip analysis controls showing a 12.5-second range selected for on-device pose analysis.",
+    width: 780,
+    height: 714,
+  },
+  {
+    title: "CHECKPOINTS",
+    src: "/images/crux-vision-checkpoints.webp",
+    alt: "Crux Vision’s checkpoint controls with named Crux Start and Fall review marks.",
+    width: 748,
+    height: 606,
+  },
+  {
+    title: "PRECISION PLAYBACK",
+    src: "/images/crux-vision-playback-controls.webp",
+    alt: "Crux Vision’s slow-motion, looping, and analyzed-frame navigation controls.",
+    width: 770,
+    height: 260,
+  },
+  {
+    title: "OVERLAY SOURCES",
+    src: "/images/crux-vision-overlay-settings.webp",
+    alt: "Crux Vision’s overlay settings with shoulder midpoint, right elbow, and right knee trails selected.",
+    width: 764,
+    height: 1274,
+  },
+  {
+    title: "TRAIL APPEARANCE",
+    src: "/images/crux-vision-trail-appearance.webp",
+    alt: "Crux Vision’s advanced trail editor for changing a joint trail’s color, width, opacity, and duration.",
+    width: 698,
+    height: 1348,
+  },
+] as const;
+
+type CruxMovementMedia = (typeof cruxMovementMedia)[number];
+
+type CruxVideoMedia = {
+  src: string;
+  poster: string;
+  label: string;
+  width: number;
+  height: number;
+};
+
+const cruxOriginVideo: CruxVideoMedia = {
+  src: "/videos/crux-vision-origin-overlay.mp4",
+  poster: "/images/crux-vision-origin-overlay-poster.webp",
+  label: "Crux Vision movement overlay",
+  width: 926,
+  height: 1656,
+};
+
+const cruxMovementVideo: CruxVideoMedia = {
+  src: "/videos/crux-vision-movement-review.mp4",
+  poster: "/images/crux-vision-movement-review-poster.webp",
+  label: "Crux Vision slow-motion movement review",
+  width: 562,
+  height: 934,
+};
+
 const DESTINATION_TRAVEL = 52;
 const DESTINATION_DURATION = 7.35;
 const CHAPTER_TRAVEL = 13;
@@ -153,23 +217,28 @@ export function SignalPrototypeV4() {
   const emailRef = useRef<HTMLElement>(null);
   const lightboxCloseRef = useRef<HTMLButtonElement>(null);
   const cruxVideoRef = useRef<HTMLVideoElement>(null);
+  const cruxMovementVideoRef = useRef<HTMLVideoElement>(null);
   const cruxExpandedVideoRef = useRef<HTMLVideoElement>(null);
   const navigationCommandRef = useRef<NavigationCommand | null>(null);
   const activeDestinationRef = useRef(0);
+  const activeChapterRef = useRef(0);
   const cruxVideoExpandedRef = useRef(false);
   const prefersReducedMotionRef = useRef(false);
   const [paused, setPaused] = useState(false);
   const [emailCopyStatus, setEmailCopyStatus] = useState<"idle" | "copied" | "selected">("idle");
   const [expandedMedia, setExpandedMedia] = useState<FostyMedia | null>(null);
+  const [expandedCruxMedia, setExpandedCruxMedia] = useState<CruxMovementMedia | null>(null);
   const [cruxVideoExpanded, setCruxVideoExpanded] = useState(false);
+  const [expandedCruxVideo, setExpandedCruxVideo] = useState<CruxVideoMedia>(cruxOriginVideo);
   const pausedRef = useRef(false);
 
   useEffect(() => {
-    if (!expandedMedia && !cruxVideoExpanded) return;
+    if (!expandedMedia && !expandedCruxMedia && !cruxVideoExpanded) return;
 
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
       setExpandedMedia(null);
+      setExpandedCruxMedia(null);
       if (cruxVideoExpandedRef.current) {
         cruxVideoExpandedRef.current = false;
         setCruxVideoExpanded(false);
@@ -178,7 +247,10 @@ export function SignalPrototypeV4() {
           && !prefersReducedMotionRef.current
         ) {
           window.requestAnimationFrame(() => {
-            void cruxVideoRef.current?.play().catch(() => undefined);
+            const activeVideo = activeChapterRef.current === 0
+              ? cruxVideoRef.current
+              : cruxMovementVideoRef.current;
+            void activeVideo?.play().catch(() => undefined);
           });
         }
       }
@@ -187,7 +259,7 @@ export function SignalPrototypeV4() {
     lightboxCloseRef.current?.focus();
     window.addEventListener("keydown", closeOnEscape);
     return () => window.removeEventListener("keydown", closeOnEscape);
-  }, [cruxVideoExpanded, expandedMedia]);
+  }, [cruxVideoExpanded, expandedCruxMedia, expandedMedia]);
 
   const togglePause = () => {
     pausedRef.current = !pausedRef.current;
@@ -196,6 +268,7 @@ export function SignalPrototypeV4() {
 
   const navigateToDestination = (index: number) => {
     setExpandedMedia(null);
+    setExpandedCruxMedia(null);
     cruxVideoExpandedRef.current = false;
     setCruxVideoExpanded(false);
     navigationCommandRef.current = { type: "destination", value: index };
@@ -203,6 +276,7 @@ export function SignalPrototypeV4() {
 
   const navigateToChapter = (index: number) => {
     setExpandedMedia(null);
+    setExpandedCruxMedia(null);
     cruxVideoExpandedRef.current = false;
     setCruxVideoExpanded(false);
     navigationCommandRef.current = { type: "chapter", value: index };
@@ -210,13 +284,16 @@ export function SignalPrototypeV4() {
 
   const stepRoute = (direction: -1 | 1) => {
     setExpandedMedia(null);
+    setExpandedCruxMedia(null);
     cruxVideoExpandedRef.current = false;
     setCruxVideoExpanded(false);
     navigationCommandRef.current = { type: "step", value: direction };
   };
 
-  const openCruxVideo = () => {
+  const openCruxVideo = (video: CruxVideoMedia) => {
     cruxVideoRef.current?.pause();
+    cruxMovementVideoRef.current?.pause();
+    setExpandedCruxVideo(video);
     cruxVideoExpandedRef.current = true;
     setCruxVideoExpanded(true);
   };
@@ -229,7 +306,10 @@ export function SignalPrototypeV4() {
       && !prefersReducedMotionRef.current
     ) {
       window.requestAnimationFrame(() => {
-        void cruxVideoRef.current?.play().catch(() => undefined);
+        const activeVideo = activeChapterRef.current === 0
+          ? cruxVideoRef.current
+          : cruxMovementVideoRef.current;
+        void activeVideo?.play().catch(() => undefined);
       });
     }
   };
@@ -479,6 +559,7 @@ export function SignalPrototypeV4() {
       if (!direction) return;
       event.preventDefault();
       setExpandedMedia(null);
+      setExpandedCruxMedia(null);
       cruxVideoExpandedRef.current = false;
       setCruxVideoExpanded(false);
       navigationCommandRef.current = { type: "step", value: direction as -1 | 1 };
@@ -788,16 +869,22 @@ export function SignalPrototypeV4() {
           ? 0
           : currentChapter;
 
-      if (activeDestinationRef.current !== activeDestinationForUi) {
+      if (
+        activeDestinationRef.current !== activeDestinationForUi
+        || activeChapterRef.current !== activeChapterForUi
+      ) {
         activeDestinationRef.current = activeDestinationForUi;
-        const cruxVideo = cruxVideoRef.current;
+        activeChapterRef.current = activeChapterForUi;
+        const originVideo = cruxVideoRef.current;
+        const movementVideo = cruxMovementVideoRef.current;
+        originVideo?.pause();
+        movementVideo?.pause();
         const shouldPlayCruxVideo = activeDestinationForUi === 2
           && !cruxVideoExpandedRef.current
           && !prefersReducedMotionRef.current;
         if (shouldPlayCruxVideo) {
-          void cruxVideo?.play().catch(() => undefined);
-        } else {
-          cruxVideo?.pause();
+          const activeVideo = activeChapterForUi === 0 ? originVideo : movementVideo;
+          void activeVideo?.play().catch(() => undefined);
         }
       }
 
@@ -1380,7 +1467,7 @@ export function SignalPrototypeV4() {
                     Your browser does not support embedded video.
                   </video>
                   <div className={styles.cruxVideoControls}>
-                    <button type="button" onClick={openCruxVideo} aria-label="Expand the Crux Vision overlay video">
+                    <button type="button" onClick={() => openCruxVideo(cruxOriginVideo)} aria-label="Expand the Crux Vision overlay video">
                       EXPAND <span aria-hidden="true">↗</span>
                     </button>
                   </div>
@@ -1397,18 +1484,169 @@ export function SignalPrototypeV4() {
             </div>
           </div>
         </section>
+        <section className={`${styles.chapter} ${styles.cruxMovementChapter}`} data-project-chapter>
+          <div className={styles.projectMeta}>
+            <span>CRUX VISION</span>
+            <span>MOVEMENT REVIEW</span>
+          </div>
+          <div className={styles.cruxMovementLayout}>
+            <header className={styles.cruxMovementIntro}>
+              <div className={styles.cruxMovementIntroCopy}>
+                <h2>Review the Crux</h2>
+                <p>
+                  Crux Vision combines focused pose analysis with precision playback controls, making it easier to
+                  isolate a move and investigate a specific question. Select the short segment that contains the
+                  movement you want to understand, then move fluidly between ordinary video review and pose-based
+                  overlays.
+                </p>
+              </div>
+              <figure className={`${styles.cruxVideoFrame} ${styles.cruxMovementVideoFrame}`}>
+                <video
+                  ref={cruxMovementVideoRef}
+                  src="/videos/crux-vision-movement-review.mp4"
+                  poster="/images/crux-vision-movement-review-poster.webp"
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  aria-label="A climbing move reviewed at quarter speed with three joint trails"
+                >
+                  Your browser does not support embedded video.
+                </video>
+                <div className={styles.cruxVideoControls}>
+                  <button
+                    type="button"
+                    onClick={() => openCruxVideo(cruxMovementVideo)}
+                    aria-label="Expand the slow-motion Crux Vision review video"
+                  >
+                    EXPAND <span aria-hidden="true">↗</span>
+                  </button>
+                </div>
+              </figure>
+            </header>
+
+            <ol className={styles.cruxMovementFeatureList} aria-label="Crux Vision movement-review features">
+              <li className={styles.cruxMovementFeature}>
+                <div className={styles.cruxFeatureMedia}>
+                  <button
+                    className={styles.productScreenshot}
+                    type="button"
+                    onClick={() => setExpandedCruxMedia(cruxMovementMedia[0])}
+                    aria-label="Expand the analysis range screenshot"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={cruxMovementMedia[0].src}
+                      alt={cruxMovementMedia[0].alt}
+                      width={cruxMovementMedia[0].width}
+                      height={cruxMovementMedia[0].height}
+                    />
+                    <span>EXPAND <i aria-hidden="true">↗</i></span>
+                  </button>
+                </div>
+                <div className={styles.productCaption}>
+                  <span>ISOLATE THE CRUX</span>
+                  <p>
+                    Select the section that contains the move you want to understand—often the hardest move, a
+                    recurring fall, or a place where two methods differ. A focused range keeps analysis centered on
+                    relevant climbing and lets the on-device pose model return results much faster.
+                  </p>
+                </div>
+              </li>
+
+              <li className={styles.cruxMovementFeature}>
+                <div className={`${styles.cruxFeatureMedia} ${styles.cruxFeatureMediaStack}`}>
+                  {[cruxMovementMedia[1], cruxMovementMedia[2]].map((item) => (
+                    <button
+                      key={item.title}
+                      className={styles.productScreenshot}
+                      type="button"
+                      onClick={() => setExpandedCruxMedia(item)}
+                      aria-label={`Expand the ${item.title.toLowerCase()} screenshot`}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={item.src} alt={item.alt} width={item.width} height={item.height} />
+                      <span>EXPAND <i aria-hidden="true">↗</i></span>
+                    </button>
+                  ))}
+                </div>
+                <div className={styles.productCaption}>
+                  <span>REVIEW WITH PRECISION</span>
+                  <p>
+                    Loop the selected range, slow down playback, step through analyzed frames, and create named
+                    checkpoints for important positions. Repeat a movement, inspect individual moments, and return
+                    quickly to the parts of an attempt that deserve closer attention.
+                  </p>
+                </div>
+              </li>
+
+              <li className={styles.cruxMovementFeature}>
+                <div className={`${styles.cruxFeatureMedia} ${styles.cruxFeatureMediaTall}`}>
+                  {[cruxMovementMedia[3], cruxMovementMedia[4]].map((item) => (
+                    <button
+                      key={item.title}
+                      className={styles.productScreenshot}
+                      type="button"
+                      onClick={() => setExpandedCruxMedia(item)}
+                      aria-label={`Expand the ${item.title.toLowerCase()} screenshot`}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={item.src} alt={item.alt} width={item.width} height={item.height} />
+                      <span>EXPAND <i aria-hidden="true">↗</i></span>
+                    </button>
+                  ))}
+                </div>
+                <div className={styles.productCaption}>
+                  <span>FOCUS THE INVESTIGATION</span>
+                  <p>
+                    Choose the body part that matches the question you are asking. Focus on an ankle generating
+                    momentum, or examine a hip, shoulder, wrist, knee, or elbow. Each selected trail turns a movement
+                    path obscured through time into something visible—helping confirm an observation, reveal a new
+                    detail, or explain the movement to another climber.
+                  </p>
+                </div>
+              </li>
+            </ol>
+          </div>
+        </section>
         <ol className={`${styles.chapterRail} ${styles.cruxChapterRail}`} aria-label="Crux Vision case study chapters">
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(0)}>ORIGIN</button></li>
-          <li><button type="button" data-chapter-index data-future-chapter disabled>MOVEMENT REVIEW</button></li>
+          <li><button type="button" data-chapter-index onClick={() => navigateToChapter(1)}>MOVEMENT REVIEW</button></li>
           <li><button type="button" data-chapter-index data-future-chapter disabled>VISUAL OVERLAY</button></li>
           <li><button type="button" data-chapter-index data-future-chapter disabled>ENGINEERING AND DESIGN</button></li>
         </ol>
+        {expandedCruxMedia && (
+          <div
+            className={styles.mediaLightbox}
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Expanded ${expandedCruxMedia.title.toLowerCase()} screenshot`}
+            onClick={() => setExpandedCruxMedia(null)}
+          >
+            <button
+              ref={lightboxCloseRef}
+              type="button"
+              aria-label="Close expanded screenshot"
+              onClick={() => setExpandedCruxMedia(null)}
+            >
+              <span aria-hidden="true">×</span>
+            </button>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={expandedCruxMedia.src}
+              alt={expandedCruxMedia.alt}
+              width={expandedCruxMedia.width}
+              height={expandedCruxMedia.height}
+              onClick={(event) => event.stopPropagation()}
+            />
+          </div>
+        )}
         {cruxVideoExpanded && (
           <div
             className={`${styles.mediaLightbox} ${styles.cruxVideoLightbox}`}
             role="dialog"
             aria-modal="true"
-            aria-label="Expanded Crux Vision movement overlay video"
+            aria-label={`Expanded ${expandedCruxVideo.label} video`}
             onClick={closeCruxVideo}
           >
             <button
@@ -1421,15 +1659,15 @@ export function SignalPrototypeV4() {
             </button>
             <video
               ref={cruxExpandedVideoRef}
-              src="/videos/crux-vision-origin-overlay.mp4"
-              poster="/images/crux-vision-origin-overlay-poster.webp"
+              src={expandedCruxVideo.src}
+              poster={expandedCruxVideo.poster}
               autoPlay
               muted
               loop
               playsInline
               controls
-              width="926"
-              height="1656"
+              width={expandedCruxVideo.width}
+              height={expandedCruxVideo.height}
               onClick={(event) => event.stopPropagation()}
             >
               Your browser does not support embedded video.

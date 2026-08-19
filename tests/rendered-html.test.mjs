@@ -194,26 +194,38 @@ test("Fosty replaces both example projects with the Origin chapter", async () =>
   assert.match(source, /--reference-panel-height/);
 });
 
-test("Crux Vision renders the Origin chapter with persistent video actions", async () => {
+test("Crux Vision renders the Origin and Movement Review chapters with expandable media", async () => {
   const response = await render();
   const html = await response.text();
-  const [source, css, video, poster] = await Promise.all([
+  const [source, css, video, poster, movementVideo, movementPoster, rangeScreenshot] = await Promise.all([
     readFile(new URL("../app/signal-prototype-v4.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/signal-prototype.module.css", import.meta.url), "utf8"),
     readFile(new URL("../public/videos/crux-vision-origin-overlay.mp4", import.meta.url)),
     readFile(new URL("../public/images/crux-vision-origin-overlay-poster.webp", import.meta.url)),
+    readFile(new URL("../public/videos/crux-vision-movement-review.mp4", import.meta.url)),
+    readFile(new URL("../public/images/crux-vision-movement-review-poster.webp", import.meta.url)),
+    readFile(new URL("../public/images/crux-vision-analyze-range.webp", import.meta.url)),
   ]);
 
   assert.match(html, /Crux Vision is a movement-review tool I created to turn climbing footage into a workspace/);
   assert.match(html, /technical theory represented visually/);
   assert.match(html, /microscope for video analysis/);
-  assert.match(source, /label:\s*"CRUX VISION",\s*chapters:\s*1,/);
+  assert.match(source, /label:\s*"CRUX VISION",\s*chapters:\s*2,/);
   assert.match(source, /cssColor:\s*\[143, 230, 96\]/);
   assert.match(source, /src="\/videos\/crux-vision-origin-overlay\.mp4"/);
   assert.match(source, /poster="\/images\/crux-vision-origin-overlay-poster\.webp"/);
   assert.match(source, /href="https:\/\/crux-vision-rebuild\.vercel\.app\/"/);
   assert.match(source, /href="https:\/\/github\.com\/luebbertevan\/crux-vision"/);
-  assert.equal((source.match(/data-future-chapter disabled/g) ?? []).length, 3);
+  assert.equal((source.match(/data-future-chapter disabled/g) ?? []).length, 2);
+  assert.match(html, /Review the Crux/);
+  assert.match(html, /ISOLATE THE CRUX/);
+  assert.match(html, /REVIEW WITH PRECISION/);
+  assert.match(html, /FOCUS THE INVESTIGATION/);
+  assert.match(source, /onClick=\{\(\) => navigateToChapter\(1\)\}>MOVEMENT REVIEW<\/button>/);
+  assert.match(source, /src="\/videos\/crux-vision-movement-review\.mp4"/);
+  assert.match(source, /cruxMovementMedia\[0\]/);
+  assert.match(css, /\.cruxMovementIntro \{[^}]*grid-template-columns:/s);
+  assert.match(css, /\.cruxMovementFeature \{[^}]*grid-template-columns:/s);
   assert.match(css, /\.cruxBody \{[^}]*grid-template-columns: minmax\(0, 1\.62fr\) minmax\(210px, 0\.82fr\);/s);
   assert.match(css, /\.cruxStoryScroll \{[^}]*overflow-y: auto;/s);
   assert.match(css, /\.cruxMediaColumn \{[^}]*grid-template-rows: minmax\(0, 1fr\) auto;/s);
@@ -225,4 +237,7 @@ test("Crux Vision renders the Origin chapter with persistent video actions", asy
   assert.equal(video.subarray(4, 8).toString("ascii"), "ftyp");
   assert.equal(poster.subarray(0, 4).toString("ascii"), "RIFF");
   assert.equal(poster.subarray(8, 12).toString("ascii"), "WEBP");
+  assert.equal(movementVideo.subarray(4, 8).toString("ascii"), "ftyp");
+  assert.equal(movementPoster.subarray(0, 4).toString("ascii"), "RIFF");
+  assert.equal(rangeScreenshot.subarray(0, 4).toString("ascii"), "RIFF");
 });

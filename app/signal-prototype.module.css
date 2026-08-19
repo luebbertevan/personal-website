@@ -940,9 +940,6 @@
   line-height: 1.48;
   letter-spacing: 0;
 }
-.cruxVisualIntro p {
-  max-width: 72ch;
-}
 .cruxComparisonFigure {
   display: grid;
   margin: 0;

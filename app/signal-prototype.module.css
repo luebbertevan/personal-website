@@ -919,9 +919,8 @@
 }
 .cruxVisualIntro {
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(260px, 0.85fr);
-  gap: clamp(18px, 2vw, 30px);
-  align-items: end;
+  grid-template-columns: 1fr;
+  gap: clamp(10px, 1.2vh, 15px);
   padding-bottom: clamp(16px, 1.8vh, 22px);
   border-bottom: 1px solid rgba(var(--accent-rgb), 0.48);
 }
@@ -940,6 +939,9 @@
   font-size: var(--crux-body-size);
   line-height: 1.48;
   letter-spacing: 0;
+}
+.cruxVisualIntro p {
+  max-width: 72ch;
 }
 .cruxComparisonFigure {
   display: grid;
@@ -988,6 +990,7 @@
   gap: clamp(10px, 1.1vh, 14px);
 }
 .cruxTrailReading {
+  grid-template-columns: 1fr;
   padding-top: clamp(16px, 1.8vh, 22px);
   border-top: 1px solid rgba(255, 255, 255, 0.11);
 }
@@ -2068,8 +2071,8 @@
   .cruxMovementFeature .productCaption p { font-size: 12px; line-height: 1.4; }
   .cruxVisualLayout { gap: 14px; }
   .cruxVisualIntro {
-    grid-template-columns: minmax(0, 1.15fr) minmax(230px, 0.85fr);
-    gap: 13px;
+    grid-template-columns: 1fr;
+    gap: 9px;
     padding-bottom: 14px;
   }
   .project .cruxVisualIntro h2 { font-size: clamp(22px, 4vw, 30px); }
@@ -2080,6 +2083,7 @@
     grid-template-columns: 150px minmax(0, 1fr);
     gap: 13px;
   }
+  .cruxTrailReading { grid-template-columns: 1fr; }
   .cruxVisualSection { gap: 8px; }
   .cruxVisualSection > div { gap: 9px; }
   .cruxVisualSection h3 { font-size: 16px; }

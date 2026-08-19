@@ -797,9 +797,9 @@
 }
 .cruxMovementIntro {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) clamp(150px, 21%, 205px);
+  grid-template-columns: minmax(0, 1.55fr) minmax(230px, 0.72fr);
   gap: clamp(18px, 2vw, 30px);
-  align-items: stretch;
+  align-items: start;
   padding-bottom: clamp(18px, 2vh, 26px);
   border-bottom: 1px solid rgba(var(--accent-rgb), 0.48);
 }
@@ -807,7 +807,7 @@
   display: grid;
   min-width: 0;
   gap: clamp(12px, 1.5vh, 18px);
-  align-content: center;
+  align-content: start;
 }
 .project .cruxMovementIntro h2 {
   width: 100%;
@@ -826,9 +826,10 @@
   letter-spacing: 0;
 }
 .cruxMovementVideoFrame {
-  width: auto;
+  width: 100%;
   max-width: 100%;
-  height: clamp(240px, 34vh, 330px);
+  height: auto;
+  max-height: none;
   aspect-ratio: 562 / 934;
 }
 .cruxMovementFeatureList {
@@ -840,9 +841,9 @@
 }
 .cruxMovementFeature {
   display: grid;
-  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  grid-template-columns: minmax(0, 1.72fr) minmax(190px, 0.88fr);
   gap: clamp(18px, 2vw, 30px);
-  align-items: center;
+  align-items: start;
   padding-top: clamp(16px, 1.8vh, 22px);
   border-top: 1px solid rgba(255, 255, 255, 0.11);
 }
@@ -862,17 +863,13 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: start;
 }
-.cruxFeatureMediaTall .productScreenshot {
-  height: clamp(270px, 33vw, 430px);
-}
 .cruxFeatureMediaTall .productScreenshot img {
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top;
+  height: auto;
 }
 .cruxMovementFeature .productCaption {
-  align-content: center;
+  align-content: start;
+  padding-top: 0;
 }
 .cruxMovementFeature .productCaption > span {
   font-size: clamp(20px, 2vw, 30px);
@@ -1934,22 +1931,21 @@
   .cruxChapterRail { font-size: 7px; }
   .cruxChapterRail button { padding: 0 4px; line-height: 1.2; }
   .cruxMovementIntro {
-    grid-template-columns: minmax(0, 1fr) 108px;
+    grid-template-columns: minmax(0, 1.45fr) minmax(170px, 0.75fr);
     gap: 13px;
     padding-bottom: 14px;
   }
   .project .cruxMovementIntro h2 { font-size: clamp(22px, 6vw, 30px); }
   .cruxMovementIntroCopy { gap: 9px; }
   .cruxMovementIntroCopy p { font-size: 13px; line-height: 1.42; }
-  .cruxMovementVideoFrame { height: 180px; }
+  .cruxMovementVideoFrame { width: 100%; height: auto; }
   .cruxMovementFeature {
-    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    grid-template-columns: minmax(0, 1.55fr) minmax(170px, 0.8fr);
     gap: 13px;
   }
   .cruxMovementFeature .productCaption { gap: 7px; padding: 8px 0; }
   .cruxMovementFeature .productCaption > span { font-size: 16px; }
   .cruxMovementFeature .productCaption p { font-size: 12px; line-height: 1.4; }
-  .cruxFeatureMediaTall .productScreenshot { height: 250px; }
   .fostyHeading { padding-bottom: 10px; }
   .fostyHeading .cardLabel { margin-bottom: 7px; font-size: 9px; }
   .fostyDate { display: none; }
@@ -1984,10 +1980,9 @@
 
 @media (max-width: 600px) {
   .aboutLayout { grid-template-columns: 1fr 75px; }
-  .cruxMovementIntro { grid-template-columns: minmax(0, 1fr) 92px; }
-  .cruxMovementVideoFrame { height: 154px; }
+  .cruxMovementIntro { grid-template-columns: 1fr; }
+  .cruxMovementVideoFrame { width: min(100%, 260px); height: auto; }
   .cruxMovementFeature { grid-template-columns: 1fr; }
-  .cruxFeatureMediaTall .productScreenshot { height: 300px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

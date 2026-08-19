@@ -26,7 +26,7 @@ const destinations = [
   },
   {
     label: "CRUX VISION",
-    chapters: 2,
+    chapters: 3,
     shaderColor: [0.561, 0.902, 0.376] as const,
     cssColor: [143, 230, 96] as const,
   },
@@ -166,6 +166,14 @@ const cruxMovementVideo: CruxVideoMedia = {
   height: 934,
 };
 
+const cruxComparisonVideo: CruxVideoMedia = {
+  src: "/videos/crux-vision-fail-vs-success.mp4",
+  poster: "/images/crux-vision-fail-vs-success-poster.webp",
+  label: "Crux Vision movement-trail comparison",
+  width: 1676,
+  height: 922,
+};
+
 const DESTINATION_TRAVEL = 52;
 const DESTINATION_DURATION = 7.35;
 const CHAPTER_TRAVEL = 13;
@@ -218,6 +226,7 @@ export function SignalPrototypeV4() {
   const lightboxCloseRef = useRef<HTMLButtonElement>(null);
   const cruxVideoRef = useRef<HTMLVideoElement>(null);
   const cruxMovementVideoRef = useRef<HTMLVideoElement>(null);
+  const cruxComparisonVideoRef = useRef<HTMLVideoElement>(null);
   const cruxExpandedVideoRef = useRef<HTMLVideoElement>(null);
   const navigationCommandRef = useRef<NavigationCommand | null>(null);
   const activeDestinationRef = useRef(0);
@@ -249,7 +258,9 @@ export function SignalPrototypeV4() {
           window.requestAnimationFrame(() => {
             const activeVideo = activeChapterRef.current === 0
               ? cruxVideoRef.current
-              : cruxMovementVideoRef.current;
+              : activeChapterRef.current === 1
+                ? cruxMovementVideoRef.current
+                : cruxComparisonVideoRef.current;
             void activeVideo?.play().catch(() => undefined);
           });
         }
@@ -293,6 +304,7 @@ export function SignalPrototypeV4() {
   const openCruxVideo = (video: CruxVideoMedia) => {
     cruxVideoRef.current?.pause();
     cruxMovementVideoRef.current?.pause();
+    cruxComparisonVideoRef.current?.pause();
     setExpandedCruxVideo(video);
     cruxVideoExpandedRef.current = true;
     setCruxVideoExpanded(true);
@@ -308,7 +320,9 @@ export function SignalPrototypeV4() {
       window.requestAnimationFrame(() => {
         const activeVideo = activeChapterRef.current === 0
           ? cruxVideoRef.current
-          : cruxMovementVideoRef.current;
+          : activeChapterRef.current === 1
+            ? cruxMovementVideoRef.current
+            : cruxComparisonVideoRef.current;
         void activeVideo?.play().catch(() => undefined);
       });
     }
@@ -877,13 +891,19 @@ export function SignalPrototypeV4() {
         activeChapterRef.current = activeChapterForUi;
         const originVideo = cruxVideoRef.current;
         const movementVideo = cruxMovementVideoRef.current;
+        const comparisonVideo = cruxComparisonVideoRef.current;
         originVideo?.pause();
         movementVideo?.pause();
+        comparisonVideo?.pause();
         const shouldPlayCruxVideo = activeDestinationForUi === 2
           && !cruxVideoExpandedRef.current
           && !prefersReducedMotionRef.current;
         if (shouldPlayCruxVideo) {
-          const activeVideo = activeChapterForUi === 0 ? originVideo : movementVideo;
+          const activeVideo = activeChapterForUi === 0
+            ? originVideo
+            : activeChapterForUi === 1
+              ? movementVideo
+              : comparisonVideo;
           void activeVideo?.play().catch(() => undefined);
         }
       }
@@ -1610,10 +1630,108 @@ export function SignalPrototypeV4() {
             </ol>
           </div>
         </section>
+        <section className={`${styles.chapter} ${styles.cruxVisualChapter}`} data-project-chapter>
+          <div className={styles.projectMeta}>
+            <span>CRUX VISION</span>
+            <span>VISUAL OVERLAY</span>
+          </div>
+          <div className={styles.cruxVisualLayout}>
+            <header className={styles.cruxVisualIntro}>
+              <h2>Movement Made Visible</h2>
+              <p>
+                Movement trails trace parts of your body through space, preserving the complete shape of a movement
+                as a persistent visual path. For this comparison, I selected my left ankle, hip midpoint, and
+                shoulder midpoint to investigate two attempts at the same dynamic move.
+              </p>
+            </header>
+
+            <figure className={styles.cruxComparisonFigure}>
+              <div className={`${styles.cruxVideoFrame} ${styles.cruxComparisonVideoFrame}`}>
+                <video
+                  ref={cruxComparisonVideoRef}
+                  src="/videos/crux-vision-fail-vs-success.mp4"
+                  poster="/images/crux-vision-fail-vs-success-poster.webp"
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  aria-label="Two attempts at the same dynamic climbing move compared with ankle, hip, and shoulder movement trails"
+                >
+                  Your browser does not support embedded video.
+                </video>
+                <div className={styles.cruxVideoControls}>
+                  <button
+                    type="button"
+                    onClick={() => openCruxVideo(cruxComparisonVideo)}
+                    aria-label="Expand the Crux Vision movement-trail comparison video"
+                  >
+                    EXPAND <span aria-hidden="true">↗</span>
+                  </button>
+                </div>
+              </div>
+            </figure>
+
+            <div className={styles.cruxVisualSupport}>
+              <aside className={styles.cruxTrailLegend} aria-label="Selected movement trails">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/images/crux-vision-trail-legend.webp"
+                  alt="Hip midpoint in orange, shoulder midpoint in cyan, and left ankle in magenta."
+                  width={352}
+                  height={316}
+                />
+              </aside>
+              <section className={styles.cruxVisualSection} aria-labelledby="crux-visual-move">
+                <h3 id="crux-visual-move">THE MOVE</h3>
+                <div>
+                  <p>
+                    The move begins from a poor foothold: a flat, sideways-facing surface that is difficult to jump
+                    from without slipping. The destination holds are two opposing side-pulls. To stay on the wall, I
+                    need to catch them with enough height to keep my arms bent, create compression through my upper
+                    body, and press my foot into the flat wall.
+                  </p>
+                  <p>
+                    It is a quick, coordinated movement, and the momentum, body position, and timing all have to come
+                    together within a fraction of a second.
+                  </p>
+                </div>
+              </section>
+            </div>
+
+            <section className={`${styles.cruxVisualSection} ${styles.cruxTrailReading}`} aria-labelledby="crux-reading-trails">
+              <h3 id="crux-reading-trails">READING THE TRAILS</h3>
+              <div>
+                <p>
+                  In the unsuccessful attempt, I try to power directly through the move by pulling on the sloped
+                  handholds and jumping. My chest and shoulders lead while my hips follow behind. I arrive with my
+                  arms extended and my body stretched away from the wall, without enough leverage or any support
+                  from my feet to hold the position.
+                </p>
+                <p>
+                  In the successful attempt, I generate momentum differently. I swing my left leg backward, then
+                  drive it forward and upward. The ankle trail makes that larger arc immediately visible. The swing
+                  carries my hips through the movement, allowing them to lead rather than trail behind my shoulders.
+                  The hip and shoulder trajectories rise higher, and I arrive more centered beneath the holds, with
+                  bent arms and a foot pressing into the wall to take weight off my arms.
+                </p>
+                <p>
+                  My climbing experience gave me a theory about why one attempt worked and the other did not. Crux
+                  Vision gave that theory a visible form. Isolating the move and comparing trails pulled attention
+                  toward the timing and relationships that ordinary playback spreads across a fraction of a second.
+                </p>
+                <p>
+                  The overlay does not replace the experience of a climber. It complements that knowledge, providing
+                  an intuitive surface for individuals, groups, and coaches to examine movement, make nuanced
+                  observations, confirm theories, and explain complex technique to one another.
+                </p>
+              </div>
+            </section>
+          </div>
+        </section>
         <ol className={`${styles.chapterRail} ${styles.cruxChapterRail}`} aria-label="Crux Vision case study chapters">
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(0)}>ORIGIN</button></li>
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(1)}>MOVEMENT REVIEW</button></li>
-          <li><button type="button" data-chapter-index data-future-chapter disabled>VISUAL OVERLAY</button></li>
+          <li><button type="button" data-chapter-index onClick={() => navigateToChapter(2)}>VISUAL OVERLAY</button></li>
           <li><button type="button" data-chapter-index data-future-chapter disabled>ENGINEERING AND DESIGN</button></li>
         </ol>
         {expandedCruxMedia && (

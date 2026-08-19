@@ -895,6 +895,95 @@
   font-size: var(--crux-body-size);
   line-height: 1.48;
 }
+.cruxVisualChapter {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: clamp(18px, 2.4vh, 30px);
+}
+.cruxVisualChapter .projectMeta {
+  flex: 0 0 auto;
+  margin-bottom: clamp(12px, 1.5vh, 18px);
+  font-size: var(--about-reference-label-size);
+  line-height: 1;
+}
+.cruxVisualLayout {
+  display: grid;
+  gap: clamp(18px, 2.2vh, 28px);
+}
+.cruxVisualIntro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(260px, 0.85fr);
+  gap: clamp(18px, 2vw, 30px);
+  align-items: end;
+  padding-bottom: clamp(16px, 1.8vh, 22px);
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.48);
+}
+.project .cruxVisualIntro h2 {
+  width: 100%;
+  max-width: none;
+  color: color-mix(in srgb, rgb(var(--accent-rgb)) 84%, white 16%);
+  font-size: clamp(30px, 3.2vw, 46px);
+  line-height: 0.98;
+}
+.cruxVisualIntro p,
+.cruxVisualSection p {
+  margin: 0;
+  color: rgba(247, 244, 241, 0.72);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--crux-body-size);
+  line-height: 1.48;
+  letter-spacing: 0;
+}
+.cruxComparisonFigure {
+  display: grid;
+  margin: 0;
+}
+.cruxComparisonVideoFrame {
+  width: 100%;
+  max-width: none;
+  height: auto;
+  max-height: none;
+  aspect-ratio: 1676 / 922;
+}
+.cruxVisualSupport,
+.cruxTrailReading {
+  display: grid;
+  grid-template-columns: clamp(170px, 27%, 230px) minmax(0, 1fr);
+  gap: clamp(18px, 2vw, 30px);
+  align-items: start;
+}
+.cruxTrailLegend {
+  min-width: 0;
+  border: 1px solid rgba(var(--accent-rgb), 0.28);
+  background: rgba(7, 12, 7, 0.72);
+}
+.cruxTrailLegend img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.cruxVisualSection {
+  display: grid;
+  gap: clamp(10px, 1.1vh, 14px);
+  min-width: 0;
+}
+.cruxVisualSection h3 {
+  margin: 0;
+  color: color-mix(in srgb, rgb(var(--accent-rgb)) 88%, white 12%);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: clamp(19px, 1.8vw, 27px);
+  font-weight: 430;
+  line-height: 1;
+  letter-spacing: -0.035em;
+}
+.cruxVisualSection > div {
+  display: grid;
+  gap: clamp(10px, 1.1vh, 14px);
+}
+.cruxTrailReading {
+  padding-top: clamp(16px, 1.8vh, 22px);
+  border-top: 1px solid rgba(255, 255, 255, 0.11);
+}
 .fostyProductChapter {
   display: flex;
   flex-direction: column;
@@ -1716,6 +1805,10 @@
     bottom: var(--chapter-rail-height);
     padding-bottom: 0;
   }
+  .cruxVisualChapter {
+    bottom: var(--chapter-rail-height);
+    padding-bottom: 0;
+  }
   .fostyProductChapter {
     bottom: var(--chapter-rail-height);
     padding-bottom: 0;
@@ -1905,6 +1998,7 @@
   .fostyOrigin { padding-top: 18px; }
   .cruxOrigin { padding-top: 18px; }
   .cruxMovementChapter { padding-top: 18px; }
+  .cruxVisualChapter { padding-top: 18px; }
   .fostyProductChapter { padding-top: 18px; }
   .fostyDesignChapter { padding-top: 18px; }
   .fostyEngineeringChapter { padding-top: 18px; }
@@ -1965,6 +2059,24 @@
   .cruxMovementFeature .productCaption { gap: 7px; padding: 8px 0; }
   .cruxMovementFeature .productCaption > span { font-size: 16px; }
   .cruxMovementFeature .productCaption p { font-size: 12px; line-height: 1.4; }
+  .cruxVisualLayout { gap: 14px; }
+  .cruxVisualIntro {
+    grid-template-columns: minmax(0, 1.15fr) minmax(230px, 0.85fr);
+    gap: 13px;
+    padding-bottom: 14px;
+  }
+  .project .cruxVisualIntro h2 { font-size: clamp(22px, 4vw, 30px); }
+  .cruxVisualIntro p,
+  .cruxVisualSection p { font-size: 12px; line-height: 1.4; }
+  .cruxVisualSupport,
+  .cruxTrailReading {
+    grid-template-columns: 150px minmax(0, 1fr);
+    gap: 13px;
+  }
+  .cruxVisualSection { gap: 8px; }
+  .cruxVisualSection > div { gap: 9px; }
+  .cruxVisualSection h3 { font-size: 16px; }
+  .cruxTrailReading { padding-top: 14px; }
   .fostyHeading { padding-bottom: 10px; }
   .fostyHeading .cardLabel { margin-bottom: 7px; font-size: 9px; }
   .fostyDate { display: none; }
@@ -2003,6 +2115,10 @@
   .cruxMovementVideoFrame { width: min(100%, 260px); height: auto; }
   .cruxMovementFeature,
   .cruxMovementFeatureWide { grid-template-columns: 1fr; }
+  .cruxVisualIntro,
+  .cruxVisualSupport,
+  .cruxTrailReading { grid-template-columns: 1fr; }
+  .cruxTrailLegend { width: min(100%, 220px); }
 }
 
 @media (prefers-reduced-motion: reduce) {

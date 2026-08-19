@@ -1306,8 +1306,7 @@ export function SignalPrototypeV4() {
                   I designed reliability into the workflows rescue teams depend on. For request approvals, a
                   transactional PostgreSQL function locks the request and updates assignment, status, and visibility
                   records together. Row-level security and organization-scoped permissions isolate each rescue’s data.
-                  The goal was not a prototype that looked convincing in a demo, but a platform teams could trust with
-                  time-sensitive information.
+                  Fosty was engineered to be secure, reliable, and trusted.
                 </p>
               </div>
               <div className={styles.fostyEngineeringDetails}>

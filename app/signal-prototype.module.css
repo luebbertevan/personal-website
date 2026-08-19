@@ -800,14 +800,19 @@
   grid-template-columns: minmax(0, 1.55fr) minmax(230px, 0.72fr);
   gap: clamp(18px, 2vw, 30px);
   align-items: start;
-  padding-bottom: clamp(18px, 2vh, 26px);
-  border-bottom: 1px solid rgba(var(--accent-rgb), 0.48);
+}
+.cruxMovementIntroColumn {
+  display: grid;
+  min-width: 0;
+  gap: clamp(16px, 2vh, 24px);
 }
 .cruxMovementIntroCopy {
   display: grid;
   min-width: 0;
   gap: clamp(12px, 1.5vh, 18px);
   align-content: start;
+  padding-bottom: clamp(16px, 1.8vh, 22px);
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.48);
 }
 .project .cruxMovementIntro h2 {
   width: 100%;
@@ -841,15 +846,24 @@
 }
 .cruxMovementFeature {
   display: grid;
-  grid-template-columns: minmax(0, 1.72fr) minmax(190px, 0.88fr);
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
   gap: clamp(18px, 2vw, 30px);
-  align-items: start;
+  align-items: center;
   padding-top: clamp(16px, 1.8vh, 22px);
   border-top: 1px solid rgba(255, 255, 255, 0.11);
 }
 .cruxMovementFeature:first-child {
   padding-top: 0;
   border-top: 0;
+}
+.cruxMovementIntroFeature {
+  gap: clamp(12px, 1.4vw, 20px);
+  padding-top: 0;
+  border-top: 0;
+}
+.cruxMovementFeatureWide {
+  grid-template-columns: minmax(0, 1.72fr) minmax(190px, 0.88fr);
+  align-items: start;
 }
 .cruxFeatureMedia {
   display: grid;
@@ -868,6 +882,9 @@
   height: auto;
 }
 .cruxMovementFeature .productCaption {
+  align-content: center;
+}
+.cruxMovementFeatureWide .productCaption {
   align-content: start;
   padding-top: 0;
 }
@@ -1933,15 +1950,17 @@
   .cruxMovementIntro {
     grid-template-columns: minmax(0, 1.45fr) minmax(170px, 0.75fr);
     gap: 13px;
-    padding-bottom: 14px;
   }
   .project .cruxMovementIntro h2 { font-size: clamp(22px, 6vw, 30px); }
   .cruxMovementIntroCopy { gap: 9px; }
   .cruxMovementIntroCopy p { font-size: 13px; line-height: 1.42; }
   .cruxMovementVideoFrame { width: 100%; height: auto; }
   .cruxMovementFeature {
-    grid-template-columns: minmax(0, 1.55fr) minmax(170px, 0.8fr);
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
     gap: 13px;
+  }
+  .cruxMovementFeatureWide {
+    grid-template-columns: minmax(0, 1.55fr) minmax(170px, 0.8fr);
   }
   .cruxMovementFeature .productCaption { gap: 7px; padding: 8px 0; }
   .cruxMovementFeature .productCaption > span { font-size: 16px; }
@@ -1982,7 +2001,8 @@
   .aboutLayout { grid-template-columns: 1fr 75px; }
   .cruxMovementIntro { grid-template-columns: 1fr; }
   .cruxMovementVideoFrame { width: min(100%, 260px); height: auto; }
-  .cruxMovementFeature { grid-template-columns: 1fr; }
+  .cruxMovementFeature,
+  .cruxMovementFeatureWide { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {

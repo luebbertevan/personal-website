@@ -1241,7 +1241,7 @@ export function SignalPrototypeV4() {
                 The goal of Fosty is to provide features and workflows that fit naturally into existing rescue
                 operations, reducing administrative chaos and helping teams make faster, clearer care decisions. There
                 was no existing animal foster-care platform to use as a blueprint, so I had to invent the product
-                model, workflows, and interaction patterns for this problem space—translating CKC’s fragmented
+                model, workflows, and interaction patterns for this problem space, translating CKC’s fragmented
                 real-world process into a structured, coherent system.
               </p>
               <p>
@@ -1419,7 +1419,7 @@ export function SignalPrototypeV4() {
                     ordinary playback can obscure.
                   </p>
                   <p>
-                    Climbers are always trying to improve—whether we are building strength, refining our technique,
+                    Climbers are always trying to improve, whether we are building strength, refining our technique,
                     or working to complete a route at the edge of our ability. We are constantly looking to learn and
                     grow, which makes analysis, technique, and movement comprehension central to the sport. It is
                     also one reason climbing is so social: we learn from one another and work together to overcome
@@ -1429,7 +1429,7 @@ export function SignalPrototypeV4() {
                     While climbing, you experience everything from a first-person perspective. You are limited to
                     what you can see and feel, and you cannot observe your own body completely. That often means
                     missing the bigger picture: how your body moves through the full sequence of a route. Watching
-                    another climber—or reviewing footage of yourself—reveals details and relationships that are
+                    another climber, or reviewing footage of yourself, reveals details and relationships that are
                     difficult to recognize while you are on the wall.
                   </p>
                   <p>
@@ -1440,7 +1440,7 @@ export function SignalPrototypeV4() {
                   </p>
                   <p>
                     Using Crux Vision, I have experienced the satisfaction of seeing technical theory represented
-                    visually. It has confirmed ideas I had about why a move was—or was not—working, exposed
+                    visually. It has confirmed ideas I had about why a move was or was not working, exposed
                     relationships I had missed, and directed my attention toward things I would not have thought to
                     examine.
                   </p>
@@ -1491,14 +1491,43 @@ export function SignalPrototypeV4() {
           </div>
           <div className={styles.cruxMovementLayout}>
             <header className={styles.cruxMovementIntro}>
-              <div className={styles.cruxMovementIntroCopy}>
-                <h2>Review the Crux</h2>
-                <p>
-                  Crux Vision combines focused pose analysis with precision playback controls, making it easier to
-                  isolate a move and investigate a specific question. Select the short segment that contains the
-                  movement you want to understand, then move fluidly between ordinary video review and pose-based
-                  overlays.
-                </p>
+              <div className={styles.cruxMovementIntroColumn}>
+                <div className={styles.cruxMovementIntroCopy}>
+                  <h2>Review the Crux</h2>
+                  <p>
+                    Crux Vision combines focused pose analysis with precision playback controls, making it easier to
+                    isolate a move and investigate a specific question. Select the short segment that contains the
+                    movement you want to understand, then move fluidly between ordinary video review and pose-based
+                    overlays.
+                  </p>
+                </div>
+                <section className={`${styles.cruxMovementFeature} ${styles.cruxMovementIntroFeature}`}>
+                  <div className={styles.cruxFeatureMedia}>
+                    <button
+                      className={styles.productScreenshot}
+                      type="button"
+                      onClick={() => setExpandedCruxMedia(cruxMovementMedia[0])}
+                      aria-label="Expand the analysis range screenshot"
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={cruxMovementMedia[0].src}
+                        alt={cruxMovementMedia[0].alt}
+                        width={cruxMovementMedia[0].width}
+                        height={cruxMovementMedia[0].height}
+                      />
+                      <span>EXPAND <i aria-hidden="true">↗</i></span>
+                    </button>
+                  </div>
+                  <div className={styles.productCaption}>
+                    <span>ISOLATE THE CRUX</span>
+                    <p>
+                      Select the section that contains the move you want to understand, often the hardest move, a
+                      recurring fall, or a place where two methods differ. A focused range keeps analysis centered on
+                      relevant climbing and lets the on-device pose model return results much faster.
+                    </p>
+                  </div>
+                </section>
               </div>
               <figure className={`${styles.cruxVideoFrame} ${styles.cruxMovementVideoFrame}`}>
                 <video
@@ -1527,34 +1556,6 @@ export function SignalPrototypeV4() {
 
             <ol className={styles.cruxMovementFeatureList} aria-label="Crux Vision movement-review features">
               <li className={styles.cruxMovementFeature}>
-                <div className={styles.cruxFeatureMedia}>
-                  <button
-                    className={styles.productScreenshot}
-                    type="button"
-                    onClick={() => setExpandedCruxMedia(cruxMovementMedia[0])}
-                    aria-label="Expand the analysis range screenshot"
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={cruxMovementMedia[0].src}
-                      alt={cruxMovementMedia[0].alt}
-                      width={cruxMovementMedia[0].width}
-                      height={cruxMovementMedia[0].height}
-                    />
-                    <span>EXPAND <i aria-hidden="true">↗</i></span>
-                  </button>
-                </div>
-                <div className={styles.productCaption}>
-                  <span>ISOLATE THE CRUX</span>
-                  <p>
-                    Select the section that contains the move you want to understand—often the hardest move, a
-                    recurring fall, or a place where two methods differ. A focused range keeps analysis centered on
-                    relevant climbing and lets the on-device pose model return results much faster.
-                  </p>
-                </div>
-              </li>
-
-              <li className={styles.cruxMovementFeature}>
                 <div className={`${styles.cruxFeatureMedia} ${styles.cruxFeatureMediaStack}`}>
                   {[cruxMovementMedia[1], cruxMovementMedia[2]].map((item) => (
                     <button
@@ -1580,7 +1581,7 @@ export function SignalPrototypeV4() {
                 </div>
               </li>
 
-              <li className={styles.cruxMovementFeature}>
+              <li className={`${styles.cruxMovementFeature} ${styles.cruxMovementFeatureWide}`}>
                 <div className={`${styles.cruxFeatureMedia} ${styles.cruxFeatureMediaTall}`}>
                   {[cruxMovementMedia[3], cruxMovementMedia[4]].map((item) => (
                     <button
@@ -1601,8 +1602,8 @@ export function SignalPrototypeV4() {
                   <p>
                     Choose the body part that matches the question you are asking. Focus on an ankle generating
                     momentum, or examine a hip, shoulder, wrist, knee, or elbow. Each selected trail turns a movement
-                    path obscured through time into something visible—helping confirm an observation, reveal a new
-                    detail, or explain the movement to another climber.
+                    path obscured through time into something visible. This can help confirm an observation, reveal a
+                    new detail, or explain the movement to another climber.
                   </p>
                 </div>
               </li>

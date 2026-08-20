@@ -1100,10 +1100,10 @@ export function SignalPrototypeV4() {
               <section className={styles.aboutInterests} aria-labelledby="about-interests-title">
                 <p className={styles.cardLabel} id="about-interests-title">I LOVE BUILDING</p>
                 <ul className={styles.interestList}>
-                  <li>Innovative solutions for noble causes</li>
                   <li>Full-stack applications for complicated workflows</li>
+                  <li>Intuitive and satisfying interfaces delivering polished UX</li>
+                  <li>Innovative technology for projects with a positive impact</li>
                   <li>Data-heavy tools and visualizations</li>
-                  <li>Intuitive and satisfying interfaces</li>
                   <li>Software where reliability and trust matter</li>
                 </ul>
               </section>

@@ -1553,7 +1553,7 @@ export function SignalPrototypeV4() {
             <header className={styles.cruxMovementIntro}>
               <div className={styles.cruxMovementIntroColumn}>
                 <div className={styles.cruxMovementIntroCopy}>
-                  <h2>Review the Crux</h2>
+                  <h2>Review the crux</h2>
                   <p>
                     Crux Vision combines focused pose analysis with precision playback controls, making it easier to
                     isolate a move and investigate a specific question. Select the short segment that contains the
@@ -1696,7 +1696,7 @@ export function SignalPrototypeV4() {
           </div>
           <div className={styles.cruxVisualLayout}>
             <header className={styles.cruxVisualIntro}>
-              <h2>Movement Made Visible</h2>
+              <h2>Movement made visible</h2>
               <p>
                 Movement trails trace parts of your body through space, preserving the complete shape of a movement
                 as a persistent visual path. For this comparison, I selected my left ankle, hip midpoint, and
@@ -1794,7 +1794,7 @@ export function SignalPrototypeV4() {
           </div>
           <div className={styles.cruxEngineeringLayout}>
             <header className={styles.cruxEngineeringIntro}>
-              <h2>Building Visuals from Video</h2>
+              <h2>Building visuals from video</h2>
             </header>
 
             <div className={styles.cruxEngineeringOverview}>
@@ -2056,7 +2056,7 @@ export function SignalPrototypeV4() {
           </div>
           <div className={styles.cruxOutlookLayout}>
             <header className={styles.cruxOutlookHeader}>
-              <h2>An Open Investigation</h2>
+              <h2>An open investigation</h2>
             </header>
 
             <div className={styles.cruxOutlookVision}>

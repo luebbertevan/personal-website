@@ -291,6 +291,9 @@ test("Crux Vision renders all five case-study chapters with expandable media", a
   assert.match(source, /crux-vision-calibration-overview\.webp/);
   assert.match(source, /crux-vision-confidence-controls\.webp/);
   assert.match(source, /crux-vision-continuity-smoothing\.webp/);
+  assert.doesNotMatch(source, /<figcaption>\s*<strong>COMPARE DERIVED VIEWS/);
+  assert.doesNotMatch(source, /<figcaption>\s*<strong>CONFIDENCE THRESHOLDS/);
+  assert.doesNotMatch(source, /<figcaption>\s*<strong>CONTINUITY CONTROLS/);
   assert.match(source, /onClick=\{\(\) => navigateToChapter\(3\)\}>ENGINEERING<\/button>/);
   assert.match(html, /An Open Investigation/);
   assert.match(html, /Other sports and movement disciplines could benefit from the same concept/);

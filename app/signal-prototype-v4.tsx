@@ -1928,13 +1928,6 @@ export function SignalPrototypeV4() {
                     />
                     <span>EXPAND <i aria-hidden="true">↗</i></span>
                   </button>
-                  <figcaption>
-                    <strong>COMPARE DERIVED VIEWS</strong>
-                    <span>
-                      Raw, accepted, rejected, One Euro, and centered pose data share the same cached analysis, with
-                      metrics that make each policy’s effects visible.
-                    </span>
-                  </figcaption>
                 </figure>
 
                 <section className={styles.cruxCalibrationSection} aria-labelledby="crux-smoothing-heading">
@@ -1979,13 +1972,6 @@ export function SignalPrototypeV4() {
                     />
                     <span>EXPAND <i aria-hidden="true">↗</i></span>
                   </button>
-                  <figcaption>
-                    <strong>CONFIDENCE THRESHOLDS</strong>
-                    <span>
-                      Tune visibility and presence globally or for a body group when a recurring confidence problem
-                      needs a more targeted rule.
-                    </span>
-                  </figcaption>
                 </figure>
 
                 <section className={styles.cruxCalibrationSection} aria-labelledby="crux-confidence-heading">
@@ -2026,13 +2012,6 @@ export function SignalPrototypeV4() {
                   />
                   <span>EXPAND <i aria-hidden="true">↗</i></span>
                 </button>
-                <figcaption>
-                  <strong>CONTINUITY CONTROLS</strong>
-                  <span>
-                    Adjust reacquisition, motion plausibility, One Euro responsiveness, and the centered smoothing
-                    window without bridging rejected gaps.
-                  </span>
-                </figcaption>
               </figure>
 
               <div className={styles.cruxCalibrationFinalText}>

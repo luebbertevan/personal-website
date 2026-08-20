@@ -1252,24 +1252,6 @@
   height: auto;
   object-fit: contain;
 }
-.cruxCalibrationFigure figcaption {
-  display: grid;
-  gap: 5px;
-  margin: 0;
-  font-family: var(--font-geist-sans), sans-serif;
-  line-height: 1.38;
-  letter-spacing: 0;
-}
-.cruxCalibrationFigure figcaption strong {
-  color: color-mix(in srgb, rgb(var(--accent-rgb)) 88%, white 12%);
-  font-size: calc(var(--crux-body-size) * 0.94);
-  font-weight: 520;
-  line-height: 1.1;
-}
-.cruxCalibrationFigure figcaption span {
-  color: rgba(247, 244, 241, 0.64);
-  font-size: calc(var(--crux-body-size) * 0.82);
-}
 .cruxCalibrationSection {
   display: grid;
   min-width: 0;

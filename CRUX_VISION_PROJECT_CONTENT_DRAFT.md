@@ -345,17 +345,9 @@ Keep each explanation in one text column and give its heading the full width of
 that column. The final row follows the same one-third/two-thirds split: the full
 continuity-and-smoothing screenshot sits on the left, while **CONTINUITY AND
 PLAUSIBILITY** and **LIMITATIONS** stack vertically on the right. Show every
-screenshot in full rather than cropping it into a preview window. Keep captions
-short:
-
-- **COMPARE DERIVED VIEWS:** Preview raw, accepted, rejected, One Euro, and
-  centered pose data from the same cached analysis, with metrics that make the
-  effects of each policy visible.
-- **CONFIDENCE THRESHOLDS:** Tune visibility and presence globally or for a
-  body group when a recurring confidence problem needs a more targeted rule.
-- **CONTINUITY CONTROLS:** Adjust reacquisition, motion plausibility, One Euro
-  responsiveness, and the centered smoothing window without bridging rejected
-  gaps.
+screenshot in full rather than cropping it into a preview window. Omit captions
+under the screenshots because the adjacent sections already explain the
+controls and their purpose.
 
 Current screenshot sources and suggested portfolio asset names:
 

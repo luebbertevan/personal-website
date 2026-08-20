@@ -328,7 +328,7 @@ test("Crux Vision renders all five case-study chapters with expandable media", a
   assert.match(css, /\.cruxNarrative \{[^}]*overflow-y: auto;/s);
   assert.match(css, /\.cruxMediaColumn \{[^}]*grid-template-rows: minmax\(0, 1fr\) auto;/s);
   assert.match(css, /\.chapterRail\.cruxChapterRail \{\s*grid-template-columns: repeat\(5, minmax\(0, 1fr\)\);/s);
-  assert.match(css, /\.cruxOutlookVision,\s*\.cruxOutlookFuture,\s*\.cruxOutlookClosing \{[^}]*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);/s);
+  assert.match(css, /\.cruxOutlookVision,\s*\.cruxOutlookFuture,\s*\.cruxOutlookClosing \{[^}]*grid-template-columns: minmax\(0, 1fr\);/s);
   assert.doesNotMatch(source, /MOVEMENT OVERLAY · LIVE POSE|toggleCruxVideo|cruxVideoPaused/);
   assert.doesNotMatch(source, /className=\{styles\.cruxLead\}/);
   assert.match(css, /\.cruxProject \{[\s\S]*?width: min\(980px, 58vw\);/s);

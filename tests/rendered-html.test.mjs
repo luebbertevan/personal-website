@@ -225,7 +225,10 @@ test("Crux Vision renders all four case-study chapters with expandable media", a
   ]);
 
   assert.match(html, /Crux Vision is a movement-review tool I created to turn climbing footage into a workspace/);
+  assert.match(html, /Sometimes that means missing the bigger picture/);
   assert.match(html, /technical theory represented visually/);
+  assert.match(html, /Crux Vision cannot replace the intuition and experience of a climber/);
+  assert.match(html, /It complements the practice of analyzing movement and technique/);
   assert.match(html, /microscope for video analysis/);
   assert.match(source, /label:\s*"CRUX VISION",\s*chapters:\s*4,/);
   assert.match(source, /cssColor:\s*\[143, 230, 96\]/);

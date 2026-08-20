@@ -1446,7 +1446,7 @@ export function SignalPrototypeV4() {
                   </p>
                   <p>
                     While climbing, you experience everything from a first-person perspective. You are limited to
-                    what you can see and feel, and you cannot observe your own body completely. That often means
+                    what you can see and feel, and you cannot observe your own body completely. Sometimes that means
                     missing the bigger picture: how your body moves through the full sequence of a route. Watching
                     another climber, or reviewing footage of yourself, reveals details and relationships that are
                     difficult to recognize while you are on the wall.
@@ -1464,10 +1464,11 @@ export function SignalPrototypeV4() {
                     examine.
                   </p>
                   <p>
-                    Crux Vision is not meant to tell climbers the correct answer. It is a microscope for video
-                    analysis: a way to investigate movement, magnify subtleties, and build stronger connections
-                    between what we see and what we feel on the wall. The current public beta is only the beginning,
-                    with significant room to explore new visualizations, comparisons, and meaningful measurements.
+                    Crux Vision cannot replace the intuition and experience of a climber. It complements the practice
+                    of analyzing movement and technique. It is a microscope for video analysis: a way to investigate
+                    movement, magnify subtleties, and build stronger connections between what we see and what we feel
+                    on the wall. The current public beta is only the beginning, with significant room to explore new
+                    visualizations, comparisons, and meaningful measurements.
                   </p>
                 </div>
               </section>

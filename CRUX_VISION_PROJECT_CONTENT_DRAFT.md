@@ -334,19 +334,18 @@ with a restrained comparison of Balanced, Strict, and Permissive using one
 continuous line in each card.
 
 Let **CALIBRATION BY ITERATION** span the content width as a short introduction
-to the advanced workspace. Beneath it, use two three-column rows modeled on the
-**FOCUS THE INVESTIGATION** layout:
+to the advanced workspace. Beneath it, pair each of the first two screenshots
+with its corresponding explanation in a stacked sequence. The full screenshot
+occupies the left third and the text occupies the right two thirds:
 
-1. **First row:** pose-quality calibration screenshot; confidence-controls
-   screenshot; one text column containing **SMOOTHING RECORDED MOVEMENT** and
-   the shorter **CONFIDENCE BY SCOPE** note.
-2. **Second row:** continuity-and-smoothing screenshot; **CONTINUITY AND
-   PLAUSIBILITY** text; **LIMITATIONS** text.
+1. Pose-quality calibration screenshot with **SMOOTHING RECORDED MOVEMENT**.
+2. Confidence-controls screenshot with **CONFIDENCE BY SCOPE**.
 
-Use equal-width, top-aligned columns. Present the screenshots in consistent
-cropped windows so the tall mobile captures do not control the height of each
-row, then use the existing expand interaction to show each full image. Keep
-captions short:
+Keep each explanation in one text column and give its heading the full width of
+that column. The final row remains three equal, top-aligned columns:
+continuity-and-smoothing screenshot; **CONTINUITY AND PLAUSIBILITY** text; and
+**LIMITATIONS** text. Show every screenshot in full rather than cropping it into
+a preview window. Keep captions short:
 
 - **COMPARE DERIVED VIEWS:** Preview raw, accepted, rejected, One Euro, and
   centered pose data from the same cached analysis, with metrics that make the

@@ -304,8 +304,11 @@ test("Crux Vision renders all four case-study chapters with expandable media", a
   assert.match(css, /\.cruxQualityProfiles span \{[^}]*font-size: var\(--crux-body-size\);/s);
   assert.match(css, /\.cruxQualityTrack i \{[^}]*width: 100%;/s);
   assert.match(css, /\.cruxQualityProfiles \{[^}]*grid-template-columns: repeat\(3, minmax\(0, 1fr\)\);/s);
+  assert.match(css, /\.cruxCalibrationRow \{[^}]*grid-template-columns: minmax\(0, 1fr\) minmax\(0, 2fr\);/s);
   assert.match(css, /\.cruxCalibrationGrid \{[^}]*grid-template-columns: repeat\(3, minmax\(0, 1fr\)\);/s);
-  assert.match(css, /\.cruxCalibrationScreenshot \{[^}]*aspect-ratio: 4 \/ 5;/s);
+  assert.match(css, /\.cruxCalibrationScreenshot \{ aspect-ratio: auto; \}/s);
+  assert.match(css, /\.cruxCalibrationScreenshot img \{[^}]*height: auto;[^}]*object-fit: contain;/s);
+  assert.match(css, /\.cruxCalibrationSection h3 \{[^}]*white-space: nowrap;/s);
   assert.match(css, /\.cruxCalibrationSection \{[^}]*align-content: start;[^}]*align-self: start;/s);
   assert.match(css, /\.cruxBody \{[^}]*grid-template-columns: minmax\(0, 1\.62fr\) minmax\(210px, 0\.82fr\);/s);
   assert.match(source, /className=\{styles\.cruxNarrative\} tabIndex=\{0\}/);

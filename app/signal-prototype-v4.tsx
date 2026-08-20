@@ -1907,58 +1907,33 @@ export function SignalPrototypeV4() {
               </div>
             </section>
 
-            <div className={styles.cruxCalibrationGrid}>
-              <figure className={styles.cruxCalibrationFigure}>
-                <button
-                  type="button"
-                  className={`${styles.productScreenshot} ${styles.cruxCalibrationScreenshot}`}
-                  onClick={() => setExpandedCruxMedia(cruxEngineeringMedia[0])}
-                  aria-label="Expand compare derived views screenshot"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={cruxEngineeringMedia[0].src}
-                    alt={cruxEngineeringMedia[0].alt}
-                    width={cruxEngineeringMedia[0].width}
-                    height={cruxEngineeringMedia[0].height}
-                  />
-                  <span>EXPAND <i aria-hidden="true">↗</i></span>
-                </button>
-                <figcaption>
-                  <strong>COMPARE DERIVED VIEWS</strong>
-                  <span>
-                    Preview raw, accepted, rejected, One Euro, and centered pose data from the same cached analysis,
-                    with metrics that make each policy’s effects visible.
-                  </span>
-                </figcaption>
-              </figure>
+            <div className={styles.cruxCalibrationStack}>
+              <div className={styles.cruxCalibrationRow}>
+                <figure className={styles.cruxCalibrationFigure}>
+                  <button
+                    type="button"
+                    className={`${styles.productScreenshot} ${styles.cruxCalibrationScreenshot}`}
+                    onClick={() => setExpandedCruxMedia(cruxEngineeringMedia[0])}
+                    aria-label="Expand compare derived views screenshot"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={cruxEngineeringMedia[0].src}
+                      alt={cruxEngineeringMedia[0].alt}
+                      width={cruxEngineeringMedia[0].width}
+                      height={cruxEngineeringMedia[0].height}
+                    />
+                    <span>EXPAND <i aria-hidden="true">↗</i></span>
+                  </button>
+                  <figcaption>
+                    <strong>COMPARE DERIVED VIEWS</strong>
+                    <span>
+                      Raw, accepted, rejected, One Euro, and centered pose data share the same cached analysis, with
+                      metrics that make each policy’s effects visible.
+                    </span>
+                  </figcaption>
+                </figure>
 
-              <figure className={styles.cruxCalibrationFigure}>
-                <button
-                  type="button"
-                  className={`${styles.productScreenshot} ${styles.cruxCalibrationScreenshot}`}
-                  onClick={() => setExpandedCruxMedia(cruxEngineeringMedia[1])}
-                  aria-label="Expand confidence threshold controls screenshot"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={cruxEngineeringMedia[1].src}
-                    alt={cruxEngineeringMedia[1].alt}
-                    width={cruxEngineeringMedia[1].width}
-                    height={cruxEngineeringMedia[1].height}
-                  />
-                  <span>EXPAND <i aria-hidden="true">↗</i></span>
-                </button>
-                <figcaption>
-                  <strong>CONFIDENCE THRESHOLDS</strong>
-                  <span>
-                    Tune visibility and presence globally or for a body group when a recurring confidence problem
-                    needs a more targeted rule.
-                  </span>
-                </figcaption>
-              </figure>
-
-              <div className={styles.cruxCalibrationTextStack}>
                 <section className={styles.cruxCalibrationSection} aria-labelledby="crux-smoothing-heading">
                   <h3 id="crux-smoothing-heading">SMOOTHING RECORDED MOVEMENT</h3>
                   <p>
@@ -1982,6 +1957,34 @@ export function SignalPrototypeV4() {
                     than blending across a gap. Accepted raw retains the original model output.
                   </p>
                 </section>
+              </div>
+
+              <div className={styles.cruxCalibrationRow}>
+                <figure className={styles.cruxCalibrationFigure}>
+                  <button
+                    type="button"
+                    className={`${styles.productScreenshot} ${styles.cruxCalibrationScreenshot}`}
+                    onClick={() => setExpandedCruxMedia(cruxEngineeringMedia[1])}
+                    aria-label="Expand confidence threshold controls screenshot"
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={cruxEngineeringMedia[1].src}
+                      alt={cruxEngineeringMedia[1].alt}
+                      width={cruxEngineeringMedia[1].width}
+                      height={cruxEngineeringMedia[1].height}
+                    />
+                    <span>EXPAND <i aria-hidden="true">↗</i></span>
+                  </button>
+                  <figcaption>
+                    <strong>CONFIDENCE THRESHOLDS</strong>
+                    <span>
+                      Tune visibility and presence globally or for a body group when a recurring confidence problem
+                      needs a more targeted rule.
+                    </span>
+                  </figcaption>
+                </figure>
+
                 <section className={styles.cruxCalibrationSection} aria-labelledby="crux-confidence-heading">
                   <h3 id="crux-confidence-heading">CONFIDENCE BY SCOPE</h3>
                   <p>

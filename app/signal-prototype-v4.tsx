@@ -26,7 +26,7 @@ const destinations = [
   },
   {
     label: "CRUX VISION",
-    chapters: 3,
+    chapters: 4,
     shaderColor: [0.561, 0.902, 0.376] as const,
     cssColor: [143, 230, 96] as const,
   },
@@ -1472,7 +1472,7 @@ export function SignalPrototypeV4() {
                 </div>
               </section>
               <aside className={styles.cruxMediaColumn} aria-label="Crux Vision movement overlay demonstration">
-                <figure className={styles.cruxVideoFrame}>
+                <figure className={`${styles.cruxVideoFrame} ${styles.cruxOriginVideoFrame}`}>
                   <video
                     ref={cruxVideoRef}
                     src="/videos/crux-vision-origin-overlay.mp4"
@@ -1746,11 +1746,119 @@ export function SignalPrototypeV4() {
             </section>
           </div>
         </section>
+        <section className={`${styles.chapter} ${styles.cruxEngineeringChapter}`} data-project-chapter>
+          <div className={styles.projectMeta}>
+            <span>CRUX VISION</span>
+            <span>ENGINEERING</span>
+          </div>
+          <div className={styles.cruxEngineeringLayout}>
+            <header className={styles.cruxEngineeringIntro}>
+              <h2>Building Visuals from Video</h2>
+            </header>
+
+            <div className={styles.cruxEngineeringOverview}>
+              <p className={styles.cruxEngineeringLead}>
+                Drawing a skeleton is straightforward compared with deciding when its data is trustworthy enough
+                to show. Climbing gives a pose model difficult input: crossed limbs, occlusion, motion blur, and
+                positions that look unusual because they are. The engineering challenge was to preserve the
+                movement without disguising that uncertainty.
+              </p>
+              <div className={styles.cruxEngineeringDetails}>
+                <section>
+                  <p className={styles.cardLabel}>TECHNICAL HIGHLIGHTS</p>
+                  <ul className={styles.cruxEngineeringHighlights}>
+                    <li>Progressive, on-device pose analysis in a module worker</li>
+                    <li>Presentation-timestamp synchronization for live overlays</li>
+                    <li>Immutable raw pose data with derived, inspectable views</li>
+                    <li>Confidence-aware filtering and gap-bounded smoothing</li>
+                  </ul>
+                </section>
+                <section>
+                  <p className={styles.cardLabel}>TECHNOLOGY</p>
+                  <ul className={styles.fostyTechnologyTags} aria-label="Crux Vision technology">
+                    {["React", "TypeScript", "Vite", "MediaPipe Pose", "MediaBunny", "Canvas 2D", "Web Workers"].map(
+                      (technology) => <li key={technology}>{technology}</li>,
+                    )}
+                  </ul>
+                </section>
+              </div>
+            </div>
+
+            <div className={styles.cruxEngineeringCopy}>
+              <section aria-labelledby="crux-video-to-overlay">
+                <h3 id="crux-video-to-overlay">FROM VIDEO TO OVERLAY</h3>
+                <p>
+                  A climber imports a local video and selects only the move they want to study. MediaPipe analyzes
+                  that range progressively in a worker while the source remains playable. Each pose sample keeps
+                  its presentation timestamp, and live Canvas layers use the same display transform as the video,
+                  keeping overlays aligned across portrait and landscape footage without uploading or re-encoding
+                  the clip.
+                </p>
+              </section>
+              <section aria-labelledby="crux-preserving-uncertainty">
+                <h3 id="crux-preserving-uncertainty">PRESERVING UNCERTAINTY</h3>
+                <p>
+                  Raw pose results remain immutable. Confidence, body-scale plausibility, and motion over time
+                  determine which joints enter a derived view. Implausible jumps and unreliable positions are
+                  rejected; smoothing stays inside valid segments. When a joint disappears behind the climber or
+                  wall, Crux Vision shows an honest gap instead of inventing a continuous path.
+                </p>
+              </section>
+            </div>
+
+            <section className={styles.cruxQualitySection} aria-labelledby="crux-quality-heading">
+              <div className={styles.cruxQualityIntro}>
+                <h3 id="crux-quality-heading">CONTINUITY IS A TRADEOFF</h3>
+                <p>
+                  The ordinary interface reduces a large calibration system to three understandable approaches.
+                  More continuous data can be useful, but it is not automatically more accurate.
+                </p>
+              </div>
+              <ul className={styles.cruxQualityProfiles}>
+                <li>
+                  <div className={styles.cruxQualityTrack} aria-hidden="true"><i /><i /><i /></div>
+                  <strong>BALANCED</strong>
+                  <span>The default compromise between useful continuity and false positions.</span>
+                </li>
+                <li>
+                  <div className={`${styles.cruxQualityTrack} ${styles.cruxQualityTrackStrict}`} aria-hidden="true"><i /><i /><i /></div>
+                  <strong>STRICT</strong>
+                  <span>Rejects more uncertainty when false limbs are more costly than gaps.</span>
+                </li>
+                <li>
+                  <div className={`${styles.cruxQualityTrack} ${styles.cruxQualityTrackPermissive}`} aria-hidden="true"><i /><i /><i /></div>
+                  <strong>PERMISSIVE</strong>
+                  <span>Preserves more motion with a greater risk of questionable positions.</span>
+                </li>
+              </ul>
+            </section>
+
+            <div className={styles.cruxEngineeringConclusion}>
+              <section>
+                <h3>CALIBRATED BY LOOKING</h3>
+                <p>
+                  Human review exposed roughly 70 milliseconds of lag from the first causal smoothing approach.
+                  Testing against the same cached pose data led to a centered offline smoother for recorded review
+                  and made MediaPipe Full the quality default. The display can evolve without rewriting the model’s
+                  original result.
+                </p>
+              </section>
+              <aside>
+                <span>BOUNDARIES</span>
+                <p>
+                  Crux Vision works in projected image space and trails are most meaningful with a fixed camera. It
+                  is a tool for investigation—not motion capture, biomechanical truth, or a system that decides the
+                  correct way to climb.
+                </p>
+              </aside>
+            </div>
+          </div>
+        </section>
         <ol className={`${styles.chapterRail} ${styles.cruxChapterRail}`} aria-label="Crux Vision case study chapters">
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(0)}>ORIGIN</button></li>
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(1)}>MOVEMENT REVIEW</button></li>
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(2)}>VISUAL OVERLAY</button></li>
-          <li><button type="button" data-chapter-index data-future-chapter disabled>ENGINEERING AND DESIGN</button></li>
+          <li><button type="button" data-chapter-index onClick={() => navigateToChapter(3)}>ENGINEERING</button></li>
         </ol>
         {expandedCruxMedia && (
           <div

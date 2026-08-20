@@ -194,7 +194,7 @@ test("Fosty replaces both example projects with the Origin chapter", async () =>
   assert.match(source, /--reference-panel-height/);
 });
 
-test("Crux Vision renders the Origin, Movement Review, and Visual Overlay chapters with expandable media", async () => {
+test("Crux Vision renders all four case-study chapters with expandable media", async () => {
   const response = await render();
   const html = await response.text();
   const [
@@ -224,13 +224,13 @@ test("Crux Vision renders the Origin, Movement Review, and Visual Overlay chapte
   assert.match(html, /Crux Vision is a movement-review tool I created to turn climbing footage into a workspace/);
   assert.match(html, /technical theory represented visually/);
   assert.match(html, /microscope for video analysis/);
-  assert.match(source, /label:\s*"CRUX VISION",\s*chapters:\s*3,/);
+  assert.match(source, /label:\s*"CRUX VISION",\s*chapters:\s*4,/);
   assert.match(source, /cssColor:\s*\[143, 230, 96\]/);
   assert.match(source, /src="\/videos\/crux-vision-origin-overlay\.mp4"/);
   assert.match(source, /poster="\/images\/crux-vision-origin-overlay-poster\.webp"/);
   assert.match(source, /href="https:\/\/crux-vision-rebuild\.vercel\.app\/"/);
   assert.match(source, /href="https:\/\/github\.com\/luebbertevan\/crux-vision"/);
-  assert.equal((source.match(/data-future-chapter disabled/g) ?? []).length, 1);
+  assert.equal((source.match(/data-future-chapter disabled/g) ?? []).length, 0);
   assert.match(html, /Review the Crux/);
   assert.match(html, /ISOLATE THE CRUX/);
   assert.match(html, /REVIEW WITH PRECISION/);
@@ -244,10 +244,22 @@ test("Crux Vision renders the Origin, Movement Review, and Visual Overlay chapte
   assert.match(source, /onClick=\{\(\) => navigateToChapter\(2\)\}>VISUAL OVERLAY<\/button>/);
   assert.match(source, /src="\/videos\/crux-vision-fail-vs-success\.mp4"/);
   assert.match(source, /src="\/images\/crux-vision-trail-legend\.webp"/);
+  assert.match(html, /Building Visuals from Video/);
+  assert.match(html, /PRESERVING UNCERTAINTY/);
+  assert.match(html, /Crux Vision shows an honest gap instead of inventing a continuous path/);
+  assert.match(html, /TECHNICAL HIGHLIGHTS/);
+  assert.match(html, /Progressive, on-device pose analysis in a module worker/);
+  assert.match(html, /MediaPipe Pose/);
+  assert.match(html, /MediaBunny/);
+  assert.match(html, /CONTINUITY IS A TRADEOFF/);
+  assert.match(html, /roughly 70 milliseconds of lag/);
+  assert.match(source, /onClick=\{\(\) => navigateToChapter\(3\)\}>ENGINEERING<\/button>/);
   assert.match(css, /\.cruxMovementIntro \{[^}]*grid-template-columns:/s);
   assert.match(css, /\.cruxMovementFeature \{[^}]*grid-template-columns:/s);
   assert.match(css, /\.cruxComparisonVideoFrame \{[^}]*aspect-ratio: 1676 \/ 922;/s);
   assert.match(css, /\.cruxVisualSupport,\s*\.cruxTrailReading \{[^}]*grid-template-columns:/s);
+  assert.match(css, /\.cruxEngineeringOverview \{[^}]*grid-template-columns:/s);
+  assert.match(css, /\.cruxQualityProfiles \{[^}]*grid-template-columns: repeat\(3, minmax\(0, 1fr\)\);/s);
   assert.match(css, /\.cruxBody \{[^}]*grid-template-columns: minmax\(0, 1\.62fr\) minmax\(210px, 0\.82fr\);/s);
   assert.match(css, /\.cruxStoryScroll \{[^}]*overflow-y: auto;/s);
   assert.match(css, /\.cruxMediaColumn \{[^}]*grid-template-rows: minmax\(0, 1fr\) auto;/s);

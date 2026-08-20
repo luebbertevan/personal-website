@@ -1789,11 +1789,12 @@ export function SignalPrototypeV4() {
               <section aria-labelledby="crux-video-to-overlay">
                 <h3 id="crux-video-to-overlay">FROM VIDEO TO OVERLAY</h3>
                 <p>
-                  A climber imports a local video and selects only the move they want to study. MediaPipe analyzes
-                  that range progressively in a worker while the source remains playable. Each pose sample keeps
-                  its presentation timestamp, and live Canvas layers use the same display transform as the video,
-                  keeping overlays aligned across portrait and landscape footage without uploading or re-encoding
-                  the clip.
+                  A climber imports a local video and selects only the range they want to study, keeping the analysis
+                  focused and reducing processing time. MediaPipe analyzes that range progressively in a worker,
+                  drawing the overlay as results arrive so the climber can begin reviewing the movement while the
+                  source video remains playable. Each pose sample keeps its presentation timestamp, and live Canvas
+                  layers use the same display transform as the video, keeping overlays aligned across portrait and
+                  landscape footage without uploading or re-encoding the clip.
                 </p>
               </section>
               <section aria-labelledby="crux-preserving-uncertainty">

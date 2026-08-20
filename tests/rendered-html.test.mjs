@@ -251,6 +251,8 @@ test("Crux Vision renders all four case-study chapters with expandable media", a
   assert.match(source, /src="\/videos\/crux-vision-fail-vs-success\.mp4"/);
   assert.match(source, /src="\/images\/crux-vision-trail-legend\.webp"/);
   assert.match(html, /Building Visuals from Video/);
+  assert.match(html, /keeping the analysis focused and reducing processing time/);
+  assert.match(html, /drawing the overlay as results arrive so the climber can begin reviewing the movement/);
   assert.match(html, /unusual body positions the model was not trained for/);
   assert.match(html, /MediaPipe output with missing data or detection errors/);
   assert.match(html, /PRESERVING UNCERTAINTY/);

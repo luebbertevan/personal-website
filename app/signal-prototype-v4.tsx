@@ -1455,7 +1455,7 @@ export function SignalPrototypeV4() {
               </div>
             </header>
             <div className={styles.cruxBody}>
-              <section className={styles.cruxNarrative} aria-label="Crux Vision origin story">
+              <section className={styles.cruxNarrative} tabIndex={0} aria-label="Read the Crux Vision origin story">
                 <p className={styles.cruxOriginLead}>
                   Crux Vision is a movement-review tool I created to turn climbing footage into a workspace for
                   examining motion and technique. It uses pose data to create video overlays that reveal new layers
@@ -1481,7 +1481,7 @@ export function SignalPrototypeV4() {
                     </a>
                   </nav>
                 </div>
-                <div className={styles.cruxStoryScroll} tabIndex={0} aria-label="Read the Crux Vision origin story">
+                <div className={styles.cruxStoryScroll}>
                   <p>
                     Climbers are always trying to improve, whether we are building strength, refining our technique,
                     or working to complete a route at the edge of our ability. We are constantly looking to learn and

@@ -308,7 +308,8 @@ test("Crux Vision renders all four case-study chapters with expandable media", a
   assert.match(css, /\.cruxCalibrationScreenshot \{[^}]*aspect-ratio: 4 \/ 5;/s);
   assert.match(css, /\.cruxCalibrationSection \{[^}]*align-content: start;[^}]*align-self: start;/s);
   assert.match(css, /\.cruxBody \{[^}]*grid-template-columns: minmax\(0, 1\.62fr\) minmax\(210px, 0\.82fr\);/s);
-  assert.match(css, /\.cruxStoryScroll \{[^}]*overflow-y: auto;/s);
+  assert.match(source, /className=\{styles\.cruxNarrative\} tabIndex=\{0\}/);
+  assert.match(css, /\.cruxNarrative \{[^}]*overflow-y: auto;/s);
   assert.match(css, /\.cruxMediaColumn \{[^}]*grid-template-rows: minmax\(0, 1fr\) auto;/s);
   assert.match(css, /\.cruxChapterRail \{\s*grid-template-columns: repeat\(4, minmax\(0, 1fr\)\);/s);
   assert.doesNotMatch(source, /MOVEMENT OVERLAY · LIVE POSE|toggleCruxVideo|cruxVideoPaused/);

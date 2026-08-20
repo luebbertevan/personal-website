@@ -634,8 +634,15 @@
   min-width: 0;
   min-height: 0;
   grid-template-columns: minmax(0, 1fr) minmax(180px, 1.04fr);
-  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-rows: auto auto;
   gap: clamp(12px, 1.35vw, 22px) clamp(12px, 1.25vw, 20px);
+  align-content: start;
+  padding-right: clamp(8px, 0.7vw, 12px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--accent-rgb), 0.5) transparent;
+  mask-image: linear-gradient(to bottom, black 0, black calc(100% - 22px), transparent 100%);
 }
 .cruxOriginLead,
 .cruxStoryScroll p {
@@ -672,15 +679,9 @@
   grid-column: 1 / -1;
   min-width: 0;
   min-height: 0;
-  height: 100%;
-  padding: 1px clamp(8px, 0.7vw, 12px) 18px 0;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(var(--accent-rgb), 0.5) transparent;
-  mask-image: linear-gradient(to bottom, black 0, black calc(100% - 22px), transparent 100%);
+  padding: 0 0 18px;
 }
-.cruxStoryScroll:focus-visible {
+.cruxNarrative:focus-visible {
   outline: 1px solid rgba(var(--accent-rgb), 0.74);
   outline-offset: 4px;
 }

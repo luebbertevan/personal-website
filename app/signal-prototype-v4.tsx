@@ -1430,13 +1430,32 @@ export function SignalPrototypeV4() {
             </header>
             <div className={styles.cruxBody}>
               <section className={styles.cruxNarrative} aria-label="Crux Vision origin story">
+                <p className={styles.cruxOriginLead}>
+                  Crux Vision is a movement-review tool I created to turn climbing footage into a workspace for
+                  examining motion and technique. It uses pose data to create video overlays that reveal new layers
+                  of visual information, helping climbers examine movement holistically and magnify subtleties that
+                  ordinary playback can obscure.
+                </p>
+                <div className={styles.cruxOriginFeature}>
+                  <figure className={styles.cruxOriginScreenshot}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src="/images/crux-vision-find-the-move.webp"
+                      alt="Crux Vision introduction reading Find the move that matters and See your climbing in motion."
+                      width={604}
+                      height={504}
+                    />
+                  </figure>
+                  <nav className={`${styles.minimalContactLinks} ${styles.cruxMediaActions}`} aria-label="Crux Vision links">
+                    <a href="https://crux-vision-rebuild.vercel.app/" target="_blank" rel="noreferrer">
+                      Public beta <i aria-hidden="true">↗</i>
+                    </a>
+                    <a href="https://github.com/luebbertevan/crux-vision" target="_blank" rel="noreferrer">
+                      GitHub <i aria-hidden="true">↗</i>
+                    </a>
+                  </nav>
+                </div>
                 <div className={styles.cruxStoryScroll} tabIndex={0} aria-label="Read the Crux Vision origin story">
-                  <p>
-                    Crux Vision is a movement-review tool I created to turn climbing footage into a workspace for
-                    examining motion and technique. It uses pose data to create video overlays that reveal new layers
-                    of visual information, helping climbers examine movement holistically and magnify subtleties that
-                    ordinary playback can obscure.
-                  </p>
                   <p>
                     Climbers are always trying to improve, whether we are building strength, refining our technique,
                     or working to complete a route at the edge of our ability. We are constantly looking to learn and
@@ -1492,14 +1511,6 @@ export function SignalPrototypeV4() {
                     </button>
                   </div>
                 </figure>
-                <nav className={`${styles.minimalContactLinks} ${styles.cruxMediaActions}`} aria-label="Crux Vision links">
-                  <a href="https://crux-vision-rebuild.vercel.app/" target="_blank" rel="noreferrer">
-                    Try the public beta <i aria-hidden="true">↗</i>
-                  </a>
-                  <a href="https://github.com/luebbertevan/crux-vision" target="_blank" rel="noreferrer">
-                    GitHub <i aria-hidden="true">↗</i>
-                  </a>
-                </nav>
               </aside>
             </div>
           </div>

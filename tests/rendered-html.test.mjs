@@ -209,6 +209,7 @@ test("Crux Vision renders all four case-study chapters with expandable media", a
     movementPoster,
     comparisonVideo,
     comparisonPoster,
+    originScreenshot,
     trailLegend,
     rangeScreenshot,
   ] = await Promise.all([
@@ -220,6 +221,7 @@ test("Crux Vision renders all four case-study chapters with expandable media", a
     readFile(new URL("../public/images/crux-vision-movement-review-poster.webp", import.meta.url)),
     readFile(new URL("../public/videos/crux-vision-fail-vs-success.mp4", import.meta.url)),
     readFile(new URL("../public/images/crux-vision-fail-vs-success-poster.webp", import.meta.url)),
+    readFile(new URL("../public/images/crux-vision-find-the-move.webp", import.meta.url)),
     readFile(new URL("../public/images/crux-vision-trail-legend.webp", import.meta.url)),
     readFile(new URL("../public/images/crux-vision-analyze-range.webp", import.meta.url)),
   ]);
@@ -234,6 +236,9 @@ test("Crux Vision renders all four case-study chapters with expandable media", a
   assert.match(source, /cssColor:\s*\[143, 230, 96\]/);
   assert.match(source, /src="\/videos\/crux-vision-origin-overlay\.mp4"/);
   assert.match(source, /poster="\/images\/crux-vision-origin-overlay-poster\.webp"/);
+  assert.match(source, /src="\/images\/crux-vision-find-the-move\.webp"/);
+  assert.match(html, /Public beta/);
+  assert.doesNotMatch(html, /Try the public beta/);
   assert.match(source, /href="https:\/\/crux-vision-rebuild\.vercel\.app\/"/);
   assert.match(source, /href="https:\/\/github\.com\/luebbertevan\/crux-vision"/);
   assert.equal((source.match(/data-future-chapter disabled/g) ?? []).length, 0);
@@ -297,6 +302,8 @@ test("Crux Vision renders all four case-study chapters with expandable media", a
   assert.equal(comparisonVideo.subarray(4, 8).toString("ascii"), "ftyp");
   assert.equal(comparisonPoster.subarray(0, 4).toString("ascii"), "RIFF");
   assert.equal(comparisonPoster.subarray(8, 12).toString("ascii"), "WEBP");
+  assert.equal(originScreenshot.subarray(0, 4).toString("ascii"), "RIFF");
+  assert.equal(originScreenshot.subarray(8, 12).toString("ascii"), "WEBP");
   assert.equal(trailLegend.subarray(0, 4).toString("ascii"), "RIFF");
   assert.equal(trailLegend.subarray(8, 12).toString("ascii"), "WEBP");
   assert.equal(rangeScreenshot.subarray(0, 4).toString("ascii"), "RIFF");

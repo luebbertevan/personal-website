@@ -1761,29 +1761,29 @@ export function SignalPrototypeV4() {
               <p className={styles.cruxEngineeringLead}>
                 Drawing a skeleton is straightforward compared with deciding when its data is trustworthy enough
                 to show. Climbing gives a pose model difficult input: crossed limbs, occlusion, motion blur, and
-                positions that look unusual because they are. The engineering challenge was to preserve the
-                movement without disguising that uncertainty.
+                unusual body positions the model was not trained for. Sometimes these conditions result in
+                MediaPipe output with missing data or detection errors. The engineering challenge was to preserve
+                the movement without disguising that uncertainty.
               </p>
-              <div className={styles.cruxEngineeringDetails}>
-                <section>
-                  <p className={styles.cardLabel}>TECHNICAL HIGHLIGHTS</p>
-                  <ul className={styles.cruxEngineeringHighlights}>
-                    <li>Progressive, on-device pose analysis in a module worker</li>
-                    <li>Presentation-timestamp synchronization for live overlays</li>
-                    <li>Immutable raw pose data with derived, inspectable views</li>
-                    <li>Confidence-aware filtering and gap-bounded smoothing</li>
-                  </ul>
-                </section>
-                <section>
-                  <p className={styles.cardLabel}>TECHNOLOGY</p>
-                  <ul className={styles.fostyTechnologyTags} aria-label="Crux Vision technology">
-                    {["React", "TypeScript", "Vite", "MediaPipe Pose", "MediaBunny", "Canvas 2D", "Web Workers"].map(
-                      (technology) => <li key={technology}>{technology}</li>,
-                    )}
-                  </ul>
-                </section>
-              </div>
+              <section className={styles.cruxEngineeringDetails}>
+                <p className={styles.cardLabel}>TECHNICAL HIGHLIGHTS</p>
+                <ul className={styles.cruxEngineeringHighlights}>
+                  <li>Progressive, on-device pose analysis in a module worker</li>
+                  <li>Presentation-timestamp synchronization for live overlays</li>
+                  <li>Immutable raw pose data with derived, inspectable views</li>
+                  <li>Confidence-aware filtering and gap-bounded smoothing</li>
+                </ul>
+              </section>
             </div>
+
+            <section className={styles.cruxTechnology}>
+              <p className={styles.cardLabel}>TECHNOLOGY</p>
+              <ul className={styles.fostyTechnologyTags} aria-label="Crux Vision technology">
+                {["React", "TypeScript", "Vite", "MediaPipe Pose", "MediaBunny", "Canvas 2D", "Web Workers"].map(
+                  (technology) => <li key={technology}>{technology}</li>,
+                )}
+              </ul>
+            </section>
 
             <div className={styles.cruxEngineeringCopy}>
               <section aria-labelledby="crux-video-to-overlay">
@@ -1817,26 +1817,35 @@ export function SignalPrototypeV4() {
               </div>
               <ul className={styles.cruxQualityProfiles}>
                 <li>
-                  <div className={styles.cruxQualityTrack} aria-hidden="true"><i /><i /><i /></div>
+                  <div className={styles.cruxQualityTrack} aria-hidden="true"><i /></div>
                   <strong>BALANCED</strong>
-                  <span>The default compromise between useful continuity and false positions.</span>
+                  <span>
+                    Uses moderate confidence and motion cutoffs to balance useful continuity against false
+                    positions.
+                  </span>
                 </li>
                 <li>
-                  <div className={`${styles.cruxQualityTrack} ${styles.cruxQualityTrackStrict}`} aria-hidden="true"><i /><i /><i /></div>
+                  <div className={styles.cruxQualityTrack} aria-hidden="true"><i /></div>
                   <strong>STRICT</strong>
-                  <span>Rejects more uncertainty when false limbs are more costly than gaps.</span>
+                  <span>
+                    Uses higher confidence cutoffs and tighter motion limits, creating more gaps to avoid false
+                    limbs.
+                  </span>
                 </li>
                 <li>
-                  <div className={`${styles.cruxQualityTrack} ${styles.cruxQualityTrackPermissive}`} aria-hidden="true"><i /><i /><i /></div>
+                  <div className={styles.cruxQualityTrack} aria-hidden="true"><i /></div>
                   <strong>PERMISSIVE</strong>
-                  <span>Preserves more motion with a greater risk of questionable positions.</span>
+                  <span>
+                    Uses lower confidence cutoffs and looser motion limits to preserve more data, with a greater
+                    risk of questionable positions.
+                  </span>
                 </li>
               </ul>
             </section>
 
-            <div className={styles.cruxEngineeringConclusion}>
+            <div className={styles.cruxEngineeringCopy}>
               <section>
-                <h3>CALIBRATED BY LOOKING</h3>
+                <h3>CALIBRATION BY ITERATION</h3>
                 <p>
                   Human review exposed roughly 70 milliseconds of lag from the first causal smoothing approach.
                   Testing against the same cached pose data led to a centered offline smoother for recorded review
@@ -1844,14 +1853,14 @@ export function SignalPrototypeV4() {
                   original result.
                 </p>
               </section>
-              <aside>
-                <span>BOUNDARIES</span>
+              <section>
+                <h3>LIMITATIONS</h3>
                 <p>
                   Crux Vision works in projected image space and trails are most meaningful with a fixed camera. It
                   is a tool for investigation—not motion capture, biomechanical truth, or a system that decides the
                   correct way to climb.
                 </p>
-              </aside>
+              </section>
             </div>
           </div>
         </section>

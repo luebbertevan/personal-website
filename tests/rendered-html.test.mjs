@@ -251,6 +251,8 @@ test("Crux Vision renders all four case-study chapters with expandable media", a
   assert.match(source, /src="\/videos\/crux-vision-fail-vs-success\.mp4"/);
   assert.match(source, /src="\/images\/crux-vision-trail-legend\.webp"/);
   assert.match(html, /Building Visuals from Video/);
+  assert.match(html, /unusual body positions the model was not trained for/);
+  assert.match(html, /MediaPipe output with missing data or detection errors/);
   assert.match(html, /PRESERVING UNCERTAINTY/);
   assert.match(html, /Crux Vision shows an honest gap instead of inventing a continuous path/);
   assert.match(html, /TECHNICAL HIGHLIGHTS/);
@@ -258,6 +260,11 @@ test("Crux Vision renders all four case-study chapters with expandable media", a
   assert.match(html, /MediaPipe Pose/);
   assert.match(html, /MediaBunny/);
   assert.match(html, /CONTINUITY IS A TRADEOFF/);
+  assert.match(html, /higher confidence cutoffs and tighter motion limits/);
+  assert.match(html, /lower confidence cutoffs and looser motion limits/);
+  assert.match(html, /CALIBRATION BY ITERATION/);
+  assert.match(html, /LIMITATIONS/);
+  assert.doesNotMatch(html, /CALIBRATED BY LOOKING|BOUNDARIES/);
   assert.match(html, /roughly 70 milliseconds of lag/);
   assert.match(source, /onClick=\{\(\) => navigateToChapter\(3\)\}>ENGINEERING<\/button>/);
   assert.match(css, /\.cruxMovementIntro \{[^}]*grid-template-columns:/s);
@@ -265,6 +272,11 @@ test("Crux Vision renders all four case-study chapters with expandable media", a
   assert.match(css, /\.cruxComparisonVideoFrame \{[^}]*aspect-ratio: 1676 \/ 922;/s);
   assert.match(css, /\.cruxVisualSupport,\s*\.cruxTrailReading \{[^}]*grid-template-columns:/s);
   assert.match(css, /\.cruxEngineeringOverview \{[^}]*grid-template-columns:/s);
+  assert.match(css, /\.cruxTechnology \{[^}]*width: 100%;/s);
+  assert.match(css, /\.cruxEngineeringHighlights \{[^}]*font-size: var\(--crux-body-size\);/s);
+  assert.match(css, /\.cruxTechnology \.fostyTechnologyTags li \{[^}]*font-size: var\(--crux-body-size\);/s);
+  assert.match(css, /\.cruxQualityProfiles span \{[^}]*font-size: var\(--crux-body-size\);/s);
+  assert.match(css, /\.cruxQualityTrack i \{[^}]*width: 100%;/s);
   assert.match(css, /\.cruxQualityProfiles \{[^}]*grid-template-columns: repeat\(3, minmax\(0, 1fr\)\);/s);
   assert.match(css, /\.cruxBody \{[^}]*grid-template-columns: minmax\(0, 1\.62fr\) minmax\(210px, 0\.82fr\);/s);
   assert.match(css, /\.cruxStoryScroll \{[^}]*overflow-y: auto;/s);

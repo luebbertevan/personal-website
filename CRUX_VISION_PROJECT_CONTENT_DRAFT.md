@@ -190,9 +190,10 @@ Building Visuals from Video
 
 Drawing a skeleton is straightforward compared with deciding when its data is
 trustworthy enough to show. Climbing gives a pose model difficult input:
-crossed limbs, occlusion, motion blur, and positions that look unusual because
-they are. The engineering challenge was to preserve the movement without
-disguising that uncertainty.
+crossed limbs, occlusion, motion blur, and unusual body positions the model was
+not trained for. Sometimes these conditions result in MediaPipe output with
+missing data or detection errors. The engineering challenge was to preserve
+the movement without disguising that uncertainty.
 
 ### Technical highlights
 
@@ -229,17 +230,23 @@ When a joint disappears behind the climber or wall, Crux Vision shows an honest
 gap instead of inventing a continuous path.
 
 The ordinary interface reduces a large calibration system to three
-understandable approaches. **Balanced** is the default compromise between
-useful continuity and false positions. **Strict** rejects more uncertainty when
-false limbs are more costly than gaps. **Permissive** preserves more motion
-with a greater risk of questionable positions. More continuous data can be
-useful, but it is not automatically more accurate.
+understandable approaches. **Balanced** uses moderate confidence and motion
+cutoffs to balance useful continuity against false positions. **Strict** uses
+higher confidence cutoffs and tighter motion limits, creating more gaps to
+avoid false limbs. **Permissive** uses lower confidence cutoffs and looser
+motion limits to preserve more data, with a greater risk of questionable
+positions. More continuous data can be useful, but it is not automatically
+more accurate.
+
+#### Calibration by iteration
 
 Human review exposed roughly 70 milliseconds of lag from the first causal
 smoothing approach. Testing against the same cached pose data led to a centered
 offline smoother for recorded review and made MediaPipe Full the quality
 default. Because the raw result remains unchanged, the display can evolve
 without rewriting what the model originally returned.
+
+#### Limitations
 
 Crux Vision works in projected image space and trails are most meaningful with
 a fixed camera. It is a tool for investigation—not motion capture,
@@ -248,10 +255,12 @@ biomechanical truth, or a system that decides the correct way to climb.
 ### Recommended layout and visual
 
 Keep this chapter primarily typographic. Following the Fosty engineering
-chapter, place the technical highlights and technology tags immediately after
-the title so they are visible before scrolling. Follow them with a restrained
-comparison of Balanced, Strict, and Permissive that uses broken line segments
-to make the continuity tradeoff visible. This communicates more of the
+chapter, place the introduction and technical highlights in two equally
+weighted columns immediately after the title. Put a full-width technology row
+directly beneath them so the stack remains visible before scrolling. Follow it
+with a restrained comparison of Balanced, Strict, and Permissive using one
+continuous line in each card. Format Calibration by Iteration and Limitations
+as another pair of equally weighted text columns. This communicates more of the
 engineering story than a MediaPipe logo and stays more legible than a full
 screenshot of the calibration workspace.
 

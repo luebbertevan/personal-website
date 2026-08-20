@@ -1026,8 +1026,7 @@
 }
 .cruxEngineeringIntro p,
 .cruxEngineeringCopy p,
-.cruxQualityIntro p,
-.cruxEngineeringConclusion p {
+.cruxQualityIntro p {
   margin: 0;
   color: rgba(247, 244, 241, 0.72);
   font-family: var(--font-geist-sans), sans-serif;
@@ -1037,7 +1036,7 @@
 }
 .cruxEngineeringOverview {
   display: grid;
-  grid-template-columns: minmax(0, 0.8fr) minmax(320px, 1.2fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: clamp(18px, 2vw, 30px);
   align-items: start;
 }
@@ -1051,33 +1050,45 @@
 }
 .cruxEngineeringDetails {
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
-  gap: clamp(14px, 1.4vw, 20px);
-}
-.cruxEngineeringDetails section {
-  display: grid;
   gap: 9px;
   align-content: start;
 }
-.cruxEngineeringDetails .cardLabel {
+.cruxEngineeringDetails .cardLabel,
+.cruxTechnology .cardLabel {
   margin: 0;
-  color: rgba(247, 244, 241, 0.5);
-  font-size: 9px;
+  color: color-mix(in srgb, rgb(var(--accent-rgb)) 88%, white 12%);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: clamp(17px, 1.45vw, 23px);
+  font-weight: 430;
+  line-height: 1;
+  letter-spacing: -0.025em;
 }
 .cruxEngineeringHighlights {
   display: grid;
-  gap: 5px;
+  gap: 7px;
   margin: 0;
-  padding-left: 15px;
-  color: rgba(247, 244, 241, 0.68);
+  padding-left: 1.1em;
+  color: rgba(247, 244, 241, 0.72);
   font-family: var(--font-geist-sans), sans-serif;
-  font-size: 10px;
-  line-height: 1.35;
+  font-size: var(--crux-body-size);
+  line-height: 1.42;
   letter-spacing: 0;
+  list-style: disc outside;
 }
 .cruxEngineeringHighlights li::marker { color: rgb(var(--accent-rgb)); }
-.cruxEngineeringDetails .fostyTechnologyTags { gap: 5px; }
-.cruxEngineeringDetails .fostyTechnologyTags li { padding: 5px 7px; font-size: 8px; }
+.cruxTechnology {
+  display: grid;
+  width: 100%;
+  gap: 11px;
+}
+.cruxTechnology .fostyTechnologyTags {
+  width: 100%;
+  gap: 7px;
+}
+.cruxTechnology .fostyTechnologyTags li {
+  padding: 7px 10px;
+  font-size: var(--crux-body-size);
+}
 .cruxEngineeringCopy {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1086,13 +1097,12 @@
   border-top: 1px solid rgba(255, 255, 255, 0.11);
 }
 .cruxEngineeringCopy section,
-.cruxEngineeringConclusion section {
+.cruxEngineeringDetails {
   display: grid;
   gap: clamp(8px, 0.9vh, 11px);
 }
 .cruxEngineeringCopy h3,
-.cruxQualityIntro h3,
-.cruxEngineeringConclusion h3 {
+.cruxQualityIntro h3 {
   margin: 0;
   color: color-mix(in srgb, rgb(var(--accent-rgb)) 88%, white 12%);
   font-family: var(--font-geist-sans), sans-serif;
@@ -1126,45 +1136,29 @@
   border: 1px solid rgba(var(--accent-rgb), 0.22);
   background: rgba(5, 11, 6, 0.62);
 }
-.cruxQualityProfiles strong { color: rgba(247, 244, 241, 0.86); font-size: 10px; font-weight: 520; }
+.cruxQualityProfiles strong {
+  color: rgba(247, 244, 241, 0.9);
+  font-size: calc(var(--crux-body-size) * 1.08);
+  font-weight: 520;
+}
 .cruxQualityProfiles span {
-  color: rgba(247, 244, 241, 0.53);
+  color: rgba(247, 244, 241, 0.7);
   font-family: var(--font-geist-sans), sans-serif;
-  font-size: 10px;
-  line-height: 1.35;
+  font-size: var(--crux-body-size);
+  line-height: 1.42;
   letter-spacing: 0;
 }
 .cruxQualityTrack {
-  display: grid;
-  grid-template-columns: 1.4fr 0.55fr 1fr;
-  gap: 5px;
+  display: block;
   height: 10px;
-  align-items: center;
 }
 .cruxQualityTrack i {
   display: block;
+  width: 100%;
   height: 2px;
+  margin-top: 4px;
   background: rgb(var(--accent-rgb));
   box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.48);
-}
-.cruxQualityTrackStrict { grid-template-columns: 0.85fr 0.25fr 0.55fr; gap: 12px; }
-.cruxQualityTrackPermissive { grid-template-columns: 1.7fr 0.85fr 1.3fr; gap: 2px; }
-.cruxEngineeringConclusion {
-  display: grid;
-  grid-template-columns: minmax(0, 1.25fr) minmax(220px, 0.75fr);
-  gap: clamp(18px, 2vw, 30px);
-  align-items: start;
-}
-.cruxEngineeringConclusion aside {
-  padding: clamp(13px, 1.3vw, 18px);
-  border-left: 2px solid rgba(var(--accent-rgb), 0.72);
-  background: rgba(var(--accent-rgb), 0.06);
-}
-.cruxEngineeringConclusion aside > span {
-  display: block;
-  margin-bottom: 7px;
-  color: rgb(var(--accent-rgb));
-  font-size: 9px;
 }
 .fostyProductChapter {
   display: flex;
@@ -2268,17 +2262,9 @@
   .cruxEngineeringLayout { gap: 14px; }
   .cruxEngineeringIntro { gap: 9px; padding-bottom: 14px; }
   .project .cruxEngineeringIntro h2 { font-size: clamp(22px, 4vw, 30px); }
-  .cruxEngineeringLead,
-  .cruxEngineeringCopy p,
-  .cruxQualityIntro p,
-  .cruxEngineeringConclusion p { font-size: 12px; line-height: 1.4; }
   .cruxEngineeringOverview,
-  .cruxQualitySection,
-  .cruxEngineeringConclusion { gap: 13px; }
+  .cruxQualitySection { gap: 13px; }
   .cruxEngineeringCopy { gap: 14px; }
-  .cruxEngineeringCopy h3,
-  .cruxQualityIntro h3,
-  .cruxEngineeringConclusion h3 { font-size: 15px; }
   .cruxEngineeringDetails { gap: 10px; }
   .cruxQualitySection { padding: 14px 0; }
   .cruxQualityProfiles li { padding: 8px; }
@@ -2324,8 +2310,7 @@
   .cruxVisualSupport,
   .cruxTrailReading,
   .cruxEngineeringOverview,
-  .cruxQualitySection,
-  .cruxEngineeringConclusion { grid-template-columns: 1fr; }
+  .cruxQualitySection { grid-template-columns: 1fr; }
   .cruxEngineeringDetails,
   .cruxEngineeringCopy { grid-template-columns: 1fr; }
   .cruxQualityProfiles { grid-template-columns: 1fr; }

@@ -276,7 +276,8 @@ test("Crux Vision renders all four case-study chapters with expandable media", a
   assert.match(css, /\.cruxEngineeringOverview \{[^}]*grid-template-columns:/s);
   assert.match(css, /\.cruxTechnology \{[^}]*width: 100%;/s);
   assert.match(css, /\.cruxEngineeringHighlights \{[^}]*font-size: var\(--crux-body-size\);/s);
-  assert.match(css, /\.cruxTechnology \.fostyTechnologyTags li \{[^}]*font-size: var\(--crux-body-size\);/s);
+  assert.match(css, /\.cruxTechnology \.fostyTechnologyTags li \{[^}]*font-size: calc\(var\(--crux-body-size\) \* 0\.86\);/s);
+  assert.match(css, /\.cruxEngineeringCopy section,\s*\.cruxEngineeringDetails \{[^}]*align-content: start;[^}]*align-self: start;/s);
   assert.match(css, /\.cruxQualityProfiles span \{[^}]*font-size: var\(--crux-body-size\);/s);
   assert.match(css, /\.cruxQualityTrack i \{[^}]*width: 100%;/s);
   assert.match(css, /\.cruxQualityProfiles \{[^}]*grid-template-columns: repeat\(3, minmax\(0, 1fr\)\);/s);

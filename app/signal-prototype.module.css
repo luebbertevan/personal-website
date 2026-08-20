@@ -1087,7 +1087,7 @@
 }
 .cruxTechnology .fostyTechnologyTags li {
   padding: 7px 10px;
-  font-size: var(--crux-body-size);
+  font-size: calc(var(--crux-body-size) * 0.86);
 }
 .cruxEngineeringCopy {
   display: grid;
@@ -1100,6 +1100,8 @@
 .cruxEngineeringDetails {
   display: grid;
   gap: clamp(8px, 0.9vh, 11px);
+  align-content: start;
+  align-self: start;
 }
 .cruxEngineeringCopy h3,
 .cruxQualityIntro h3 {

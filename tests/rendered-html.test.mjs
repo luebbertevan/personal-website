@@ -197,7 +197,7 @@ test("Fosty replaces both example projects with the Origin chapter", async () =>
   assert.match(source, /--reference-panel-height/);
 });
 
-test("Crux Vision renders all four case-study chapters with expandable media", async () => {
+test("Crux Vision renders all five case-study chapters with expandable media", async () => {
   const response = await render();
   const html = await response.text();
   const [
@@ -238,7 +238,7 @@ test("Crux Vision renders all four case-study chapters with expandable media", a
   assert.match(html, /Crux Vision cannot replace the intuition and experience of a climber/);
   assert.match(html, /It complements the practice of analyzing movement and technique/);
   assert.match(html, /microscope for video analysis/);
-  assert.match(source, /label:\s*"CRUX VISION",\s*chapters:\s*4,/);
+  assert.match(source, /label:\s*"CRUX VISION",\s*chapters:\s*5,/);
   assert.match(source, /cssColor:\s*\[143, 230, 96\]/);
   assert.match(source, /src="\/videos\/crux-vision-origin-overlay\.mp4"/);
   assert.match(source, /poster="\/images\/crux-vision-origin-overlay-poster\.webp"/);
@@ -292,6 +292,14 @@ test("Crux Vision renders all four case-study chapters with expandable media", a
   assert.match(source, /crux-vision-confidence-controls\.webp/);
   assert.match(source, /crux-vision-continuity-smoothing\.webp/);
   assert.match(source, /onClick=\{\(\) => navigateToChapter\(3\)\}>ENGINEERING<\/button>/);
+  assert.match(html, /An Open Investigation/);
+  assert.match(html, /Other sports and movement disciplines could benefit from the same concept/);
+  assert.match(html, /NEW VISUAL LENSES/);
+  assert.match(html, /COMPARE ATTEMPTS/);
+  assert.match(html, /Crux Vision will never pretend to know the correct way to move/);
+  assert.match(source, /onClick=\{copyOutlookEmail\}/);
+  assert.match(source, /ref=\{outlookEmailRef\}>luebbertevan@gmail\.com<\/span>/);
+  assert.match(source, /onClick=\{\(\) => navigateToChapter\(4\)\}>OUTLOOK<\/button>/);
   assert.match(css, /\.cruxMovementIntro \{[^}]*grid-template-columns:/s);
   assert.match(css, /\.cruxMovementFeature \{[^}]*grid-template-columns:/s);
   assert.match(css, /\.cruxComparisonVideoFrame \{[^}]*aspect-ratio: 1676 \/ 922;/s);
@@ -306,7 +314,8 @@ test("Crux Vision renders all four case-study chapters with expandable media", a
   assert.match(css, /\.cruxQualityProfiles \{[^}]*grid-template-columns: repeat\(3, minmax\(0, 1fr\)\);/s);
   assert.match(css, /\.cruxCalibrationIntro > div \{[^}]*grid-template-columns: minmax\(0, 1fr\);/s);
   assert.match(css, /\.cruxCalibrationRow \{[^}]*grid-template-columns: minmax\(0, 1fr\) minmax\(0, 2fr\);/s);
-  assert.match(css, /\.cruxCalibrationGrid \{[^}]*grid-template-columns: repeat\(3, minmax\(0, 1fr\)\);/s);
+  assert.match(css, /\.cruxCalibrationGrid \{[^}]*grid-template-columns: minmax\(0, 1fr\) minmax\(0, 2fr\);/s);
+  assert.match(css, /\.cruxCalibrationFinalText \{[^}]*display: grid;[^}]*align-content: start;/s);
   assert.match(css, /\.cruxCalibrationScreenshot \{ aspect-ratio: auto; \}/s);
   assert.match(css, /\.cruxCalibrationScreenshot img \{[^}]*height: auto;[^}]*object-fit: contain;/s);
   assert.match(css, /\.cruxCalibrationSection h3 \{[^}]*white-space: nowrap;/s);
@@ -315,7 +324,8 @@ test("Crux Vision renders all four case-study chapters with expandable media", a
   assert.match(source, /className=\{styles\.cruxNarrative\} tabIndex=\{0\}/);
   assert.match(css, /\.cruxNarrative \{[^}]*overflow-y: auto;/s);
   assert.match(css, /\.cruxMediaColumn \{[^}]*grid-template-rows: minmax\(0, 1fr\) auto;/s);
-  assert.match(css, /\.cruxChapterRail \{\s*grid-template-columns: repeat\(4, minmax\(0, 1fr\)\);/s);
+  assert.match(css, /\.chapterRail\.cruxChapterRail \{\s*grid-template-columns: repeat\(5, minmax\(0, 1fr\)\);/s);
+  assert.match(css, /\.cruxOutlookVision,\s*\.cruxOutlookFuture,\s*\.cruxOutlookClosing \{[^}]*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);/s);
   assert.doesNotMatch(source, /MOVEMENT OVERLAY · LIVE POSE|toggleCruxVideo|cruxVideoPaused/);
   assert.doesNotMatch(source, /className=\{styles\.cruxLead\}/);
   assert.match(css, /\.cruxProject \{[\s\S]*?width: min\(980px, 58vw\);/s);

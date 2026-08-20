@@ -26,7 +26,7 @@ const destinations = [
   },
   {
     label: "CRUX VISION",
-    chapters: 4,
+    chapters: 5,
     shaderColor: [0.561, 0.902, 0.376] as const,
     cssColor: [143, 230, 96] as const,
   },
@@ -249,6 +249,7 @@ export function SignalPrototypeV4() {
   const shellRef = useRef<HTMLElement>(null);
   const mountRef = useRef<HTMLDivElement>(null);
   const emailRef = useRef<HTMLElement>(null);
+  const outlookEmailRef = useRef<HTMLElement>(null);
   const lightboxCloseRef = useRef<HTMLButtonElement>(null);
   const cruxVideoRef = useRef<HTMLVideoElement>(null);
   const cruxMovementVideoRef = useRef<HTMLVideoElement>(null);
@@ -354,13 +355,12 @@ export function SignalPrototypeV4() {
     }
   };
 
-  const copyEmail = async () => {
+  const copyEmailValue = async (emailElement: HTMLElement | null) => {
     const email = "luebbertevan@gmail.com";
     try {
       await navigator.clipboard.writeText(email);
       setEmailCopyStatus("copied");
     } catch {
-      const emailElement = emailRef.current;
       if (!emailElement) return;
       const range = document.createRange();
       range.selectNodeContents(emailElement);
@@ -371,6 +371,9 @@ export function SignalPrototypeV4() {
     }
     window.setTimeout(() => setEmailCopyStatus("idle"), 1800);
   };
+
+  const copyEmail = () => copyEmailValue(emailRef.current);
+  const copyOutlookEmail = () => copyEmailValue(outlookEmailRef.current);
 
   useEffect(() => {
     const shell = shellRef.current;
@@ -2032,36 +2035,118 @@ export function SignalPrototypeV4() {
                 </figcaption>
               </figure>
 
-              <section className={styles.cruxCalibrationSection} aria-labelledby="crux-plausibility-heading">
-                <h3 id="crux-plausibility-heading">CONTINUITY AND PLAUSIBILITY</h3>
-                <p>
-                  Confidence hysteresis uses different requirements for acquiring and retaining a joint, preventing
-                  borderline data from blinking on and off at a single cutoff. Timestamp-aware plausibility checks
-                  compare joint speed, acceleration, and changes in apparent limb length against body scale, rejecting
-                  positions that would require an implausible jump even when the model reports high confidence. The
-                  smoothing controls then tune filter responsiveness within the accepted values.
-                </p>
-              </section>
+              <div className={styles.cruxCalibrationFinalText}>
+                <section className={styles.cruxCalibrationSection} aria-labelledby="crux-plausibility-heading">
+                  <h3 id="crux-plausibility-heading">CONTINUITY AND PLAUSIBILITY</h3>
+                  <p>
+                    Confidence hysteresis uses different requirements for acquiring and retaining a joint, preventing
+                    borderline data from blinking on and off at a single cutoff. Timestamp-aware plausibility checks
+                    compare joint speed, acceleration, and changes in apparent limb length against body scale,
+                    rejecting positions that would require an implausible jump even when the model reports high
+                    confidence. The smoothing controls then tune filter responsiveness within the accepted values.
+                  </p>
+                </section>
 
-              <section className={styles.cruxCalibrationSection} aria-labelledby="crux-limitations-heading">
-                <h3 id="crux-limitations-heading">LIMITATIONS</h3>
+                <section className={styles.cruxCalibrationSection} aria-labelledby="crux-limitations-heading">
+                  <h3 id="crux-limitations-heading">LIMITATIONS</h3>
+                  <p>
+                    Filtering and smoothing can reject noise or make accepted movement easier to read, but they cannot
+                    recover a joint the model never observed. One Euro can lag fast movement, while centered smoothing
+                    can anticipate movement onset. Both remain approximations that need continued comparison against
+                    accepted raw data.
+                  </p>
+                  <p>
+                    Movement trails are most useful with a fixed or nearly fixed camera. Camera movement can distort
+                    trails because the overlay measures motion within the image, including movement introduced by
+                    panning, zooming, or camera shake.
+                  </p>
+                  <p>
+                    Computer vision remains imperfect. Calibration can improve the usefulness of the visual result,
+                    but it cannot repair major detection errors or missing data. Crux Vision should not be treated as
+                    flawless motion capture or biomechanical truth.
+                  </p>
+                </section>
+              </div>
+            </div>
+          </div>
+        </section>
+        <section className={`${styles.chapter} ${styles.cruxOutlookChapter}`} data-project-chapter>
+          <div className={styles.projectMeta}>
+            <span>CRUX VISION</span>
+            <span>OUTLOOK</span>
+          </div>
+          <div className={styles.cruxOutlookLayout}>
+            <header className={styles.cruxOutlookHeader}>
+              <h2>An Open Investigation</h2>
+            </header>
+
+            <div className={styles.cruxOutlookVision}>
+              <p>
+                Crux Vision began with climbing because it is the movement discipline I am familiar with and
+                passionate about. Other sports and movement disciplines could benefit from the same concept: visuals
+                can create a shared language between what someone feels, what a video shows, and what another person
+                can observe.
+              </p>
+              <p>
+                The public beta is the first useful version of that idea. My immediate goal is to make the complete
+                workflow comfortable during an ordinary gym session, then let real use guide what comes next. I want
+                future features to grow from the questions climbers and coaches bring to the tool, not from adding
+                visual complexity for its own sake.
+              </p>
+            </div>
+
+            <div className={styles.cruxOutlookFuture}>
+              <section aria-labelledby="crux-outlook-visual-lenses">
+                <h3 id="crux-outlook-visual-lenses">NEW VISUAL LENSES</h3>
                 <p>
-                  Filtering and smoothing can reject noise or make accepted movement easier to read, but they cannot
-                  recover a joint the model never observed. One Euro can lag fast movement, while centered smoothing
-                  can anticipate movement onset. Both remain approximations that need continued comparison against
-                  accepted raw data.
-                </p>
-                <p>
-                  Movement trails are most useful with a fixed or nearly fixed camera. Camera movement can distort
-                  trails because the overlay measures motion within the image, including movement introduced by
-                  panning, zooming, or camera shake.
-                </p>
-                <p>
-                  Computer vision remains imperfect. Calibration can improve the usefulness of the visual result,
-                  but it cannot repair major detection errors or missing data. Crux Vision should not be treated as
-                  flawless motion capture or biomechanical truth.
+                  There is substantial room to deepen the investigation. New overlays could show the direction and
+                  speed of a movement, preserve earlier positions as ghost poses, or bring several settings together
+                  around a question such as hip drive, a leg swing, or the sequence of body positions through a move.
+                  Carefully bounded measurements could help examine timing, angles, stillness, and movement paths
+                  while remaining honest about missing or uncertain pose data.
                 </p>
               </section>
+              <section aria-labelledby="crux-outlook-comparison">
+                <h3 id="crux-outlook-comparison">COMPARE ATTEMPTS</h3>
+                <p>
+                  Video comparison is especially valuable. Synchronizing two attempts could make differences in
+                  path, timing, body position, and method easier to see. Over time, saved review sessions, editable
+                  annotations, and shareable visuals could turn Crux Vision into a richer surface for collaboration
+                  between climbers and coaches. The same principles may complement expertise in other movement
+                  disciplines, but each brings its own questions. I would want those directions to be explored with
+                  the people who understand them.
+                </p>
+              </section>
+            </div>
+
+            <div className={styles.cruxOutlookClosing}>
+              <p className={styles.cruxOutlookPurpose}>
+                Crux Vision will never pretend to know the correct way to move. Its purpose is to help athletes learn
+                something about their technique, give coaches a clearer way to explain an observation, or add a new
+                element to an open conversation between climbers.
+              </p>
+              <div className={styles.cruxOutlookInvitation}>
+                <p>
+                  Try Crux Vision with your own climbing video. If it helps you notice something—or if you have
+                  observations or improvements—I would love to hear about it. I welcome feedback, feature requests,
+                  and open conversations about where the project should go next.
+                </p>
+                <nav className={`${styles.minimalContactLinks} ${styles.cruxOutlookActions}`} aria-label="Crux Vision outlook links">
+                  <a href="https://crux-vision-rebuild.vercel.app/" target="_blank" rel="noreferrer">
+                    Public beta <i aria-hidden="true">↗</i>
+                  </a>
+                  <button type="button" onClick={copyOutlookEmail} aria-live="polite">
+                    <span ref={outlookEmailRef}>luebbertevan@gmail.com</span>
+                    <i aria-hidden="true">{emailCopyStatus === "copied" ? "✓" : "⧉"}</i>
+                    <span className={styles.srOnly}>
+                      {emailCopyStatus === "copied" ? "Email copied" : emailCopyStatus === "selected" ? "Email selected" : "Copy email"}
+                    </span>
+                  </button>
+                  <a href="https://github.com/luebbertevan/crux-vision" target="_blank" rel="noreferrer">
+                    GitHub <i aria-hidden="true">↗</i>
+                  </a>
+                </nav>
+              </div>
             </div>
           </div>
         </section>
@@ -2070,6 +2155,7 @@ export function SignalPrototypeV4() {
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(1)}>MOVEMENT REVIEW</button></li>
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(2)}>VISUAL OVERLAY</button></li>
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(3)}>ENGINEERING</button></li>
+          <li><button type="button" data-chapter-index onClick={() => navigateToChapter(4)}>OUTLOOK</button></li>
         </ol>
         {expandedCruxMedia && (
           <div

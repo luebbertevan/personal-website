@@ -342,10 +342,11 @@ occupies the left third and the text occupies the right two thirds:
 2. Confidence-controls screenshot with **CONFIDENCE BY SCOPE**.
 
 Keep each explanation in one text column and give its heading the full width of
-that column. The final row remains three equal, top-aligned columns:
-continuity-and-smoothing screenshot; **CONTINUITY AND PLAUSIBILITY** text; and
-**LIMITATIONS** text. Show every screenshot in full rather than cropping it into
-a preview window. Keep captions short:
+that column. The final row follows the same one-third/two-thirds split: the full
+continuity-and-smoothing screenshot sits on the left, while **CONTINUITY AND
+PLAUSIBILITY** and **LIMITATIONS** stack vertically on the right. Show every
+screenshot in full rather than cropping it into a preview window. Keep captions
+short:
 
 - **COMPARE DERIVED VIEWS:** Preview raw, accepted, rejected, One Euro, and
   centered pose data from the same cached analysis, with metrics that make the
@@ -397,7 +398,7 @@ a leg swing, or the sequence of body positions through a move. Carefully
 bounded measurements could help examine timing, angles, stillness, and movement
 paths while remaining honest about missing or uncertain pose data.
 
-Video comparison is espacially valuable. Synchronizing two attempts could make
+Video comparison is especially valuable. Synchronizing two attempts could make
 differences in path, timing, body position, and method easier to see. Over
 time, saved review sessions, editable annotations, and shareable visuals could
 turn Crux Vision into a richer surface for collaboration between climbers and
@@ -406,14 +407,14 @@ movement disciplines, but each one brings its own questions. I would want
 those directions to be explored with the people who understand them.
 
 Crux Vision will never pretend to know the correct way to move.
-It's purpose is to help athletes learn something about their technique, give
+Its purpose is to help athletes learn something about their technique, give
 coaches a clearer way to explain an observation, or add a new element to an open
 conversation between climbers.
 
-I welcome your taste! Try Crux Vision with your own climbing video. If it helps
-you notice something or if you have observations or improvments I would love to hear about
-it. I welcome feedback, feature requests, and open conversations about where
-the project should go next.
+Try Crux Vision with your own climbing video. If it helps you notice something
+or if you have observations or improvements, I would love to hear about it. I
+welcome feedback, feature requests, and open conversations about where the
+project should go next.
 
 ### Calls to action
 

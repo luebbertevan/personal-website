@@ -212,6 +212,9 @@ test("Crux Vision renders all four case-study chapters with expandable media", a
     originScreenshot,
     trailLegend,
     rangeScreenshot,
+    calibrationOverview,
+    confidenceControls,
+    continuitySmoothing,
   ] = await Promise.all([
     readFile(new URL("../app/signal-prototype-v4.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/signal-prototype.module.css", import.meta.url), "utf8"),
@@ -224,6 +227,9 @@ test("Crux Vision renders all four case-study chapters with expandable media", a
     readFile(new URL("../public/images/crux-vision-find-the-move.webp", import.meta.url)),
     readFile(new URL("../public/images/crux-vision-trail-legend.webp", import.meta.url)),
     readFile(new URL("../public/images/crux-vision-analyze-range.webp", import.meta.url)),
+    readFile(new URL("../public/images/crux-vision-calibration-overview.webp", import.meta.url)),
+    readFile(new URL("../public/images/crux-vision-confidence-controls.webp", import.meta.url)),
+    readFile(new URL("../public/images/crux-vision-continuity-smoothing.webp", import.meta.url)),
   ]);
 
   assert.match(html, /Crux Vision is a movement-review tool I created to turn climbing footage into a workspace/);
@@ -270,9 +276,21 @@ test("Crux Vision renders all four case-study chapters with expandable media", a
   assert.match(html, /higher confidence cutoffs and tighter motion limits/);
   assert.match(html, /lower confidence cutoffs and looser motion limits/);
   assert.match(html, /CALIBRATION BY ITERATION/);
+  assert.match(html, /Calibration is an iterative process rather than a search for one universally correct filter/);
+  assert.match(html, /SMOOTHING RECORDED MOVEMENT/);
+  assert.match(html, /One Euro filter/);
+  assert.match(html, /centered offline smoother/);
+  assert.match(html, /CONFIDENCE BY SCOPE/);
+  assert.match(html, /MediaPipe attaches two confidence signals to each detected joint/);
+  assert.match(html, /CONTINUITY AND PLAUSIBILITY/);
   assert.match(html, /LIMITATIONS/);
+  assert.match(html, /Camera movement can distort trails/);
   assert.doesNotMatch(html, /CALIBRATED BY LOOKING|BOUNDARIES/);
-  assert.match(html, /roughly 70 milliseconds of lag/);
+  assert.doesNotMatch(html, /70 milliseconds|MediaPipe Full the quality default/);
+  assert.match(source, /cruxEngineeringMedia\[0\]/);
+  assert.match(source, /crux-vision-calibration-overview\.webp/);
+  assert.match(source, /crux-vision-confidence-controls\.webp/);
+  assert.match(source, /crux-vision-continuity-smoothing\.webp/);
   assert.match(source, /onClick=\{\(\) => navigateToChapter\(3\)\}>ENGINEERING<\/button>/);
   assert.match(css, /\.cruxMovementIntro \{[^}]*grid-template-columns:/s);
   assert.match(css, /\.cruxMovementFeature \{[^}]*grid-template-columns:/s);
@@ -286,6 +304,9 @@ test("Crux Vision renders all four case-study chapters with expandable media", a
   assert.match(css, /\.cruxQualityProfiles span \{[^}]*font-size: var\(--crux-body-size\);/s);
   assert.match(css, /\.cruxQualityTrack i \{[^}]*width: 100%;/s);
   assert.match(css, /\.cruxQualityProfiles \{[^}]*grid-template-columns: repeat\(3, minmax\(0, 1fr\)\);/s);
+  assert.match(css, /\.cruxCalibrationGrid \{[^}]*grid-template-columns: repeat\(3, minmax\(0, 1fr\)\);/s);
+  assert.match(css, /\.cruxCalibrationScreenshot \{[^}]*aspect-ratio: 4 \/ 5;/s);
+  assert.match(css, /\.cruxCalibrationSection \{[^}]*align-content: start;[^}]*align-self: start;/s);
   assert.match(css, /\.cruxBody \{[^}]*grid-template-columns: minmax\(0, 1\.62fr\) minmax\(210px, 0\.82fr\);/s);
   assert.match(css, /\.cruxStoryScroll \{[^}]*overflow-y: auto;/s);
   assert.match(css, /\.cruxMediaColumn \{[^}]*grid-template-rows: minmax\(0, 1fr\) auto;/s);
@@ -307,4 +328,10 @@ test("Crux Vision renders all four case-study chapters with expandable media", a
   assert.equal(trailLegend.subarray(0, 4).toString("ascii"), "RIFF");
   assert.equal(trailLegend.subarray(8, 12).toString("ascii"), "WEBP");
   assert.equal(rangeScreenshot.subarray(0, 4).toString("ascii"), "RIFF");
+  assert.equal(calibrationOverview.subarray(0, 4).toString("ascii"), "RIFF");
+  assert.equal(calibrationOverview.subarray(8, 12).toString("ascii"), "WEBP");
+  assert.equal(confidenceControls.subarray(0, 4).toString("ascii"), "RIFF");
+  assert.equal(confidenceControls.subarray(8, 12).toString("ascii"), "WEBP");
+  assert.equal(continuitySmoothing.subarray(0, 4).toString("ascii"), "RIFF");
+  assert.equal(continuitySmoothing.subarray(8, 12).toString("ascii"), "WEBP");
 });

@@ -214,12 +214,14 @@ the movement without disguising that uncertainty.
 
 #### From video to overlay
 
-A climber imports a local video and selects only the move they want to study.
-MediaPipe analyzes that range progressively in a worker while the source
-remains playable. Each pose sample keeps its presentation timestamp, and live
-Canvas layers use the same display transform as the video. This keeps overlays
-aligned across portrait and landscape footage without uploading or re-encoding
-the clip.
+A climber imports a local video and selects only the range they want to study,
+keeping the analysis focused and reducing processing time. MediaPipe analyzes
+that range progressively in a worker, drawing the overlay as results arrive so
+the climber can begin reviewing the movement while the source video remains
+playable. Each pose sample keeps its presentation timestamp, and live Canvas
+layers use the same display transform as the video. This keeps overlays aligned
+across portrait and landscape footage without uploading or re-encoding the
+clip.
 
 #### Preserving uncertainty
 
@@ -240,17 +242,87 @@ more accurate.
 
 #### Calibration by iteration
 
-Human review exposed roughly 70 milliseconds of lag from the first causal
-smoothing approach. Testing against the same cached pose data led to a centered
-offline smoother for recorded review and made MediaPipe Full the quality
-default. Because the raw result remains unchanged, the display can evolve
-without rewriting what the model originally returned.
+Calibration is an iterative process rather than a search for one universally
+correct filter. I compare raw, accepted, rejected, One Euro, and centered views
+against the same cached MediaPipe results, isolating each policy or filter
+change from a new inference run. Coverage, rejection, gap, and smoothing
+metrics reveal how a setting changes the data, but visual review determines
+whether the resulting body positions still make sense.
+
+The public beta exposes this deeper workspace for advanced manual calibration.
+Thresholds, continuity rules, smoothing behavior, and preview modes can be
+adjusted while the original pose samples remain immutable. Most climbers only
+need the Balanced, Strict, and Permissive presets; the advanced controls make
+the reasoning behind those presets inspectable and give me a controlled surface
+for developing better defaults.
+
+Calibration remains ongoing. I am continuing to test across static positions,
+explosive dynamic moves, overhangs and occlusion, crossed limbs, varied camera
+angles, and different styles of climbing. A change should improve more than one
+kind of movement without creating a new failure somewhere else.
+
+#### Smoothing recorded movement
+
+Even accepted pose landmarks can shift slightly from frame to frame. That
+noise makes a skeleton appear to jitter and turns a movement trail into a
+jagged path. Smoothing produces more visually stable poses and cleaner overlays
+and trails, but every smoother must trade some immediate responsiveness for
+visual continuity.
+
+The **One Euro filter** is adaptive and causal: it uses the current and earlier
+accepted samples, applying more smoothing to slow or nearly still movement and
+responding more quickly as movement speed increases. Because it does not look
+ahead, it follows the chronology of the incoming pose track, but it can still
+visibly trail a fast, dynamic move.
+
+The **centered offline smoother** uses accepted samples before and after each
+timestamp. Its symmetric window avoids the same systematic trailing and
+produced the most useful display for recorded dynamic movement while still
+removing substantial jitter, so it became the display default. Looking forward
+creates a different risk: movement can appear to begin slightly early. Both
+smoothers stay inside accepted segments and reset at missing or rejected data
+rather than blending across a gap. Accepted raw retains the original model output.
+
+##### Confidence by scope
+
+MediaPipe attaches two confidence signals to each detected joint. **Visibility**
+estimates whether the joint is clearly visible rather than hidden by the body,
+wall, or another limb. **Presence** estimates whether the joint is actually
+within the captured frame. Crux Vision requires both signals to clear their
+configured thresholds before a joint enters an accepted view.
+
+A global threshold establishes the baseline, while body-group overrides can
+target repeated problems in related joints without over-filtering the entire
+body. Joint-level overrides provide an even narrower adjustment when needed.
+Higher thresholds remove more questionable positions, reducing false limbs at
+the cost of more missing data and broken trails. Lower thresholds preserve more
+continuous movement, but increase the chance that an uncertain or incorrect
+position will remain visible.
+
+#### Continuity and plausibility
+
+Confidence hysteresis uses different requirements for acquiring and retaining
+a joint, preventing borderline data from blinking on and off at a single
+cutoff. Timestamp-aware plausibility checks compare joint speed, acceleration,
+and changes in apparent limb length against body scale, rejecting positions
+that would require an implausible jump even when the model reports high
+confidence. The smoothing controls then tune filter responsiveness within the accepted values.
 
 #### Limitations
 
-Crux Vision works in projected image space and trails are most meaningful with
-a fixed camera. It is a tool for investigation—not motion capture,
-biomechanical truth, or a system that decides the correct way to climb.
+Filtering and smoothing can reject noise or make accepted movement easier to
+read, but they cannot recover a joint the model never observed. One Euro can
+lag fast movement, while centered smoothing can anticipate movement onset. Both
+remain approximations that need continued comparison against accepted raw data.
+
+Movement trails are most useful with a fixed or nearly fixed camera. Camera
+movement can distort trails because the overlay measures motion within the
+image, including movement introduced by panning, zooming, or camera shake.
+
+Computer vision remains imperfect. Calibration can improve the usefulness of
+the visual result, but it cannot repair major detection errors or missing data.
+Crux Vision should not be treated as flawless motion capture or biomechanical
+truth.
 
 ### Recommended layout and visual
 
@@ -259,29 +331,102 @@ chapter, place the introduction and technical highlights in two equally
 weighted columns immediately after the title. Put a full-width technology row
 directly beneath them so the stack remains visible before scrolling. Follow it
 with a restrained comparison of Balanced, Strict, and Permissive using one
-continuous line in each card. Format Calibration by Iteration and Limitations
-as another pair of equally weighted text columns. This communicates more of the
-engineering story than a MediaPipe logo and stays more legible than a full
-screenshot of the calibration workspace.
+continuous line in each card.
 
-## Possible Chapter 5. Outlook
+Let **CALIBRATION BY ITERATION** span the content width as a short introduction
+to the advanced workspace. Beneath it, use two three-column rows modeled on the
+**FOCUS THE INVESTIGATION** layout:
 
-**Status:** Proposed structure, not yet decided.
+1. **First row:** pose-quality calibration screenshot; confidence-controls
+   screenshot; one text column containing **SMOOTHING RECORDED MOVEMENT** and
+   the shorter **CONFIDENCE BY SCOPE** note.
+2. **Second row:** continuity-and-smoothing screenshot; **CONTINUITY AND
+   PLAUSIBILITY** text; **LIMITATIONS** text.
+
+Use equal-width, top-aligned columns. Present the screenshots in consistent
+cropped windows so the tall mobile captures do not control the height of each
+row, then use the existing expand interaction to show each full image. Keep
+captions short:
+
+- **COMPARE DERIVED VIEWS:** Preview raw, accepted, rejected, One Euro, and
+  centered pose data from the same cached analysis, with metrics that make the
+  effects of each policy visible.
+- **CONFIDENCE THRESHOLDS:** Tune visibility and presence globally or for a
+  body group when a recurring confidence problem needs a more targeted rule.
+- **CONTINUITY CONTROLS:** Adjust reacquisition, motion plausibility, One Euro
+  responsiveness, and the centered smoothing window without bridging rejected
+  gaps.
+
+Current screenshot sources and suggested portfolio asset names:
+
+- `/Users/evan/Documents/Screenshots/Screenshot 2026-08-20 at 1.19.16 PM.png`
+  → `public/images/crux-vision-calibration-overview.webp`
+- `/Users/evan/Documents/Screenshots/Screenshot 2026-08-20 at 1.20.47 PM.png`
+  → `public/images/crux-vision-confidence-controls.webp`
+- `/Users/evan/Documents/Screenshots/Screenshot 2026-08-20 at 1.22.03 PM.png`
+  → `public/images/crux-vision-continuity-smoothing.webp`
+
+## Chapter 5. Outlook
+
+**Status:** Draft for review.
 
 ### Label
 
 OUTLOOK
 
-### Working title
+### Title
 
 An Open Investigation
 
-### Direction
+### Body
 
-Use a brief concluding chapter to explain that Crux Vision began with climbing
-because it is the movement discipline I understand and care about most, while
-the same visual-review principles may complement expertise in other sports and
-movement disciplines. Frame the public beta as an evolving investigation:
-future visualizations and review capabilities will be shaped by continued use
-and feedback from climbers, coaches, and people with different movement
-backgrounds.
+Crux Vision began with climbing because it is the movement discipline I am familiar with
+and passionate about. Other sports and movement disciplines could benefit from
+the same concept: visuals can create a shared language between what someone
+feels, what a video shows, and what another person can observe.
+
+The public beta is the first useful version of that idea. My immediate goal is
+to make the complete workflow comfortable during an ordinary gym session, then
+let real use guide what comes next. I want future features to grow from the
+questions climbers and coaches bring to the tool, not from adding visual
+complexity for its own sake.
+
+There is substantial room to deepen the investigation. New overlays could show
+the direction and speed of a movement, preserve earlier positions as ghost
+poses, or bring several settings together around a question such as hip drive,
+a leg swing, or the sequence of body positions through a move. Carefully
+bounded measurements could help examine timing, angles, stillness, and movement
+paths while remaining honest about missing or uncertain pose data.
+
+Video comparison is espacially valuable. Synchronizing two attempts could make
+differences in path, timing, body position, and method easier to see. Over
+time, saved review sessions, editable annotations, and shareable visuals could
+turn Crux Vision into a richer surface for collaboration between climbers and
+coaches. The same principles may also complement expertise in other sports and
+movement disciplines, but each one brings its own questions. I would want
+those directions to be explored with the people who understand them.
+
+Crux Vision will never pretend to know the correct way to move.
+It's purpose is to help athletes learn something about their technique, give
+coaches a clearer way to explain an observation, or add a new element to an open
+conversation between climbers.
+
+I welcome your taste! Try Crux Vision with your own climbing video. If it helps
+you notice something or if you have observations or improvments I would love to hear about
+it. I welcome feedback, feature requests, and open conversations about where
+the project should go next.
+
+### Calls to action
+
+- TRY THE PUBLIC BETA: <https://crux-vision-rebuild.vercel.app/>
+- SHARE FEEDBACK: luebbertevan@gmail.com (just mirror the link on my about page with the copy icon and functionality)
+
+### Recommended layout and visual
+
+Keep the closing chapter concise and primarily typographic. Let the first two
+paragraphs establish the vision, then give the future-feature paragraphs enough
+space to read as possibilities rather than a promised feature list. End with
+the invitation and two clear actions: the public beta and a direct feedback or
+contact link. If the chapter needs a visual accent, use a restrained progression
+of labels—**New visual lenses**, **Compare attempts**, and **Share the
+investigation**—instead of product mockups for features that do not exist yet.

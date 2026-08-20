@@ -142,6 +142,32 @@ const cruxMovementMedia = [
 
 type CruxMovementMedia = (typeof cruxMovementMedia)[number];
 
+const cruxEngineeringMedia = [
+  {
+    title: "COMPARE DERIVED VIEWS",
+    src: "/images/crux-vision-calibration-overview.webp",
+    alt: "Crux Vision’s advanced pose-quality calibration workspace showing preview controls, quality metrics, and body-group coverage.",
+    width: 674,
+    height: 1606,
+  },
+  {
+    title: "CONFIDENCE THRESHOLDS",
+    src: "/images/crux-vision-confidence-controls.webp",
+    alt: "Crux Vision’s global confidence and body-group override controls for visibility and presence thresholds.",
+    width: 612,
+    height: 988,
+  },
+  {
+    title: "CONTINUITY CONTROLS",
+    src: "/images/crux-vision-continuity-smoothing.webp",
+    alt: "Crux Vision’s advanced controls for confidence hysteresis, temporal plausibility checks, One Euro smoothing, and centered smoothing radius.",
+    width: 612,
+    height: 1422,
+  },
+] as const;
+
+type CruxMedia = CruxMovementMedia | (typeof cruxEngineeringMedia)[number];
+
 type CruxVideoMedia = {
   src: string;
   poster: string;
@@ -236,7 +262,7 @@ export function SignalPrototypeV4() {
   const [paused, setPaused] = useState(false);
   const [emailCopyStatus, setEmailCopyStatus] = useState<"idle" | "copied" | "selected">("idle");
   const [expandedMedia, setExpandedMedia] = useState<FostyMedia | null>(null);
-  const [expandedCruxMedia, setExpandedCruxMedia] = useState<CruxMovementMedia | null>(null);
+  const [expandedCruxMedia, setExpandedCruxMedia] = useState<CruxMedia | null>(null);
   const [cruxVideoExpanded, setCruxVideoExpanded] = useState(false);
   const [expandedCruxVideo, setExpandedCruxVideo] = useState<CruxVideoMedia>(cruxOriginVideo);
   const pausedRef = useRef(false);
@@ -1855,22 +1881,182 @@ export function SignalPrototypeV4() {
               </ul>
             </section>
 
-            <div className={styles.cruxEngineeringCopy}>
-              <section>
-                <h3>CALIBRATION BY ITERATION</h3>
+            <section className={styles.cruxCalibrationIntro} aria-labelledby="crux-calibration-heading">
+              <h3 id="crux-calibration-heading">CALIBRATION BY ITERATION</h3>
+              <div>
                 <p>
-                  Human review exposed roughly 70 milliseconds of lag from the first causal smoothing approach.
-                  Testing against the same cached pose data led to a centered offline smoother for recorded review
-                  and made MediaPipe Full the quality default. The display can evolve without rewriting the model’s
-                  original result.
+                  Calibration is an iterative process rather than a search for one universally correct filter. I
+                  compare raw, accepted, rejected, One Euro, and centered views against the same cached MediaPipe
+                  results, isolating each policy or filter change from a new inference run. Coverage, rejection, gap,
+                  and smoothing metrics reveal how a setting changes the data, but visual review determines whether
+                  the resulting body positions still make sense.
+                </p>
+                <p>
+                  The public beta exposes this deeper workspace for advanced manual calibration. Thresholds,
+                  continuity rules, smoothing behavior, and preview modes can be adjusted while the original pose
+                  samples remain immutable. Most climbers only need the Balanced, Strict, and Permissive presets; the
+                  advanced controls make the reasoning behind those presets inspectable and give me a controlled
+                  surface for developing better defaults.
+                </p>
+                <p>
+                  Calibration remains ongoing. I am continuing to test across static positions, explosive dynamic
+                  moves, overhangs and occlusion, crossed limbs, varied camera angles, and different styles of
+                  climbing. A change should improve more than one kind of movement without creating a new failure
+                  somewhere else.
+                </p>
+              </div>
+            </section>
+
+            <div className={styles.cruxCalibrationGrid}>
+              <figure className={styles.cruxCalibrationFigure}>
+                <button
+                  type="button"
+                  className={`${styles.productScreenshot} ${styles.cruxCalibrationScreenshot}`}
+                  onClick={() => setExpandedCruxMedia(cruxEngineeringMedia[0])}
+                  aria-label="Expand compare derived views screenshot"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={cruxEngineeringMedia[0].src}
+                    alt={cruxEngineeringMedia[0].alt}
+                    width={cruxEngineeringMedia[0].width}
+                    height={cruxEngineeringMedia[0].height}
+                  />
+                  <span>EXPAND <i aria-hidden="true">↗</i></span>
+                </button>
+                <figcaption>
+                  <strong>COMPARE DERIVED VIEWS</strong>
+                  <span>
+                    Preview raw, accepted, rejected, One Euro, and centered pose data from the same cached analysis,
+                    with metrics that make each policy’s effects visible.
+                  </span>
+                </figcaption>
+              </figure>
+
+              <figure className={styles.cruxCalibrationFigure}>
+                <button
+                  type="button"
+                  className={`${styles.productScreenshot} ${styles.cruxCalibrationScreenshot}`}
+                  onClick={() => setExpandedCruxMedia(cruxEngineeringMedia[1])}
+                  aria-label="Expand confidence threshold controls screenshot"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={cruxEngineeringMedia[1].src}
+                    alt={cruxEngineeringMedia[1].alt}
+                    width={cruxEngineeringMedia[1].width}
+                    height={cruxEngineeringMedia[1].height}
+                  />
+                  <span>EXPAND <i aria-hidden="true">↗</i></span>
+                </button>
+                <figcaption>
+                  <strong>CONFIDENCE THRESHOLDS</strong>
+                  <span>
+                    Tune visibility and presence globally or for a body group when a recurring confidence problem
+                    needs a more targeted rule.
+                  </span>
+                </figcaption>
+              </figure>
+
+              <div className={styles.cruxCalibrationTextStack}>
+                <section className={styles.cruxCalibrationSection} aria-labelledby="crux-smoothing-heading">
+                  <h3 id="crux-smoothing-heading">SMOOTHING RECORDED MOVEMENT</h3>
+                  <p>
+                    Even accepted pose landmarks can shift slightly from frame to frame. That noise makes a skeleton
+                    appear to jitter and turns a movement trail into a jagged path. Smoothing produces more visually
+                    stable poses and cleaner overlays and trails, but every smoother must trade some immediate
+                    responsiveness for visual continuity.
+                  </p>
+                  <p>
+                    The <strong>One Euro filter</strong> is adaptive and causal: it uses the current and earlier
+                    accepted samples, applying more smoothing to slow or nearly still movement and responding more
+                    quickly as movement speed increases. Because it does not look ahead, it follows the chronology of
+                    the incoming pose track, but it can still visibly trail a fast, dynamic move.
+                  </p>
+                  <p>
+                    The <strong>centered offline smoother</strong> uses accepted samples before and after each
+                    timestamp. Its symmetric window avoids the same systematic trailing and produced the most useful
+                    display for recorded dynamic movement while still removing substantial jitter, so it became the
+                    display default. Looking forward creates a different risk: movement can appear to begin slightly
+                    early. Both smoothers stay inside accepted segments and reset at missing or rejected data rather
+                    than blending across a gap. Accepted raw retains the original model output.
+                  </p>
+                </section>
+                <section className={styles.cruxCalibrationSection} aria-labelledby="crux-confidence-heading">
+                  <h3 id="crux-confidence-heading">CONFIDENCE BY SCOPE</h3>
+                  <p>
+                    MediaPipe attaches two confidence signals to each detected joint. <strong>Visibility</strong>
+                    estimates whether the joint is clearly visible rather than hidden by the body, wall, or another
+                    limb. <strong>Presence</strong> estimates whether the joint is actually within the captured frame.
+                    Crux Vision requires both signals to clear their configured thresholds before a joint enters an
+                    accepted view.
+                  </p>
+                  <p>
+                    A global threshold establishes the baseline, while body-group overrides can target repeated
+                    problems in related joints without over-filtering the entire body. Joint-level overrides provide
+                    an even narrower adjustment when needed. Higher thresholds remove more questionable positions,
+                    reducing false limbs at the cost of more missing data and broken trails. Lower thresholds preserve
+                    more continuous movement, but increase the chance that an uncertain or incorrect position will
+                    remain visible.
+                  </p>
+                </section>
+              </div>
+            </div>
+
+            <div className={`${styles.cruxCalibrationGrid} ${styles.cruxCalibrationGridSecondary}`}>
+              <figure className={`${styles.cruxCalibrationFigure} ${styles.cruxContinuityFigure}`}>
+                <button
+                  type="button"
+                  className={`${styles.productScreenshot} ${styles.cruxCalibrationScreenshot}`}
+                  onClick={() => setExpandedCruxMedia(cruxEngineeringMedia[2])}
+                  aria-label="Expand continuity and smoothing controls screenshot"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={cruxEngineeringMedia[2].src}
+                    alt={cruxEngineeringMedia[2].alt}
+                    width={cruxEngineeringMedia[2].width}
+                    height={cruxEngineeringMedia[2].height}
+                  />
+                  <span>EXPAND <i aria-hidden="true">↗</i></span>
+                </button>
+                <figcaption>
+                  <strong>CONTINUITY CONTROLS</strong>
+                  <span>
+                    Adjust reacquisition, motion plausibility, One Euro responsiveness, and the centered smoothing
+                    window without bridging rejected gaps.
+                  </span>
+                </figcaption>
+              </figure>
+
+              <section className={styles.cruxCalibrationSection} aria-labelledby="crux-plausibility-heading">
+                <h3 id="crux-plausibility-heading">CONTINUITY AND PLAUSIBILITY</h3>
+                <p>
+                  Confidence hysteresis uses different requirements for acquiring and retaining a joint, preventing
+                  borderline data from blinking on and off at a single cutoff. Timestamp-aware plausibility checks
+                  compare joint speed, acceleration, and changes in apparent limb length against body scale, rejecting
+                  positions that would require an implausible jump even when the model reports high confidence. The
+                  smoothing controls then tune filter responsiveness within the accepted values.
                 </p>
               </section>
-              <section>
-                <h3>LIMITATIONS</h3>
+
+              <section className={styles.cruxCalibrationSection} aria-labelledby="crux-limitations-heading">
+                <h3 id="crux-limitations-heading">LIMITATIONS</h3>
                 <p>
-                  Crux Vision works in projected image space and trails are most meaningful with a fixed camera. It
-                  is a tool for investigation—not motion capture, biomechanical truth, or a system that decides the
-                  correct way to climb.
+                  Filtering and smoothing can reject noise or make accepted movement easier to read, but they cannot
+                  recover a joint the model never observed. One Euro can lag fast movement, while centered smoothing
+                  can anticipate movement onset. Both remain approximations that need continued comparison against
+                  accepted raw data.
+                </p>
+                <p>
+                  Movement trails are most useful with a fixed or nearly fixed camera. Camera movement can distort
+                  trails because the overlay measures motion within the image, including movement introduced by
+                  panning, zooming, or camera shake.
+                </p>
+                <p>
+                  Computer vision remains imperfect. Calibration can improve the usefulness of the visual result,
+                  but it cannot repair major detection errors or missing data. Crux Vision should not be treated as
+                  flawless motion capture or biomechanical truth.
                 </p>
               </section>
             </div>

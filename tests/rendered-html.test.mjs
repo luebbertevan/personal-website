@@ -329,6 +329,7 @@ test("Crux Vision renders all five case-study chapters with expandable media", a
   assert.match(source, /className=\{styles\.cruxNarrative\} tabIndex=\{0\}/);
   assert.match(css, /\.cruxNarrative \{[^}]*overflow-y: auto;/s);
   assert.match(css, /\.cruxNarrative \{[^}]*row-gap: clamp\(8px, 0\.9vh, 12px\);/s);
+  assert.match(css, /\.cruxStoryScroll p:last-child \{[^}]*padding-bottom: clamp\(40px, 5vh, 52px\);/s);
   assert.match(css, /\.cruxMediaColumn \{[^}]*grid-template-rows: minmax\(0, 1fr\) auto;/s);
   assert.match(css, /\.chapterRail\.cruxChapterRail \{\s*grid-template-columns: repeat\(5, minmax\(0, 1fr\)\);/s);
   assert.match(css, /\.cruxOutlookVision,\s*\.cruxOutlookFuture,\s*\.cruxOutlookClosing \{[^}]*grid-template-columns: minmax\(0, 1fr\);/s);

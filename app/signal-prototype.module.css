@@ -680,7 +680,7 @@
   grid-column: 1 / -1;
   min-width: 0;
   min-height: 0;
-  padding: 0 0 18px;
+  padding: 0;
 }
 .cruxNarrative:focus-visible {
   outline: 1px solid rgba(var(--accent-rgb), 0.74);
@@ -693,6 +693,9 @@
 }
 .cruxStoryScroll p + p {
   margin-top: clamp(11px, 1.25vh, 16px);
+}
+.cruxStoryScroll p:last-child {
+  padding-bottom: clamp(40px, 5vh, 52px);
 }
 .cruxMediaColumn {
   display: grid;
@@ -2528,7 +2531,7 @@
   .cruxStoryScroll {
     height: auto;
     margin-top: 10px;
-    padding: 0 0 18px;
+    padding: 0;
     overflow: visible;
     mask-image: none;
   }

@@ -635,7 +635,8 @@
   min-height: 0;
   grid-template-columns: minmax(0, 1fr) minmax(180px, 1.04fr);
   grid-template-rows: auto auto;
-  gap: clamp(12px, 1.35vw, 22px) clamp(12px, 1.25vw, 20px);
+  row-gap: clamp(8px, 0.9vh, 12px);
+  column-gap: clamp(12px, 1.25vw, 20px);
   align-content: start;
   padding-right: clamp(8px, 0.7vw, 12px);
   overflow-y: auto;
@@ -833,7 +834,7 @@
 }
 .cruxMovementLayout {
   display: grid;
-  gap: clamp(18px, 2.2vh, 28px);
+  gap: clamp(12px, 1.4vh, 16px);
 }
 .cruxMovementIntro {
   display: grid;
@@ -844,7 +845,7 @@
 .cruxMovementIntroColumn {
   display: grid;
   min-width: 0;
-  gap: clamp(16px, 2vh, 24px);
+  gap: clamp(10px, 1.2vh, 14px);
 }
 .cruxMovementIntroCopy {
   display: grid;
@@ -1309,7 +1310,7 @@
 .cruxOutlookClosing {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: clamp(18px, 2vw, 30px);
+  gap: clamp(11px, 1.25vh, 16px);
   align-items: start;
 }
 .cruxOutlookFuture,

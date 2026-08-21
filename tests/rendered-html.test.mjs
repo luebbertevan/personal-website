@@ -304,6 +304,8 @@ test("Crux Vision renders all five case-study chapters with expandable media", a
   assert.match(source, /ref=\{outlookEmailRef\}>luebbertevan@gmail\.com<\/span>/);
   assert.match(source, /onClick=\{\(\) => navigateToChapter\(4\)\}>OUTLOOK<\/button>/);
   assert.match(css, /\.cruxMovementIntro \{[^}]*grid-template-columns:/s);
+  assert.match(css, /\.cruxMovementLayout \{[^}]*gap: clamp\(12px, 1\.4vh, 16px\);/s);
+  assert.match(css, /\.cruxMovementIntroColumn \{[^}]*gap: clamp\(10px, 1\.2vh, 14px\);/s);
   assert.match(css, /\.cruxMovementFeature \{[^}]*grid-template-columns:/s);
   assert.match(css, /\.cruxComparisonVideoFrame \{[^}]*aspect-ratio: 1676 \/ 922;/s);
   assert.match(css, /\.cruxVisualSupport,\s*\.cruxTrailReading \{[^}]*grid-template-columns:/s);
@@ -326,9 +328,11 @@ test("Crux Vision renders all five case-study chapters with expandable media", a
   assert.match(css, /\.cruxBody \{[^}]*grid-template-columns: minmax\(0, 1\.62fr\) minmax\(210px, 0\.82fr\);/s);
   assert.match(source, /className=\{styles\.cruxNarrative\} tabIndex=\{0\}/);
   assert.match(css, /\.cruxNarrative \{[^}]*overflow-y: auto;/s);
+  assert.match(css, /\.cruxNarrative \{[^}]*row-gap: clamp\(8px, 0\.9vh, 12px\);/s);
   assert.match(css, /\.cruxMediaColumn \{[^}]*grid-template-rows: minmax\(0, 1fr\) auto;/s);
   assert.match(css, /\.chapterRail\.cruxChapterRail \{\s*grid-template-columns: repeat\(5, minmax\(0, 1fr\)\);/s);
   assert.match(css, /\.cruxOutlookVision,\s*\.cruxOutlookFuture,\s*\.cruxOutlookClosing \{[^}]*grid-template-columns: minmax\(0, 1fr\);/s);
+  assert.match(css, /\.cruxOutlookVision,\s*\.cruxOutlookFuture,\s*\.cruxOutlookClosing \{[^}]*gap: clamp\(11px, 1\.25vh, 16px\);/s);
   assert.doesNotMatch(source, /MOVEMENT OVERLAY · LIVE POSE|toggleCruxVideo|cruxVideoPaused/);
   assert.doesNotMatch(source, /className=\{styles\.cruxLead\}/);
   assert.match(css, /\.cruxProject \{[\s\S]*?width: min\(980px, 58vw\);/s);

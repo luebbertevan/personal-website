@@ -834,7 +834,8 @@
   display: flex;
   flex-direction: column;
   padding-bottom: clamp(18px, 2.4vh, 30px);
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 .inheritanceExperience .projectMeta {
   flex: 0 0 auto;

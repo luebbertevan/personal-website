@@ -206,6 +206,14 @@ const cruxComparisonVideo: CruxVideoMedia = {
   height: 922,
 };
 
+const inheritanceMotionVideo: CruxVideoMedia = {
+  src: "/videos/inheritance-motion-collection.mp4",
+  poster: "/images/inheritance-motion-collection-poster.webp",
+  label: "Inheritance retargeted motion capture sample",
+  width: 1600,
+  height: 886,
+};
+
 const DESTINATION_TRAVEL = 52;
 const DESTINATION_DURATION = 7.35;
 const CHAPTER_TRAVEL = 13;
@@ -266,6 +274,7 @@ export function SignalPrototypeV4() {
   const activeDestinationRef = useRef(0);
   const activeChapterRef = useRef(0);
   const cruxVideoExpandedRef = useRef(false);
+  const inheritanceVideoExpandedRef = useRef(false);
   const prefersReducedMotionRef = useRef(false);
   const [paused, setPaused] = useState(false);
   const [emailCopyStatus, setEmailCopyStatus] = useState<"idle" | "copied" | "selected">("idle");
@@ -273,10 +282,11 @@ export function SignalPrototypeV4() {
   const [expandedCruxMedia, setExpandedCruxMedia] = useState<CruxMedia | null>(null);
   const [cruxVideoExpanded, setCruxVideoExpanded] = useState(false);
   const [expandedCruxVideo, setExpandedCruxVideo] = useState<CruxVideoMedia>(cruxOriginVideo);
+  const [inheritanceVideoExpanded, setInheritanceVideoExpanded] = useState(false);
   const pausedRef = useRef(false);
 
   useEffect(() => {
-    if (!expandedMedia && !expandedCruxMedia && !cruxVideoExpanded) return;
+    if (!expandedMedia && !expandedCruxMedia && !cruxVideoExpanded && !inheritanceVideoExpanded) return;
 
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
@@ -299,12 +309,21 @@ export function SignalPrototypeV4() {
           });
         }
       }
+      if (inheritanceVideoExpandedRef.current) {
+        inheritanceVideoExpandedRef.current = false;
+        setInheritanceVideoExpanded(false);
+        if (activeDestinationRef.current === 3 && !prefersReducedMotionRef.current) {
+          window.requestAnimationFrame(() => {
+            void inheritanceVideoRef.current?.play().catch(() => undefined);
+          });
+        }
+      }
     };
 
     lightboxCloseRef.current?.focus();
     window.addEventListener("keydown", closeOnEscape);
     return () => window.removeEventListener("keydown", closeOnEscape);
-  }, [cruxVideoExpanded, expandedCruxMedia, expandedMedia]);
+  }, [cruxVideoExpanded, expandedCruxMedia, expandedMedia, inheritanceVideoExpanded]);
 
   const togglePause = () => {
     pausedRef.current = !pausedRef.current;
@@ -316,6 +335,8 @@ export function SignalPrototypeV4() {
     setExpandedCruxMedia(null);
     cruxVideoExpandedRef.current = false;
     setCruxVideoExpanded(false);
+    inheritanceVideoExpandedRef.current = false;
+    setInheritanceVideoExpanded(false);
     navigationCommandRef.current = { type: "destination", value: index };
   };
 
@@ -324,6 +345,8 @@ export function SignalPrototypeV4() {
     setExpandedCruxMedia(null);
     cruxVideoExpandedRef.current = false;
     setCruxVideoExpanded(false);
+    inheritanceVideoExpandedRef.current = false;
+    setInheritanceVideoExpanded(false);
     navigationCommandRef.current = { type: "chapter", value: index };
   };
 
@@ -332,6 +355,8 @@ export function SignalPrototypeV4() {
     setExpandedCruxMedia(null);
     cruxVideoExpandedRef.current = false;
     setCruxVideoExpanded(false);
+    inheritanceVideoExpandedRef.current = false;
+    setInheritanceVideoExpanded(false);
     navigationCommandRef.current = { type: "step", value: direction };
   };
 
@@ -358,6 +383,22 @@ export function SignalPrototypeV4() {
             ? cruxMovementVideoRef.current
             : cruxComparisonVideoRef.current;
         void activeVideo?.play().catch(() => undefined);
+      });
+    }
+  };
+
+  const openInheritanceVideo = () => {
+    inheritanceVideoRef.current?.pause();
+    inheritanceVideoExpandedRef.current = true;
+    setInheritanceVideoExpanded(true);
+  };
+
+  const closeInheritanceVideo = () => {
+    inheritanceVideoExpandedRef.current = false;
+    setInheritanceVideoExpanded(false);
+    if (activeDestinationRef.current === 3 && !prefersReducedMotionRef.current) {
+      window.requestAnimationFrame(() => {
+        void inheritanceVideoRef.current?.play().catch(() => undefined);
       });
     }
   };
@@ -613,6 +654,8 @@ export function SignalPrototypeV4() {
       setExpandedCruxMedia(null);
       cruxVideoExpandedRef.current = false;
       setCruxVideoExpanded(false);
+      inheritanceVideoExpandedRef.current = false;
+      setInheritanceVideoExpanded(false);
       navigationCommandRef.current = { type: "step", value: direction as -1 | 1 };
       impulse = Math.min(1, impulse + 0.16);
     };
@@ -945,7 +988,11 @@ export function SignalPrototypeV4() {
               : comparisonVideo;
           void activeVideo?.play().catch(() => undefined);
         }
-        if (activeDestinationForUi === 3 && !prefersReducedMotionRef.current) {
+        if (
+          activeDestinationForUi === 3
+          && !inheritanceVideoExpandedRef.current
+          && !prefersReducedMotionRef.current
+        ) {
           void inheritanceVideo?.play().catch(() => undefined);
         }
       }
@@ -2259,7 +2306,12 @@ export function SignalPrototypeV4() {
                 >
                   Your browser does not support embedded video.
                 </video>
-                <figcaption>Retargeted motion capture animations running together in Blender.</figcaption>
+                <div className={styles.cruxVideoControls}>
+                  <button type="button" onClick={openInheritanceVideo} aria-label="Expand the retargeted motion capture sample video">
+                    EXPAND <span aria-hidden="true">↗</span>
+                  </button>
+                </div>
+                <figcaption>A sample of retargeted motion capture animations.</figcaption>
               </figure>
             </div>
             <section className={styles.inheritanceStory}>
@@ -2282,6 +2334,38 @@ export function SignalPrototypeV4() {
         <ol className={`${styles.chapterRail} ${styles.inheritanceChapterRail}`} aria-label="Inheritance case study chapters">
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(0)}>EXPERIENCE</button></li>
         </ol>
+        {inheritanceVideoExpanded && (
+          <div
+            className={`${styles.mediaLightbox} ${styles.cruxVideoLightbox}`}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Expanded retargeted motion capture sample video"
+            onClick={closeInheritanceVideo}
+          >
+            <button
+              ref={lightboxCloseRef}
+              type="button"
+              aria-label="Close expanded video"
+              onClick={closeInheritanceVideo}
+            >
+              <span aria-hidden="true">×</span>
+            </button>
+            <video
+              src={inheritanceMotionVideo.src}
+              poster={inheritanceMotionVideo.poster}
+              autoPlay
+              muted
+              loop
+              playsInline
+              controls
+              width={inheritanceMotionVideo.width}
+              height={inheritanceMotionVideo.height}
+              onClick={(event) => event.stopPropagation()}
+            >
+              Your browser does not support embedded video.
+            </video>
+          </div>
+        )}
       </article>
 
       <div className={styles.routeControls} aria-label="Portfolio navigation">

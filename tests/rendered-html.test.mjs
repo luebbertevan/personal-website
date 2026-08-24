@@ -216,6 +216,10 @@ test("Inheritance renders the internship experience with a looping motion reel",
   assert.match(source, /src="\/videos\/inheritance-motion-collection\.mp4"/);
   assert.match(source, /poster="\/images\/inheritance-motion-collection-poster\.webp"/);
   assert.match(source, /muted\s+loop\s+playsInline/);
+  assert.match(html, /A sample of retargeted motion capture animations\./);
+  assert.match(source, /onClick=\{openInheritanceVideo\}/);
+  assert.match(source, /inheritanceVideoExpanded && \(/);
+  assert.match(source, /aria-label="Expanded retargeted motion capture sample video"/);
   assert.match(css, /\.inheritanceShowcase \{[^}]*grid-template-columns: clamp\(156px, 20%, 202px\) minmax\(0, 1fr\);/s);
   assert.match(css, /\.inheritanceMetrics \{[^}]*grid-template-columns: minmax\(0, 1fr\);[^}]*grid-template-rows: repeat\(4, minmax\(0, 1fr\)\);/s);
   assert.match(css, /\.inheritanceExperience \{[^}]*overflow-x: hidden;[^}]*overflow-y: auto;/s);

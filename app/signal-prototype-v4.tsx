@@ -2227,28 +2227,23 @@ export function SignalPrototypeV4() {
                 <p className={styles.inheritanceDate}>FALL 2025</p>
               </div>
             </header>
-            <h2 className={styles.inheritanceStatement}>Motion Data for Machine Learning</h2>
-            <div className={styles.inheritanceBody}>
-              <section className={styles.inheritanceStory}>
-                <p className={styles.inheritanceLead}>
-                  At Inheritance, I built a Python and Blender pipeline that converted AMASS research motion into
-                  standardized skeletal animation for machine learning training in Unreal Engine. It gave the team
-                  access to 11,265 motions from 344 subjects, and the company estimated that around 90% was useful.
-                </p>
-                <p>
-                  During my internship, Inheritance operated under the name <a href="https://kikitora.com/" target="_blank" rel="noreferrer">KikiTora</a>.
-                  The company turned ordinary video into detailed human motion, with a longer-term goal of making
-                  recorded behavior available as structured data for machine learning.
-                </p>
-                <p>
-                  The training workflow ran in reverse: known motion drove standardized characters in Unreal, where
-                  controlled camera, lighting, and rendering variations created many video-to-motion pairs. Compatible
-                  motion capture was the limiting factor, which made this pipeline especially valuable.
-                </p>
-                <nav className={`${styles.minimalContactLinks} ${styles.inheritanceLinks}`} aria-label="Inheritance links">
-                  <a href="https://www.inheritance.ai/" target="_blank" rel="noreferrer">Visit Inheritance <i aria-hidden="true">↗</i></a>
-                </nav>
-              </section>
+            <section className={styles.inheritanceIntro} aria-labelledby="inheritance-intro-title">
+              <h2 className={styles.inheritanceStatement} id="inheritance-intro-title">Motion Data for Machine Learning</h2>
+              <p>
+                At Inheritance, I built a Python and Blender pipeline that converted the entire AMASS research dataset
+                into standardized skeletal animation for machine learning training in Unreal Engine. The pipeline
+                processed 11,265 motions from 344 subjects, representing more than 65 hours of motion capture. The
+                team estimated that around 90% could support training, saving roughly three months of data generation
+                and $70,000 in equivalent motion capture production.
+              </p>
+            </section>
+            <div className={styles.inheritanceShowcase}>
+              <dl className={styles.inheritanceMetrics} aria-label="Project impact">
+                <div><dt>11,265</dt><dd><strong>MOTIONS AVAILABLE</strong><span>From 344 AMASS subjects</span></dd></div>
+                <div><dt>~90%</dt><dd><strong>ESTIMATED USABLE</strong><span>For downstream training</span></dd></div>
+                <div><dt>3 MONTHS</dt><dd><strong>DATA GENERATION SAVED</strong><span>Estimated by the team</span></dd></div>
+                <div><dt>$70K</dt><dd><strong>CAPTURE VALUE</strong><span>Equivalent production estimate</span></dd></div>
+              </dl>
               <figure className={styles.inheritanceVideoFrame}>
                 <video
                   ref={inheritanceVideoRef}
@@ -2267,12 +2262,21 @@ export function SignalPrototypeV4() {
                 <figcaption>Retargeted motion capture animations running together in Blender.</figcaption>
               </figure>
             </div>
-            <dl className={styles.inheritanceMetrics} aria-label="Project impact">
-              <div><dt>11,265</dt><dd>MOTIONS · 344 SUBJECTS</dd></div>
-              <div><dt>65+ HRS</dt><dd>~90% USEFUL</dd></div>
-              <div><dt>3 MONTHS</dt><dd>DATA GENERATION SAVED</dd></div>
-              <div><dt>$70K</dt><dd>CAPTURE COST EQUIVALENT</dd></div>
-            </dl>
+            <section className={styles.inheritanceStory}>
+              <p>
+                During my internship, Inheritance operated under the name <a href="https://kikitora.com/" target="_blank" rel="noreferrer">KikiTora</a>.
+                The company turned ordinary video into detailed human motion, with a longer-term goal of making
+                recorded behavior available as structured data for machine learning.
+              </p>
+              <p>
+                The training workflow ran in reverse: known motion drove standardized characters in Unreal, where
+                controlled camera, lighting, and rendering variations created many video-to-motion pairs. Compatible
+                motion capture was the limiting factor, which made this pipeline especially valuable.
+              </p>
+              <nav className={`${styles.minimalContactLinks} ${styles.inheritanceLinks}`} aria-label="Inheritance links">
+                <a href="https://www.inheritance.ai/" target="_blank" rel="noreferrer">Visit Inheritance <i aria-hidden="true">↗</i></a>
+              </nav>
+            </section>
           </div>
         </section>
         <ol className={`${styles.chapterRail} ${styles.inheritanceChapterRail}`} aria-label="Inheritance case study chapters">

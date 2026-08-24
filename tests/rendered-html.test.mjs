@@ -209,15 +209,15 @@ test("Inheritance renders the internship experience with a looping motion reel",
 
   assert.match(source, /label:\s*"INHERITANCE",\s*chapters:\s*1,/);
   assert.match(html, /Motion Data for Machine Learning/);
-  assert.match(html, /11,265 motions from 344 subjects/);
+  assert.match(html, /processed 11,265 motions from 344 subjects/);
   assert.match(html, /Inheritance operated under the name/);
   assert.match(source, /href="https:\/\/kikitora\.com\/"/);
   assert.match(source, /href="https:\/\/www\.inheritance\.ai\/"/);
   assert.match(source, /src="\/videos\/inheritance-motion-collection\.mp4"/);
   assert.match(source, /poster="\/images\/inheritance-motion-collection-poster\.webp"/);
   assert.match(source, /muted\s+loop\s+playsInline/);
-  assert.match(css, /\.inheritanceBody \{[^}]*grid-template-columns:/s);
-  assert.match(css, /\.inheritanceMetrics \{[^}]*grid-template-columns: repeat\(4, minmax\(0, 1fr\)\);/s);
+  assert.match(css, /\.inheritanceShowcase \{[^}]*grid-template-columns: clamp\(156px, 20%, 202px\) minmax\(0, 1fr\);/s);
+  assert.match(css, /\.inheritanceMetrics \{[^}]*grid-template-columns: minmax\(0, 1fr\);[^}]*grid-template-rows: repeat\(4, minmax\(0, 1fr\)\);/s);
   assert.equal(video.subarray(4, 8).toString("ascii"), "ftyp");
   assert.equal(poster.subarray(0, 4).toString("ascii"), "RIFF");
   assert.equal(poster.subarray(8, 12).toString("ascii"), "WEBP");

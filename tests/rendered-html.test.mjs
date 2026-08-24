@@ -222,6 +222,8 @@ test("Inheritance renders the internship experience with a looping motion reel",
   assert.match(source, /aria-label="Expanded retargeted motion capture sample video"/);
   assert.match(css, /\.inheritanceShowcase \{[^}]*grid-template-columns: clamp\(156px, 20%, 202px\) minmax\(0, 1fr\);/s);
   assert.match(css, /\.inheritanceMetrics \{[^}]*grid-template-columns: minmax\(0, 1fr\);[^}]*grid-template-rows: repeat\(3, minmax\(0, 1fr\)\);/s);
+  assert.match(css, /\.inheritanceMetrics dt \{[^}]*font-size: clamp\(18px, 1\.3vw, 23px\);/s);
+  assert.match(css, /\.inheritanceMetrics dd strong \{[^}]*font-size: clamp\(9px, 0\.66vw, 11px\);/s);
   assert.match(source, /<dt>11,265<\/dt><dd><strong>NEW MOTIONS AVAILABLE<\/strong><\/dd>/);
   assert.match(source, /<dt>3 MONTHS<\/dt><dd><strong>DATA GENERATION SAVED<\/strong><\/dd>/);
   assert.match(source, /<dt>\$70K<\/dt><dd><strong>CAPTURE VALUE<\/strong><\/dd>/);

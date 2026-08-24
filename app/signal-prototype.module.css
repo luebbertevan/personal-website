@@ -987,7 +987,7 @@
 .inheritanceMetrics dt {
   color: rgb(var(--accent-rgb));
   font-family: var(--font-geist-sans), sans-serif;
-  font-size: clamp(20px, 1.55vw, 27px);
+  font-size: clamp(18px, 1.3vw, 23px);
   font-weight: 560;
   line-height: 1;
   letter-spacing: -0.035em;
@@ -1000,9 +1000,10 @@
 }
 .inheritanceMetrics dd strong {
   color: rgba(247, 244, 241, 0.75);
-  font-size: 8px;
+  font-size: clamp(9px, 0.66vw, 11px);
   font-weight: 520;
-  letter-spacing: 0.09em;
+  line-height: 1.25;
+  letter-spacing: 0.075em;
 }
 .chapterRail.inheritanceChapterRail { grid-template-columns: minmax(0, 1fr); }
 .cruxMovementChapter {
@@ -2616,8 +2617,8 @@
   .minimalContactLinks.inheritanceLinks a { padding: 3px 0; font-size: 9px; }
   .inheritanceVideoFrame figcaption { padding: 6px 8px; font-size: 7px; }
   .inheritanceMetrics div { padding: 7px 8px; gap: 4px; }
-  .inheritanceMetrics dt { font-size: 15px; }
-  .inheritanceMetrics dd strong { font-size: 6px; }
+  .inheritanceMetrics dt { font-size: 18px; }
+  .inheritanceMetrics dd strong { font-size: 8px; }
   .cruxOrigin .projectMeta { margin-bottom: 10px; }
   .cruxHeading { padding-bottom: 9px; }
   .cruxHeading .cardLabel { margin-bottom: 6px; font-size: 9px; }

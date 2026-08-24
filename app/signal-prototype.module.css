@@ -911,7 +911,7 @@
 }
 .inheritanceStory {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: clamp(12px, 1.5vw, 22px);
   align-items: start;
   padding-top: clamp(13px, 1.45vh, 18px);
@@ -971,7 +971,7 @@
 .inheritanceMetrics {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: repeat(4, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(0, 1fr));
   gap: 1px;
   margin: 0;
   background: rgba(var(--accent-rgb), 0.24);
@@ -1003,13 +1003,6 @@
   font-size: 8px;
   font-weight: 520;
   letter-spacing: 0.09em;
-}
-.inheritanceMetrics dd span {
-  color: rgba(247, 244, 241, 0.48);
-  font-family: var(--font-geist-sans), sans-serif;
-  font-size: clamp(10px, 0.7vw, 13px);
-  line-height: 1.25;
-  letter-spacing: 0;
 }
 .chapterRail.inheritanceChapterRail { grid-template-columns: minmax(0, 1fr); }
 .cruxMovementChapter {
@@ -2625,7 +2618,6 @@
   .inheritanceMetrics div { padding: 7px 8px; gap: 4px; }
   .inheritanceMetrics dt { font-size: 15px; }
   .inheritanceMetrics dd strong { font-size: 6px; }
-  .inheritanceMetrics dd span { font-size: 8px; }
   .cruxOrigin .projectMeta { margin-bottom: 10px; }
   .cruxHeading { padding-bottom: 9px; }
   .cruxHeading .cardLabel { margin-bottom: 6px; font-size: 9px; }
@@ -2749,7 +2741,7 @@
   .inheritanceShowcase { grid-template-columns: 1fr; }
   .inheritanceMetrics {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto;
   }
   .inheritanceStory { grid-template-columns: 1fr; }
   .cruxOriginFeature { margin-top: 10px; }

@@ -221,7 +221,11 @@ test("Inheritance renders the internship experience with a looping motion reel",
   assert.match(source, /inheritanceVideoExpanded && \(/);
   assert.match(source, /aria-label="Expanded retargeted motion capture sample video"/);
   assert.match(css, /\.inheritanceShowcase \{[^}]*grid-template-columns: clamp\(156px, 20%, 202px\) minmax\(0, 1fr\);/s);
-  assert.match(css, /\.inheritanceMetrics \{[^}]*grid-template-columns: minmax\(0, 1fr\);[^}]*grid-template-rows: repeat\(4, minmax\(0, 1fr\)\);/s);
+  assert.match(css, /\.inheritanceMetrics \{[^}]*grid-template-columns: minmax\(0, 1fr\);[^}]*grid-template-rows: repeat\(3, minmax\(0, 1fr\)\);/s);
+  assert.match(source, /<dt>11,265<\/dt><dd><strong>NEW MOTIONS AVAILABLE<\/strong><\/dd>/);
+  assert.match(source, /<dt>3 MONTHS<\/dt><dd><strong>DATA GENERATION SAVED<\/strong><\/dd>/);
+  assert.match(source, /<dt>\$70K<\/dt><dd><strong>CAPTURE VALUE<\/strong><\/dd>/);
+  assert.match(css, /\.inheritanceStory \{[^}]*grid-template-columns: minmax\(0, 1fr\);/s);
   assert.match(css, /\.inheritanceExperience \{[^}]*overflow-x: hidden;[^}]*overflow-y: auto;/s);
   assert.match(css, /\.inheritanceIntro p \{[^}]*width: 100%;[^}]*max-width: none;/s);
   assert.equal(video.subarray(4, 8).toString("ascii"), "ftyp");

@@ -30,6 +30,12 @@ const destinations = [
     shaderColor: [0.561, 0.902, 0.376] as const,
     cssColor: [143, 230, 96] as const,
   },
+  {
+    label: "INHERITANCE",
+    chapters: 1,
+    shaderColor: [0.31, 0.68, 1.0] as const,
+    cssColor: [79, 173, 255] as const,
+  },
 ];
 
 const fostyProductMedia = [
@@ -255,6 +261,7 @@ export function SignalPrototypeV4() {
   const cruxMovementVideoRef = useRef<HTMLVideoElement>(null);
   const cruxComparisonVideoRef = useRef<HTMLVideoElement>(null);
   const cruxExpandedVideoRef = useRef<HTMLVideoElement>(null);
+  const inheritanceVideoRef = useRef<HTMLVideoElement>(null);
   const navigationCommandRef = useRef<NavigationCommand | null>(null);
   const activeDestinationRef = useRef(0);
   const activeChapterRef = useRef(0);
@@ -505,11 +512,12 @@ export function SignalPrototypeV4() {
       const aboutPanel = shell.querySelector<HTMLElement>('[data-destination-panel="0"]');
       const fostyPanel = shell.querySelector<HTMLElement>('[data-destination-panel="1"]');
       const cruxPanel = shell.querySelector<HTMLElement>('[data-destination-panel="2"]');
-      const referencePanels = [fostyPanel, cruxPanel].filter(
+      const inheritancePanel = shell.querySelector<HTMLElement>('[data-destination-panel="3"]');
+      const referencePanels = [fostyPanel, cruxPanel, inheritancePanel].filter(
         (panel): panel is HTMLElement => Boolean(panel),
       );
       const contentPanelScale = Number.parseFloat(
-        getComputedStyle(fostyPanel ?? cruxPanel ?? aboutPanel ?? shell).getPropertyValue("--content-panel-scale"),
+        getComputedStyle(fostyPanel ?? cruxPanel ?? inheritancePanel ?? aboutPanel ?? shell).getPropertyValue("--content-panel-scale"),
       ) || 1;
       const shouldScaleAboutPanel = window.matchMedia(
         "(min-width: 2048px) and (min-height: 1152px)",
@@ -921,9 +929,11 @@ export function SignalPrototypeV4() {
         const originVideo = cruxVideoRef.current;
         const movementVideo = cruxMovementVideoRef.current;
         const comparisonVideo = cruxComparisonVideoRef.current;
+        const inheritanceVideo = inheritanceVideoRef.current;
         originVideo?.pause();
         movementVideo?.pause();
         comparisonVideo?.pause();
+        inheritanceVideo?.pause();
         const shouldPlayCruxVideo = activeDestinationForUi === 2
           && !cruxVideoExpandedRef.current
           && !prefersReducedMotionRef.current;
@@ -934,6 +944,9 @@ export function SignalPrototypeV4() {
               ? movementVideo
               : comparisonVideo;
           void activeVideo?.play().catch(() => undefined);
+        }
+        if (activeDestinationForUi === 3 && !prefersReducedMotionRef.current) {
+          void inheritanceVideo?.play().catch(() => undefined);
         }
       }
 
@@ -1103,6 +1116,9 @@ export function SignalPrototypeV4() {
         </button>
         <button type="button" data-destination-nav onClick={() => navigateToDestination(2)}>
           <strong>CRUX VISION</strong>
+        </button>
+        <button type="button" data-destination-nav onClick={() => navigateToDestination(3)}>
+          <strong>INHERITANCE</strong>
         </button>
       </nav>
 
@@ -2195,6 +2211,73 @@ export function SignalPrototypeV4() {
             </video>
           </div>
         )}
+      </article>
+
+      <article className={`${styles.project} ${styles.inheritanceProject}`} data-destination-panel="3" aria-hidden="true">
+        <section className={`${styles.chapter} ${styles.inheritanceExperience}`} data-project-chapter>
+          <div className={styles.projectMeta}>
+            <span>INHERITANCE</span>
+            <span>EXPERIENCE</span>
+          </div>
+          <div className={styles.inheritanceLayout}>
+            <header className={styles.inheritanceHeading}>
+              <p className={styles.cardLabel}>MACHINE LEARNING &amp; MOTION CAPTURE ENGINEERING INTERN</p>
+              <div className={styles.inheritanceTitleRow}>
+                <h1>Inheritance</h1>
+                <p className={styles.inheritanceDate}>FALL 2025</p>
+              </div>
+            </header>
+            <h2 className={styles.inheritanceStatement}>Motion Data for Machine Learning</h2>
+            <div className={styles.inheritanceBody}>
+              <section className={styles.inheritanceStory}>
+                <p className={styles.inheritanceLead}>
+                  At Inheritance, I built a Python and Blender pipeline that converted AMASS research motion into
+                  standardized skeletal animation for machine learning training in Unreal Engine. It gave the team
+                  access to 11,265 motions from 344 subjects, and the company estimated that around 90% was useful.
+                </p>
+                <p>
+                  During my internship, Inheritance operated under the name <a href="https://kikitora.com/" target="_blank" rel="noreferrer">KikiTora</a>.
+                  The company turned ordinary video into detailed human motion, with a longer-term goal of making
+                  recorded behavior available as structured data for machine learning.
+                </p>
+                <p>
+                  The training workflow ran in reverse: known motion drove standardized characters in Unreal, where
+                  controlled camera, lighting, and rendering variations created many video-to-motion pairs. Compatible
+                  motion capture was the limiting factor, which made this pipeline especially valuable.
+                </p>
+                <nav className={`${styles.minimalContactLinks} ${styles.inheritanceLinks}`} aria-label="Inheritance links">
+                  <a href="https://www.inheritance.ai/" target="_blank" rel="noreferrer">Visit Inheritance <i aria-hidden="true">↗</i></a>
+                </nav>
+              </section>
+              <figure className={styles.inheritanceVideoFrame}>
+                <video
+                  ref={inheritanceVideoRef}
+                  src="/videos/inheritance-motion-collection.mp4"
+                  poster="/images/inheritance-motion-collection-poster.webp"
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  width="1600"
+                  height="886"
+                  aria-label="A collection of retargeted motion capture animations playing in Blender"
+                >
+                  Your browser does not support embedded video.
+                </video>
+                <figcaption>Retargeted motion capture animations running together in Blender.</figcaption>
+              </figure>
+            </div>
+            <dl className={styles.inheritanceMetrics} aria-label="Project impact">
+              <div><dt>11,265</dt><dd>MOTIONS · 344 SUBJECTS</dd></div>
+              <div><dt>65+ HRS</dt><dd>~90% USEFUL</dd></div>
+              <div><dt>3 MONTHS</dt><dd>DATA GENERATION SAVED</dd></div>
+              <div><dt>$70K</dt><dd>CAPTURE COST EQUIVALENT</dd></div>
+            </dl>
+          </div>
+        </section>
+        <ol className={`${styles.chapterRail} ${styles.inheritanceChapterRail}`} aria-label="Inheritance case study chapters">
+          <li><button type="button" data-chapter-index onClick={() => navigateToChapter(0)}>EXPERIENCE</button></li>
+        </ol>
       </article>
 
       <div className={styles.routeControls} aria-label="Portfolio navigation">

@@ -898,7 +898,8 @@
   letter-spacing: 0;
 }
 .inheritanceIntro p {
-  max-width: 86ch;
+  width: 100%;
+  max-width: none;
   color: rgba(247, 244, 241, 0.88);
 }
 .inheritanceShowcase {

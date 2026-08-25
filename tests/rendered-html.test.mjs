@@ -179,6 +179,8 @@ test("Fosty replaces both example projects with the Origin chapter", async () =>
   assert.match(css, /\.chapterRail\.fostyChapterRail \{\s*grid-template-columns: repeat\(5, minmax\(0, 1fr\)\);/s);
   assert.match(css, /@media \(min-width: 2048px\) and \(min-height: 1152px\) \{\s*\.fostyProject \{[^}]*width: 58vw;/s);
   assert.match(css, /\.fostyCopy \{[^}]*width: 100%;[^}]*max-width: none;/s);
+  assert.match(css, /\.fostyCopy p \{[^}]*color: var\(--body-text-color\);/s);
+  assert.match(css, /\.fostyTechnologyTags li \{[^}]*color: var\(--secondary-text-color\);/s);
   assert.match(css, /\.project h2\.fostyStatement,\s*\.project h2\.fostyOutcomeSubtitle \{[^}]*width: 100%;[^}]*max-width: none;[^}]*color: rgb\(var\(--accent-rgb\)\);/s);
   assert.match(source, /className=\{`\$\{styles\.minimalContactLinks\} \$\{styles\.fostyLinks\}`\}/);
   assert.match(source, /data-about-reference-label/);
@@ -237,6 +239,7 @@ test("Inheritance renders the experience, challenge, and engineering chapters wi
   assert.match(css, /\.inheritanceStory \{[^}]*grid-template-columns: minmax\(0, 1fr\);/s);
   assert.match(css, /\.inheritanceExperience \{[^}]*overflow-x: hidden;[^}]*overflow-y: auto;/s);
   assert.match(css, /\.inheritanceIntro p \{[^}]*width: 100%;[^}]*max-width: none;/s);
+  assert.match(css, /\.inheritanceIntro p,\s*\.inheritanceStory p \{[^}]*color: var\(--body-text-color\);/s);
   assert.match(source, /src="\/images\/inheritance-amass-diversity\.webp"/);
   assert.match(html, /THE MOTION AND BODY DIVERSITY REPRESENTED IN AMASS\./);
   assert.match(source, /onClick=\{\(\) => setInheritanceImageExpanded\(true\)\}/);
@@ -270,6 +273,8 @@ test("Inheritance renders the experience, challenge, and engineering chapters wi
   assert.match(source, /onClick=\{\(\) => openInheritanceVideo\(inheritanceWalkingVideo\)\}/);
   assert.match(html, /AMASS MOTION, REBUILT ON A PRODUCTION ARMATURE\./);
   assert.match(css, /\.inheritanceEngineeringHero \{[^}]*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);/s);
+  assert.match(css, /\.inheritanceEngineeringIntro p,\s*\.inheritancePipeline p,\s*\.inheritancePipelineSteps li,\s*\.inheritanceHighlightGrid p \{[^}]*color: var\(--body-text-color\);/s);
+  assert.doesNotMatch(css, /\.inheritanceEngineeringIntro p:first-of-type \{/);
   assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*\.inheritanceEngineeringHero \{[^}]*grid-template-columns: 1fr;/s);
   assert.match(css, /\.chapterRail\.inheritanceChapterRail \{ grid-template-columns: repeat\(3, minmax\(0, 1fr\)\); \}/);
   assert.equal(video.subarray(4, 8).toString("ascii"), "ftyp");
@@ -397,6 +402,7 @@ test("Crux Vision renders all five case-study chapters with expandable media", a
   assert.match(css, /\.cruxEngineeringOverview \{[^}]*grid-template-columns:/s);
   assert.match(css, /\.cruxTechnology \{[^}]*width: 100%;/s);
   assert.match(css, /\.cruxEngineeringHighlights \{[^}]*font-size: var\(--crux-body-size\);/s);
+  assert.match(css, /\.cruxEngineeringHighlights \{[^}]*color: var\(--body-text-color\);/s);
   assert.match(css, /\.cruxTechnology \.fostyTechnologyTags li \{[^}]*font-size: calc\(var\(--crux-body-size\) \* 0\.86\);/s);
   assert.match(css, /\.cruxEngineeringCopy section,\s*\.cruxEngineeringDetails \{[^}]*align-content: start;[^}]*align-self: start;/s);
   assert.match(css, /\.cruxQualityProfiles span \{[^}]*font-size: var\(--crux-body-size\);/s);

@@ -32,7 +32,7 @@ const destinations = [
   },
   {
     label: "INHERITANCE",
-    chapters: 1,
+    chapters: 2,
     shaderColor: [0.31, 0.68, 1.0] as const,
     cssColor: [79, 173, 255] as const,
   },
@@ -2330,8 +2330,77 @@ export function SignalPrototypeV4() {
             </section>
           </div>
         </section>
+        <section className={`${styles.chapter} ${styles.inheritanceChallenge}`} data-project-chapter>
+          <div className={styles.projectMeta}>
+            <span>INHERITANCE</span>
+            <span>CHALLENGE</span>
+          </div>
+          <div className={styles.inheritanceChallengeLayout}>
+            <header className={styles.inheritanceChallengeHeading}>
+              <h2>Infinite Video, Limited Motion</h2>
+              <p>
+                Training a model to generate motion capture from video requires matched examples of both: a video
+                input and the exact 3D motion behind it. Producing enough of these pairs at the scale required for
+                machine learning is difficult and expensive.
+              </p>
+            </header>
+
+            <div className={styles.inheritanceChallengeCopy}>
+              <p>
+                Collecting video and motion pairs directly was not practical at the scale the model required.
+                Instead, we started with known motion capture and used it to generate the matching video. The
+                animations drove standardized characters in Unreal Engine environments, where the same performance
+                could be rendered from different camera angles with different lighting, character meshes, image
+                quality, and levels of occlusion. Every render remained paired with the original animation, giving
+                the model both its visual input and the correct 3D motion.
+              </p>
+              <p>
+                This may seem backwards when our goal is to turn real video into motion capture. However, starting
+                from motion solved the problem of obtaining an exact label for every frame. It also made video
+                variation effectively unlimited. One performance could produce countless training examples, but
+                every example still depended on the same underlying movement. The number and diversity of available
+                motion capture performances remained the main constraint.
+              </p>
+              <p>
+                At the time, Inheritance produced much of its own training motion capture. This was a costly
+                operation requiring a capture stage, performers, and production staff. Existing animation data is
+                difficult to license for machine learning, while new capture sessions are expensive and
+                time-consuming. Expanding the motion library meant either producing more performances or finding
+                another source the company could use.
+              </p>
+              <p>
+                AMASS offered another source. It is a large research archive that combines motion capture from many
+                academic datasets into a shared human-body format. The archive contained more than 65 hours of
+                motion across 11,265 animations and 344 subjects, but it was not delivered as ordinary skeletal
+                animation.
+              </p>
+            </div>
+
+            <figure className={styles.inheritanceAmassFigure}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/images/inheritance-amass-diversity.webp"
+                alt="A wide collection of AMASS body models showing varied poses, movements, and body shapes."
+                width="1554"
+                height="1074"
+              />
+              <figcaption>THE MOTION AND BODY DIVERSITY REPRESENTED IN AMASS.</figcaption>
+            </figure>
+
+            <div className={styles.inheritanceChallengeCopy}>
+              <p>
+                AMASS stored compact joint rotations and body-model parameters used to pose an SMPL-H body mesh.
+                Inheritance needed conventional animation keyed onto its exact production armature, ready to move
+                through Blender, GLB, and Unreal. The AMASS files could not enter that workflow directly. Their
+                motion first had to be reconstructed in 3D, aligned with the target hierarchy, rest pose,
+                proportions, and coordinate spaces, and exported in the required format.
+              </p>
+            </div>
+          </div>
+        </section>
         <ol className={`${styles.chapterRail} ${styles.inheritanceChapterRail}`} aria-label="Inheritance case study chapters">
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(0)}>EXPERIENCE</button></li>
+          <li><button type="button" data-chapter-index onClick={() => navigateToChapter(1)}>CHALLENGE</button></li>
         </ol>
         {inheritanceVideoExpanded && (
           <div

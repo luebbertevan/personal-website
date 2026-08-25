@@ -197,18 +197,20 @@ test("Fosty replaces both example projects with the Origin chapter", async () =>
   assert.match(source, /--reference-panel-height/);
 });
 
-test("Inheritance renders the internship experience with a looping motion reel", async () => {
+test("Inheritance renders the experience and challenge chapters with project media", async () => {
   const response = await render();
   const html = await response.text();
-  const [source, css, video, poster] = await Promise.all([
+  const [source, css, video, poster, amassImage] = await Promise.all([
     readFile(new URL("../app/signal-prototype-v4.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/signal-prototype.module.css", import.meta.url), "utf8"),
     readFile(new URL("../public/videos/inheritance-motion-collection.mp4", import.meta.url)),
     readFile(new URL("../public/images/inheritance-motion-collection-poster.webp", import.meta.url)),
+    readFile(new URL("../public/images/inheritance-amass-diversity.webp", import.meta.url)),
   ]);
 
-  assert.match(source, /label:\s*"INHERITANCE",\s*chapters:\s*1,/);
+  assert.match(source, /label:\s*"INHERITANCE",\s*chapters:\s*2,/);
   assert.match(html, /Motion Data for Machine Learning/);
+  assert.match(html, /Infinite Video, Limited Motion/);
   assert.match(html, /processed 11,265 motions from 344 subjects/);
   assert.match(html, /Inheritance operated under the name/);
   assert.match(source, /href="https:\/\/kikitora\.com\/"/);
@@ -230,9 +232,15 @@ test("Inheritance renders the internship experience with a looping motion reel",
   assert.match(css, /\.inheritanceStory \{[^}]*grid-template-columns: minmax\(0, 1fr\);/s);
   assert.match(css, /\.inheritanceExperience \{[^}]*overflow-x: hidden;[^}]*overflow-y: auto;/s);
   assert.match(css, /\.inheritanceIntro p \{[^}]*width: 100%;[^}]*max-width: none;/s);
+  assert.match(source, /src="\/images\/inheritance-amass-diversity\.webp"/);
+  assert.match(html, /THE MOTION AND BODY DIVERSITY REPRESENTED IN AMASS\./);
+  assert.match(source, />CHALLENGE<\/button>/);
+  assert.match(css, /\.chapterRail\.inheritanceChapterRail \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); \}/);
   assert.equal(video.subarray(4, 8).toString("ascii"), "ftyp");
   assert.equal(poster.subarray(0, 4).toString("ascii"), "RIFF");
   assert.equal(poster.subarray(8, 12).toString("ascii"), "WEBP");
+  assert.equal(amassImage.subarray(0, 4).toString("ascii"), "RIFF");
+  assert.equal(amassImage.subarray(8, 12).toString("ascii"), "WEBP");
 });
 
 test("Crux Vision renders all five case-study chapters with expandable media", async () => {

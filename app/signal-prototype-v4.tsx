@@ -32,7 +32,7 @@ const destinations = [
   },
   {
     label: "INHERITANCE",
-    chapters: 2,
+    chapters: 3,
     shaderColor: [0.31, 0.68, 1.0] as const,
     cssColor: [79, 173, 255] as const,
   },
@@ -214,6 +214,14 @@ const inheritanceMotionVideo: CruxVideoMedia = {
   height: 886,
 };
 
+const inheritanceWalkingVideo: CruxVideoMedia = {
+  src: "/videos/inheritance-walking-comparison.mp4",
+  poster: "/images/inheritance-walking-comparison-poster.webp",
+  label: "AMASS motion rebuilt on the Inheritance production armature",
+  width: 1372,
+  height: 1552,
+};
+
 const DESTINATION_TRAVEL = 52;
 const DESTINATION_DURATION = 7.35;
 const CHAPTER_TRAVEL = 13;
@@ -270,6 +278,7 @@ export function SignalPrototypeV4() {
   const cruxComparisonVideoRef = useRef<HTMLVideoElement>(null);
   const cruxExpandedVideoRef = useRef<HTMLVideoElement>(null);
   const inheritanceVideoRef = useRef<HTMLVideoElement>(null);
+  const inheritanceWalkingVideoRef = useRef<HTMLVideoElement>(null);
   const navigationCommandRef = useRef<NavigationCommand | null>(null);
   const activeDestinationRef = useRef(0);
   const activeChapterRef = useRef(0);
@@ -283,6 +292,7 @@ export function SignalPrototypeV4() {
   const [cruxVideoExpanded, setCruxVideoExpanded] = useState(false);
   const [expandedCruxVideo, setExpandedCruxVideo] = useState<CruxVideoMedia>(cruxOriginVideo);
   const [inheritanceVideoExpanded, setInheritanceVideoExpanded] = useState(false);
+  const [expandedInheritanceVideo, setExpandedInheritanceVideo] = useState<CruxVideoMedia>(inheritanceMotionVideo);
   const [inheritanceImageExpanded, setInheritanceImageExpanded] = useState(false);
   const pausedRef = useRef(false);
 
@@ -322,7 +332,12 @@ export function SignalPrototypeV4() {
         setInheritanceVideoExpanded(false);
         if (activeDestinationRef.current === 3 && !prefersReducedMotionRef.current) {
           window.requestAnimationFrame(() => {
-            void inheritanceVideoRef.current?.play().catch(() => undefined);
+            const activeVideo = activeChapterRef.current === 0
+              ? inheritanceVideoRef.current
+              : activeChapterRef.current === 2
+                ? inheritanceWalkingVideoRef.current
+                : null;
+            void activeVideo?.play().catch(() => undefined);
           });
         }
       }
@@ -398,8 +413,10 @@ export function SignalPrototypeV4() {
     }
   };
 
-  const openInheritanceVideo = () => {
+  const openInheritanceVideo = (video: CruxVideoMedia = inheritanceMotionVideo) => {
     inheritanceVideoRef.current?.pause();
+    inheritanceWalkingVideoRef.current?.pause();
+    setExpandedInheritanceVideo(video);
     inheritanceVideoExpandedRef.current = true;
     setInheritanceVideoExpanded(true);
   };
@@ -409,7 +426,12 @@ export function SignalPrototypeV4() {
     setInheritanceVideoExpanded(false);
     if (activeDestinationRef.current === 3 && !prefersReducedMotionRef.current) {
       window.requestAnimationFrame(() => {
-        void inheritanceVideoRef.current?.play().catch(() => undefined);
+        const activeVideo = activeChapterRef.current === 0
+          ? inheritanceVideoRef.current
+          : activeChapterRef.current === 2
+            ? inheritanceWalkingVideoRef.current
+            : null;
+        void activeVideo?.play().catch(() => undefined);
       });
     }
   };
@@ -984,10 +1006,12 @@ export function SignalPrototypeV4() {
         const movementVideo = cruxMovementVideoRef.current;
         const comparisonVideo = cruxComparisonVideoRef.current;
         const inheritanceVideo = inheritanceVideoRef.current;
+        const inheritanceWalkingVideo = inheritanceWalkingVideoRef.current;
         originVideo?.pause();
         movementVideo?.pause();
         comparisonVideo?.pause();
         inheritanceVideo?.pause();
+        inheritanceWalkingVideo?.pause();
         const shouldPlayCruxVideo = activeDestinationForUi === 2
           && !cruxVideoExpandedRef.current
           && !prefersReducedMotionRef.current;
@@ -1004,7 +1028,12 @@ export function SignalPrototypeV4() {
           && !inheritanceVideoExpandedRef.current
           && !prefersReducedMotionRef.current
         ) {
-          void inheritanceVideo?.play().catch(() => undefined);
+          const activeVideo = activeChapterForUi === 0
+            ? inheritanceVideo
+            : activeChapterForUi === 2
+              ? inheritanceWalkingVideo
+              : null;
+          void activeVideo?.play().catch(() => undefined);
         }
       }
 
@@ -2421,16 +2450,149 @@ export function SignalPrototypeV4() {
             </div>
           </div>
         </section>
+        <section className={`${styles.chapter} ${styles.inheritanceEngineering}`} data-project-chapter>
+          <div className={styles.projectMeta}>
+            <span>INHERITANCE</span>
+            <span>ENGINEERING</span>
+          </div>
+          <div className={styles.inheritanceEngineeringLayout}>
+            <div className={styles.inheritanceEngineeringHero}>
+              <header className={styles.inheritanceEngineeringIntro}>
+                <h2>Rebuilding Motion in 3D</h2>
+                <p>
+                  AMASS offers thousands of motions, but making them usable required a complex engineering solution.
+                  I built an automated Python and Blender pipeline that reconstructed each sequence from SMPL-H
+                  parameters, transferred it onto Inheritance&apos;s fixed production armature, and exported consistent
+                  GLB animations for Unreal Engine.
+                </p>
+                <p>
+                  Ordinary retargeting starts with two complete skeletons. Here, the source files did not contain a
+                  conventional keyed armature. They stored joint rotations and root movement inside a parametric
+                  human-body mesh model. The pipeline first had to recover where every joint moved in three
+                  dimensions, then turn those trajectories into animation on a skeleton with a different rest pose,
+                  proportions, hierarchy, and coordinate spaces.
+                </p>
+              </header>
+
+              <figure className={styles.inheritanceEngineeringFigure}>
+                <button
+                  type="button"
+                  className={styles.inheritanceEngineeringMediaButton}
+                  onClick={() => openInheritanceVideo(inheritanceWalkingVideo)}
+                  aria-label="Expand the AMASS and production armature walking comparison video"
+                >
+                  <video
+                    ref={inheritanceWalkingVideoRef}
+                    src={inheritanceWalkingVideo.src}
+                    poster={inheritanceWalkingVideo.poster}
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                    width={inheritanceWalkingVideo.width}
+                    height={inheritanceWalkingVideo.height}
+                    aria-label="A synchronized comparison of AMASS surface motion and the rebuilt production armature animation"
+                  >
+                    Your browser does not support embedded video.
+                  </video>
+                  <span>EXPAND <i aria-hidden="true">↗</i></span>
+                </button>
+                <figcaption>AMASS MOTION, REBUILT ON A PRODUCTION ARMATURE.</figcaption>
+              </figure>
+            </div>
+
+            <section className={styles.inheritanceTechnology} aria-labelledby="inheritance-technology-heading">
+              <h3 className={styles.cardLabel} id="inheritance-technology-heading">TECHNOLOGY</h3>
+              <ul className={styles.fostyTechnologyTags} aria-label="Inheritance engineering technology">
+                {["Python", "Blender", "NumPy", "Forward Kinematics", "SMPL-H", "glTF / GLB", "Unreal Engine"].map(
+                  (technology) => <li key={technology}>{technology}</li>,
+                )}
+              </ul>
+            </section>
+
+            <section className={styles.inheritancePipeline} aria-labelledby="inheritance-pipeline-heading">
+              <div className={styles.inheritancePipelineLead}>
+                <h3 id="inheritance-pipeline-heading">CORE PIPELINE</h3>
+                <p>
+                  Each frame contained rotations for 52 SMPL-H joints plus the movement of the root joint. I used
+                  forward kinematics to reconstruct the body&apos;s world-space joint positions through the parent-child
+                  hierarchy. Those positions then drove Inheritance&apos;s standardized armature in Blender, where the
+                  evaluated motion was baked into keyframes and exported as an animated GLB.
+                </p>
+              </div>
+              <div className={styles.inheritancePipelineSteps}>
+                <p>For each animation, the pipeline:</p>
+                <ol>
+                  <li>Read the joint rotations, root movement, and source frame rate.</li>
+                  <li>Reconstructed every joint&apos;s position through the SMPL-H hierarchy.</li>
+                  <li>Aligned the motion with the target armature and coordinate system.</li>
+                  <li>Drove and baked the standardized skeleton in Blender.</li>
+                  <li>Exported consistent animated GLBs for the Unreal ML workflow.</li>
+                </ol>
+              </div>
+            </section>
+
+            <section className={styles.inheritanceEngineeringHighlights} aria-labelledby="inheritance-highlights-heading">
+              <h3 className={styles.inheritanceHighlightsLabel} id="inheritance-highlights-heading">ENGINEERING HIGHLIGHTS</h3>
+              <div className={styles.inheritanceHighlightGrid}>
+                <article>
+                  <h4>RECONCILING REST POSES</h4>
+                  <p>
+                    AMASS baked in the SMPL-H template T-pose, while the production pipeline depended on a
+                    standardized base A-pose for calibration, mesh weight painting, and other downstream character
+                    setup. I calculated the transforms required to convert the motion from the source pose into the
+                    production pose so every animation used the same armature without changing the intended motion.
+                  </p>
+                </article>
+                <article>
+                  <h4>BALANCING PROPORTIONS AND MOTION</h4>
+                  <p>
+                    The reconstructed joint paths came from parametric bodies whose proportions did not match the
+                    production rig. Forcing every target bone to reach those positions exactly caused the skeleton to
+                    stretch, preserving the coordinates but distorting the body and the character of the movement.
+                    The solve was to treat the joint paths as motion guides rather than literal bone dimensions, then
+                    use Blender constraints and baking to transfer their timing and trajectories onto the standardized
+                    armature. This preserved the production skeleton&apos;s proportions while retaining the recognizable
+                    intent of each performance.
+                  </p>
+                </article>
+                <article className={styles.inheritanceRotationHighlight}>
+                  <h4>TRANSLATING THREE ROTATION SYSTEMS</h4>
+                  <div>
+                    <p>
+                      The motion had to pass through three mathematical representations because each one served a
+                      different part of the pipeline. AMASS stored each joint rotation in axis-angle form, a compact
+                      three-value encoding suited to a large dataset but not to composing an entire skeletal
+                      hierarchy. I converted those values into rotation matrices with Rodrigues&apos; formula so parent
+                      and child transforms could be combined through forward kinematics and evaluated across local
+                      and world coordinate spaces. The baked animation ultimately entered Blender and GLB&apos;s
+                      quaternion-based representation, which supports stable rotation and interpolation in animation
+                      tools.
+                    </p>
+                    <p>
+                      Although all three representations encode orientation, they are not interchangeable without
+                      conversion. Every rotation had to remain in the correct coordinate frame as it moved from
+                      compact source data, through hierarchical calculations, and into the exported animation. Errors
+                      could turn joints around the wrong axis, reverse a limb, or allow small errors to accumulate
+                      through the hierarchy.
+                    </p>
+                  </div>
+                </article>
+              </div>
+            </section>
+          </div>
+        </section>
         <ol className={`${styles.chapterRail} ${styles.inheritanceChapterRail}`} aria-label="Inheritance case study chapters">
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(0)}>EXPERIENCE</button></li>
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(1)}>CHALLENGE</button></li>
+          <li><button type="button" data-chapter-index onClick={() => navigateToChapter(2)}>ENGINEERING</button></li>
         </ol>
         {inheritanceVideoExpanded && (
           <div
             className={`${styles.mediaLightbox} ${styles.cruxVideoLightbox}`}
             role="dialog"
             aria-modal="true"
-            aria-label="Expanded retargeted motion capture sample video"
+            aria-label={`Expanded ${expandedInheritanceVideo.label} video`}
             onClick={closeInheritanceVideo}
           >
             <button
@@ -2442,15 +2604,15 @@ export function SignalPrototypeV4() {
               <span aria-hidden="true">×</span>
             </button>
             <video
-              src={inheritanceMotionVideo.src}
-              poster={inheritanceMotionVideo.poster}
+              src={expandedInheritanceVideo.src}
+              poster={expandedInheritanceVideo.poster}
               autoPlay
               muted
               loop
               playsInline
               controls
-              width={inheritanceMotionVideo.width}
-              height={inheritanceMotionVideo.height}
+              width={expandedInheritanceVideo.width}
+              height={expandedInheritanceVideo.height}
               onClick={(event) => event.stopPropagation()}
             >
               Your browser does not support embedded video.

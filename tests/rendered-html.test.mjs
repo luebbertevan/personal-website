@@ -197,18 +197,20 @@ test("Fosty replaces both example projects with the Origin chapter", async () =>
   assert.match(source, /--reference-panel-height/);
 });
 
-test("Inheritance renders the experience and challenge chapters with project media", async () => {
+test("Inheritance renders the experience, challenge, and engineering chapters with project media", async () => {
   const response = await render();
   const html = await response.text();
-  const [source, css, video, poster, amassImage] = await Promise.all([
+  const [source, css, video, poster, amassImage, walkingVideo, walkingPoster] = await Promise.all([
     readFile(new URL("../app/signal-prototype-v4.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/signal-prototype.module.css", import.meta.url), "utf8"),
     readFile(new URL("../public/videos/inheritance-motion-collection.mp4", import.meta.url)),
     readFile(new URL("../public/images/inheritance-motion-collection-poster.webp", import.meta.url)),
     readFile(new URL("../public/images/inheritance-amass-diversity.webp", import.meta.url)),
+    readFile(new URL("../public/videos/inheritance-walking-comparison.mp4", import.meta.url)),
+    readFile(new URL("../public/images/inheritance-walking-comparison-poster.webp", import.meta.url)),
   ]);
 
-  assert.match(source, /label:\s*"INHERITANCE",\s*chapters:\s*2,/);
+  assert.match(source, /label:\s*"INHERITANCE",\s*chapters:\s*3,/);
   assert.match(html, /Motion Data for Machine Learning/);
   assert.match(html, /Infinite Video, Limited Motion/);
   assert.match(html, /Archive of Motion Capture/);
@@ -224,7 +226,7 @@ test("Inheritance renders the experience and challenge chapters with project med
   assert.match(html, /A sample of retargeted motion capture animations\./);
   assert.match(source, /onClick=\{openInheritanceVideo\}/);
   assert.match(source, /inheritanceVideoExpanded && \(/);
-  assert.match(source, /aria-label="Expanded retargeted motion capture sample video"/);
+  assert.match(source, /aria-label=\{`Expanded \$\{expandedInheritanceVideo\.label\} video`\}/);
   assert.match(css, /\.inheritanceShowcase \{[^}]*grid-template-columns: clamp\(156px, 20%, 202px\) minmax\(0, 1fr\);/s);
   assert.match(css, /\.inheritanceMetrics \{[^}]*grid-template-columns: minmax\(0, 1fr\);[^}]*grid-template-rows: repeat\(3, minmax\(0, 1fr\)\);/s);
   assert.match(css, /\.inheritanceMetrics dt \{[^}]*font-size: clamp\(22px, 1\.65vw, 30px\);/s);
@@ -243,12 +245,28 @@ test("Inheritance renders the experience and challenge chapters with project med
   assert.match(css, /\.inheritanceAmassRow \{[^}]*grid-template-columns: minmax\(0, 1fr\) minmax\(300px, 0\.9fr\);/s);
   assert.match(css, /\.inheritanceAmassFigure \{[^}]*width: 100%;/s);
   assert.match(source, />CHALLENGE<\/button>/);
-  assert.match(css, /\.chapterRail\.inheritanceChapterRail \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); \}/);
+  assert.match(source, />ENGINEERING<\/button>/);
+  assert.match(html, /Rebuilding Motion in 3D/);
+  assert.match(html, /AMASS offers thousands of motions, but making them usable required a complex engineering solution\./);
+  assert.match(html, /Each frame contained rotations for 52 SMPL-H joints plus the movement of the root joint\./);
+  assert.match(html, /RECONCILING REST POSES/);
+  assert.match(html, /BALANCING PROPORTIONS AND MOTION/);
+  assert.match(html, /TRANSLATING THREE ROTATION SYSTEMS/);
+  assert.match(source, /src:\s*"\/videos\/inheritance-walking-comparison\.mp4"/);
+  assert.match(source, /poster:\s*"\/images\/inheritance-walking-comparison-poster\.webp"/);
+  assert.match(source, /onClick=\{\(\) => openInheritanceVideo\(inheritanceWalkingVideo\)\}/);
+  assert.match(html, /AMASS MOTION, REBUILT ON A PRODUCTION ARMATURE\./);
+  assert.match(css, /\.inheritanceEngineeringHero \{[^}]*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);/s);
+  assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*\.inheritanceEngineeringHero \{[^}]*grid-template-columns: 1fr;/s);
+  assert.match(css, /\.chapterRail\.inheritanceChapterRail \{ grid-template-columns: repeat\(3, minmax\(0, 1fr\)\); \}/);
   assert.equal(video.subarray(4, 8).toString("ascii"), "ftyp");
+  assert.equal(walkingVideo.subarray(4, 8).toString("ascii"), "ftyp");
   assert.equal(poster.subarray(0, 4).toString("ascii"), "RIFF");
   assert.equal(poster.subarray(8, 12).toString("ascii"), "WEBP");
   assert.equal(amassImage.subarray(0, 4).toString("ascii"), "RIFF");
   assert.equal(amassImage.subarray(8, 12).toString("ascii"), "WEBP");
+  assert.equal(walkingPoster.subarray(0, 4).toString("ascii"), "RIFF");
+  assert.equal(walkingPoster.subarray(8, 12).toString("ascii"), "WEBP");
 });
 
 test("Crux Vision renders all five case-study chapters with expandable media", async () => {

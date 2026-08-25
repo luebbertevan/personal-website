@@ -1264,7 +1264,7 @@
 }
 .inheritancePipeline {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
   gap: clamp(18px, 2vw, 30px);
   padding: clamp(18px, 2.2vh, 28px) 0;
   border-top: 1px solid rgba(255, 255, 255, 0.11);

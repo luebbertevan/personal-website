@@ -1317,12 +1317,6 @@
   display: grid;
   gap: clamp(13px, 1.5vh, 18px);
 }
-.inheritanceHighlightsLabel {
-  color: rgba(247, 244, 241, 0.48);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: var(--about-reference-label-size);
-  letter-spacing: 0.11em;
-}
 .inheritanceHighlightGrid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1336,7 +1330,7 @@
   border-top: 1px solid rgba(var(--accent-rgb), 0.42);
 }
 .inheritanceHighlightGrid h4 {
-  font-size: clamp(16px, 1.28vw, 21px);
+  font-size: var(--about-reference-label-size);
   line-height: 1.05;
 }
 .inheritanceRotationHighlight {
@@ -3015,9 +3009,9 @@
   .inheritancePipelineLead,
   .inheritancePipelineSteps { gap: 8px; }
   .inheritanceEngineeringHighlights { gap: 11px; }
-  .inheritanceHighlightsLabel { font-size: 9px; }
   .inheritanceHighlightGrid { gap: 13px; }
   .inheritanceHighlightGrid article { gap: 8px; padding-top: 11px; }
+  .inheritanceHighlightGrid h4 { font-size: 9px; }
   .inheritanceRotationHighlight { gap: 13px; }
   .cruxOrigin .projectMeta { margin-bottom: 10px; }
   .cruxHeading { padding-bottom: 9px; }

@@ -1261,7 +1261,7 @@ export function SignalPrototypeV4() {
               <nav className={styles.minimalContactLinks} aria-label="Contact links">
                 <a href="https://github.com/luebbertevan" target="_blank" rel="noreferrer" data-about-reference-link>GitHub <i aria-hidden="true">↗</i></a>
                 <a href="https://www.linkedin.com/in/evan-luebbert/" target="_blank" rel="noreferrer">LinkedIn <i aria-hidden="true">↗</i></a>
-                <a href="/documents/evan-luebbert-resume-2026.pdf" download="Evan-Luebbert-Resume-2026.pdf">Résumé <i aria-hidden="true">↓</i></a>
+                <a href="/documents/evan-luebbert-resume-2026.pdf" download="Evan-Luebbert-Resume-2026.pdf">Resume <i aria-hidden="true">↓</i></a>
                 <button type="button" onClick={copyEmail} aria-live="polite">
                   <span ref={emailRef}>luebbertevan@gmail.com</span>
                   <i aria-hidden="true">{emailCopyStatus === "copied" ? "✓" : "⧉"}</i>

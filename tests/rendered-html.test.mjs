@@ -127,6 +127,8 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.match(source, /href="https:\/\/www\.linkedin\.com\/in\/evan-luebbert\/"\s+target="_blank"/);
   assert.match(source, /href="https:\/\/github\.com\/luebbertevan"\s+target="_blank"/);
   assert.match(source, /href="\/documents\/evan-luebbert-resume-2026\.pdf"\s+download="Evan-Luebbert-Resume-2026\.pdf"/);
+  assert.match(source, />Resume <i aria-hidden="true">↓<\/i><\/a>/);
+  assert.doesNotMatch(source, /Résumé/);
   assert.doesNotMatch(source, /className=\{styles\.homeInterests\}|className=\{styles\.homeContact\}|aria-label="About sequence"/);
 
   assert.equal(headshot.subarray(0, 4).toString("ascii"), "RIFF");

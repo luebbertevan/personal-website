@@ -211,6 +211,9 @@ test("Inheritance renders the experience and challenge chapters with project med
   assert.match(source, /label:\s*"INHERITANCE",\s*chapters:\s*2,/);
   assert.match(html, /Motion Data for Machine Learning/);
   assert.match(html, /Infinite Video, Limited Motion/);
+  assert.match(html, /Archive of Motion Capture/);
+  assert.match(html, /as Surface Shapes/);
+  assert.match(source, /href="https:\/\/amass\.is\.tue\.mpg\.de\/"/);
   assert.match(html, /processed 11,265 motions from 344 subjects/);
   assert.match(html, /Inheritance operated under the name/);
   assert.match(source, /href="https:\/\/kikitora\.com\/"/);

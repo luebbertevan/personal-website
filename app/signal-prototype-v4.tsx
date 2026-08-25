@@ -2288,11 +2288,11 @@ export function SignalPrototypeV4() {
             <section className={styles.inheritanceIntro} aria-labelledby="inheritance-intro-title">
               <h2 className={styles.inheritanceStatement} id="inheritance-intro-title">Motion Data for Machine Learning</h2>
               <p>
-                At Inheritance, I built a Python and Blender pipeline that converted the entire AMASS research dataset
-                into standardized skeletal animation for machine learning training in Unreal Engine. The pipeline
-                processed 11,265 motions from 344 subjects, representing more than 65 hours of motion capture. The
-                team estimated that around 90% could support training, saving roughly three months of data generation
-                and $70,000 in equivalent motion capture production.
+                At Inheritance, I built a Python and Blender pipeline that converted the entire <a href="https://amass.is.tue.mpg.de/" target="_blank" rel="noreferrer">AMASS</a> research
+                dataset into standardized skeletal animation for machine learning training in Unreal Engine. The
+                pipeline processed 11,265 motions from 344 subjects, representing more than 65 hours of motion
+                capture. The team estimated that around 90% could support training, saving roughly three months of
+                data generation and $70,000 in equivalent motion capture production.
               </p>
             </section>
             <div className={styles.inheritanceShowcase}>
@@ -2384,17 +2384,19 @@ export function SignalPrototypeV4() {
             <div className={styles.inheritanceAmassRow}>
               <div className={styles.inheritanceChallengeCopy}>
                 <p>
-                  AMASS offered another source. It is a large research archive that combines motion capture from many
-                  academic datasets into a shared human-body format. The archive contained more than 65 hours of
-                  motion across 11,265 animations and 344 subjects, but it was not delivered as ordinary skeletal
-                  animation.
+                  <a href="https://amass.is.tue.mpg.de/" target="_blank" rel="noreferrer">AMASS</a>, short for Archive of Motion Capture <strong>as Surface Shapes</strong>, offered another
+                  source. It is a large research archive that combines motion capture from many academic datasets
+                  into a shared human-body format. The archive contained more than 65 hours of motion across 11,265
+                  animations and 344 subjects.
                 </p>
                 <p>
-                  AMASS stored compact joint rotations and body-model parameters used to pose an SMPL-H body mesh.
-                  Inheritance needed conventional animation keyed onto its exact production armature, ready to move
-                  through Blender, GLB, and Unreal. The AMASS files could not enter that workflow directly. Their
-                  motion first had to be reconstructed in 3D, aligned with the target hierarchy, rest pose,
-                  proportions, and coordinate spaces, and exported in the required format.
+                  The <strong>as Surface Shapes</strong> part of the name captures the compatibility problem. AMASS
+                  represented motion through SMPL-H body-model parameters that produce a rigged human surface mesh.
+                  Inheritance needed conventional animation keyed onto its exact production skeleton, ready to move
+                  through Blender, GLB, and Unreal. In other words, the source was organized around a deformable body
+                  surface and its parameters, while the destination was organized around animation keys on a
+                  specific skeleton. The motion had to be reconstructed in 3D, aligned with the target hierarchy,
+                  rest pose, proportions, and coordinate spaces, and exported in the required format.
                 </p>
               </div>
 

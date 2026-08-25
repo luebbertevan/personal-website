@@ -283,15 +283,23 @@ export function SignalPrototypeV4() {
   const [cruxVideoExpanded, setCruxVideoExpanded] = useState(false);
   const [expandedCruxVideo, setExpandedCruxVideo] = useState<CruxVideoMedia>(cruxOriginVideo);
   const [inheritanceVideoExpanded, setInheritanceVideoExpanded] = useState(false);
+  const [inheritanceImageExpanded, setInheritanceImageExpanded] = useState(false);
   const pausedRef = useRef(false);
 
   useEffect(() => {
-    if (!expandedMedia && !expandedCruxMedia && !cruxVideoExpanded && !inheritanceVideoExpanded) return;
+    if (
+      !expandedMedia
+      && !expandedCruxMedia
+      && !cruxVideoExpanded
+      && !inheritanceVideoExpanded
+      && !inheritanceImageExpanded
+    ) return;
 
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
       setExpandedMedia(null);
       setExpandedCruxMedia(null);
+      setInheritanceImageExpanded(false);
       if (cruxVideoExpandedRef.current) {
         cruxVideoExpandedRef.current = false;
         setCruxVideoExpanded(false);
@@ -323,7 +331,7 @@ export function SignalPrototypeV4() {
     lightboxCloseRef.current?.focus();
     window.addEventListener("keydown", closeOnEscape);
     return () => window.removeEventListener("keydown", closeOnEscape);
-  }, [cruxVideoExpanded, expandedCruxMedia, expandedMedia, inheritanceVideoExpanded]);
+  }, [cruxVideoExpanded, expandedCruxMedia, expandedMedia, inheritanceImageExpanded, inheritanceVideoExpanded]);
 
   const togglePause = () => {
     pausedRef.current = !pausedRef.current;
@@ -333,6 +341,7 @@ export function SignalPrototypeV4() {
   const navigateToDestination = (index: number) => {
     setExpandedMedia(null);
     setExpandedCruxMedia(null);
+    setInheritanceImageExpanded(false);
     cruxVideoExpandedRef.current = false;
     setCruxVideoExpanded(false);
     inheritanceVideoExpandedRef.current = false;
@@ -343,6 +352,7 @@ export function SignalPrototypeV4() {
   const navigateToChapter = (index: number) => {
     setExpandedMedia(null);
     setExpandedCruxMedia(null);
+    setInheritanceImageExpanded(false);
     cruxVideoExpandedRef.current = false;
     setCruxVideoExpanded(false);
     inheritanceVideoExpandedRef.current = false;
@@ -353,6 +363,7 @@ export function SignalPrototypeV4() {
   const stepRoute = (direction: -1 | 1) => {
     setExpandedMedia(null);
     setExpandedCruxMedia(null);
+    setInheritanceImageExpanded(false);
     cruxVideoExpandedRef.current = false;
     setCruxVideoExpanded(false);
     inheritanceVideoExpandedRef.current = false;
@@ -2376,17 +2387,6 @@ export function SignalPrototypeV4() {
               </p>
             </div>
 
-            <figure className={styles.inheritanceAmassFigure}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/images/inheritance-amass-diversity.webp"
-                alt="A wide collection of AMASS body models showing varied poses, movements, and body shapes."
-                width="1554"
-                height="1074"
-              />
-              <figcaption>THE MOTION AND BODY DIVERSITY REPRESENTED IN AMASS.</figcaption>
-            </figure>
-
             <div className={styles.inheritanceChallengeCopy}>
               <p>
                 AMASS stored compact joint rotations and body-model parameters used to pose an SMPL-H body mesh.
@@ -2396,6 +2396,25 @@ export function SignalPrototypeV4() {
                 proportions, and coordinate spaces, and exported in the required format.
               </p>
             </div>
+
+            <figure className={styles.inheritanceAmassFigure}>
+              <button
+                type="button"
+                className={styles.inheritanceAmassButton}
+                onClick={() => setInheritanceImageExpanded(true)}
+                aria-label="Expand the AMASS motion and body diversity image"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/images/inheritance-amass-diversity.webp"
+                  alt="A wide collection of AMASS body models showing varied poses, movements, and body shapes."
+                  width="1554"
+                  height="1074"
+                />
+                <span>EXPAND <i aria-hidden="true">↗</i></span>
+              </button>
+              <figcaption>THE MOTION AND BODY DIVERSITY REPRESENTED IN AMASS.</figcaption>
+            </figure>
           </div>
         </section>
         <ol className={`${styles.chapterRail} ${styles.inheritanceChapterRail}`} aria-label="Inheritance case study chapters">
@@ -2432,6 +2451,32 @@ export function SignalPrototypeV4() {
             >
               Your browser does not support embedded video.
             </video>
+          </div>
+        )}
+        {inheritanceImageExpanded && (
+          <div
+            className={styles.mediaLightbox}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Expanded AMASS motion and body diversity image"
+            onClick={() => setInheritanceImageExpanded(false)}
+          >
+            <button
+              ref={lightboxCloseRef}
+              type="button"
+              aria-label="Close expanded AMASS image"
+              onClick={() => setInheritanceImageExpanded(false)}
+            >
+              <span aria-hidden="true">×</span>
+            </button>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/inheritance-amass-diversity.webp"
+              alt="A wide collection of AMASS body models showing varied poses, movements, and body shapes."
+              width="1554"
+              height="1074"
+              onClick={(event) => event.stopPropagation()}
+            />
           </div>
         )}
       </article>

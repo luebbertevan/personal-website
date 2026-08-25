@@ -2504,7 +2504,7 @@ export function SignalPrototypeV4() {
             <section className={styles.inheritanceTechnology} aria-labelledby="inheritance-technology-heading">
               <h3 className={styles.cardLabel} id="inheritance-technology-heading">TECHNOLOGY</h3>
               <ul className={styles.fostyTechnologyTags} aria-label="Inheritance engineering technology">
-                {["Python", "Blender", "NumPy", "Forward Kinematics", "SMPL-H", "glTF / GLB", "Unreal Engine"].map(
+                {["Python", "Blender", "NumPy", "SMPL-H", "glTF / GLB", "Unreal Engine"].map(
                   (technology) => <li key={technology}>{technology}</li>,
                 )}
               </ul>

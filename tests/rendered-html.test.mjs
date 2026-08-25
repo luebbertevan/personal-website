@@ -222,6 +222,8 @@ test("Inheritance renders the experience, challenge, and engineering chapters wi
   assert.match(html, /Inheritance operated under the name/);
   assert.match(source, /href="https:\/\/kikitora\.com\/"/);
   assert.match(source, /href="https:\/\/www\.inheritance\.ai\/"/);
+  assert.match(source, /At <a href="https:\/\/www\.inheritance\.ai\/"[^>]*>Inheritance<\/a>, I built/);
+  assert.doesNotMatch(source, /Visit Inheritance|inheritanceLinks/);
   assert.match(source, /src="\/videos\/inheritance-motion-collection\.mp4"/);
   assert.match(source, /poster="\/images\/inheritance-motion-collection-poster\.webp"/);
   assert.match(source, /muted\s+loop\s+playsInline/);

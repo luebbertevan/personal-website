@@ -2317,7 +2317,7 @@ export function SignalPrototypeV4() {
             <section className={styles.inheritanceIntro} aria-labelledby="inheritance-intro-title">
               <h2 className={styles.inheritanceStatement} id="inheritance-intro-title">Motion Data for Machine Learning</h2>
               <p>
-                At Inheritance, I built a Python and Blender pipeline that converted the entire <a href="https://amass.is.tue.mpg.de/" target="_blank" rel="noreferrer">AMASS</a> research
+                At <a href="https://www.inheritance.ai/" target="_blank" rel="noreferrer">Inheritance</a>, I built a Python and Blender pipeline that converted the entire <a href="https://amass.is.tue.mpg.de/" target="_blank" rel="noreferrer">AMASS</a> research
                 dataset into standardized skeletal animation for machine learning training in Unreal Engine. The
                 pipeline processed 11,265 motions from 344 subjects, representing more than 65 hours of motion
                 capture. The team estimated that around 90% could support training, saving roughly three months of
@@ -2364,9 +2364,6 @@ export function SignalPrototypeV4() {
                 controlled camera, lighting, and rendering variations created many video-to-motion pairs. Compatible
                 motion capture was the limiting factor, which made this pipeline especially valuable.
               </p>
-              <nav className={`${styles.minimalContactLinks} ${styles.inheritanceLinks}`} aria-label="Inheritance links">
-                <a href="https://www.inheritance.ai/" target="_blank" rel="noreferrer">Visit Inheritance <i aria-hidden="true">↗</i></a>
-              </nav>
             </section>
           </div>
         </section>

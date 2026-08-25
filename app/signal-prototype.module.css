@@ -1341,8 +1341,8 @@
 }
 .inheritanceRotationHighlight {
   grid-column: 1 / -1;
-  grid-template-columns: minmax(190px, 0.6fr) minmax(0, 1.4fr);
-  gap: clamp(18px, 2vw, 30px);
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(9px, 1vh, 12px);
 }
 .inheritanceRotationHighlight > div {
   display: grid;

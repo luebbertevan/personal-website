@@ -261,6 +261,7 @@ test("Inheritance renders the experience, challenge, and engineering chapters wi
   assert.match(html, /RECONCILING REST POSES/);
   assert.match(html, /BALANCING PROPORTIONS AND MOTION/);
   assert.match(html, /TRANSLATING THREE ROTATION SYSTEMS/);
+  assert.match(css, /\.inheritanceRotationHighlight \{[^}]*grid-column: 1 \/ -1;[^}]*grid-template-columns: minmax\(0, 1fr\);/s);
   assert.match(source, /src:\s*"\/videos\/inheritance-walking-comparison\.mp4"/);
   assert.match(source, /poster:\s*"\/images\/inheritance-walking-comparison-poster\.webp"/);
   assert.match(source, /onClick=\{\(\) => openInheritanceVideo\(inheritanceWalkingVideo\)\}/);

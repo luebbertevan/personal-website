@@ -2377,7 +2377,7 @@ export function SignalPrototypeV4() {
           </div>
           <div className={styles.inheritanceChallengeLayout}>
             <header className={styles.inheritanceChallengeHeading}>
-              <h2>Infinite Video, Limited Motion</h2>
+              <h2>The Motion Data Bottleneck</h2>
               <p>
                 Training a model to generate motion capture from video requires matched examples of both: a video
                 input and the exact 3D motion behind it. Producing enough of these pairs at the scale required for

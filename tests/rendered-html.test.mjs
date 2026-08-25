@@ -212,7 +212,7 @@ test("Inheritance renders the experience, challenge, and engineering chapters wi
 
   assert.match(source, /label:\s*"INHERITANCE",\s*chapters:\s*3,/);
   assert.match(html, /Motion Data for Machine Learning/);
-  assert.match(html, /Infinite Video, Limited Motion/);
+  assert.match(html, /The Motion Data Bottleneck/);
   assert.match(html, /Archive of Motion Capture/);
   assert.match(html, /as Surface Shapes/);
   assert.match(source, /href="https:\/\/amass\.is\.tue\.mpg\.de\/"/);

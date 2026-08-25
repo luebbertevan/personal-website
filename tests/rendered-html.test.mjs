@@ -244,6 +244,11 @@ test("Inheritance renders the experience, challenge, and engineering chapters wi
   assert.match(source, /aria-label="Expanded AMASS motion and body diversity image"/);
   assert.match(css, /\.inheritanceAmassRow \{[^}]*grid-template-columns: minmax\(0, 1fr\) minmax\(300px, 0\.9fr\);/s);
   assert.match(css, /\.inheritanceAmassFigure \{[^}]*width: 100%;/s);
+  assert.match(css, /\.shell \{[^}]*--case-study-body-size: clamp\(15px, 0\.92vw, 20px\);/s);
+  assert.match(css, /\.inheritanceProject \{[^}]*--inheritance-body-size: var\(--case-study-body-size\);/s);
+  assert.match(css, /@media \(min-width: 2048px\) and \(min-height: 1152px\) \{[\s\S]*\.shell \{ --case-study-body-size: clamp\(20px, 1vw, 30px\); \}/s);
+  assert.match(css, /@media \(max-width: 860px\) \{\s*\.shell \{[^}]*--case-study-body-size: 13px;/s);
+  assert.doesNotMatch(css, /font-size: calc\(var\(--inheritance-body-size\) \* 1\.08\);/);
   assert.match(source, />CHALLENGE<\/button>/);
   assert.match(source, />ENGINEERING<\/button>/);
   assert.match(html, /Rebuilding Motion in 3D/);

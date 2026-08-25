@@ -3,6 +3,7 @@
   --chrome-presence: 0;
   --surface-background: rgba(5, 5, 7, 0.76);
   --chapter-rail-height: 52px;
+  --case-study-body-size: clamp(15px, 0.92vw, 20px);
   position: relative;
   width: 100vw;
   height: 100svh;
@@ -825,7 +826,7 @@
   object-fit: contain;
 }
 .inheritanceProject {
-  --inheritance-body-size: clamp(14px, 0.84vw, 18px);
+  --inheritance-body-size: var(--case-study-body-size);
   --about-reference-label-size: 14px;
   --about-reference-title-size: 30px;
   --about-reference-link-size: 18px;
@@ -1054,7 +1055,6 @@
 }
 .inheritanceChallengeHeading p {
   color: rgba(247, 244, 241, 0.9);
-  font-size: calc(var(--inheritance-body-size) * 1.08);
 }
 .inheritanceChallengeCopy {
   display: grid;
@@ -1175,7 +1175,6 @@
 }
 .inheritanceEngineeringIntro p:first-of-type {
   color: rgba(247, 244, 241, 0.9);
-  font-size: calc(var(--inheritance-body-size) * 1.08);
 }
 .inheritanceEngineeringFigure {
   display: grid;
@@ -2820,9 +2819,9 @@
     width: 58vw;
   }
   .inheritanceProject {
-    --inheritance-body-size: clamp(18px, 0.92vw, 26px);
     width: 58vw;
   }
+  .shell { --case-study-body-size: clamp(20px, 1vw, 30px); }
 }
 
 @media (min-width: 861px) and (max-height: 900px) {
@@ -2861,7 +2860,10 @@
 }
 
 @media (max-width: 860px) {
-  .shell { min-height: 660px; }
+  .shell {
+    --case-study-body-size: 13px;
+    min-height: 660px;
+  }
   .waypoint { top: 134px; left: 20px; width: min(186px, calc(60vw - 24px)); }
   .waypoint button { padding: 8.4px 14px; }
   .waypoint strong { font-size: 16px; }
@@ -2926,7 +2928,6 @@
   .minimalContactLinks { justify-content: flex-start; }
   .fostyProject { --fosty-body-size: 14px; }
   .cruxProject { --crux-body-size: 13px; }
-  .inheritanceProject { --inheritance-body-size: 12px; }
   .fostyOrigin { padding-top: 18px; }
   .cruxOrigin { padding-top: 18px; }
   .inheritanceExperience { padding-top: 18px; }

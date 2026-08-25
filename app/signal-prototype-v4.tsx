@@ -2328,7 +2328,7 @@ export function SignalPrototypeV4() {
               <dl className={styles.inheritanceMetrics} aria-label="Project impact">
                 <div><dt>11,265</dt><dd><strong>NEW MOTIONS AVAILABLE</strong></dd></div>
                 <div><dt>3 MONTHS</dt><dd><strong>DATA GENERATION SAVED</strong></dd></div>
-                <div><dt>$70K</dt><dd><strong>CAPTURE VALUE</strong></dd></div>
+                <div><dt>$70K</dt><dd><strong>MOTION CAPTURE VALUE</strong></dd></div>
               </dl>
               <figure className={styles.inheritanceVideoFrame}>
                 <video

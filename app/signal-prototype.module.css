@@ -981,13 +981,13 @@
   min-width: 0;
   padding: clamp(10px, 1.05vh, 14px) clamp(11px, 1vw, 15px);
   align-content: center;
-  gap: 7px;
+  gap: 9px;
   background: rgba(3, 7, 14, 0.86);
 }
 .inheritanceMetrics dt {
   color: rgb(var(--accent-rgb));
   font-family: var(--font-geist-sans), sans-serif;
-  font-size: clamp(18px, 1.3vw, 23px);
+  font-size: clamp(22px, 1.65vw, 30px);
   font-weight: 560;
   line-height: 1;
   letter-spacing: -0.035em;
@@ -1000,7 +1000,7 @@
 }
 .inheritanceMetrics dd strong {
   color: rgba(247, 244, 241, 0.75);
-  font-size: clamp(9px, 0.66vw, 11px);
+  font-size: clamp(11px, 0.82vw, 14px);
   font-weight: 520;
   line-height: 1.25;
   letter-spacing: 0.075em;

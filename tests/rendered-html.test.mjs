@@ -254,6 +254,10 @@ test("Inheritance renders the experience, challenge, and engineering chapters wi
   assert.match(html, /Rebuilding Motion in 3D/);
   assert.match(html, /AMASS offers thousands of motions, but making them usable required a complex engineering solution\./);
   assert.match(html, /Each frame contained rotations for 52 SMPL-H joints plus the movement of the root joint\./);
+  assert.match(html, /The pipeline for each animation:/);
+  assert.doesNotMatch(html, /For each animation, the pipeline:/);
+  assert.match(css, /\.inheritancePipeline \{[^}]*grid-template-columns: minmax\(0, 1fr\) minmax\(0, 2fr\);/s);
+  assert.match(css, /\.inheritancePipelineSteps li::before \{[^}]*content: counter\(pipeline-step\);[^}]*font-size: 0\.95em;/s);
   assert.match(html, /RECONCILING REST POSES/);
   assert.match(html, /BALANCING PROPORTIONS AND MOTION/);
   assert.match(html, /TRANSLATING THREE ROTATION SYSTEMS/);

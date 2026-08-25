@@ -2521,7 +2521,7 @@ export function SignalPrototypeV4() {
                 </p>
               </div>
               <div className={styles.inheritancePipelineSteps}>
-                <p>For each animation, the pipeline:</p>
+                <p>The pipeline for each animation:</p>
                 <ol>
                   <li>Read the joint rotations, root movement, and source frame rate.</li>
                   <li>Reconstructed every joint&apos;s position through the SMPL-H hierarchy.</li>

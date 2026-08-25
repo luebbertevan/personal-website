@@ -1264,7 +1264,7 @@
 }
 .inheritancePipeline {
   display: grid;
-  grid-template-columns: minmax(0, 0.94fr) minmax(0, 1.06fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
   gap: clamp(18px, 2vw, 30px);
   padding: clamp(18px, 2.2vh, 28px) 0;
   border-top: 1px solid rgba(255, 255, 255, 0.11);
@@ -1308,9 +1308,9 @@
   top: 0;
   right: calc(100% + 0.65em);
   color: rgb(var(--accent-rgb));
-  content: "0" counter(pipeline-step);
+  content: counter(pipeline-step);
   font-family: var(--font-geist-mono), monospace;
-  font-size: 0.82em;
+  font-size: 0.95em;
   letter-spacing: 0.04em;
 }
 .inheritanceEngineeringHighlights {

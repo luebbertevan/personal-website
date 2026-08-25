@@ -237,7 +237,8 @@ test("Inheritance renders the experience and challenge chapters with project med
   assert.match(source, /onClick=\{\(\) => setInheritanceImageExpanded\(true\)\}/);
   assert.match(source, /inheritanceImageExpanded && \(/);
   assert.match(source, /aria-label="Expanded AMASS motion and body diversity image"/);
-  assert.match(css, /\.inheritanceAmassFigure \{[^}]*width: min\(52%, 420px\);[^}]*justify-self: end;/s);
+  assert.match(css, /\.inheritanceAmassRow \{[^}]*grid-template-columns: minmax\(0, 1fr\) minmax\(300px, 0\.9fr\);/s);
+  assert.match(css, /\.inheritanceAmassFigure \{[^}]*width: 100%;/s);
   assert.match(source, />CHALLENGE<\/button>/);
   assert.match(css, /\.chapterRail\.inheritanceChapterRail \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); \}/);
   assert.equal(video.subarray(4, 8).toString("ascii"), "ftyp");

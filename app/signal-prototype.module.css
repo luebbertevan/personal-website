@@ -1050,11 +1050,18 @@
   display: grid;
   gap: clamp(12px, 1.4vh, 18px);
 }
+.inheritanceAmassRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 0.9fr);
+  gap: clamp(18px, 2.2vw, 32px);
+  align-items: start;
+  padding-top: clamp(16px, 1.8vh, 22px);
+  border-top: 1px solid rgba(var(--accent-rgb), 0.22);
+}
 .inheritanceAmassFigure {
   display: grid;
-  width: min(52%, 420px);
+  width: 100%;
   margin: 0;
-  justify-self: end;
   overflow: hidden;
   border: 1px solid rgba(var(--accent-rgb), 0.6);
   background: rgba(3, 7, 14, 0.96);
@@ -2736,6 +2743,11 @@
   .inheritanceChallengeHeading p,
   .inheritanceChallengeCopy p { line-height: 1.42; }
   .inheritanceChallengeCopy { gap: 10px; }
+  .inheritanceAmassRow {
+    grid-template-columns: minmax(0, 1fr) minmax(180px, 0.9fr);
+    gap: 13px;
+    padding-top: 14px;
+  }
   .inheritanceAmassFigure figcaption { padding: 7px 9px; font-size: 8px; }
   .cruxOrigin .projectMeta { margin-bottom: 10px; }
   .cruxHeading { padding-bottom: 9px; }
@@ -2863,6 +2875,7 @@
     grid-template-rows: auto;
   }
   .inheritanceStory { grid-template-columns: 1fr; }
+  .inheritanceAmassRow { grid-template-columns: 1fr; }
   .cruxOriginFeature { margin-top: 10px; }
   .cruxStoryScroll {
     height: auto;

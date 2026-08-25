@@ -2379,42 +2379,44 @@ export function SignalPrototypeV4() {
                 time-consuming. Expanding the motion library meant either producing more performances or finding
                 another source the company could use.
               </p>
-              <p>
-                AMASS offered another source. It is a large research archive that combines motion capture from many
-                academic datasets into a shared human-body format. The archive contained more than 65 hours of
-                motion across 11,265 animations and 344 subjects, but it was not delivered as ordinary skeletal
-                animation.
-              </p>
             </div>
 
-            <div className={styles.inheritanceChallengeCopy}>
-              <p>
-                AMASS stored compact joint rotations and body-model parameters used to pose an SMPL-H body mesh.
-                Inheritance needed conventional animation keyed onto its exact production armature, ready to move
-                through Blender, GLB, and Unreal. The AMASS files could not enter that workflow directly. Their
-                motion first had to be reconstructed in 3D, aligned with the target hierarchy, rest pose,
-                proportions, and coordinate spaces, and exported in the required format.
-              </p>
-            </div>
+            <div className={styles.inheritanceAmassRow}>
+              <div className={styles.inheritanceChallengeCopy}>
+                <p>
+                  AMASS offered another source. It is a large research archive that combines motion capture from many
+                  academic datasets into a shared human-body format. The archive contained more than 65 hours of
+                  motion across 11,265 animations and 344 subjects, but it was not delivered as ordinary skeletal
+                  animation.
+                </p>
+                <p>
+                  AMASS stored compact joint rotations and body-model parameters used to pose an SMPL-H body mesh.
+                  Inheritance needed conventional animation keyed onto its exact production armature, ready to move
+                  through Blender, GLB, and Unreal. The AMASS files could not enter that workflow directly. Their
+                  motion first had to be reconstructed in 3D, aligned with the target hierarchy, rest pose,
+                  proportions, and coordinate spaces, and exported in the required format.
+                </p>
+              </div>
 
-            <figure className={styles.inheritanceAmassFigure}>
-              <button
-                type="button"
-                className={styles.inheritanceAmassButton}
-                onClick={() => setInheritanceImageExpanded(true)}
-                aria-label="Expand the AMASS motion and body diversity image"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/images/inheritance-amass-diversity.webp"
-                  alt="A wide collection of AMASS body models showing varied poses, movements, and body shapes."
-                  width="1554"
-                  height="1074"
-                />
-                <span>EXPAND <i aria-hidden="true">↗</i></span>
-              </button>
-              <figcaption>THE MOTION AND BODY DIVERSITY REPRESENTED IN AMASS.</figcaption>
-            </figure>
+              <figure className={styles.inheritanceAmassFigure}>
+                <button
+                  type="button"
+                  className={styles.inheritanceAmassButton}
+                  onClick={() => setInheritanceImageExpanded(true)}
+                  aria-label="Expand the AMASS motion and body diversity image"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/images/inheritance-amass-diversity.webp"
+                    alt="A wide collection of AMASS body models showing varied poses, movements, and body shapes."
+                    width="1554"
+                    height="1074"
+                  />
+                  <span>EXPAND <i aria-hidden="true">↗</i></span>
+                </button>
+                <figcaption>THE MOTION AND BODY DIVERSITY REPRESENTED IN AMASS.</figcaption>
+              </figure>
+            </div>
           </div>
         </section>
         <ol className={`${styles.chapterRail} ${styles.inheritanceChapterRail}`} aria-label="Inheritance case study chapters">

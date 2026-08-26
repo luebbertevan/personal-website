@@ -243,6 +243,8 @@ test("Val renders the text-only Experience and Contributions chapters with the a
   assert.match(css, /\.valBody \{[^}]*grid-template-columns: minmax\(0, 1fr\);/s);
   assert.doesNotMatch(css, /\.valBody \{[^}]*border-top:/s);
   assert.match(css, /\.valContributionsLayout,[\s\S]*\.valFeatureCopy \{[^}]*grid-template-columns: minmax\(0, 1fr\);/s);
+  assert.match(css, /\.project h2\.valContributionsTitle \{[^}]*font-size: clamp\(30px, 3\.2vw, 46px\);/s);
+  assert.match(css, /\.valContributionsHeader \+ \.valTextSection \{[^}]*padding-top: 0;[^}]*border-top: 0;/s);
   assert.doesNotMatch(valArticle, /column-count|grid-template-columns:\s*repeat\([^)]*\)/);
   assert.match(css, /\.chapterRail\.valChapterRail \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); \}/);
 });

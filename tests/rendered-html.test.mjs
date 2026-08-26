@@ -223,6 +223,8 @@ test("Val renders only the text-only Experience chapter with the approved accent
   assert.match(html, /I worked closely with the founders and technical leadership in a small early-stage team\./);
   assert.match(html, /I was drawn to Val because it offered the responsibility and freedom of early-stage product development and a mission that inspired me\./);
   assert.match(html, /This experience is a strong demonstration of how I work as a software engineer\./);
+  assert.match(html, /owned features from idea through release, moved across the full stack, and took responsibility for delivering reliable software to production\./);
+  assert.doesNotMatch(html, /owned features from idea through production/);
   assert.match(source, /aria-label="Val case study chapters"[\s\S]*>EXPERIENCE<\/button>/);
   assert.doesNotMatch(valArticle, /<img|<video|<figure/);
   assert.match(valArticle, /className=\{styles\.valTitleRow\}[\s\S]*<h1>Val<\/h1>[\s\S]*className=\{styles\.valDate\}>MARCH 2026 TO JUNE 2026<\/p>/);

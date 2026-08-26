@@ -2607,7 +2607,7 @@ export function SignalPrototypeV4() {
                 </p>
                 <p>
                   Astrid Wilde, CEO of Inheritance, estimated that the pipeline accelerated the company&apos;s
-                  data-generation roadmap by <strong>approximately three months</strong> and avoided
+                  data-generation roadmap by <strong>approximately three months</strong> and avoided{" "}
                   <strong>roughly $70,000</strong> in equivalent stage, performer, and production costs. It also
                   broadened the foundation of human motion available for controlled training renders.
                 </p>
@@ -2747,7 +2747,7 @@ export function SignalPrototypeV4() {
                   I was drawn to Val because it offered the responsibility and freedom of early-stage product development and a mission that inspired me. Technology plays an important role in healthcare, but it has not always been designed around the people who rely on it. Continuing care after treatment is a difficult transition, and software should make support easier to reach rather than introduce another barrier. At Val, improving usability and reliability was connected to a larger purpose: helping people remain engaged with their care and recovery communities.
                 </p>
                 <p>
-                  This experience is a strong demonstration of how I work as a software engineer. I collaborated closely with a team while exercising independent judgment, owned features from idea through production, moved across the full stack, and took responsibility for delivering reliable software to production.
+                  This experience is a strong demonstration of how I work as a software engineer. I collaborated closely with a team while exercising independent judgment, owned features from idea through release, moved across the full stack, and took responsibility for delivering reliable software to production.
                 </p>
               </div>
             </section>

@@ -217,7 +217,7 @@ test("Val renders only the text-only Experience chapter with the approved accent
   assert.match(source, /cssColor:\s*\[214, 40, 40\]/);
   assert.match(source, /shaderColor:\s*\[0\.839, 0\.157, 0\.157\]/);
   assert.match(html, /FULL-STACK ENGINEER \(CONTRACT\)/);
-  assert.match(html, /March 2026 to June 2026/);
+  assert.match(html, /MARCH 2026 TO JUNE 2026/);
   assert.match(html, /Owning a recovery platform from product decisions to production releases/);
   assert.match(source, /At <a href="https:\/\/val\.care\/"[^>]*>Val<\/a>, I shaped and shipped a live recovery and post-discharge platform/);
   assert.match(html, /I worked closely with the founders and technical leadership in a small early-stage team\./);
@@ -225,9 +225,11 @@ test("Val renders only the text-only Experience chapter with the approved accent
   assert.match(html, /This experience is a strong demonstration of how I work as a software engineer\./);
   assert.match(source, /aria-label="Val case study chapters"[\s\S]*>EXPERIENCE<\/button>/);
   assert.doesNotMatch(valArticle, /<img|<video|<figure/);
-  assert.doesNotMatch(valArticle, /valTitleRow/);
+  assert.match(valArticle, /className=\{styles\.valTitleRow\}[\s\S]*<h1>Val<\/h1>[\s\S]*className=\{styles\.valDate\}>MARCH 2026 TO JUNE 2026<\/p>/);
   assert.doesNotMatch(html, /Finding the work that mattered most|Accountable for the software after it shipped/);
   assert.match(css, /\.project h2\.valStatement \{[^}]*width: 100%;[^}]*max-width: none;/s);
+  assert.match(css, /\.valTitleRow \{[^}]*display: flex;[^}]*align-items: baseline;[^}]*justify-content: space-between;/s);
+  assert.match(css, /\.valDate \{[^}]*flex: 0 0 auto;[^}]*margin: 0;[^}]*font-size: var\(--about-reference-label-size\);/s);
   assert.match(css, /\.valBody \{[^}]*grid-template-columns: minmax\(0, 1fr\);/s);
   assert.match(css, /\.chapterRail\.valChapterRail \{ grid-template-columns: minmax\(0, 1fr\); \}/);
 });
@@ -252,6 +254,7 @@ test("Inheritance renders the experience, challenge, engineering, and impact cha
   assert.match(html, /as Surface Shapes/);
   assert.match(html, /Accelerating the Data Roadmap/);
   assert.match(html, /FROM MOTION CAPTURE TO PHYSICAL AI/);
+  assert.match(html, /TURNING RESEARCH INTO IMPACT/);
   assert.match(html, /delivered measurable value to Inheritance/);
   assert.match(source, /href="https:\/\/amass\.is\.tue\.mpg\.de\/"/);
   assert.match(html, /processed 11,265 motions from 344 subjects/);
@@ -275,10 +278,15 @@ test("Inheritance renders the experience, challenge, engineering, and impact cha
   assert.match(source, /<dt>3 MONTHS<\/dt><dd><strong>DATA GENERATION SAVED<\/strong><\/dd>/);
   assert.match(source, /<dt>\$70K<\/dt><dd><strong>MOTION CAPTURE VALUE<\/strong><\/dd>/);
   assert.match(source, /onClick=\{\(\) => navigateToChapter\(3\)\}>IMPACT<\/button>/);
-  assert.match(source, /<dt>≈ 3 MONTHS<\/dt>/);
-  assert.match(source, /<dt>≈ \$70K<\/dt>/);
-  assert.match(source, /<dt>≈ 90%<\/dt>/);
+  assert.match(source, /<strong>approximately 90%<\/strong>/);
+  assert.match(source, /<strong>approximately three months<\/strong>/);
+  assert.match(source, /<strong>roughly \$70,000<\/strong>/);
+  assert.doesNotMatch(source, /inheritanceImpactEvidence|inheritanceImpactMetrics|inheritanceImpactFigure/);
   assert.match(css, /\.chapterRail\.inheritanceChapterRail \{ grid-template-columns: repeat\(4, minmax\(0, 1fr\)\); \}/);
+  assert.match(css, /\.inheritanceImpactLead strong \{[^}]*color: rgb\(var\(--accent-rgb\)\);/s);
+  assert.doesNotMatch(css, /\.inheritanceImpactHeader \{[^}]*grid-template-columns:/s);
+  assert.match(css, /\.inheritanceImpactMission \{[^}]*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);/s);
+  assert.doesNotMatch(css, /\.inheritanceImpactConclusion \{[^}]*background:/s);
   assert.match(css, /\.inheritanceStory \{[^}]*grid-template-columns: minmax\(0, 1fr\);/s);
   assert.match(css, /\.inheritanceExperience \{[^}]*overflow-x: hidden;[^}]*overflow-y: auto;/s);
   assert.match(css, /\.inheritanceIntro p \{[^}]*width: 100%;[^}]*max-width: none;/s);

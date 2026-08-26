@@ -2601,54 +2601,18 @@ export function SignalPrototypeV4() {
                 <p>
                   The AMASS retargeting pipeline gave Inheritance a large, usable motion library without requiring
                   equivalent new motion capture sessions. It processed all 11,265 animations available to the
-                  company, with approximately 90% qualifying as useful for training. The pipeline provided thousands
-                  of performances across 344 subjects and greatly expanded the team&apos;s capacity to generate paired
-                  video and motion for training.
+                  company, with <strong>approximately 90%</strong> qualifying as useful for training. The pipeline
+                  provided thousands of performances across 344 subjects and greatly expanded the team&apos;s capacity
+                  to generate paired video and motion for training.
                 </p>
                 <p>
                   Astrid Wilde, CEO of Inheritance, estimated that the pipeline accelerated the company&apos;s
-                  data-generation roadmap by approximately three months and avoided roughly $70,000 in equivalent
-                  stage, performer, and production costs. It also broadened the foundation of human motion available
-                  for controlled training renders.
+                  data-generation roadmap by <strong>approximately three months</strong> and avoided
+                  <strong>roughly $70,000</strong> in equivalent stage, performer, and production costs. It also
+                  broadened the foundation of human motion available for controlled training renders.
                 </p>
               </div>
             </header>
-
-            <div className={styles.inheritanceImpactEvidence}>
-              <figure className={styles.inheritanceImpactFigure}>
-                <button
-                  type="button"
-                  className={styles.inheritanceImpactMediaButton}
-                  onClick={() => openInheritanceVideo(inheritanceMotionVideo)}
-                  aria-label="Expand the retargeted AMASS motion collection video"
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="/images/inheritance-motion-collection-poster.webp"
-                    alt="A collection of AMASS motions retargeted onto Inheritance's production armature in Blender."
-                    width="1600"
-                    height="886"
-                  />
-                  <span>VIEW MOTIONS <i aria-hidden="true">↗</i></span>
-                </button>
-                <figcaption>11,265 AMASS ANIMATIONS PROCESSED ACROSS 344 SUBJECTS.</figcaption>
-              </figure>
-
-              <dl className={styles.inheritanceImpactMetrics} aria-label="Estimated project impact">
-                <div>
-                  <dt>≈ 3 MONTHS</dt>
-                  <dd>DATA ROADMAP ACCELERATED</dd>
-                </div>
-                <div>
-                  <dt>≈ $70K</dt>
-                  <dd>EQUIVALENT CAPTURE COSTS AVOIDED</dd>
-                </div>
-                <div>
-                  <dt>≈ 90%</dt>
-                  <dd>ANIMATIONS ESTIMATED USEFUL</dd>
-                </div>
-              </dl>
-            </div>
 
             <section className={styles.inheritanceImpactMission} aria-labelledby="inheritance-impact-mission-heading">
               <div className={styles.inheritanceImpactMissionCopy}>
@@ -2668,7 +2632,11 @@ export function SignalPrototypeV4() {
                 </p>
               </div>
 
-              <div className={styles.inheritanceImpactConclusion}>
+              <section
+                className={styles.inheritanceImpactConclusion}
+                aria-labelledby="inheritance-impact-conclusion-heading"
+              >
+                <h3 id="inheritance-impact-conclusion-heading">TURNING RESEARCH INTO IMPACT</h3>
                 <p>
                   Developing the AMASS retargeting pipeline was especially rewarding because it tangibly accelerated
                   the mission by introducing thousands of motions into the ML training workflow. My work addressed a
@@ -2682,7 +2650,7 @@ export function SignalPrototypeV4() {
                   pointing to a much larger opportunity for structured motion data across computer vision,
                   animation, robotics, and physical AI.
                 </p>
-              </div>
+              </section>
             </section>
           </div>
         </section>
@@ -2761,8 +2729,10 @@ export function SignalPrototypeV4() {
           <div className={styles.valLayout}>
             <header className={styles.valHeading}>
               <p className={styles.cardLabel}>FULL-STACK ENGINEER (CONTRACT)</p>
-              <h1>Val</h1>
-              <p className={styles.valDate}>March 2026 to June 2026</p>
+              <div className={styles.valTitleRow}>
+                <h1>Val</h1>
+                <p className={styles.valDate}>MARCH 2026 TO JUNE 2026</p>
+              </div>
             </header>
             <section className={styles.valIntroduction} aria-labelledby="val-experience-title">
               <h2 className={styles.valStatement} id="val-experience-title">Owning a recovery platform from product decisions to production releases</h2>

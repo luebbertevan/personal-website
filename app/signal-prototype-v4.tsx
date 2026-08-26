@@ -2760,11 +2760,9 @@ export function SignalPrototypeV4() {
           </div>
           <div className={styles.valLayout}>
             <header className={styles.valHeading}>
-              <p className={styles.cardLabel}>Full-Stack Engineer (Contract)</p>
-              <div className={styles.valTitleRow}>
-                <h1>Val</h1>
-                <p className={styles.valDate}>March 2026 to June 2026</p>
-              </div>
+              <p className={styles.cardLabel}>FULL-STACK ENGINEER (CONTRACT)</p>
+              <h1>Val</h1>
+              <p className={styles.valDate}>March 2026 to June 2026</p>
             </header>
             <section className={styles.valIntroduction} aria-labelledby="val-experience-title">
               <h2 className={styles.valStatement} id="val-experience-title">Owning a recovery platform from product decisions to production releases</h2>

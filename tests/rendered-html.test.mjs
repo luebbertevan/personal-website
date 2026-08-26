@@ -216,7 +216,7 @@ test("Val renders only the text-only Experience chapter with the approved accent
   assert.match(source, /label:\s*"VAL",\s*chapters:\s*1,/);
   assert.match(source, /cssColor:\s*\[158, 50, 68\]/);
   assert.match(source, /shaderColor:\s*\[0\.62, 0\.196, 0\.267\]/);
-  assert.match(html, /Full-Stack Engineer \(Contract\)/);
+  assert.match(html, /FULL-STACK ENGINEER \(CONTRACT\)/);
   assert.match(html, /March 2026 to June 2026/);
   assert.match(html, /Owning a recovery platform from product decisions to production releases/);
   assert.match(source, /At <a href="https:\/\/val\.care\/"[^>]*>Val<\/a>, I shaped and shipped a live recovery and post-discharge platform/);
@@ -225,7 +225,9 @@ test("Val renders only the text-only Experience chapter with the approved accent
   assert.match(html, /This experience is a strong demonstration of how I work as a software engineer\./);
   assert.match(source, /aria-label="Val case study chapters"[\s\S]*>EXPERIENCE<\/button>/);
   assert.doesNotMatch(valArticle, /<img|<video|<figure/);
+  assert.doesNotMatch(valArticle, /valTitleRow/);
   assert.doesNotMatch(html, /Finding the work that mattered most|Accountable for the software after it shipped/);
+  assert.match(css, /\.valBody \{[^}]*grid-template-columns: minmax\(0, 1fr\);/s);
   assert.match(css, /\.chapterRail\.valChapterRail \{ grid-template-columns: minmax\(0, 1fr\); \}/);
 });
 

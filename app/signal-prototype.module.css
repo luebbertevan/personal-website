@@ -964,18 +964,11 @@
 .valHeading .cardLabel {
   margin-bottom: clamp(8px, 1vh, 12px);
   font-size: var(--about-reference-label-size);
-  letter-spacing: 0.04em;
-}
-.valTitleRow {
-  display: flex;
-  gap: 18px;
-  align-items: baseline;
-  justify-content: space-between;
+  letter-spacing: 0.11em;
 }
 .valHeading h1 { font-size: var(--about-reference-title-size); }
 .valDate {
-  flex: 0 0 auto;
-  margin: 0;
+  margin: clamp(7px, 0.8vh, 10px) 0 0;
   color: rgba(247, 244, 241, 0.5);
   font-size: var(--about-reference-label-size);
   line-height: 1;
@@ -995,8 +988,8 @@
 }
 .valBody {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(12px, 1.4vh, 18px) clamp(20px, 2vw, 32px);
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(12px, 1.4vh, 18px);
   padding-top: clamp(13px, 1.45vh, 18px);
   border-top: 1px solid rgba(var(--accent-rgb), 0.22);
 }
@@ -1008,10 +1001,6 @@
   line-height: 1.45;
   letter-spacing: 0;
 }
-.valBody p:nth-child(1) { grid-area: 1 / 1; }
-.valBody p:nth-child(2) { grid-area: 2 / 1; }
-.valBody p:nth-child(3) { grid-area: 1 / 2; }
-.valBody p:nth-child(4) { grid-area: 2 / 2; }
 .valBody a {
   color: color-mix(in srgb, rgb(var(--accent-rgb)) 76%, white 24%);
   text-decoration-color: rgba(var(--accent-rgb), 0.48);
@@ -3312,7 +3301,6 @@
   .valExperience .projectMeta { margin-bottom: 10px; }
   .valHeading { padding-bottom: 9px; }
   .valHeading .cardLabel { margin-bottom: 6px; font-size: 9px; }
-  .valTitleRow { flex-wrap: wrap; gap: 7px 14px; }
   .valDate { font-size: 9px; }
   .project h2.valStatement { font-size: 20px; }
   .valLayout,
@@ -3322,7 +3310,6 @@
     gap: 11px;
     padding-top: 11px;
   }
-  .valBody p:nth-child(n) { grid-area: auto; }
   .valBody p { line-height: 1.38; }
   .cruxOrigin .projectMeta { margin-bottom: 10px; }
   .cruxHeading { padding-bottom: 9px; }

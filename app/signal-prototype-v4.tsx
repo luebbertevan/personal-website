@@ -38,7 +38,7 @@ const destinations = [
   },
   {
     label: "VAL",
-    chapters: 1,
+    chapters: 2,
     shaderColor: [0.839, 0.157, 0.157] as const,
     cssColor: [214, 40, 40] as const,
   },
@@ -2753,8 +2753,63 @@ export function SignalPrototypeV4() {
             </section>
           </div>
         </section>
+        <section className={`${styles.chapter} ${styles.valContributions}`} data-project-chapter>
+          <div className={styles.projectMeta}>
+            <span>VAL</span>
+            <span>CONTRIBUTIONS</span>
+          </div>
+          <div className={styles.valContributionsLayout}>
+            <header className={styles.valContributionsHeader}>
+              <h2 className={styles.valContributionsTitle}>Product decisions and full-stack delivery</h2>
+              <p>
+                Working on an early product requires moving between new features, user experience, production issues, and technical foundations. User feedback showed us where people were struggling, and as I worked across the application, I uncovered additional problems and opportunities. I had the freedom to investigate those needs, propose solutions, and focus on the work that would make Val more useful and dependable.
+              </p>
+            </header>
+
+            <section className={styles.valTextSection} aria-labelledby="val-product-judgment-title">
+              <h3 id="val-product-judgment-title">PRODUCT JUDGMENT</h3>
+              <p>
+                I prioritized work through user feedback, product usage, founder input, and direct investigation of the application. Some needs were urgent production problems while others were workflows that had outgrown their first implementation. I learned to balance immediate fixes with improvements that would remain useful as the product developed.
+              </p>
+            </section>
+
+            <section className={styles.valTextSection} aria-labelledby="val-user-experience-title">
+              <h3 id="val-user-experience-title">USER EXPERIENCE</h3>
+              <p>
+                I improved experiences across both sides of the platform: the application used by people continuing their recovery and the tools used by treatment providers and care partners. My work touched dashboards, journaling, daily reflections, announcements, client management, and alumni-to-coach calling workflows. I removed friction and made the product more usable across user roles, devices and configurations.
+              </p>
+            </section>
+
+            <section className={styles.valTextSection} aria-labelledby="val-full-stack-delivery-title">
+              <h3 id="val-full-stack-delivery-title">FULL-STACK DELIVERY</h3>
+              <p>
+                Owning a feature meant owning the system behind it. A change that began in the interface could require new data models, backend logic, permissions, migrations, or release changes before it worked reliably for users. I followed those dependencies across the stack and carried the work through production. That continuity allowed me to deliver complete solutions and fix the cause of a problem, not just its most visible symptom.
+              </p>
+            </section>
+
+            <section className={styles.valFeatureSpotlight} aria-labelledby="val-meeting-finder-title">
+              <p className={styles.cardLabel}>FEATURE SPOTLIGHT</p>
+              <h3 id="val-meeting-finder-title">Bringing meeting discovery into Val</h3>
+              <div className={styles.valFeatureCopy}>
+                <p>
+                  One of the clearest examples of my product ownership was Val&apos;s AA and NA meeting finder. The existing experience sent users to a third-party website through a built-in browser. It technically offered access to meeting information, but it was fragmented, inconsistent, and not a strong long-term experience for a product intended to support continuing care.
+                </p>
+                <p>
+                  I researched the public meeting-data ecosystem and proposed bringing discovery directly into Val. The challenge was that meeting information was spread across regional organizations using different feeds, fields, formats, and levels of completeness. I designed and built a full-stack system that aggregated more than 5,500 meetings from 19 regional AA and NA sources and normalized them into one consistent experience. The system was built to grow with Val, allowing new AA intergroups and NA service bodies to be added as the platform expanded to more locations and treatment partners.
+                </p>
+                <p>
+                  Users could search meetings and filter by day, time, attendance format, and distance. Location-aware sorting helped them find relevant options nearby, while online and hybrid meetings remained available when geography was not the deciding factor. Supabase Edge Functions fetched the regional data, a shared model reconciled the source formats, and a layered caching and scheduled warming process kept the experience responsive without placing unnecessary load on upstream services.
+                </p>
+                <p>
+                  The meeting finder began as an opportunity I identified independently and became one of the product&apos;s most valued features. Val&apos;s founders informed me it was a meaningful draw for the platform, and users reported relying on it daily to find meetings in their area and support their continuing aftercare. It is an explicit testiment of the broader contribution I made at Val. I am a high agency, high impact engineer who can carry a better experience across research, product decisions, engineering, and production.
+                </p>
+              </div>
+            </section>
+          </div>
+        </section>
         <ol className={`${styles.chapterRail} ${styles.valChapterRail}`} aria-label="Val case study chapters">
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(0)}>EXPERIENCE</button></li>
+          <li><button type="button" data-chapter-index onClick={() => navigateToChapter(1)}>CONTRIBUTIONS</button></li>
         </ol>
       </article>
 

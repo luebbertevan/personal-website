@@ -1011,7 +1011,78 @@
   text-decoration-color: rgba(var(--accent-rgb), 0.48);
   text-underline-offset: 3px;
 }
-.chapterRail.valChapterRail { grid-template-columns: minmax(0, 1fr); }
+.valContributions {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: clamp(18px, 2.4vh, 30px);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.valContributions .projectMeta {
+  flex: 0 0 auto;
+  margin-bottom: clamp(12px, 1.5vh, 18px);
+  font-size: var(--about-reference-label-size);
+  line-height: 1;
+}
+.valContributionsLayout,
+.valContributionsHeader,
+.valTextSection,
+.valFeatureSpotlight,
+.valFeatureCopy {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+.valContributionsLayout { gap: clamp(18px, 2.2vh, 28px); }
+.valContributionsHeader {
+  gap: clamp(12px, 1.4vh, 18px);
+  padding-bottom: clamp(18px, 2.2vh, 28px);
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.48);
+}
+.project h2.valContributionsTitle {
+  width: 100%;
+  max-width: none;
+  color: rgb(var(--accent-rgb));
+  font-size: calc(var(--val-body-size) * 1.72);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+.valContributionsHeader > p,
+.valTextSection p,
+.valFeatureCopy p {
+  margin: 0;
+  color: var(--body-text-color);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--val-body-size);
+  line-height: 1.48;
+  letter-spacing: 0;
+}
+.valTextSection,
+.valFeatureSpotlight {
+  gap: clamp(9px, 1.05vh, 13px);
+  padding-top: clamp(18px, 2.2vh, 28px);
+  border-top: 1px solid rgba(var(--accent-rgb), 0.22);
+}
+.valTextSection h3,
+.valFeatureSpotlight h3 {
+  margin: 0;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-weight: 520;
+}
+.valTextSection h3 {
+  color: color-mix(in srgb, rgb(var(--accent-rgb)) 82%, white 18%);
+  font-size: var(--about-reference-label-size);
+  line-height: 1.1;
+  letter-spacing: 0.08em;
+}
+.valFeatureSpotlight .cardLabel { margin: 0; }
+.valFeatureSpotlight h3 {
+  color: rgba(247, 244, 241, 0.94);
+  font-size: calc(var(--val-body-size) * 1.45);
+  line-height: 1.08;
+  letter-spacing: -0.025em;
+}
+.valFeatureCopy { gap: clamp(12px, 1.4vh, 18px); }
+.chapterRail.valChapterRail { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .inheritanceChallengeCopy p strong {
   color: rgba(247, 244, 241, 0.9);
   font-weight: 560;
@@ -2865,6 +2936,10 @@
     bottom: var(--chapter-rail-height);
     padding-bottom: 0;
   }
+  .valContributions {
+    bottom: var(--chapter-rail-height);
+    padding-bottom: 0;
+  }
   .cruxMovementChapter {
     bottom: var(--chapter-rail-height);
     padding-bottom: 0;
@@ -3084,6 +3159,7 @@
   .inheritanceEngineering { padding-top: 18px; }
   .inheritanceImpact { padding-top: 18px; }
   .valExperience { padding-top: 18px; }
+  .valContributions { padding-top: 18px; }
   .cruxMovementChapter { padding-top: 18px; }
   .cruxVisualChapter { padding-top: 18px; }
   .cruxEngineeringChapter { padding-top: 18px; }
@@ -3198,6 +3274,17 @@
     padding-top: 11px;
   }
   .valBody p { line-height: 1.38; }
+  .valContributions .projectMeta { margin-bottom: 10px; }
+  .valContributionsLayout { gap: 14px; }
+  .valContributionsHeader { gap: 10px; padding-bottom: 14px; }
+  .project h2.valContributionsTitle { font-size: 20px; }
+  .valContributionsHeader > p,
+  .valTextSection p,
+  .valFeatureCopy p { line-height: 1.42; }
+  .valTextSection,
+  .valFeatureSpotlight { gap: 8px; padding-top: 14px; }
+  .valFeatureSpotlight h3 { font-size: 18px; }
+  .valFeatureCopy { gap: 11px; }
   .cruxOrigin .projectMeta { margin-bottom: 10px; }
   .cruxHeading { padding-bottom: 9px; }
   .cruxHeading .cardLabel { margin-bottom: 6px; font-size: 9px; }

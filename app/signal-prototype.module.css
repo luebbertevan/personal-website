@@ -905,6 +905,10 @@
   width: 100%;
   max-width: none;
 }
+.inheritanceIntro strong {
+  color: rgb(var(--accent-rgb));
+  font-weight: 560;
+}
 .inheritanceShowcase {
   display: grid;
   min-width: 0;

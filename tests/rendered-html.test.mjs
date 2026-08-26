@@ -272,7 +272,10 @@ test("Inheritance renders the experience, challenge, engineering, and impact cha
   assert.match(html, /TURNING RESEARCH INTO IMPACT/);
   assert.match(html, /delivered measurable value to Inheritance/);
   assert.match(source, /href="https:\/\/amass\.is\.tue\.mpg\.de\/"/);
-  assert.match(html, /processed 11,265 motions from 344 subjects/);
+  assert.match(source, /processed <strong>11,265 motions<\/strong> from <strong>344 subjects<\/strong>/);
+  assert.match(source, /more\s+than <strong>65 hours<\/strong>/);
+  assert.match(source, /roughly <strong>three months<\/strong>/);
+  assert.match(source, /and <strong>\$70,000<\/strong>/);
   assert.match(html, /Inheritance operated under the name/);
   assert.match(source, /href="https:\/\/kikitora\.com\/"/);
   assert.match(source, /href="https:\/\/www\.inheritance\.ai\/"/);
@@ -301,6 +304,7 @@ test("Inheritance renders the experience, challenge, engineering, and impact cha
   assert.doesNotMatch(source, /inheritanceImpactEvidence|inheritanceImpactMetrics|inheritanceImpactFigure/);
   assert.match(css, /\.chapterRail\.inheritanceChapterRail \{ grid-template-columns: repeat\(4, minmax\(0, 1fr\)\); \}/);
   assert.match(css, /\.inheritanceImpactLead strong \{[^}]*color: rgb\(var\(--accent-rgb\)\);/s);
+  assert.match(css, /\.inheritanceIntro strong \{[^}]*color: rgb\(var\(--accent-rgb\)\);/s);
   assert.doesNotMatch(css, /\.inheritanceImpactHeader \{[^}]*grid-template-columns:/s);
   assert.match(css, /\.inheritanceImpactMission \{[^}]*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);/s);
   assert.doesNotMatch(css, /\.inheritanceImpactConclusion \{[^}]*background:/s);

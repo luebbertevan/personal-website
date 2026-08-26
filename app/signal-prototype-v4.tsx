@@ -38,7 +38,7 @@ const destinations = [
   },
   {
     label: "VAL",
-    chapters: 2,
+    chapters: 3,
     shaderColor: [0.839, 0.157, 0.157] as const,
     cssColor: [214, 40, 40] as const,
   },
@@ -2808,9 +2808,65 @@ export function SignalPrototypeV4() {
             </section>
           </div>
         </section>
+        <section className={`${styles.chapter} ${styles.valProduction}`} data-project-chapter>
+          <div className={styles.projectMeta}>
+            <span>VAL</span>
+            <span>PRODUCTION</span>
+          </div>
+          <div className={styles.valContributionsLayout}>
+            <header className={styles.valContributionsHeader}>
+              <h2 className={styles.valContributionsTitle}>Carrying changes safely into production</h2>
+              <p>
+                I regularly carried changes from development through production across Val&apos;s web application, backend services, and database. The work required understanding the dependencies between application code, customer configuration, data, and infrastructure. It also required evaluating release risk and responding when one part of the process failed.
+              </p>
+            </header>
+
+            <section className={styles.valFeatureSpotlight} aria-labelledby="val-regression-testing-title">
+              <p className={styles.cardLabel}>QUALITY ASSURANCE</p>
+              <h3 id="val-regression-testing-title">Building a regression-testing foundation</h3>
+              <div className={styles.valFeatureCopy}>
+                <p>
+                  Val was moving quickly without enough automated protection around its core patient and provider workflows. I established an end-to-end regression suite in Playwright and integrated it with GitLab CI against a containerized Supabase environment.
+                </p>
+                <p>
+                  I made the tests repeatable by creating seeded application states and consistent local and CI environments. The automated environment also exposed authentication timing and loading-state problems that I traced and resolved. The suite gave us dependable checks for important workflows before production and clearer diagnostics when a test failed.
+                </p>
+              </div>
+            </section>
+
+            <section className={styles.valTextSection} aria-labelledby="val-reliability-title">
+              <h3 id="val-reliability-title">RELIABILITY AND DATA ACCESS</h3>
+              <p>
+                Production reliability required work beyond the visible interface. I corrected asset caching that could leave users on stale application versions after a release. In PostgreSQL, I fixed Row-Level Security policies, grants, and ownership issues that blocked legitimate workflows or caused recursive queries.
+              </p>
+            </section>
+
+            <section className={styles.valTextSection} aria-labelledby="val-production-releases-title">
+              <h3 id="val-production-releases-title">PRODUCTION RELEASES</h3>
+              <div className={styles.valFeatureCopy}>
+                <p>
+                  Val&apos;s releases crossed customer-specific web builds, database changes, and cloud services. I regularly coordinated builds, pending Supabase and PostgreSQL migrations, Git-SHA-versioned backend containers, front-end publishing through AWS, and final verification.
+                </p>
+                <p>
+                  Alongside this work, I consolidated staging and release procedures, strengthened migration handling, and turned recurring operational steps into reusable tooling. This created a clearer release path with explicit checkpoints for halting, diagnosing, and recovering when something failed.
+                </p>
+              </div>
+            </section>
+
+            <section className={`${styles.valTextSection} ${styles.valTechnology}`} aria-labelledby="val-technology-title">
+              <h3 id="val-technology-title">TECHNOLOGY</h3>
+              <ul className={styles.fostyTechnologyTags} aria-label="Val technology">
+                {["React", "TypeScript", "Next.js", "Capacitor", "TanStack Query", "Supabase", "PostgreSQL", "Playwright", "GitLab CI", "Docker", "Nx", "Terraform", "AWS"].map(
+                  (technology) => <li key={technology}>{technology}</li>,
+                )}
+              </ul>
+            </section>
+          </div>
+        </section>
         <ol className={`${styles.chapterRail} ${styles.valChapterRail}`} aria-label="Val case study chapters">
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(0)}>EXPERIENCE</button></li>
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(1)}>CONTRIBUTIONS</button></li>
+          <li><button type="button" data-chapter-index onClick={() => navigateToChapter(2)}>PRODUCTION</button></li>
         </ol>
       </article>
 

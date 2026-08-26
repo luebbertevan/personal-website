@@ -201,7 +201,7 @@ test("Fosty replaces both example projects with the Origin chapter", async () =>
   assert.match(source, /--reference-panel-height/);
 });
 
-test("Val renders the text-only Experience and Contributions chapters with the approved accent and copy", async () => {
+test("Val renders the text-only Experience, Contributions, and Production chapters with the approved accent and copy", async () => {
   const response = await render();
   const html = await response.text();
   const [source, css] = await Promise.all([
@@ -213,7 +213,7 @@ test("Val renders the text-only Experience and Contributions chapters with the a
     source.indexOf('<div className={styles.routeControls}'),
   );
 
-  assert.match(source, /label:\s*"VAL",\s*chapters:\s*2,/);
+  assert.match(source, /label:\s*"VAL",\s*chapters:\s*3,/);
   assert.match(source, /cssColor:\s*\[214, 40, 40\]/);
   assert.match(source, /shaderColor:\s*\[0\.839, 0\.157, 0\.157\]/);
   assert.match(html, /FULL-STACK ENGINEER \(CONTRACT\)/);
@@ -225,7 +225,7 @@ test("Val renders the text-only Experience and Contributions chapters with the a
   assert.match(html, /This experience is a strong demonstration of how I work as a software engineer\./);
   assert.match(html, /owned features from idea through release, moved across the full stack, and took responsibility for delivering reliable software to production\./);
   assert.doesNotMatch(html, /owned features from idea through production/);
-  assert.match(source, /aria-label="Val case study chapters"[\s\S]*>EXPERIENCE<\/button>[\s\S]*>CONTRIBUTIONS<\/button>/);
+  assert.match(source, /aria-label="Val case study chapters"[\s\S]*>EXPERIENCE<\/button>[\s\S]*>CONTRIBUTIONS<\/button>[\s\S]*>PRODUCTION<\/button>/);
   assert.doesNotMatch(valArticle, /<img|<video|<figure/);
   assert.match(valArticle, /className=\{styles\.valTitleRow\}[\s\S]*<h1>Val<\/h1>[\s\S]*className=\{styles\.valDate\}>MARCH 2026 TO JUNE 2026<\/p>/);
   assert.match(html, /Product decisions and full-stack delivery/);
@@ -236,6 +236,12 @@ test("Val renders the text-only Experience and Contributions chapters with the a
   assert.match(html, /Bringing meeting discovery into Val/);
   assert.match(html, /aggregated more than 5,500 meetings from 19 regional AA and NA sources/);
   assert.match(html, /I am a high agency, high impact engineer/);
+  assert.match(html, /Carrying changes safely into production/);
+  assert.match(html, /Building a regression-testing foundation/);
+  assert.match(html, /I established an end-to-end regression suite in Playwright and integrated it with GitLab CI/);
+  assert.match(html, /Row-Level Security policies, grants, and ownership issues/);
+  assert.match(html, /Git-SHA-versioned backend containers/);
+  assert.match(source, /aria-label="Val technology"/);
   assert.doesNotMatch(html, /Accountable for the software after it shipped/);
   assert.match(css, /\.project h2\.valStatement \{[^}]*width: 100%;[^}]*max-width: none;/s);
   assert.match(css, /\.valTitleRow \{[^}]*display: flex;[^}]*align-items: baseline;[^}]*justify-content: space-between;/s);
@@ -246,7 +252,7 @@ test("Val renders the text-only Experience and Contributions chapters with the a
   assert.match(css, /\.project h2\.valContributionsTitle \{[^}]*font-size: clamp\(30px, 3\.2vw, 46px\);/s);
   assert.match(css, /\.valContributionsHeader \+ \.valTextSection \{[^}]*padding-top: 0;[^}]*border-top: 0;/s);
   assert.doesNotMatch(valArticle, /column-count|grid-template-columns:\s*repeat\([^)]*\)/);
-  assert.match(css, /\.chapterRail\.valChapterRail \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); \}/);
+  assert.match(css, /\.chapterRail\.valChapterRail \{ grid-template-columns: repeat\(3, minmax\(0, 1fr\)\); \}/);
 });
 
 test("Inheritance renders the experience, challenge, engineering, and impact chapters with project media", async () => {

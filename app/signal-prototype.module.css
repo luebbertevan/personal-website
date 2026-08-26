@@ -1015,14 +1015,16 @@
   text-decoration-color: rgba(var(--accent-rgb), 0.48);
   text-underline-offset: 3px;
 }
-.valContributions {
+.valContributions,
+.valProduction {
   display: flex;
   flex-direction: column;
   padding-bottom: clamp(18px, 2.4vh, 30px);
   overflow-x: hidden;
   overflow-y: auto;
 }
-.valContributions .projectMeta {
+.valContributions .projectMeta,
+.valProduction .projectMeta {
   flex: 0 0 auto;
   margin-bottom: clamp(12px, 1.5vh, 18px);
   font-size: var(--about-reference-label-size);
@@ -1070,6 +1072,10 @@
   padding-top: 0;
   border-top: 0;
 }
+.valContributionsHeader + .valFeatureSpotlight {
+  padding-top: 0;
+  border-top: 0;
+}
 .valTextSection h3,
 .valFeatureSpotlight h3 {
   margin: 0;
@@ -1090,7 +1096,12 @@
   letter-spacing: -0.025em;
 }
 .valFeatureCopy { gap: clamp(12px, 1.4vh, 18px); }
-.chapterRail.valChapterRail { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.valTechnology .fostyTechnologyTags { gap: 7px; }
+.valTechnology .fostyTechnologyTags li {
+  padding: 7px 10px;
+  font-size: calc(var(--val-body-size) * 0.86);
+}
+.chapterRail.valChapterRail { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .inheritanceChallengeCopy p strong {
   color: rgba(247, 244, 241, 0.9);
   font-weight: 560;
@@ -2948,6 +2959,10 @@
     bottom: var(--chapter-rail-height);
     padding-bottom: 0;
   }
+  .valProduction {
+    bottom: var(--chapter-rail-height);
+    padding-bottom: 0;
+  }
   .cruxMovementChapter {
     bottom: var(--chapter-rail-height);
     padding-bottom: 0;
@@ -3168,6 +3183,7 @@
   .inheritanceImpact { padding-top: 18px; }
   .valExperience { padding-top: 18px; }
   .valContributions { padding-top: 18px; }
+  .valProduction { padding-top: 18px; }
   .cruxMovementChapter { padding-top: 18px; }
   .cruxVisualChapter { padding-top: 18px; }
   .cruxEngineeringChapter { padding-top: 18px; }
@@ -3282,7 +3298,8 @@
     padding-top: 11px;
   }
   .valBody p { line-height: 1.38; }
-  .valContributions .projectMeta { margin-bottom: 10px; }
+  .valContributions .projectMeta,
+  .valProduction .projectMeta { margin-bottom: 10px; }
   .valContributionsLayout { gap: 14px; }
   .valContributionsHeader { gap: 10px; padding-bottom: 14px; }
   .project h2.valContributionsTitle { font-size: clamp(22px, 6vw, 30px); }
@@ -3293,6 +3310,8 @@
   .valFeatureSpotlight { gap: 8px; padding-top: 14px; }
   .valFeatureSpotlight h3 { font-size: 18px; }
   .valFeatureCopy { gap: 11px; }
+  .valTechnology .fostyTechnologyTags { gap: 5px; }
+  .valTechnology .fostyTechnologyTags li { padding: 5px 7px; }
   .cruxOrigin .projectMeta { margin-bottom: 10px; }
   .cruxHeading { padding-bottom: 9px; }
   .cruxHeading .cardLabel { margin-bottom: 6px; font-size: 9px; }

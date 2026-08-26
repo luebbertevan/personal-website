@@ -39,8 +39,8 @@ const destinations = [
   {
     label: "VAL",
     chapters: 1,
-    shaderColor: [0.62, 0.196, 0.267] as const,
-    cssColor: [158, 50, 68] as const,
+    shaderColor: [0.839, 0.157, 0.157] as const,
+    cssColor: [214, 40, 40] as const,
   },
 ];
 

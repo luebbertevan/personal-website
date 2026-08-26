@@ -214,8 +214,8 @@ test("Val renders only the text-only Experience chapter with the approved accent
   );
 
   assert.match(source, /label:\s*"VAL",\s*chapters:\s*1,/);
-  assert.match(source, /cssColor:\s*\[158, 50, 68\]/);
-  assert.match(source, /shaderColor:\s*\[0\.62, 0\.196, 0\.267\]/);
+  assert.match(source, /cssColor:\s*\[214, 40, 40\]/);
+  assert.match(source, /shaderColor:\s*\[0\.839, 0\.157, 0\.157\]/);
   assert.match(html, /FULL-STACK ENGINEER \(CONTRACT\)/);
   assert.match(html, /March 2026 to June 2026/);
   assert.match(html, /Owning a recovery platform from product decisions to production releases/);

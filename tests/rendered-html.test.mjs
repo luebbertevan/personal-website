@@ -281,9 +281,11 @@ test("Inheritance renders the experience, challenge, engineering, and impact cha
   assert.match(source, /<dt>3 MONTHS<\/dt><dd><strong>DATA GENERATION SAVED<\/strong><\/dd>/);
   assert.match(source, /<dt>\$70K<\/dt><dd><strong>MOTION CAPTURE VALUE<\/strong><\/dd>/);
   assert.match(source, /onClick=\{\(\) => navigateToChapter\(3\)\}>IMPACT<\/button>/);
-  assert.match(source, /<strong>approximately 90%<\/strong>/);
-  assert.match(source, /<strong>approximately three months<\/strong>/);
-  assert.match(source, /<strong>roughly \$70,000<\/strong>/);
+  assert.match(source, /<strong>11,265 animations<\/strong>/);
+  assert.match(source, /<strong>344 subjects<\/strong>/);
+  assert.match(source, /approximately <strong>three months<\/strong>/);
+  assert.match(source, /roughly\{" "\}\s*<strong>\$70,000<\/strong>/);
+  assert.doesNotMatch(source, /<strong>approximately 90%<\/strong>/);
   assert.doesNotMatch(source, /inheritanceImpactEvidence|inheritanceImpactMetrics|inheritanceImpactFigure/);
   assert.match(css, /\.chapterRail\.inheritanceChapterRail \{ grid-template-columns: repeat\(4, minmax\(0, 1fr\)\); \}/);
   assert.match(css, /\.inheritanceImpactLead strong \{[^}]*color: rgb\(var\(--accent-rgb\)\);/s);

@@ -2600,15 +2600,15 @@ export function SignalPrototypeV4() {
               <div className={styles.inheritanceImpactLead}>
                 <p>
                   The AMASS retargeting pipeline gave Inheritance a large, usable motion library without requiring
-                  equivalent new motion capture sessions. It processed all 11,265 animations available to the
-                  company, with <strong>approximately 90%</strong> qualifying as useful for training. The pipeline
-                  provided thousands of performances across 344 subjects and greatly expanded the team&apos;s capacity
-                  to generate paired video and motion for training.
+                  equivalent new motion capture sessions. It processed all <strong>11,265 animations</strong> available
+                  to the company, with approximately 90% qualifying as useful for training. The pipeline provided
+                  thousands of performances across <strong>344 subjects</strong> and greatly expanded the team&apos;s
+                  capacity to generate paired video and motion for training.
                 </p>
                 <p>
                   Astrid Wilde, CEO of Inheritance, estimated that the pipeline accelerated the company&apos;s
-                  data-generation roadmap by <strong>approximately three months</strong> and avoided{" "}
-                  <strong>roughly $70,000</strong> in equivalent stage, performer, and production costs. It also
+                  data-generation roadmap by approximately <strong>three months</strong> and avoided roughly{" "}
+                  <strong>$70,000</strong> in equivalent stage, performer, and production costs. It also
                   broadened the foundation of human motion available for controlled training renders.
                 </p>
               </div>

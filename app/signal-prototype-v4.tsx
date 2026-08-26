@@ -32,9 +32,15 @@ const destinations = [
   },
   {
     label: "INHERITANCE",
-    chapters: 3,
+    chapters: 4,
     shaderColor: [0.31, 0.68, 1.0] as const,
     cssColor: [79, 173, 255] as const,
+  },
+  {
+    label: "VAL",
+    chapters: 1,
+    shaderColor: [0.62, 0.196, 0.267] as const,
+    cssColor: [158, 50, 68] as const,
   },
 ];
 
@@ -587,11 +593,12 @@ export function SignalPrototypeV4() {
       const fostyPanel = shell.querySelector<HTMLElement>('[data-destination-panel="1"]');
       const cruxPanel = shell.querySelector<HTMLElement>('[data-destination-panel="2"]');
       const inheritancePanel = shell.querySelector<HTMLElement>('[data-destination-panel="3"]');
-      const referencePanels = [fostyPanel, cruxPanel, inheritancePanel].filter(
+      const valPanel = shell.querySelector<HTMLElement>('[data-destination-panel="4"]');
+      const referencePanels = [fostyPanel, cruxPanel, inheritancePanel, valPanel].filter(
         (panel): panel is HTMLElement => Boolean(panel),
       );
       const contentPanelScale = Number.parseFloat(
-        getComputedStyle(fostyPanel ?? cruxPanel ?? inheritancePanel ?? aboutPanel ?? shell).getPropertyValue("--content-panel-scale"),
+        getComputedStyle(fostyPanel ?? cruxPanel ?? inheritancePanel ?? valPanel ?? aboutPanel ?? shell).getPropertyValue("--content-panel-scale"),
       ) || 1;
       const shouldScaleAboutPanel = window.matchMedia(
         "(min-width: 2048px) and (min-height: 1152px)",
@@ -1206,6 +1213,9 @@ export function SignalPrototypeV4() {
         </button>
         <button type="button" data-destination-nav onClick={() => navigateToDestination(3)}>
           <strong>INHERITANCE</strong>
+        </button>
+        <button type="button" data-destination-nav onClick={() => navigateToDestination(4)}>
+          <strong>VAL</strong>
         </button>
       </nav>
 
@@ -2579,10 +2589,108 @@ export function SignalPrototypeV4() {
             </section>
           </div>
         </section>
+        <section className={`${styles.chapter} ${styles.inheritanceImpact}`} data-project-chapter>
+          <div className={styles.projectMeta}>
+            <span>INHERITANCE</span>
+            <span>IMPACT</span>
+          </div>
+          <div className={styles.inheritanceImpactLayout}>
+            <header className={styles.inheritanceImpactHeader}>
+              <h2>Accelerating the Data Roadmap</h2>
+              <div className={styles.inheritanceImpactLead}>
+                <p>
+                  The AMASS retargeting pipeline gave Inheritance a large, usable motion library without requiring
+                  equivalent new motion capture sessions. It processed all 11,265 animations available to the
+                  company, with approximately 90% qualifying as useful for training. The pipeline provided thousands
+                  of performances across 344 subjects and greatly expanded the team&apos;s capacity to generate paired
+                  video and motion for training.
+                </p>
+                <p>
+                  Astrid Wilde, CEO of Inheritance, estimated that the pipeline accelerated the company&apos;s
+                  data-generation roadmap by approximately three months and avoided roughly $70,000 in equivalent
+                  stage, performer, and production costs. It also broadened the foundation of human motion available
+                  for controlled training renders.
+                </p>
+              </div>
+            </header>
+
+            <div className={styles.inheritanceImpactEvidence}>
+              <figure className={styles.inheritanceImpactFigure}>
+                <button
+                  type="button"
+                  className={styles.inheritanceImpactMediaButton}
+                  onClick={() => openInheritanceVideo(inheritanceMotionVideo)}
+                  aria-label="Expand the retargeted AMASS motion collection video"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/images/inheritance-motion-collection-poster.webp"
+                    alt="A collection of AMASS motions retargeted onto Inheritance's production armature in Blender."
+                    width="1600"
+                    height="886"
+                  />
+                  <span>VIEW MOTIONS <i aria-hidden="true">↗</i></span>
+                </button>
+                <figcaption>11,265 AMASS ANIMATIONS PROCESSED ACROSS 344 SUBJECTS.</figcaption>
+              </figure>
+
+              <dl className={styles.inheritanceImpactMetrics} aria-label="Estimated project impact">
+                <div>
+                  <dt>≈ 3 MONTHS</dt>
+                  <dd>DATA ROADMAP ACCELERATED</dd>
+                </div>
+                <div>
+                  <dt>≈ $70K</dt>
+                  <dd>EQUIVALENT CAPTURE COSTS AVOIDED</dd>
+                </div>
+                <div>
+                  <dt>≈ 90%</dt>
+                  <dd>ANIMATIONS ESTIMATED USEFUL</dd>
+                </div>
+              </dl>
+            </div>
+
+            <section className={styles.inheritanceImpactMission} aria-labelledby="inheritance-impact-mission-heading">
+              <div className={styles.inheritanceImpactMissionCopy}>
+                <h3 id="inheritance-impact-mission-heading">FROM MOTION CAPTURE TO PHYSICAL AI</h3>
+                <p>
+                  At <a href="https://kikitora.com/" target="_blank" rel="noreferrer">KikiTora</a>, the immediate goal
+                  was to recover detailed human motion from ordinary video. <a href="https://www.inheritance.ai/about" target="_blank" rel="noreferrer">Inheritance</a> now
+                  frames that idea more broadly, converting video into structured representations of behavior,
+                  contact, and action that robots and world models can use for training. The opportunity extends
+                  beyond animation. For computer vision, it means moving from recognizing what appears in a frame
+                  toward recovering how people move and interact with the physical world over time.
+                </p>
+                <p>
+                  At scale, that approach could allow robotics teams to draw from recorded human behavior instead of
+                  recreating every demonstration for each task, environment, or machine. A growing body of structured
+                  examples could help models generalize across a wider range of conditions.
+                </p>
+              </div>
+
+              <div className={styles.inheritanceImpactConclusion}>
+                <p>
+                  Developing the AMASS retargeting pipeline was especially rewarding because it tangibly accelerated
+                  the mission by introducing thousands of motions into the ML training workflow. My work addressed a
+                  serious production constraint and gave new life to data beyond its original research setting.
+                </p>
+                <p>
+                  I was able to draw from several areas of my experience, from data infrastructure and 3D math to
+                  computer vision and Blender automation. The project brought together model training, computer
+                  graphics, and animation production, and I enjoyed figuring out how to make those systems work
+                  together. The result was a reliable pipeline that delivered measurable value to Inheritance while
+                  pointing to a much larger opportunity for structured motion data across computer vision,
+                  animation, robotics, and physical AI.
+                </p>
+              </div>
+            </section>
+          </div>
+        </section>
         <ol className={`${styles.chapterRail} ${styles.inheritanceChapterRail}`} aria-label="Inheritance case study chapters">
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(0)}>EXPERIENCE</button></li>
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(1)}>CHALLENGE</button></li>
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(2)}>ENGINEERING</button></li>
+          <li><button type="button" data-chapter-index onClick={() => navigateToChapter(3)}>IMPACT</button></li>
         </ol>
         {inheritanceVideoExpanded && (
           <div
@@ -2642,6 +2750,44 @@ export function SignalPrototypeV4() {
             />
           </div>
         )}
+      </article>
+
+      <article className={`${styles.project} ${styles.valProject}`} data-destination-panel="4" aria-hidden="true">
+        <section className={`${styles.chapter} ${styles.valExperience}`} data-project-chapter>
+          <div className={styles.projectMeta}>
+            <span>VAL</span>
+            <span>EXPERIENCE</span>
+          </div>
+          <div className={styles.valLayout}>
+            <header className={styles.valHeading}>
+              <p className={styles.cardLabel}>Full-Stack Engineer (Contract)</p>
+              <div className={styles.valTitleRow}>
+                <h1>Val</h1>
+                <p className={styles.valDate}>March 2026 to June 2026</p>
+              </div>
+            </header>
+            <section className={styles.valIntroduction} aria-labelledby="val-experience-title">
+              <h2 className={styles.valStatement} id="val-experience-title">Owning a recovery platform from product decisions to production releases</h2>
+              <div className={styles.valBody}>
+                <p>
+                  At <a href="https://val.care/" target="_blank" rel="noreferrer">Val</a>, I shaped and shipped a live recovery and post-discharge platform used by behavioral-health providers and people continuing their care. My work spanned product decisions, full-stack development, quality assurance, and production releases. I joined while the product was still early but already in production with a treatment provider and real users and that combination required that I deliver immediate impact. The platform had an important mission, active use, and the usability and reliability problems that come with software developing quickly.
+                </p>
+                <p>
+                  I worked closely with the founders and technical leadership in a small early-stage team. I was given broad ownership over what to investigate and freedom to deliver solutions with the highest impact. I evaluated which problems were most important, scoped solutions, worked across the web application, backend, and database, and carried changes through release. Priorities came from user feedback, the workflows people depended on most, requests from the team, and opportunities I identified through my own investigation.
+                </p>
+                <p>
+                  I was drawn to Val because it offered the responsibility and freedom of early-stage product development and a mission that inspired me. Technology plays an important role in healthcare, but it has not always been designed around the people who rely on it. Continuing care after treatment is a difficult transition, and software should make support easier to reach rather than introduce another barrier. At Val, improving usability and reliability was connected to a larger purpose: helping people remain engaged with their care and recovery communities.
+                </p>
+                <p>
+                  This experience is a strong demonstration of how I work as a software engineer. I collaborated closely with a team while exercising independent judgment, owned features from idea through production, moved across the full stack, and took responsibility for delivering reliable software to production.
+                </p>
+              </div>
+            </section>
+          </div>
+        </section>
+        <ol className={`${styles.chapterRail} ${styles.valChapterRail}`} aria-label="Val case study chapters">
+          <li><button type="button" data-chapter-index onClick={() => navigateToChapter(0)}>EXPERIENCE</button></li>
+        </ol>
       </article>
 
       <div className={styles.routeControls} aria-label="Portfolio navigation">

@@ -931,6 +931,93 @@
   text-decoration-color: rgba(var(--accent-rgb), 0.48);
   text-underline-offset: 3px;
 }
+.valProject {
+  --val-body-size: var(--case-study-body-size);
+  --about-reference-label-size: 14px;
+  --about-reference-title-size: 30px;
+}
+.valExperience {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: clamp(18px, 2.4vh, 30px);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.valExperience .projectMeta {
+  flex: 0 0 auto;
+  margin-bottom: clamp(12px, 1.5vh, 18px);
+  font-size: var(--about-reference-label-size);
+  line-height: 1;
+}
+.valLayout {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  flex-direction: column;
+  gap: clamp(15px, 1.8vh, 22px);
+}
+.valHeading {
+  flex: 0 0 auto;
+  padding-bottom: clamp(10px, 1.25vh, 15px);
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.48);
+}
+.valHeading .cardLabel {
+  margin-bottom: clamp(8px, 1vh, 12px);
+  font-size: var(--about-reference-label-size);
+  letter-spacing: 0.04em;
+}
+.valTitleRow {
+  display: flex;
+  gap: 18px;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.valHeading h1 { font-size: var(--about-reference-title-size); }
+.valDate {
+  flex: 0 0 auto;
+  margin: 0;
+  color: rgba(247, 244, 241, 0.5);
+  font-size: var(--about-reference-label-size);
+  line-height: 1;
+  letter-spacing: 0.04em;
+}
+.valIntroduction {
+  display: grid;
+  gap: clamp(15px, 1.8vh, 22px);
+}
+.project h2.valStatement {
+  width: 100%;
+  max-width: 28ch;
+  color: rgb(var(--accent-rgb));
+  font-size: calc(var(--val-body-size) * 1.72);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+}
+.valBody {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(12px, 1.4vh, 18px) clamp(20px, 2vw, 32px);
+  padding-top: clamp(13px, 1.45vh, 18px);
+  border-top: 1px solid rgba(var(--accent-rgb), 0.22);
+}
+.valBody p {
+  margin: 0;
+  color: var(--body-text-color);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--val-body-size);
+  line-height: 1.45;
+  letter-spacing: 0;
+}
+.valBody p:nth-child(1) { grid-area: 1 / 1; }
+.valBody p:nth-child(2) { grid-area: 2 / 1; }
+.valBody p:nth-child(3) { grid-area: 1 / 2; }
+.valBody p:nth-child(4) { grid-area: 2 / 2; }
+.valBody a {
+  color: color-mix(in srgb, rgb(var(--accent-rgb)) 76%, white 24%);
+  text-decoration-color: rgba(var(--accent-rgb), 0.48);
+  text-underline-offset: 3px;
+}
+.chapterRail.valChapterRail { grid-template-columns: minmax(0, 1fr); }
 .inheritanceChallengeCopy p strong {
   color: rgba(247, 244, 241, 0.9);
   font-weight: 560;
@@ -1328,7 +1415,186 @@
   display: grid;
   gap: clamp(10px, 1.15vh, 15px);
 }
-.chapterRail.inheritanceChapterRail { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.inheritanceImpact {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: clamp(18px, 2.4vh, 30px);
+}
+.inheritanceImpact .projectMeta {
+  flex: 0 0 auto;
+  margin-bottom: clamp(12px, 1.5vh, 18px);
+  font-size: var(--about-reference-label-size);
+  line-height: 1;
+}
+.inheritanceImpactLayout {
+  display: grid;
+  gap: clamp(18px, 2.2vh, 28px);
+}
+.inheritanceImpactHeader {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.78fr) minmax(0, 1.22fr);
+  gap: clamp(20px, 2.4vw, 36px);
+  align-items: start;
+  padding-bottom: clamp(18px, 2.2vh, 28px);
+  border-bottom: 1px solid rgba(var(--accent-rgb), 0.48);
+}
+.project .inheritanceImpactHeader h2 {
+  width: 100%;
+  max-width: none;
+  color: color-mix(in srgb, rgb(var(--accent-rgb)) 84%, white 16%);
+  font-size: clamp(30px, 3.2vw, 46px);
+  line-height: 0.98;
+}
+.inheritanceImpactLead,
+.inheritanceImpactMissionCopy,
+.inheritanceImpactConclusion {
+  display: grid;
+  gap: clamp(10px, 1.15vh, 15px);
+  align-content: start;
+}
+.inheritanceImpactLead p,
+.inheritanceImpactMission p,
+.inheritanceImpactConclusion p {
+  margin: 0;
+  color: var(--body-text-color);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--inheritance-body-size);
+  line-height: 1.48;
+  letter-spacing: 0;
+}
+.inheritanceImpactEvidence {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(210px, 0.55fr);
+  gap: clamp(16px, 1.8vw, 26px);
+  align-items: stretch;
+}
+.inheritanceImpactFigure {
+  display: grid;
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(var(--accent-rgb), 0.64);
+  background: rgba(3, 7, 14, 0.96);
+  box-shadow: 0 0 44px rgba(var(--accent-rgb), 0.16);
+}
+.inheritanceImpactMediaButton {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  background: #050607;
+  cursor: zoom-in;
+}
+.inheritanceImpactMediaButton:focus-visible {
+  outline: 2px solid rgb(var(--accent-rgb));
+  outline-offset: -2px;
+}
+.inheritanceImpactMediaButton::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background: repeating-linear-gradient(0deg, transparent 0 4px, rgba(var(--accent-rgb), 0.018) 4px 5px);
+  pointer-events: none;
+}
+.inheritanceImpactMediaButton img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1600 / 886;
+  background: #050607;
+  object-fit: cover;
+  transition: filter 180ms ease;
+}
+.inheritanceImpactMediaButton:hover img,
+.inheritanceImpactMediaButton:focus-visible img {
+  filter: brightness(0.76);
+}
+.inheritanceImpactMediaButton > span {
+  position: absolute;
+  z-index: 1;
+  right: 8px;
+  bottom: 8px;
+  padding: 6px 8px;
+  border: 1px solid rgba(var(--accent-rgb), 0.62);
+  color: rgba(247, 244, 241, 0.9);
+  background: rgba(3, 7, 14, 0.88);
+  font-size: 8px;
+  letter-spacing: 0.09em;
+}
+.inheritanceImpactMediaButton > span i {
+  margin-left: 3px;
+  font-style: normal;
+}
+.inheritanceImpactFigure figcaption {
+  margin: 0;
+  padding: 10px 12px;
+  border-top: 1px solid rgba(var(--accent-rgb), 0.28);
+  color: var(--secondary-text-color);
+  font-size: 10px;
+  line-height: 1.25;
+  letter-spacing: 0.08em;
+}
+.inheritanceImpactMetrics {
+  display: grid;
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  background: rgba(var(--accent-rgb), 0.24);
+}
+.inheritanceImpactMetrics div {
+  display: grid;
+  min-width: 0;
+  padding: clamp(11px, 1.2vh, 16px) clamp(11px, 1vw, 15px);
+  align-content: center;
+  gap: 7px;
+  background: rgba(3, 7, 14, 0.9);
+}
+.inheritanceImpactMetrics dt {
+  color: rgb(var(--accent-rgb));
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: clamp(20px, 1.55vw, 28px);
+  font-weight: 560;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+.inheritanceImpactMetrics dd {
+  margin: 0;
+  color: var(--secondary-text-color);
+  font-size: clamp(9px, 0.74vw, 12px);
+  font-weight: 520;
+  line-height: 1.25;
+  letter-spacing: 0.075em;
+}
+.inheritanceImpactMission {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+  gap: clamp(22px, 2.6vw, 40px);
+  align-items: start;
+  padding-top: clamp(18px, 2.2vh, 28px);
+  border-top: 1px solid rgba(var(--accent-rgb), 0.35);
+}
+.inheritanceImpactMission h3 {
+  margin: 0 0 2px;
+  color: color-mix(in srgb, rgb(var(--accent-rgb)) 88%, white 12%);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: var(--about-reference-label-size);
+  font-weight: 520;
+  line-height: 1.1;
+  letter-spacing: 0.08em;
+}
+.inheritanceImpactMission a {
+  color: color-mix(in srgb, rgb(var(--accent-rgb)) 76%, white 24%);
+  text-decoration-color: rgba(var(--accent-rgb), 0.48);
+  text-underline-offset: 3px;
+}
+.inheritanceImpactConclusion {
+  padding: clamp(14px, 1.5vw, 20px);
+  border: 1px solid rgba(var(--accent-rgb), 0.38);
+  background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.1), rgba(3, 7, 14, 0.62));
+}
+.chapterRail.inheritanceChapterRail { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .cruxMovementChapter {
   display: flex;
   flex-direction: column;
@@ -2679,6 +2945,12 @@
     width: min(980px, 58vw);
     height: var(--reference-panel-height, calc(100svh - clamp(224px, 24vh, 336px)));
   }
+  .valProject {
+    top: var(--reference-panel-top, clamp(112px, 12vh, 168px));
+    bottom: auto;
+    width: min(980px, 58vw);
+    height: var(--reference-panel-height, calc(100svh - clamp(224px, 24vh, 336px)));
+  }
   .fostyOrigin {
     bottom: var(--chapter-rail-height);
     padding-bottom: 0;
@@ -2696,6 +2968,14 @@
     padding-bottom: 0;
   }
   .inheritanceEngineering {
+    bottom: var(--chapter-rail-height);
+    padding-bottom: 0;
+  }
+  .inheritanceImpact {
+    bottom: var(--chapter-rail-height);
+    padding-bottom: 0;
+  }
+  .valExperience {
     bottom: var(--chapter-rail-height);
     padding-bottom: 0;
   }
@@ -2799,6 +3079,9 @@
     width: 58vw;
   }
   .inheritanceProject {
+    width: 58vw;
+  }
+  .valProject {
     width: 58vw;
   }
   .shell { --case-study-body-size: clamp(20px, 1vw, 30px); }
@@ -2913,6 +3196,8 @@
   .inheritanceExperience { padding-top: 18px; }
   .inheritanceChallenge { padding-top: 18px; }
   .inheritanceEngineering { padding-top: 18px; }
+  .inheritanceImpact { padding-top: 18px; }
+  .valExperience { padding-top: 18px; }
   .cruxMovementChapter { padding-top: 18px; }
   .cruxVisualChapter { padding-top: 18px; }
   .cruxEngineeringChapter { padding-top: 18px; }
@@ -2998,6 +3283,47 @@
   .inheritanceHighlightGrid article { gap: 8px; padding-top: 11px; }
   .inheritanceHighlightGrid h4 { font-size: 9px; }
   .inheritanceRotationHighlight { gap: 13px; }
+  .inheritanceImpact .projectMeta { margin-bottom: 10px; }
+  .inheritanceImpactLayout { gap: 14px; }
+  .inheritanceImpactHeader {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding-bottom: 14px;
+  }
+  .project .inheritanceImpactHeader h2 { font-size: clamp(22px, 6vw, 30px); }
+  .inheritanceImpactLead p,
+  .inheritanceImpactMission p,
+  .inheritanceImpactConclusion p { line-height: 1.42; }
+  .inheritanceImpactEvidence {
+    grid-template-columns: minmax(0, 1.25fr) minmax(170px, 0.75fr);
+    gap: 11px;
+  }
+  .inheritanceImpactFigure figcaption { padding: 7px 9px; font-size: 8px; }
+  .inheritanceImpactMetrics div { padding: 8px 9px; gap: 4px; }
+  .inheritanceImpactMetrics dt { font-size: 18px; }
+  .inheritanceImpactMetrics dd { font-size: 8px; }
+  .inheritanceImpactMission {
+    grid-template-columns: 1fr;
+    gap: 13px;
+    padding-top: 14px;
+  }
+  .inheritanceImpactMission h3 { font-size: 9px; }
+  .inheritanceImpactConclusion { padding: 12px; }
+  .valExperience .projectMeta { margin-bottom: 10px; }
+  .valHeading { padding-bottom: 9px; }
+  .valHeading .cardLabel { margin-bottom: 6px; font-size: 9px; }
+  .valTitleRow { flex-wrap: wrap; gap: 7px 14px; }
+  .valDate { font-size: 9px; }
+  .project h2.valStatement { font-size: 20px; }
+  .valLayout,
+  .valIntroduction { gap: 12px; }
+  .valBody {
+    grid-template-columns: 1fr;
+    gap: 11px;
+    padding-top: 11px;
+  }
+  .valBody p:nth-child(n) { grid-area: auto; }
+  .valBody p { line-height: 1.38; }
   .cruxOrigin .projectMeta { margin-bottom: 10px; }
   .cruxHeading { padding-bottom: 9px; }
   .cruxHeading .cardLabel { margin-bottom: 6px; font-size: 9px; }
@@ -3130,6 +3456,11 @@
   .inheritanceHighlightGrid,
   .inheritanceRotationHighlight { grid-template-columns: 1fr; }
   .inheritanceRotationHighlight { grid-column: auto; }
+  .inheritanceImpactEvidence { grid-template-columns: 1fr; }
+  .inheritanceImpactMetrics {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
   .cruxOriginFeature { margin-top: 10px; }
   .cruxStoryScroll {
     height: auto;

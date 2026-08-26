@@ -159,7 +159,7 @@ test("Fosty replaces both example projects with the Origin chapter", async () =>
   assert.doesNotMatch(html, /Signal Atlas|Velvet Circuit|EXAMPLE PROJECT/);
   assert.match(source, /label:\s*"FOSTY",\s*chapters:\s*5,/);
   assert.match(source, /cssColor:\s*\[236, 72, 153\]/);
-  assert.equal((source.match(/<article[^>]+data-destination-panel="/g) ?? []).length, 4);
+  assert.equal((source.match(/<article[^>]+data-destination-panel="/g) ?? []).length, 5);
   assert.match(source, /onClick=\{\(\) => navigateToChapter\(4\)\}>OUTCOME<\/button>/);
   assert.match(html, /I am actively rolling out Fosty with Colorado Kitty Coalition as my pilot partner\./);
   assert.match(html, /The next benchmark is full adoption by CKC/);
@@ -201,7 +201,35 @@ test("Fosty replaces both example projects with the Origin chapter", async () =>
   assert.match(source, /--reference-panel-height/);
 });
 
-test("Inheritance renders the experience, challenge, and engineering chapters with project media", async () => {
+test("Val renders only the text-only Experience chapter with the approved accent and copy", async () => {
+  const response = await render();
+  const html = await response.text();
+  const [source, css] = await Promise.all([
+    readFile(new URL("../app/signal-prototype-v4.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/signal-prototype.module.css", import.meta.url), "utf8"),
+  ]);
+  const valArticle = source.slice(
+    source.indexOf('<article className={`${styles.project} ${styles.valProject}`}'),
+    source.indexOf('<div className={styles.routeControls}'),
+  );
+
+  assert.match(source, /label:\s*"VAL",\s*chapters:\s*1,/);
+  assert.match(source, /cssColor:\s*\[158, 50, 68\]/);
+  assert.match(source, /shaderColor:\s*\[0\.62, 0\.196, 0\.267\]/);
+  assert.match(html, /Full-Stack Engineer \(Contract\)/);
+  assert.match(html, /March 2026 to June 2026/);
+  assert.match(html, /Owning a recovery platform from product decisions to production releases/);
+  assert.match(source, /At <a href="https:\/\/val\.care\/"[^>]*>Val<\/a>, I shaped and shipped a live recovery and post-discharge platform/);
+  assert.match(html, /I worked closely with the founders and technical leadership in a small early-stage team\./);
+  assert.match(html, /I was drawn to Val because it offered the responsibility and freedom of early-stage product development and a mission that inspired me\./);
+  assert.match(html, /This experience is a strong demonstration of how I work as a software engineer\./);
+  assert.match(source, /aria-label="Val case study chapters"[\s\S]*>EXPERIENCE<\/button>/);
+  assert.doesNotMatch(valArticle, /<img|<video|<figure/);
+  assert.doesNotMatch(html, /Finding the work that mattered most|Accountable for the software after it shipped/);
+  assert.match(css, /\.chapterRail\.valChapterRail \{ grid-template-columns: minmax\(0, 1fr\); \}/);
+});
+
+test("Inheritance renders the experience, challenge, engineering, and impact chapters with project media", async () => {
   const response = await render();
   const html = await response.text();
   const [source, css, video, poster, amassImage, walkingVideo, walkingPoster] = await Promise.all([
@@ -214,11 +242,14 @@ test("Inheritance renders the experience, challenge, and engineering chapters wi
     readFile(new URL("../public/images/inheritance-walking-comparison-poster.webp", import.meta.url)),
   ]);
 
-  assert.match(source, /label:\s*"INHERITANCE",\s*chapters:\s*3,/);
+  assert.match(source, /label:\s*"INHERITANCE",\s*chapters:\s*4,/);
   assert.match(html, /Motion Data for Machine Learning/);
   assert.match(html, /The Motion Data Bottleneck/);
   assert.match(html, /Archive of Motion Capture/);
   assert.match(html, /as Surface Shapes/);
+  assert.match(html, /Accelerating the Data Roadmap/);
+  assert.match(html, /FROM MOTION CAPTURE TO PHYSICAL AI/);
+  assert.match(html, /delivered measurable value to Inheritance/);
   assert.match(source, /href="https:\/\/amass\.is\.tue\.mpg\.de\/"/);
   assert.match(html, /processed 11,265 motions from 344 subjects/);
   assert.match(html, /Inheritance operated under the name/);
@@ -240,6 +271,11 @@ test("Inheritance renders the experience, challenge, and engineering chapters wi
   assert.match(source, /<dt>11,265<\/dt><dd><strong>NEW MOTIONS AVAILABLE<\/strong><\/dd>/);
   assert.match(source, /<dt>3 MONTHS<\/dt><dd><strong>DATA GENERATION SAVED<\/strong><\/dd>/);
   assert.match(source, /<dt>\$70K<\/dt><dd><strong>MOTION CAPTURE VALUE<\/strong><\/dd>/);
+  assert.match(source, /onClick=\{\(\) => navigateToChapter\(3\)\}>IMPACT<\/button>/);
+  assert.match(source, /<dt>≈ 3 MONTHS<\/dt>/);
+  assert.match(source, /<dt>≈ \$70K<\/dt>/);
+  assert.match(source, /<dt>≈ 90%<\/dt>/);
+  assert.match(css, /\.chapterRail\.inheritanceChapterRail \{ grid-template-columns: repeat\(4, minmax\(0, 1fr\)\); \}/);
   assert.match(css, /\.inheritanceStory \{[^}]*grid-template-columns: minmax\(0, 1fr\);/s);
   assert.match(css, /\.inheritanceExperience \{[^}]*overflow-x: hidden;[^}]*overflow-y: auto;/s);
   assert.match(css, /\.inheritanceIntro p \{[^}]*width: 100%;[^}]*max-width: none;/s);
@@ -280,7 +316,7 @@ test("Inheritance renders the experience, challenge, and engineering chapters wi
   assert.match(css, /\.inheritanceEngineeringIntro p,\s*\.inheritancePipeline p,\s*\.inheritancePipelineSteps li,\s*\.inheritanceHighlightGrid p \{[^}]*color: var\(--body-text-color\);/s);
   assert.doesNotMatch(css, /\.inheritanceEngineeringIntro p:first-of-type \{/);
   assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*\.inheritanceEngineeringHero \{[^}]*grid-template-columns: 1fr;/s);
-  assert.match(css, /\.chapterRail\.inheritanceChapterRail \{ grid-template-columns: repeat\(3, minmax\(0, 1fr\)\); \}/);
+  assert.match(css, /\.chapterRail\.inheritanceChapterRail \{ grid-template-columns: repeat\(4, minmax\(0, 1fr\)\); \}/);
   assert.equal(video.subarray(4, 8).toString("ascii"), "ftyp");
   assert.equal(walkingVideo.subarray(4, 8).toString("ascii"), "ftyp");
   assert.equal(poster.subarray(0, 4).toString("ascii"), "RIFF");

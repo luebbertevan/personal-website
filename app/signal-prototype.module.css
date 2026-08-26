@@ -997,7 +997,6 @@
   grid-template-columns: minmax(0, 1fr);
   gap: clamp(12px, 1.4vh, 18px);
   padding-top: clamp(13px, 1.45vh, 18px);
-  border-top: 1px solid rgba(var(--accent-rgb), 0.22);
 }
 .valBody p {
   margin: 0;

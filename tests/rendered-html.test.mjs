@@ -233,6 +233,7 @@ test("Val renders only the text-only Experience chapter with the approved accent
   assert.match(css, /\.valTitleRow \{[^}]*display: flex;[^}]*align-items: baseline;[^}]*justify-content: space-between;/s);
   assert.match(css, /\.valDate \{[^}]*flex: 0 0 auto;[^}]*margin: 0;[^}]*font-size: var\(--about-reference-label-size\);/s);
   assert.match(css, /\.valBody \{[^}]*grid-template-columns: minmax\(0, 1fr\);/s);
+  assert.doesNotMatch(css, /\.valBody \{[^}]*border-top:/s);
   assert.match(css, /\.chapterRail\.valChapterRail \{ grid-template-columns: minmax\(0, 1fr\); \}/);
 });
 

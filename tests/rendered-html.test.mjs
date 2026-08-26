@@ -227,6 +227,7 @@ test("Val renders only the text-only Experience chapter with the approved accent
   assert.doesNotMatch(valArticle, /<img|<video|<figure/);
   assert.doesNotMatch(valArticle, /valTitleRow/);
   assert.doesNotMatch(html, /Finding the work that mattered most|Accountable for the software after it shipped/);
+  assert.match(css, /\.project h2\.valStatement \{[^}]*width: 100%;[^}]*max-width: none;/s);
   assert.match(css, /\.valBody \{[^}]*grid-template-columns: minmax\(0, 1fr\);/s);
   assert.match(css, /\.chapterRail\.valChapterRail \{ grid-template-columns: minmax\(0, 1fr\); \}/);
 });

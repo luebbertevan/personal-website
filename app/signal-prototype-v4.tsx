@@ -2329,8 +2329,8 @@ export function SignalPrototypeV4() {
               <p>
                 At <a href="https://www.inheritance.ai/" target="_blank" rel="noreferrer">Inheritance</a>, I built a Python and Blender pipeline that converted the entire <a href="https://amass.is.tue.mpg.de/" target="_blank" rel="noreferrer">AMASS</a> research
                 dataset into standardized skeletal animation for machine learning training in Unreal Engine. The
-                pipeline processed <strong>11,265 motions</strong> from <strong>344 subjects</strong>, representing more
-                than <strong>65 hours</strong> of motion capture. The team estimated that around 90% could support
+                pipeline processed <strong>11,265 motions</strong> from 344 subjects, representing more than 65 hours
+                of motion capture. The team estimated that around 90% could support
                 training, saving roughly <strong>three months</strong> of data generation and <strong>$70,000</strong> in
                 equivalent motion capture production.
               </p>

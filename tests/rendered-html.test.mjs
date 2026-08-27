@@ -32,9 +32,9 @@ test("server-renders the approved single-panel About content", async () => {
 
   const html = await response.text();
   assert.match(html, /Evan Luebbert/);
-  assert.match(html, /I build software I believe in\./);
+  assert.match(html, /I build software<\/span>\s+<span[^>]*>I believe in\.<\/span>/);
   assert.doesNotMatch(html, /passion first software engineer and designer/);
-  assert.match(html, /Based in New York City/);
+  assert.match(html, /NYC · Open to full-time and freelance work\./);
   assert.match(html, /Software engineering and design is my superpower/);
   assert.match(html, /I embrace curiosity, explore creative solutions, and fill the gaps where software can make a difference\./);
   assert.match(html, /Everyone has used frustrating and poorly designed software\./);
@@ -86,7 +86,7 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.match(css, /\.aboutLayout \{[^}]*--portrait-width: clamp\(146px, 12vw, 260px\);[^}]*grid-template-areas:/s);
   assert.match(source, /width="480"\s+height="600"/);
   assert.doesNotMatch(source, /<h1>Evan<br \/>Luebbert<\/h1>/);
-  assert.match(source, /<h1 className=\{styles\.introductionTitle\} data-about-reference-title>I build software I believe in\.<\/h1>/);
+  assert.match(source, /<span className=\{styles\.introductionTitleLine\}>I build software<\/span>\{\" \"\}\s*<span className=\{styles\.introductionTitleLine\}>I believe in\.<\/span>/);
   assert.doesNotMatch(source, /styles\.introductionSubtitle/);
   assert.match(source, /className=\{styles\.aboutLayout\}[\s\S]*className=\{styles\.aboutMain\}[\s\S]*className=\{styles\.availability\}[\s\S]*className=\{styles\.aboutApproach\}[\s\S]*className=\{styles\.aboutInterests\}[\s\S]*className=\{styles\.aboutSidebar\}[\s\S]*className=\{styles\.personalNote\}[\s\S]*className=\{styles\.aboutContact\}/);
   assert.match(css, /\.aboutMain \{[^}]*grid-area: main;[^}]*align-content: start;/s);
@@ -619,7 +619,7 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(css, /\.aboutLayout \{\s*display: grid;\s*grid-template-columns: minmax\(0, 1fr\) clamp\(68px, 20vw, 84px\);\s*grid-template-areas:\s*"title portrait"\s*"availability portrait"\s*"approach approach"\s*"interests interests"\s*"note note"\s*"contact contact";/s);
   assert.match(css, /\.aboutMain,\s*\.aboutSidebar \{\s*display: contents;/s);
   assert.match(css, /\.headshot \{\s*grid-area: portrait;\s*width: 100%;/s);
-  assert.match(css, /@container project-panel \(max-width: 700px\) \{[\s\S]*?--about-intro-title-size: clamp\(28px, 6cqw, 38px\);[\s\S]*?"availability portrait"[\s\S]*?"contact contact";/s);
+  assert.match(css, /@container project-panel \(max-width: 700px\) \{[\s\S]*?font-size: clamp\(38px, 8cqw, 52px\);[\s\S]*?--about-intro-title-size: clamp\(30px, 5\.2cqw, 34px\);[\s\S]*?"meta portrait"\s*"title portrait"\s*"availability availability"[\s\S]*?\.introductionTitleLine \{ display: block; \}[\s\S]*?transform: translateY\(12px\);/s);
   assert.match(css, /@container project-panel \(min-width: 701px\) \{[\s\S]*?--about-intro-title-size: clamp\(34px, 5cqw, 42px\);[\s\S]*?clamp\(84px, 11cqw, 104px\);/s);
   assert.match(globalCss, /animation: mobile-identity-exit 360ms ease 1\.78s forwards;/);
   assert.match(globalCss, /\.site-root\[data-live-mobile-transition\] \.site-identity \{[^}]*visibility: hidden;[^}]*animation: none;/s);

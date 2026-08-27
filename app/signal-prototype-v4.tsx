@@ -1479,8 +1479,11 @@ export function SignalPrototypeV4() {
           <div className={styles.aboutLayout}>
             <div className={styles.aboutMain}>
               <div className={styles.introductionHeading}>
-                <h1 className={styles.introductionTitle} data-about-reference-title>I build software I believe in.</h1>
-                <p className={styles.availability}>Based in New York City. Open to full-time roles and freelance projects.</p>
+                <h1 className={styles.introductionTitle} data-about-reference-title>
+                  <span className={styles.introductionTitleLine}>I build software</span>{" "}
+                  <span className={styles.introductionTitleLine}>I believe in.</span>
+                </h1>
+                <p className={styles.availability}>NYC · Open to full-time and freelance work.</p>
               </div>
               <section className={styles.aboutApproach} aria-labelledby="about-approach-title">
                 <p className={styles.cardLabel} id="about-approach-title">APPROACH</p>

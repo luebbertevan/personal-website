@@ -277,6 +277,7 @@
   line-height: 1.05;
   letter-spacing: -0.055em;
 }
+.introductionTitleLine { display: inline; }
 .homeProject .description { max-width: 64ch; }
 .homeProject .chapterRail { grid-template-columns: repeat(3, 1fr); }
 .homeProject h1 { font-size: clamp(68px, 5.7vw, 98px); }
@@ -3787,7 +3788,7 @@
   }
 
   .project h1 {
-    font-size: clamp(46px, 15vw, 68px);
+    font-size: clamp(38px, 11vw, 52px);
   }
 
   .project h2,
@@ -3803,7 +3804,7 @@
   .project .inheritanceImpactHeader h2,
   .project h2.valContributionsTitle {
     max-width: none;
-    font-size: clamp(28px, 9vw, 42px);
+    font-size: clamp(26px, 7.5vw, 36px);
     line-height: 1.02;
   }
 
@@ -4270,54 +4271,84 @@
 }
 
 /* Content composition follows the panel width independently from the navigation mode. */
-@media (min-width: 861px) {
-  @container project-panel (max-width: 700px) {
-    .aboutSinglePanel {
-      --about-intro-title-size: clamp(28px, 6cqw, 38px);
-    }
+@container project-panel (max-width: 700px) {
+  .fostyHeading h1,
+  .cruxHeading h1,
+  .inheritanceHeading h1,
+  .valHeading h1 {
+    font-size: clamp(38px, 8cqw, 52px);
+  }
 
-    .aboutLayout {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) clamp(68px, 14cqw, 88px);
-      grid-template-areas:
-        "title portrait"
-        "availability portrait"
-        "approach approach"
-        "interests interests"
-        "note note"
-        "contact contact";
-      gap: 22px 16px;
-      align-items: start;
-    }
+  .project h2,
+  .project h2.valStatement,
+  .project h2.inheritanceStatement,
+  .project .fostyChapterHeading h2,
+  .project .cruxMovementIntro h2,
+  .project .cruxVisualIntro h2,
+  .project .cruxEngineeringIntro h2,
+  .project .cruxOutlookHeader h2,
+  .project .inheritanceChallengeHeading h2,
+  .project .inheritanceEngineeringIntro h2,
+  .project .inheritanceImpactHeader h2,
+  .project h2.valContributionsTitle {
+    font-size: clamp(26px, 6cqw, 36px);
+  }
 
-    .aboutMain,
-    .aboutSidebar,
-    .introductionHeading {
-      display: contents;
-    }
+  .aboutSinglePanel {
+    --about-intro-title-size: clamp(30px, 5.2cqw, 34px);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(76px, 16cqw, 92px);
+    grid-template-areas:
+      "meta portrait"
+      "title portrait"
+      "availability availability"
+      "approach approach"
+      "interests interests"
+      "note note"
+      "contact contact";
+    gap: 12px 14px;
+    align-content: start;
+    align-items: start;
+  }
 
-    .introductionTitle {
-      grid-area: title;
-      align-self: start;
-    }
+  .aboutSinglePanel .projectMeta {
+    grid-area: meta;
+    margin: 0;
+    align-self: start;
+  }
 
-    .availability {
-      grid-area: availability;
-      width: 100%;
-      max-width: none;
-      margin: -12px 0 0;
-      padding-top: 14px;
-    }
+  .aboutLayout,
+  .aboutMain,
+  .aboutSidebar,
+  .introductionHeading {
+    display: contents;
+  }
 
-    .aboutApproach { grid-area: approach; }
-    .aboutInterests { grid-area: interests; }
-    .personalNote { grid-area: note; }
+  .introductionTitle {
+    grid-area: title;
+    align-self: end;
+  }
 
-    .headshot {
-      grid-area: portrait;
-      width: 100%;
-      align-self: start;
-    }
+  .introductionTitleLine { display: block; }
+
+  .availability {
+    grid-area: availability;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding-top: 14px;
+    text-wrap: pretty;
+  }
+
+  .aboutApproach { grid-area: approach; }
+  .aboutInterests { grid-area: interests; }
+  .personalNote { grid-area: note; }
+
+  .headshot {
+    grid-area: portrait;
+    width: 100%;
+    align-self: end;
+    transform: translateY(12px);
   }
 }
 

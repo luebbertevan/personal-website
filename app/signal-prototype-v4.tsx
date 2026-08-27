@@ -2999,6 +2999,7 @@ export function SignalPrototypeV4() {
           onClick={() => setMobileOverlay("chapters")}
         >
           <span>{activeDestination.label}</span>
+          <i className={styles.mobileRouteDivider} aria-hidden="true" />
           <strong>{activeChapterLabel}</strong>
         </button>
         <button type="button" onClick={() => stepRoute(1)} aria-label="Next chapter or project" disabled={isLastRoute}>

@@ -545,6 +545,7 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
 
   assert.match(source, /className=\{styles\.mobileHeader\}/);
   assert.match(source, /className=\{styles\.mobileDock\}/);
+  assert.match(source, /<span>\{activeDestination\.label\}<\/span>\s*<i className=\{styles\.mobileRouteDivider\} aria-hidden="true" \/>\s*<strong>\{activeChapterLabel\}<\/strong>/);
   assert.match(source, /mobileOverlay === "projects"/);
   assert.match(source, /mobileOverlay === "chapters"/);
   assert.match(source, /Current route: \$\{activeDestination\.label\}, \$\{activeChapterLabel\}/);
@@ -577,6 +578,9 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(css, /\.mobileProjectIndex \{[^}]*margin-top: 12px;/s);
   assert.match(css, /\.mobileUtilityLinks a \{[^}]*font-size: 17px;/s);
   assert.match(css, /\.mobileMenuFooter \{[^}]*margin-top: auto;/s);
+  assert.match(css, /\.mobileDock {[^}]*min-height: 52px;[^}]*grid-template-columns: 48px minmax\(0, 1fr\) 48px;/s);
+  assert.match(css, /\.mobileDock \.mobileRoutePicker \{\s*display: flex;[^}]*align-items: center;[^}]*gap: 8px;/s);
+  assert.match(css, /\.mobileRouteDivider \{[^}]*width: 5px;[^}]*height: 5px;/s);
   assert.match(globalCss, /animation: mobile-identity-exit 360ms ease 1\.78s forwards;/);
   assert.match(globalCss, /top: calc\(env\(safe-area-inset-top\) \+ 24px\);/);
   assert.doesNotMatch(globalCss, /@media \(max-width: 860px\) \{[\s\S]*?\.site-identity \{[^}]*top: 50%;/s);

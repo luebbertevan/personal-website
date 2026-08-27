@@ -3960,14 +3960,12 @@
 
   .mobileDock .mobileRoutePicker {
     display: flex;
-    padding: 0 10px;
+    padding: 0 12px;
     align-items: center;
     justify-content: center;
-    gap: 8px;
     text-align: center;
   }
 
-  .mobileRoutePicker span,
   .mobileRoutePicker strong {
     min-width: 0;
     overflow: hidden;
@@ -3975,35 +3973,13 @@
     white-space: nowrap;
   }
 
-  .mobileRoutePicker span {
-    flex: 0 1 auto;
-  }
-
   .mobileRoutePicker strong {
     flex: 0 1 auto;
-  }
-
-  .mobileRouteDivider {
-    width: 5px;
-    height: 5px;
-    flex: 0 0 5px;
-    background: rgb(var(--accent-rgb));
-    box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.48);
-  }
-
-  .mobileRoutePicker span {
-    color: rgb(var(--accent-rgb));
-    font-size: 17px;
-    line-height: 1.05;
-    font-weight: 500;
-    letter-spacing: 0.14em;
-  }
-
-  .mobileRoutePicker strong {
+    color: rgba(247, 244, 241, 0.94);
     font-size: 17px;
     font-weight: 500;
     line-height: 1.05;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.1em;
   }
 
   .mobileOverlay {

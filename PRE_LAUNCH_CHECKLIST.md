@@ -39,7 +39,7 @@ This preserves the two strongest and most personally distinctive case studies at
 
 ## Mobile and responsive composition
 
-Phase 1 was implemented on August 27, 2026. Mobile now uses a compact identity bar, a full-screen project index with descriptions and nested chapters, a bottom previous/current/next dock, a compact chapter picker, a nearly full-viewport content panel, safe-area-aware chrome, single-column layout foundations, shorter transitions, lower mobile render resolution, and automatic chapter scroll reset. The center navigation label shows the current project and chapter only; it does not show redundant progress.
+Phase 1 was implemented on August 27, 2026. Mobile now uses a compact identity bar, a full-screen project index with descriptions and nested chapters, a bottom previous/current/next dock, a compact chapter picker, a nearly full-viewport content panel, safe-area-aware chrome, single-column layout foundations, shorter transitions, lower mobile render resolution, and automatic chapter scroll reset. While reading, the compact top bar pairs Evan Luebbert with the current project, and the bottom navigation label shows only the current chapter so long project-and-chapter combinations do not compete for space.
 
 ### Phase 1 review and stabilization
 
@@ -52,7 +52,7 @@ The motion and responsive-structure portion was completed on August 27, 2026. Mo
 The follow-up framing correction keeps the mobile spine’s centerline passing through the viewport center throughout travel, without inheriting the desktop content-panel offset or velocity lead. Particle borders now measure the active panel’s responsive resting rectangle, account for the mobile panel’s vertical entrance motion, and automatically recalculate when the shell or any destination panel changes size.
 
 - Keep the opening **Evan Luebbert / Software Engineer** identity near the top of the mobile viewport so it does not overlap the spine’s focal area.
-- Add **Software Engineer** to the compact top bar beside the name, using the active accent color and a restrained divider that matches the interface language.
+- Use **Software Engineer** beside the name for the opening and expanded-menu identity states. While reading, replace the role with the active project so the compact top bar provides project context.
 - Increase the role size in the full-screen menu and reduce the excessive vertical gap between the menu identity and the first index entry.
 - Use 17 CSS pixels for mobile paragraph, supporting, navigation, and utility text. Use 16 pixels for captions and 13 pixels for genuinely tertiary metadata and uppercase labels. Prioritize comfortable reading over creating hierarchy through small type.
 - Recompose the menu footer as a deliberate bottom-aligned utility area. Increase the GitHub, LinkedIn, and résumé link sizes, separate the visual-control action from the links, and give that action an icon. This remains temporary until Pause is replaced by the quality control described below.

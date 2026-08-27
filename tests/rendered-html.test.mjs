@@ -546,10 +546,12 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
 
   assert.match(source, /className=\{styles\.mobileHeader\}/);
   assert.match(source, /className=\{styles\.mobileDock\}/);
-  assert.match(source, /<span>\{activeDestination\.label\}<\/span>\s*<i className=\{styles\.mobileRouteDivider\} aria-hidden="true" \/>\s*<strong>\{activeChapterLabel\}<\/strong>/);
+  assert.match(source, /<div className=\{styles\.mobileIdentityLockup\}>\s*<strong>EVAN LUEBBERT<\/strong>\s*<i aria-hidden="true" \/>\s*<span>\{activeDestination\.label\}<\/span>/);
+  assert.match(source, /className=\{styles\.mobileRoutePicker\}[\s\S]*?<strong>\{activeChapterLabel\}<\/strong>/s);
+  assert.doesNotMatch(source, /className=\{styles\.mobileRouteDivider\}/);
   assert.match(source, /mobileOverlay === "projects"/);
   assert.match(source, /mobileOverlay === "chapters"/);
-  assert.match(source, /Current route: \$\{activeDestination\.label\}, \$\{activeChapterLabel\}/);
+  assert.match(source, /Current chapter: \$\{activeChapterLabel\} in \$\{activeDestination\.label\}/);
   assert.doesNotMatch(source, /current project, chapter, and progress/i);
   assert.match(source, /chapterLabels: \["ORIGIN", "PRODUCT", "DESIGN", "ENGINEERING", "OUTCOME"\]/);
   assert.match(source, /const MOBILE_DESTINATION_TRAVEL = 34;/);
@@ -590,8 +592,9 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(css, /\.mobileUtilityLinks a \{[^}]*font-size: 17px;/s);
   assert.match(css, /\.mobileMenuFooter \{[^}]*margin: auto 10px 0;/s);
   assert.match(css, /\.mobileDock {[^}]*min-height: 52px;[^}]*grid-template-columns: 48px minmax\(0, 1fr\) 48px;/s);
-  assert.match(css, /\.mobileDock \.mobileRoutePicker \{\s*display: flex;[^}]*align-items: center;[^}]*gap: 8px;/s);
-  assert.match(css, /\.mobileRouteDivider \{[^}]*width: 5px;[^}]*height: 5px;/s);
+  assert.match(css, /\.mobileDock \.mobileRoutePicker \{\s*display: flex;[^}]*padding: 0 12px;[^}]*align-items: center;/s);
+  assert.match(css, /\.mobileRoutePicker strong \{[^}]*font-size: 17px;[^}]*letter-spacing: 0\.1em;/s);
+  assert.doesNotMatch(css, /\.mobileRouteDivider/);
   assert.match(css, /@media \(min-width: 861px\) and \(max-width: 1399px\), \(min-width: 861px\) and \(max-height: 900px\) \{[\s\S]*?\.homeProject \.homeIntroduction \{[\s\S]*?overflow-y: auto;/s);
   assert.match(css, /@media \(min-width: 861px\) and \(max-width: 1200px\) \{[\s\S]*?\.cruxBody,[\s\S]*?grid-template-columns: 1fr;/s);
   assert.match(css, /@media \(min-width: 861px\) and \(max-width: 1160px\) \{[\s\S]*?\.inheritanceShowcase,[\s\S]*?grid-template-columns: 1fr;/s);

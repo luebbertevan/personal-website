@@ -1323,7 +1323,7 @@ export function SignalPrototypeV4() {
         <div className={styles.mobileIdentityLockup}>
           <strong>EVAN LUEBBERT</strong>
           <i aria-hidden="true" />
-          <span>SOFTWARE ENGINEER</span>
+          <span>{activeDestination.label}</span>
         </div>
         <button
           type="button"
@@ -3016,12 +3016,10 @@ export function SignalPrototypeV4() {
         <button
           className={styles.mobileRoutePicker}
           type="button"
-          aria-label={`Choose a chapter. Current route: ${activeDestination.label}, ${activeChapterLabel}`}
+          aria-label={`Choose a chapter. Current chapter: ${activeChapterLabel} in ${activeDestination.label}`}
           aria-expanded={mobileOverlay === "chapters"}
           onClick={() => setMobileOverlay("chapters")}
         >
-          <span>{activeDestination.label}</span>
-          <i className={styles.mobileRouteDivider} aria-hidden="true" />
           <strong>{activeChapterLabel}</strong>
         </button>
         <button type="button" onClick={() => stepRoute(1)} aria-label="Next chapter or project" disabled={isLastRoute}>

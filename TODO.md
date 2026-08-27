@@ -79,8 +79,8 @@ Complete this before mobile and responsive work so the responsive index is desig
 - [x] Standardize expandable media at every screen size to two modes only: cropped or contained inline preview and a true full-screen lightbox, using an icon-only control with an accessible label.
 - [x] Complete the Phase 1 stabilization pass before chapter-specific composition work:
   - [x] Move the opening mobile identity from the middle to the top so it does not overlap the spine.
-  - [x] Consolidate identity into two intentional states: the expressive opening and one compact name/role header reused when the menu opens.
-  - [x] Add the accent-colored **Software Engineer** role to the compact header with a small square divider.
+  - [x] Use intentional identity and location states: name and role for the expressive opening and expanded menu, then name and active project in the compact reading header.
+  - [x] Keep the bottom navigation focused on the current chapter only, with the active project carried by the compact top bar.
   - [x] Tighten the whitespace between the compact menu header and the first index entry.
   - [x] Use the approved mobile type scale: 17px for paragraph, supporting, navigation, and utility text; 16px captions; and 13px tertiary metadata and uppercase labels.
   - [x] Recompose the menu utilities as a bottom-aligned block, separate the visual control from the profile links, and use an icon for the visual control.

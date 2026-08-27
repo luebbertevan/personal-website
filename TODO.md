@@ -62,7 +62,7 @@ The visual system and navigation proof are sufficiently mature. Use accurate con
 Complete this before mobile and responsive work so the responsive index is designed around finished base content.
 
 - [x] Add the approved one-sentence description as a desktop hover and keyboard-focus reveal beneath each main index destination; keep descriptions directly accessible in the future touch-specific index.
-  - **ABOUT** — Who I am and how I work.
+  - **ABOUT** — What I build and why.
   - **FOSTY** — An operations platform for animal rescue foster care.
   - **CRUX VISION** — A video analysis tool for understanding climbing movement.
   - **INHERITANCE** — A motion capture retargeting pipeline for ML training datasets.

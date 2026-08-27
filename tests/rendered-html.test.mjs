@@ -67,7 +67,7 @@ test("About navigation, contact actions, and public assets are wired correctly",
     readFile(new URL("../public/og.png", import.meta.url)),
   ]);
 
-  assert.match(source, /label:\s*"ABOUT",\s*description:\s*"Who I am and how I work\.",\s*chapters:\s*1,/);
+  assert.match(source, /label:\s*"ABOUT",\s*description:\s*"What I build and why\.",\s*chapters:\s*1,/);
   assert.match(source, /label:\s*"FOSTY"[\s\S]*label:\s*"CRUX VISION"[\s\S]*label:\s*"VAL"[\s\S]*label:\s*"INHERITANCE"/);
   assert.match(source, /destinations\.map\(\(destination, index\) => \([\s\S]*styles\.waypointDescription[\s\S]*destination\.description/);
   assert.match(source, /querySelectorAll<HTMLElement>\("\[data-destination-panel\]"\)\)\s*\.sort\(\(a, b\) => Number\(a\.dataset\.destinationPanel\) - Number\(b\.dataset\.destinationPanel\)\)/);

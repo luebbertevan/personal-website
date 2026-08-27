@@ -27,6 +27,12 @@
   height: 100%;
 }
 
+.mobileHeader,
+.mobileDock,
+.mobileOverlay {
+  display: none;
+}
+
 .canvas { z-index: 0; }
 .canvas canvas { display: block; }
 
@@ -2372,6 +2378,18 @@
   font-size: 10px;
   letter-spacing: 0.12em;
 }
+.productScreenshot > .expandIcon,
+.expandIcon {
+  display: grid;
+  min-width: 30px;
+  min-height: 30px;
+  padding: 0;
+  place-items: center;
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: 0;
+}
 .productScreenshot i { color: rgb(var(--accent-rgb)); font-style: normal; }
 .productScreenshot:hover img,
 .productScreenshot:focus-visible img { transform: scale(1.012); }
@@ -2400,8 +2418,8 @@
   letter-spacing: 0;
 }
 .mediaLightbox {
-  position: absolute;
-  z-index: 5;
+  position: fixed;
+  z-index: 100;
   inset: 0;
   padding: clamp(10px, 1vw, 16px);
   overflow: hidden;
@@ -3502,6 +3520,531 @@
   .cruxCalibrationFigure { width: min(100%, 360px); }
   .cruxCalibrationSection h3 { white-space: normal; }
   .cruxTrailLegend { width: min(100%, 220px); }
+}
+
+/* Phase 1 mobile composition: dedicated chrome and a viewport-first reading panel. */
+@media (max-width: 860px) {
+  .shell {
+    --case-study-body-size: 15px;
+    min-height: 0;
+    cursor: default;
+  }
+
+  .waypoint,
+  .routeControls,
+  .pause,
+  .chapterRail {
+    display: none;
+  }
+
+  .mobileHeader {
+    position: absolute;
+    z-index: 14;
+    top: max(8px, env(safe-area-inset-top));
+    right: 10px;
+    left: 10px;
+    display: flex;
+    min-height: 46px;
+    padding: 0 4px 0 10px;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: rgba(247, 244, 241, 0.9);
+    background: rgba(5, 5, 7, 0.78);
+    backdrop-filter: blur(16px);
+    opacity: var(--chrome-presence);
+    font-family: var(--font-geist-mono), monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    transition: opacity 180ms linear;
+  }
+
+  .mobileHeader > button {
+    display: grid;
+    width: 40px;
+    height: 38px;
+    padding: 11px 9px;
+    align-content: center;
+    gap: 6px;
+    border: 0;
+    color: inherit;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .mobileHeader > button i {
+    display: block;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+  }
+
+  .project,
+  .homeProject {
+    top: calc(max(8px, env(safe-area-inset-top)) + 54px);
+    right: 8px;
+    bottom: calc(max(8px, env(safe-area-inset-bottom)) + 60px);
+    left: 8px;
+    width: auto;
+    height: auto;
+    min-height: 0;
+    padding: 0;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background:
+      linear-gradient(135deg, rgba(var(--accent-rgb), 0.08), transparent 42%),
+      rgba(5, 5, 7, 0.89);
+    box-shadow: 0 18px 70px rgba(0, 0, 0, 0.34);
+    transform: translate3d(0, var(--entry-shift), 0);
+    transform-origin: center;
+  }
+
+  .project::before {
+    right: 0;
+    left: auto;
+  }
+
+  .chapter,
+  .homeIntroduction {
+    inset: 0;
+    padding: 18px 14px 32px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scroll-padding-top: 18px;
+    -webkit-overflow-scrolling: touch;
+    mask-image: none;
+  }
+
+  .projectMeta {
+    margin-bottom: 16px;
+    font-size: 10px;
+    line-height: 1.3;
+  }
+
+  .project h1 {
+    font-size: clamp(46px, 15vw, 68px);
+  }
+
+  .project h2,
+  .project h2.valStatement,
+  .project h2.inheritanceStatement,
+  .project .fostyChapterHeading h2,
+  .project .cruxMovementIntro h2,
+  .project .cruxVisualIntro h2,
+  .project .cruxEngineeringIntro h2,
+  .project .cruxOutlookHeader h2,
+  .project .inheritanceChallengeHeading h2,
+  .project .inheritanceEngineeringIntro h2,
+  .project .inheritanceImpactHeader h2,
+  .project h2.valContributionsTitle {
+    max-width: none;
+    font-size: clamp(28px, 9vw, 42px);
+    line-height: 1.02;
+  }
+
+  .aboutSinglePanel {
+    --about-body-size: 16px;
+    --about-approach-size: 16px;
+    --about-intro-title-size: clamp(36px, 11vw, 52px);
+    --about-section-label-size: 11px;
+    display: block;
+    padding-bottom: 30px;
+  }
+
+  .aboutLayout {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .aboutMain,
+  .aboutSidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .aboutSidebar {
+    align-items: stretch;
+  }
+
+  .headshot {
+    width: min(48vw, 176px);
+  }
+
+  .homeProject h1.introductionTitle {
+    font-size: var(--about-intro-title-size);
+    line-height: 1.02;
+  }
+
+  .availability,
+  .approachCopy p,
+  .personalNote > p:last-child,
+  .aboutContact > p {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .aboutContact {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding-top: 18px;
+  }
+
+  .minimalContactLinks {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 18px;
+  }
+
+  .fostyLayout,
+  .fostyProductIntro,
+  .cruxBody,
+  .cruxMovementIntro,
+  .cruxMovementFeature,
+  .cruxMovementFeatureWide,
+  .cruxVisualIntro,
+  .cruxVisualSupport,
+  .cruxTrailReading,
+  .cruxEngineeringOverview,
+  .cruxQualitySection,
+  .cruxCalibrationIntro > div,
+  .cruxCalibrationRow,
+  .cruxCalibrationGrid,
+  .cruxEngineeringDetails,
+  .cruxEngineeringCopy,
+  .cruxOutlookVision,
+  .cruxOutlookFuture,
+  .cruxOutlookClosing,
+  .inheritanceShowcase,
+  .inheritanceStory,
+  .inheritanceAmassRow,
+  .inheritanceTechnology,
+  .inheritancePipeline,
+  .inheritanceHighlightGrid,
+  .inheritanceRotationHighlight,
+  .inheritanceImpactMission,
+  .valBody {
+    grid-template-columns: 1fr;
+  }
+
+  .productScreenshot img {
+    max-height: min(58svh, 500px);
+    object-fit: cover;
+    object-position: top;
+  }
+
+  .productScreenshot > .expandIcon,
+  .expandIcon {
+    min-width: 36px;
+    min-height: 36px;
+    font-size: 24px;
+  }
+
+  .cruxVideoControls button {
+    min-width: 40px;
+    min-height: 40px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .mobileDock {
+    position: absolute;
+    z-index: 14;
+    right: 8px;
+    bottom: max(8px, env(safe-area-inset-bottom));
+    left: 8px;
+    display: grid;
+    min-height: 52px;
+    grid-template-columns: 52px minmax(0, 1fr) 52px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(5, 5, 7, 0.86);
+    backdrop-filter: blur(18px);
+    opacity: var(--chrome-presence);
+    transition: opacity 180ms linear;
+  }
+
+  .mobileDock > button {
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    color: rgba(247, 244, 241, 0.88);
+    background: transparent;
+    font-family: var(--font-geist-mono), monospace;
+    cursor: pointer;
+  }
+
+  .mobileDock > button:first-child {
+    border-right: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .mobileDock > button:last-child {
+    border-left: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .mobileDock > button:disabled {
+    opacity: 0.28;
+    cursor: default;
+  }
+
+  .mobileDock > button > span[aria-hidden] {
+    font-size: 22px;
+  }
+
+  .mobileDock .mobileRoutePicker {
+    display: grid;
+    padding: 7px 12px;
+    place-content: center;
+    gap: 2px;
+    text-align: center;
+  }
+
+  .mobileRoutePicker span,
+  .mobileRoutePicker strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .mobileRoutePicker span {
+    color: rgb(var(--accent-rgb));
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+  }
+
+  .mobileRoutePicker strong {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+  }
+
+  .mobileOverlay {
+    position: fixed;
+    z-index: 60;
+    inset: 0;
+    display: block;
+    background: rgba(3, 3, 5, 0.72);
+    backdrop-filter: blur(18px);
+  }
+
+  .mobileMenu {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    padding: max(16px, env(safe-area-inset-top)) 16px max(18px, env(safe-area-inset-bottom));
+    overflow-y: auto;
+    color: rgba(247, 244, 241, 0.94);
+    background:
+      radial-gradient(circle at 86% 2%, rgba(var(--accent-rgb), 0.16), transparent 30%),
+      rgba(5, 5, 7, 0.97);
+    font-family: var(--font-geist-mono), monospace;
+  }
+
+  .mobileMenuHeader,
+  .mobileChapterSheet > header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+  }
+
+  .mobileMenuHeader > div,
+  .mobileChapterSheet > header > div {
+    display: grid;
+    gap: 6px;
+  }
+
+  .mobileMenuHeader strong {
+    font-family: var(--font-geist-sans), sans-serif;
+    font-size: clamp(28px, 9vw, 42px);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.035em;
+  }
+
+  .mobileMenuHeader > div span,
+  .mobileChapterSheet > header span {
+    color: rgb(var(--accent-rgb));
+    font-size: 11px;
+    letter-spacing: 0.15em;
+  }
+
+  .mobileMenuHeader > button,
+  .mobileChapterSheet > header > button {
+    display: grid;
+    width: 42px;
+    height: 42px;
+    flex: 0 0 auto;
+    padding: 0;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: rgba(247, 244, 241, 0.9);
+    background: rgba(255, 255, 255, 0.04);
+    font-size: 25px;
+    cursor: pointer;
+  }
+
+  .mobileProjectIndex {
+    display: grid;
+    margin-top: 34px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .mobileProjectIndex section {
+    padding: 14px 0 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .mobileProjectIndex section[data-active] {
+    border-color: rgba(var(--accent-rgb), 0.62);
+  }
+
+  .mobileProjectRow {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 44px;
+    gap: 8px;
+  }
+
+  .mobileProjectRow button,
+  .mobileProjectIndex ol button,
+  .mobileChapterSheet ol button {
+    padding: 0;
+    border: 0;
+    color: inherit;
+    background: transparent;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .mobileProjectRow > button:first-child strong {
+    font-size: clamp(20px, 6.5vw, 28px);
+    font-weight: 520;
+    letter-spacing: 0.08em;
+  }
+
+  .mobileProjectRow > button:last-child {
+    display: grid;
+    min-height: 38px;
+    place-items: center;
+    font-size: 24px;
+    transform: translateY(-3px);
+  }
+
+  .mobileProjectRow > button:last-child[aria-expanded="true"] span {
+    transform: rotate(180deg);
+  }
+
+  .mobileProjectIndex section > p {
+    max-width: 38ch;
+    margin: 7px 52px 0 0;
+    color: rgba(247, 244, 241, 0.7);
+    font-family: var(--font-geist-sans), sans-serif;
+    font-size: 15px;
+    line-height: 1.42;
+    letter-spacing: 0;
+  }
+
+  .mobileProjectIndex ol,
+  .mobileChapterSheet ol {
+    display: grid;
+    margin: 14px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .mobileProjectIndex ol button,
+  .mobileChapterSheet ol button {
+    display: grid;
+    width: 100%;
+    min-height: 42px;
+    padding: 8px 10px;
+    grid-template-columns: 34px minmax(0, 1fr);
+    align-items: center;
+    border-left: 1px solid rgba(255, 255, 255, 0.18);
+    color: rgba(247, 244, 241, 0.72);
+    font-size: 12px;
+    letter-spacing: 0.09em;
+  }
+
+  .mobileProjectIndex ol button span,
+  .mobileChapterSheet ol button span {
+    color: rgba(247, 244, 241, 0.34);
+    font-size: 9px;
+  }
+
+  .mobileProjectIndex ol button[data-active],
+  .mobileChapterSheet ol button[data-active] {
+    border-color: rgb(var(--accent-rgb));
+    color: rgb(var(--accent-rgb));
+    background: rgba(var(--accent-rgb), 0.1);
+  }
+
+  .mobileMenuFooter {
+    display: flex;
+    margin-top: 28px;
+    padding-top: 16px;
+    flex-wrap: wrap;
+    gap: 10px 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .mobileMenuFooter a,
+  .mobileMenuFooter button {
+    padding: 4px 0;
+    border: 0;
+    color: rgba(247, 244, 241, 0.72);
+    background: transparent;
+    font-family: inherit;
+    font-size: 10px;
+    letter-spacing: 0.11em;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .mobileChapterOverlay {
+    display: flex;
+    padding: 12px;
+    align-items: flex-end;
+  }
+
+  .mobileChapterSheet {
+    width: 100%;
+    max-height: min(72svh, 560px);
+    padding: 18px 16px max(18px, env(safe-area-inset-bottom));
+    overflow-y: auto;
+    border: 1px solid rgba(var(--accent-rgb), 0.48);
+    color: rgba(247, 244, 241, 0.94);
+    background: rgba(5, 5, 7, 0.98);
+    box-shadow: 0 -24px 80px rgba(0, 0, 0, 0.48);
+    font-family: var(--font-geist-mono), monospace;
+  }
+
+  .mobileChapterSheet > header strong {
+    font-size: 22px;
+    font-weight: 520;
+    letter-spacing: 0.08em;
+  }
+
+  .mediaLightbox {
+    padding: max(12px, env(safe-area-inset-top)) 8px max(12px, env(safe-area-inset-bottom));
+  }
+
+  .mediaLightbox > button {
+    top: max(10px, env(safe-area-inset-top));
+    right: 10px;
+    width: 42px;
+    height: 42px;
+    font-size: 24px;
+  }
+
+  .mediaLightbox > img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

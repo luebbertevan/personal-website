@@ -37,6 +37,8 @@ This preserves the two strongest and most personally distinctive case studies at
 
 ## Mobile and responsive composition
 
+Phase 1 was implemented on August 27, 2026. Mobile now uses a compact identity bar, a full-screen project index with descriptions and nested chapters, a bottom previous/current/next dock, a compact chapter picker, a nearly full-viewport content panel, safe-area-aware chrome, single-column layout foundations, shorter transitions, lower mobile render resolution, and automatic chapter scroll reset. The center navigation label shows the current project and chapter only; it does not show redundant progress.
+
 - Treat mobile as an intentional composition rather than a scaled-down desktop layout.
 - Use a compact project index or index drawer with the approved descriptions.
 - Prefer normal vertical reading for long case studies and provide sticky, touch-friendly chapter navigation.
@@ -44,6 +46,8 @@ This preserves the two strongest and most personally distinctive case studies at
 - Account for device safe areas, mobile browser bars, portrait and landscape orientations, zoom, and large text.
 - Test representative phone, tablet, laptop, and large-desktop sizes, including widths of 320, 375, 390, 768, and 1024 CSS pixels.
 - Remove fixed-height and clipped-overflow behavior that can make content unreachable on short mobile screens.
+
+Media now has two states at every screen size: an inline preview and a full-screen lightbox. Image and video controls use an icon-only full-screen affordance with an accessible label. Tall screenshots may be cropped in the inline preview but must remain fully visible in the lightbox. Decorative imagery such as the About portrait remains non-expandable.
 
 ## Direct navigation and sharing
 

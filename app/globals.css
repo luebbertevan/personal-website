@@ -112,17 +112,31 @@ label:focus-within {
 
 @media (max-width: 860px) {
   .site-identity {
-    top: 20px;
-    left: 20px;
-    gap: 8px;
+    z-index: 20;
+    top: 50%;
+    right: 24px;
+    left: 24px;
+    gap: 10px;
+    transform: translateY(-62%);
+    animation: mobile-identity-exit 360ms ease 1.78s forwards;
   }
 
   .site-identity strong {
-    font-size: 48px;
+    font-size: clamp(42px, 13vw, 64px);
+    animation-delay: 180ms;
   }
 
   .site-identity span {
-    font-size: 22px;
+    font-size: clamp(16px, 5vw, 23px);
+    animation-delay: 620ms;
+  }
+}
+
+@keyframes mobile-identity-exit {
+  to {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(calc(-62% - 12px));
   }
 }
 

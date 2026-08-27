@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import * as THREE from "three";
 import { createEmberLoom } from "./ember-loom";
 import {
@@ -16,6 +17,7 @@ const destinations = [
     label: "ABOUT",
     description: "What I build and why.",
     chapters: 1,
+    chapterLabels: ["OVERVIEW"],
     shaderColor: [1.0, 0.25, 0.0625] as const,
     cssColor: [255, 103, 49] as const,
   },
@@ -23,6 +25,7 @@ const destinations = [
     label: "FOSTY",
     description: "An operations platform for animal rescue foster care.",
     chapters: 5,
+    chapterLabels: ["ORIGIN", "PRODUCT", "DESIGN", "ENGINEERING", "OUTCOME"],
     shaderColor: [0.925, 0.282, 0.6] as const,
     cssColor: [236, 72, 153] as const,
   },
@@ -30,6 +33,7 @@ const destinations = [
     label: "CRUX VISION",
     description: "A video analysis tool for understanding climbing movement.",
     chapters: 5,
+    chapterLabels: ["ORIGIN", "MOVEMENT REVIEW", "VISUAL OVERLAY", "ENGINEERING", "OUTLOOK"],
     shaderColor: [0.561, 0.902, 0.376] as const,
     cssColor: [143, 230, 96] as const,
   },
@@ -37,6 +41,7 @@ const destinations = [
     label: "VAL",
     description: "Product ownership and full stack development for a live recovery care platform.",
     chapters: 3,
+    chapterLabels: ["EXPERIENCE", "CONTRIBUTIONS", "PRODUCTION"],
     shaderColor: [0.839, 0.157, 0.157] as const,
     cssColor: [214, 40, 40] as const,
   },
@@ -44,6 +49,7 @@ const destinations = [
     label: "INHERITANCE",
     description: "A motion capture retargeting pipeline for ML training datasets.",
     chapters: 4,
+    chapterLabels: ["EXPERIENCE", "CHALLENGE", "ENGINEERING", "IMPACT"],
     shaderColor: [0.31, 0.68, 1.0] as const,
     cssColor: [79, 173, 255] as const,
   },
@@ -240,6 +246,9 @@ const CHAPTER_DURATION = 2.45;
 const MANUAL_ARRIVAL_PROGRESS = 0.88;
 const MANUAL_EDGE_DISTANCE = 3.2;
 const HOME_OPENING_DURATION = 4.75;
+const MOBILE_DESTINATION_DURATION = 1.85;
+const MOBILE_CHAPTER_DURATION = 0.9;
+const MOBILE_HOME_OPENING_DURATION = 2.15;
 const PARTICLE_ARRIVAL_START = 0.38;
 const PARTICLE_ARRIVAL_END = 0.70;
 const PARTICLE_DISTURBANCE_START = 0.02;
@@ -296,6 +305,8 @@ export function SignalPrototypeV4() {
   const cruxVideoExpandedRef = useRef(false);
   const inheritanceVideoExpandedRef = useRef(false);
   const prefersReducedMotionRef = useRef(false);
+  const mobileDialogRef = useRef<HTMLDivElement>(null);
+  const pendingMobileChapterRef = useRef<{ destination: number; chapter: number } | null>(null);
   const [paused, setPaused] = useState(false);
   const [emailCopyStatus, setEmailCopyStatus] = useState<"idle" | "copied" | "selected">("idle");
   const [expandedMedia, setExpandedMedia] = useState<FostyMedia | null>(null);
@@ -305,7 +316,61 @@ export function SignalPrototypeV4() {
   const [inheritanceVideoExpanded, setInheritanceVideoExpanded] = useState(false);
   const [expandedInheritanceVideo, setExpandedInheritanceVideo] = useState<CruxVideoMedia>(inheritanceMotionVideo);
   const [inheritanceImageExpanded, setInheritanceImageExpanded] = useState(false);
+  const [activeRoute, setActiveRoute] = useState({ destination: 0, chapter: 0 });
+  const [mobileOverlay, setMobileOverlay] = useState<"projects" | "chapters" | null>(null);
+  const [expandedMenuProject, setExpandedMenuProject] = useState(0);
+  const [portalTarget] = useState<HTMLElement | null>(() => (
+    typeof document === "undefined"
+      ? null
+      : document.querySelector<HTMLElement>("[data-site-root]") ?? document.body
+  ));
   const pausedRef = useRef(false);
+
+  useEffect(() => {
+    if (!mobileOverlay) return;
+    const dialog = mobileDialogRef.current;
+    const previouslyFocused = document.activeElement instanceof HTMLElement
+      ? document.activeElement
+      : null;
+    const focusableSelector = "button:not([disabled]), a[href]";
+    const focusDialog = window.requestAnimationFrame(() => {
+      dialog?.querySelector<HTMLElement>(focusableSelector)?.focus();
+    });
+    const handleDialogKeys = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setMobileOverlay(null);
+        return;
+      }
+      if (event.key !== "Tab" || !dialog) return;
+      const focusable = Array.from(dialog.querySelectorAll<HTMLElement>(focusableSelector));
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    window.addEventListener("keydown", handleDialogKeys);
+    return () => {
+      window.cancelAnimationFrame(focusDialog);
+      window.removeEventListener("keydown", handleDialogKeys);
+      previouslyFocused?.focus();
+    };
+  }, [mobileOverlay]);
+
+  useEffect(() => {
+    const pendingChapter = pendingMobileChapterRef.current;
+    if (!pendingChapter || pendingChapter.destination !== activeRoute.destination) return;
+    pendingMobileChapterRef.current = null;
+    if (pendingChapter.chapter !== activeRoute.chapter) {
+      navigationCommandRef.current = { type: "chapter", value: pendingChapter.chapter };
+    }
+  }, [activeRoute]);
 
   useEffect(() => {
     if (
@@ -397,6 +462,18 @@ export function SignalPrototypeV4() {
     navigationCommandRef.current = { type: "step", value: direction };
   };
 
+  const navigateToMobileRoute = (destination: number, chapter: number) => {
+    setMobileOverlay(null);
+    setExpandedMenuProject(destination);
+    if (destination === activeDestinationRef.current) {
+      pendingMobileChapterRef.current = null;
+      navigateToChapter(chapter);
+      return;
+    }
+    pendingMobileChapterRef.current = { destination, chapter };
+    navigateToDestination(destination);
+  };
+
   const openCruxVideo = (video: CruxVideoMedia) => {
     cruxVideoRef.current?.pause();
     cruxMovementVideoRef.current?.pause();
@@ -472,6 +549,10 @@ export function SignalPrototypeV4() {
     const mount = mountRef.current;
     if (!mount || !shell) return;
     prefersReducedMotionRef.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const isMobileViewport = window.matchMedia("(max-width: 860px)").matches;
+    const destinationDuration = isMobileViewport ? MOBILE_DESTINATION_DURATION : DESTINATION_DURATION;
+    const chapterDuration = isMobileViewport ? MOBILE_CHAPTER_DURATION : CHAPTER_DURATION;
+    const homeOpeningDuration = isMobileViewport ? MOBILE_HOME_OPENING_DURATION : HOME_OPENING_DURATION;
     const siteRoot = shell.closest<HTMLElement>("[data-site-root]");
     const setAccentPalette = (palette: number[]) => {
       const value = palette.join(", ");
@@ -582,13 +663,13 @@ export function SignalPrototypeV4() {
     const resize = () => {
       const width = Math.max(1, mount.clientWidth);
       const height = Math.max(1, mount.clientHeight);
-      const dpr = Math.min(window.devicePixelRatio, 1.15);
+      const dpr = Math.min(window.devicePixelRatio, isMobileViewport ? 0.9 : 1.15);
       renderer.setPixelRatio(dpr);
       renderer.setSize(width, height, false);
 
       const pixelWidth = Math.max(1, Math.floor(width * dpr));
       const pixelHeight = Math.max(1, Math.floor(height * dpr));
-      const studyScale = width > 1600 ? 0.62 : width > 900 ? 0.74 : 0.78;
+      const studyScale = isMobileViewport ? 0.66 : width > 1600 ? 0.62 : width > 900 ? 0.74 : 0.78;
       const targetWidth = Math.max(1, Math.floor(pixelWidth * studyScale));
       const targetHeight = Math.max(1, Math.floor(pixelHeight * studyScale));
       renderTarget.setSize(targetWidth, targetHeight);
@@ -652,7 +733,7 @@ export function SignalPrototypeV4() {
         });
       }
 
-      strandAnchor.set(-0.54 * height / width, 0);
+      strandAnchor.set(isMobileViewport ? -0.06 : -0.54 * height / width, 0);
       const panel = shell.querySelector<HTMLElement>("[data-destination-panel]");
       if (panel) {
         const shellRect = shell.getBoundingClientRect();
@@ -712,6 +793,7 @@ export function SignalPrototypeV4() {
       arrival?: { toX: number; duration: number; manualArrival: boolean },
     ) => {
       const targetDestination = THREE.MathUtils.clamp(index, 0, destinations.length - 1);
+      panelBundles[targetDestination]?.chapters[0]?.scrollTo({ top: 0 });
       if (targetDestination === currentDestination) {
         beginChapter(0);
         return;
@@ -721,7 +803,7 @@ export function SignalPrototypeV4() {
       transition = {
         kind: "destination",
         elapsed: 0,
-        duration: arrival?.duration ?? DESTINATION_DURATION,
+        duration: arrival?.duration ?? destinationDuration,
         fromX: cameraX,
         toX: arrival?.toX ?? cameraX + direction * DESTINATION_TRAVEL,
         sourceDestination: currentDestination,
@@ -741,12 +823,13 @@ export function SignalPrototypeV4() {
       arrival?: { toX: number; duration: number; manualArrival: boolean },
     ) => {
       const targetChapter = THREE.MathUtils.clamp(index, 0, destinations[currentDestination].chapters - 1);
+      panelBundles[currentDestination]?.chapters[targetChapter]?.scrollTo({ top: 0 });
       if (targetChapter === currentChapter) return;
       manualCameraTarget = cameraX;
       transition = {
         kind: "chapter",
         elapsed: 0,
-        duration: arrival?.duration ?? CHAPTER_DURATION,
+        duration: arrival?.duration ?? chapterDuration,
         fromX: cameraX,
         toX: arrival?.toX ?? currentAnchorX + targetChapter * CHAPTER_TRAVEL,
         sourceDestination: currentDestination,
@@ -827,13 +910,13 @@ export function SignalPrototypeV4() {
       if (route.kind === "destination") {
         beginDestination(route.targetDestination, {
           toX: route.targetX,
-          duration: Math.max(1.45, DESTINATION_DURATION * remaining / DESTINATION_TRAVEL),
+          duration: Math.max(isMobileViewport ? 0.72 : 1.45, destinationDuration * remaining / DESTINATION_TRAVEL),
           manualArrival: true,
         });
       } else {
         beginChapter(route.targetChapter, {
           toX: route.targetX,
-          duration: Math.max(0.85, CHAPTER_DURATION * remaining / CHAPTER_TRAVEL),
+          duration: Math.max(isMobileViewport ? 0.42 : 0.85, chapterDuration * remaining / CHAPTER_TRAVEL),
           manualArrival: true,
         });
       }
@@ -845,10 +928,10 @@ export function SignalPrototypeV4() {
       previousTime = now;
       if (!pausedRef.current) elapsed += delta;
       if (homeIntroActive && !pausedRef.current) {
-        homeIntroElapsed = Math.min(HOME_OPENING_DURATION, homeIntroElapsed + delta);
-        if (homeIntroElapsed >= HOME_OPENING_DURATION) homeIntroActive = false;
+        homeIntroElapsed = Math.min(homeOpeningDuration, homeIntroElapsed + delta);
+        if (homeIntroElapsed >= homeOpeningDuration) homeIntroActive = false;
       }
-      const homeOpeningT = THREE.MathUtils.clamp(homeIntroElapsed / HOME_OPENING_DURATION, 0, 1);
+      const homeOpeningT = THREE.MathUtils.clamp(homeIntroElapsed / homeOpeningDuration, 0, 1);
       const pageContentPresence = THREE.MathUtils.smoothstep(
         homeOpeningT,
         PANEL_ARRIVAL_START,
@@ -1016,6 +1099,7 @@ export function SignalPrototypeV4() {
       ) {
         activeDestinationRef.current = activeDestinationForUi;
         activeChapterRef.current = activeChapterForUi;
+        setActiveRoute({ destination: activeDestinationForUi, chapter: activeChapterForUi });
         const originVideo = cruxVideoRef.current;
         const movementVideo = cruxMovementVideoRef.current;
         const comparisonVideo = cruxComparisonVideoRef.current;
@@ -1203,10 +1287,31 @@ export function SignalPrototypeV4() {
     };
   }, []);
 
+  const activeDestination = destinations[activeRoute.destination];
+  const activeChapterLabel = activeDestination.chapterLabels[activeRoute.chapter];
+  const isFirstRoute = activeRoute.destination === 0 && activeRoute.chapter === 0;
+  const isLastRoute = activeRoute.destination === destinations.length - 1
+    && activeRoute.chapter === activeDestination.chapters - 1;
   return (
     <main ref={shellRef} className={styles.shell}>
       <div ref={mountRef} className={styles.canvas} aria-hidden="true" />
       <div className={styles.grain} aria-hidden="true" />
+
+      <header className={styles.mobileHeader}>
+        <span>EVAN LUEBBERT</span>
+        <button
+          type="button"
+          aria-label="Open portfolio menu"
+          aria-expanded={mobileOverlay === "projects"}
+          onClick={() => {
+            setExpandedMenuProject(activeRoute.destination);
+            setMobileOverlay("projects");
+          }}
+        >
+          <i aria-hidden="true" />
+          <i aria-hidden="true" />
+        </button>
+      </header>
 
       <nav className={styles.waypoint} aria-label="Portfolio table of contents">
         {destinations.map((destination, index) => (
@@ -1352,7 +1457,7 @@ export function SignalPrototypeV4() {
                         height={item.height}
                         loading="lazy"
                       />
-                      <span>EXPAND <i aria-hidden="true">↗</i></span>
+                      <span className={styles.expandIcon} aria-hidden="true">⛶</span>
                     </button>
                     <figcaption className={styles.productCaption}>
                       <span>{item.title}</span>
@@ -1390,7 +1495,7 @@ export function SignalPrototypeV4() {
                     height={fostyDesignMedia.height}
                     loading="lazy"
                   />
-                  <span>EXPAND <i aria-hidden="true">↗</i></span>
+                  <span className={styles.expandIcon} aria-hidden="true">⛶</span>
                 </button>
                 <figcaption>
                   <span>{fostyDesignMedia.title}</span>
@@ -1526,7 +1631,7 @@ export function SignalPrototypeV4() {
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(3)}>ENGINEERING</button></li>
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(4)}>OUTCOME</button></li>
         </ol>
-        {expandedMedia && (
+        {expandedMedia && portalTarget && createPortal(
           <div
             className={styles.mediaLightbox}
             role="dialog"
@@ -1550,7 +1655,8 @@ export function SignalPrototypeV4() {
               height={expandedMedia.height}
               onClick={(event) => event.stopPropagation()}
             />
-          </div>
+          </div>,
+          portalTarget,
         )}
       </article>
 
@@ -1647,7 +1753,7 @@ export function SignalPrototypeV4() {
                   </video>
                   <div className={styles.cruxVideoControls}>
                     <button type="button" onClick={() => openCruxVideo(cruxOriginVideo)} aria-label="Expand the Crux Vision overlay video">
-                      EXPAND <span aria-hidden="true">↗</span>
+                      <span className={styles.expandIcon} aria-hidden="true">⛶</span>
                     </button>
                   </div>
                 </figure>
@@ -1687,7 +1793,7 @@ export function SignalPrototypeV4() {
                         width={cruxMovementMedia[0].width}
                         height={cruxMovementMedia[0].height}
                       />
-                      <span>EXPAND <i aria-hidden="true">↗</i></span>
+                      <span className={styles.expandIcon} aria-hidden="true">⛶</span>
                     </button>
                   </div>
                   <div className={styles.productCaption}>
@@ -1719,7 +1825,7 @@ export function SignalPrototypeV4() {
                     onClick={() => openCruxVideo(cruxMovementVideo)}
                     aria-label="Expand the slow-motion Crux Vision review video"
                   >
-                    EXPAND <span aria-hidden="true">↗</span>
+                    <span className={styles.expandIcon} aria-hidden="true">⛶</span>
                   </button>
                 </div>
               </figure>
@@ -1741,7 +1847,7 @@ export function SignalPrototypeV4() {
                       width={cruxMovementMedia[1].width}
                       height={cruxMovementMedia[1].height}
                     />
-                    <span>EXPAND <i aria-hidden="true">↗</i></span>
+                    <span className={styles.expandIcon} aria-hidden="true">⛶</span>
                   </button>
                 </div>
                 <div className={styles.cruxPrecisionDetails}>
@@ -1766,7 +1872,7 @@ export function SignalPrototypeV4() {
                       width={cruxMovementMedia[2].width}
                       height={cruxMovementMedia[2].height}
                     />
-                    <span>EXPAND <i aria-hidden="true">↗</i></span>
+                    <span className={styles.expandIcon} aria-hidden="true">⛶</span>
                   </button>
                 </div>
               </li>
@@ -1783,7 +1889,7 @@ export function SignalPrototypeV4() {
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={item.src} alt={item.alt} width={item.width} height={item.height} />
-                      <span>EXPAND <i aria-hidden="true">↗</i></span>
+                      <span className={styles.expandIcon} aria-hidden="true">⛶</span>
                     </button>
                   ))}
                 </div>
@@ -1835,7 +1941,7 @@ export function SignalPrototypeV4() {
                     onClick={() => openCruxVideo(cruxComparisonVideo)}
                     aria-label="Expand the Crux Vision movement-trail comparison video"
                   >
-                    EXPAND <span aria-hidden="true">↗</span>
+                    <span className={styles.expandIcon} aria-hidden="true">⛶</span>
                   </button>
                 </div>
               </div>
@@ -2037,7 +2143,7 @@ export function SignalPrototypeV4() {
                       width={cruxEngineeringMedia[0].width}
                       height={cruxEngineeringMedia[0].height}
                     />
-                    <span>EXPAND <i aria-hidden="true">↗</i></span>
+                    <span className={styles.expandIcon} aria-hidden="true">⛶</span>
                   </button>
                 </figure>
 
@@ -2081,7 +2187,7 @@ export function SignalPrototypeV4() {
                       width={cruxEngineeringMedia[1].width}
                       height={cruxEngineeringMedia[1].height}
                     />
-                    <span>EXPAND <i aria-hidden="true">↗</i></span>
+                    <span className={styles.expandIcon} aria-hidden="true">⛶</span>
                   </button>
                 </figure>
 
@@ -2121,7 +2227,7 @@ export function SignalPrototypeV4() {
                     width={cruxEngineeringMedia[2].width}
                     height={cruxEngineeringMedia[2].height}
                   />
-                  <span>EXPAND <i aria-hidden="true">↗</i></span>
+                  <span className={styles.expandIcon} aria-hidden="true">⛶</span>
                 </button>
               </figure>
 
@@ -2247,7 +2353,7 @@ export function SignalPrototypeV4() {
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(3)}>ENGINEERING</button></li>
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(4)}>OUTLOOK</button></li>
         </ol>
-        {expandedCruxMedia && (
+        {expandedCruxMedia && portalTarget && createPortal(
           <div
             className={styles.mediaLightbox}
             role="dialog"
@@ -2271,9 +2377,10 @@ export function SignalPrototypeV4() {
               height={expandedCruxMedia.height}
               onClick={(event) => event.stopPropagation()}
             />
-          </div>
+          </div>,
+          portalTarget,
         )}
-        {cruxVideoExpanded && (
+        {cruxVideoExpanded && portalTarget && createPortal(
           <div
             className={`${styles.mediaLightbox} ${styles.cruxVideoLightbox}`}
             role="dialog"
@@ -2304,7 +2411,8 @@ export function SignalPrototypeV4() {
             >
               Your browser does not support embedded video.
             </video>
-          </div>
+          </div>,
+          portalTarget,
         )}
       </article>
 
@@ -2356,7 +2464,7 @@ export function SignalPrototypeV4() {
                 </video>
                 <div className={styles.cruxVideoControls}>
                   <button type="button" onClick={openInheritanceVideo} aria-label="Expand the retargeted motion capture sample video">
-                    EXPAND <span aria-hidden="true">↗</span>
+                    <span className={styles.expandIcon} aria-hidden="true">⛶</span>
                   </button>
                 </div>
                 <figcaption>A sample of retargeted motion capture animations.</figcaption>
@@ -2449,7 +2557,7 @@ export function SignalPrototypeV4() {
                     width="1554"
                     height="1074"
                   />
-                  <span>EXPAND <i aria-hidden="true">↗</i></span>
+                  <span className={styles.expandIcon} aria-hidden="true">⛶</span>
                 </button>
                 <figcaption>THE MOTION AND BODY DIVERSITY REPRESENTED IN AMASS.</figcaption>
               </figure>
@@ -2501,7 +2609,7 @@ export function SignalPrototypeV4() {
                   >
                     Your browser does not support embedded video.
                   </video>
-                  <span>EXPAND <i aria-hidden="true">↗</i></span>
+                  <span className={styles.expandIcon} aria-hidden="true">⛶</span>
                 </button>
                 <figcaption>AMASS MOTION, REBUILT ON A PRODUCTION ARMATURE.</figcaption>
               </figure>
@@ -2659,7 +2767,7 @@ export function SignalPrototypeV4() {
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(2)}>ENGINEERING</button></li>
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(3)}>IMPACT</button></li>
         </ol>
-        {inheritanceVideoExpanded && (
+        {inheritanceVideoExpanded && portalTarget && createPortal(
           <div
             className={`${styles.mediaLightbox} ${styles.cruxVideoLightbox}`}
             role="dialog"
@@ -2689,9 +2797,10 @@ export function SignalPrototypeV4() {
             >
               Your browser does not support embedded video.
             </video>
-          </div>
+          </div>,
+          portalTarget,
         )}
-        {inheritanceImageExpanded && (
+        {inheritanceImageExpanded && portalTarget && createPortal(
           <div
             className={styles.mediaLightbox}
             role="dialog"
@@ -2715,7 +2824,8 @@ export function SignalPrototypeV4() {
               height="1074"
               onClick={(event) => event.stopPropagation()}
             />
-          </div>
+          </div>,
+          portalTarget,
         )}
       </article>
 
@@ -2873,9 +2983,126 @@ export function SignalPrototypeV4() {
         <button type="button" data-route-next onClick={() => stepRoute(1)} aria-label="Next"><span aria-hidden="true">→</span></button>
       </div>
 
+      <nav className={styles.mobileDock} aria-label="Mobile portfolio navigation">
+        <button type="button" onClick={() => stepRoute(-1)} aria-label="Previous chapter or project" disabled={isFirstRoute}>
+          <span aria-hidden="true">←</span>
+        </button>
+        <button
+          className={styles.mobileRoutePicker}
+          type="button"
+          aria-label={`Choose a chapter. Current route: ${activeDestination.label}, ${activeChapterLabel}`}
+          aria-expanded={mobileOverlay === "chapters"}
+          onClick={() => setMobileOverlay("chapters")}
+        >
+          <span>{activeDestination.label}</span>
+          <strong>{activeChapterLabel}</strong>
+        </button>
+        <button type="button" onClick={() => stepRoute(1)} aria-label="Next chapter or project" disabled={isLastRoute}>
+          <span aria-hidden="true">→</span>
+        </button>
+      </nav>
+
       <button className={styles.pause} type="button" onClick={togglePause} aria-pressed={paused}>
         <span>{paused ? "RESUME VISUALS" : "PAUSE VISUALS"}</span><i>{paused ? "▶" : "Ⅱ"}</i>
       </button>
+
+      {mobileOverlay === "projects" && (
+        <div className={styles.mobileOverlay}>
+          <div ref={mobileDialogRef} className={styles.mobileMenu} role="dialog" aria-modal="true" aria-label="Portfolio menu">
+            <header className={styles.mobileMenuHeader}>
+              <div>
+                <strong>EVAN LUEBBERT</strong>
+                <span>SOFTWARE ENGINEER</span>
+              </div>
+              <button type="button" aria-label="Close portfolio menu" onClick={() => setMobileOverlay(null)}>
+                <span aria-hidden="true">×</span>
+              </button>
+            </header>
+            <nav className={styles.mobileProjectIndex} aria-label="Projects and case study chapters">
+              {destinations.map((destination, destinationIndex) => {
+                const isExpanded = expandedMenuProject === destinationIndex;
+                return (
+                  <section key={destination.label} data-active={activeRoute.destination === destinationIndex || undefined}>
+                    <div className={styles.mobileProjectRow}>
+                      <button type="button" onClick={() => navigateToMobileRoute(destinationIndex, 0)}>
+                        <strong>{destination.label}</strong>
+                      </button>
+                      <button
+                        type="button"
+                        aria-label={`${isExpanded ? "Hide" : "Show"} ${destination.label} chapters`}
+                        aria-expanded={isExpanded}
+                        onClick={() => setExpandedMenuProject(isExpanded ? -1 : destinationIndex)}
+                      >
+                        <span aria-hidden="true">⌄</span>
+                      </button>
+                    </div>
+                    <p>{destination.description}</p>
+                    {isExpanded && (
+                      <ol>
+                        {destination.chapterLabels.map((chapter, chapterIndex) => (
+                          <li key={chapter}>
+                            <button
+                              type="button"
+                              data-active={activeRoute.destination === destinationIndex && activeRoute.chapter === chapterIndex || undefined}
+                              onClick={() => navigateToMobileRoute(destinationIndex, chapterIndex)}
+                            >
+                              <span>{String(chapterIndex + 1).padStart(2, "0")}</span>
+                              {chapter}
+                            </button>
+                          </li>
+                        ))}
+                      </ol>
+                    )}
+                  </section>
+                );
+              })}
+            </nav>
+            <footer className={styles.mobileMenuFooter}>
+              <a href="https://github.com/luebbertevan" target="_blank" rel="noreferrer">GITHUB ↗</a>
+              <a href="https://www.linkedin.com/in/evan-luebbert/" target="_blank" rel="noreferrer">LINKEDIN ↗</a>
+              <a href="/documents/evan-luebbert-resume-2026.pdf" download="Evan-Luebbert-Resume-2026.pdf">RESUME ↓</a>
+              <button type="button" onClick={togglePause} aria-pressed={paused}>{paused ? "RESUME VISUALS" : "PAUSE VISUALS"}</button>
+            </footer>
+          </div>
+        </div>
+      )}
+
+      {mobileOverlay === "chapters" && (
+        <div className={`${styles.mobileOverlay} ${styles.mobileChapterOverlay}`} onClick={() => setMobileOverlay(null)}>
+          <div
+            ref={mobileDialogRef}
+            className={styles.mobileChapterSheet}
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${activeDestination.label} chapters`}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <header>
+              <div>
+                <span>CHAPTERS</span>
+                <strong>{activeDestination.label}</strong>
+              </div>
+              <button type="button" aria-label="Close chapter picker" onClick={() => setMobileOverlay(null)}>
+                <span aria-hidden="true">×</span>
+              </button>
+            </header>
+            <ol>
+              {activeDestination.chapterLabels.map((chapter, chapterIndex) => (
+                <li key={chapter}>
+                  <button
+                    type="button"
+                    data-active={activeRoute.chapter === chapterIndex || undefined}
+                    onClick={() => navigateToMobileRoute(activeRoute.destination, chapterIndex)}
+                  >
+                    <span>{String(chapterIndex + 1).padStart(2, "0")}</span>
+                    {chapter}
+                  </button>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

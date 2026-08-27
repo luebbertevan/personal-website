@@ -68,17 +68,18 @@ Complete this before mobile and responsive work so the responsive index is desig
   - **INHERITANCE** — A motion capture retargeting pipeline for ML training datasets.
   - **VAL** — Product ownership and full stack development for a live recovery care platform.
 - [x] Use the working destination order: About, Fosty, Crux Vision, Val, Inheritance.
-- [ ] Confirm that the index descriptions remain visible and legible in the future mobile index treatment.
+- [x] Keep index descriptions visible and legible in the mobile project menu.
 - [ ] Add direct, shareable destination URLs and browser Back/Forward behavior.
 
 ## Later — final polish after content is stable
 
 ### Mobile and responsive design
 
-- [ ] Redesign the mobile composition; the current desktop-derived layout is cluttered, overlaps, performs poorly, and does not keep the particle frame aligned.
-- [ ] Determine mobile content density, chapter length, media treatment, index behavior, touch navigation, and strand placement from final content.
+- [x] Implement Phase 1 mobile foundations: compact identity bar, full-screen project/chapter menu, bottom chronological controls, current project/chapter picker, safe-area-aware viewport panel, single-column layout defaults, shorter transitions, mobile strand framing, and chapter scroll reset.
+- [x] Standardize expandable media at every screen size to two modes only: cropped or contained inline preview and a true full-screen lightbox, using an icon-only control with an accessible label.
+- [ ] Refine mobile content density, chapter length, media crops, and custom composition chapter by chapter, beginning with About.
 - [ ] Establish explicit phone, tablet, laptop, and large-desktop compositions instead of relying only on proportional scaling.
-- [ ] Reduce particle/render complexity adaptively on constrained devices without losing the strand’s identity.
+- [ ] Extend the initial mobile resolution reduction into measured adaptive particle/render tiers for constrained devices without losing the strand’s identity.
 
 ### Replace Pause with low-performance mode
 

@@ -300,7 +300,7 @@ test("Inheritance renders the experience, challenge, engineering, and impact cha
   assert.match(source, /muted\s+loop\s+playsInline/);
   assert.match(html, /A sample of retargeted motion capture animations\./);
   assert.match(source, /onClick=\{openInheritanceVideo\}/);
-  assert.match(source, /inheritanceVideoExpanded && \(/);
+  assert.match(source, /inheritanceVideoExpanded && portalTarget && createPortal\(/);
   assert.match(source, /aria-label=\{`Expanded \$\{expandedInheritanceVideo\.label\} video`\}/);
   assert.match(css, /\.inheritanceShowcase \{[^}]*grid-template-columns: clamp\(156px, 20%, 202px\) minmax\(0, 1fr\);/s);
   assert.match(css, /\.inheritanceMetrics \{[^}]*grid-template-columns: minmax\(0, 1fr\);[^}]*grid-template-rows: repeat\(3, minmax\(0, 1fr\)\);/s);
@@ -329,7 +329,7 @@ test("Inheritance renders the experience, challenge, engineering, and impact cha
   assert.match(source, /src="\/images\/inheritance-amass-diversity\.webp"/);
   assert.match(html, /THE MOTION AND BODY DIVERSITY REPRESENTED IN AMASS\./);
   assert.match(source, /onClick=\{\(\) => setInheritanceImageExpanded\(true\)\}/);
-  assert.match(source, /inheritanceImageExpanded && \(/);
+  assert.match(source, /inheritanceImageExpanded && portalTarget && createPortal\(/);
   assert.match(source, /aria-label="Expanded AMASS motion and body diversity image"/);
   assert.match(css, /\.inheritanceAmassRow \{[^}]*grid-template-columns: minmax\(0, 1fr\) minmax\(300px, 0\.9fr\);/s);
   assert.match(css, /\.inheritanceAmassFigure \{[^}]*width: 100%;/s);
@@ -534,4 +534,35 @@ test("Crux Vision renders all five case-study chapters with expandable media", a
   assert.equal(confidenceControls.subarray(8, 12).toString("ascii"), "WEBP");
   assert.equal(continuitySmoothing.subarray(0, 4).toString("ascii"), "RIFF");
   assert.equal(continuitySmoothing.subarray(8, 12).toString("ascii"), "WEBP");
+});
+
+test("Phase 1 provides dedicated mobile navigation, viewport-first content, and two-state media", async () => {
+  const [source, css, globalCss] = await Promise.all([
+    readFile(new URL("../app/signal-prototype-v4.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/signal-prototype.module.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(source, /className=\{styles\.mobileHeader\}/);
+  assert.match(source, /className=\{styles\.mobileDock\}/);
+  assert.match(source, /mobileOverlay === "projects"/);
+  assert.match(source, /mobileOverlay === "chapters"/);
+  assert.match(source, /Current route: \$\{activeDestination\.label\}, \$\{activeChapterLabel\}/);
+  assert.doesNotMatch(source, /current project, chapter, and progress/i);
+  assert.match(source, /chapterLabels: \["ORIGIN", "PRODUCT", "DESIGN", "ENGINEERING", "OUTCOME"\]/);
+  assert.match(source, /const MOBILE_DESTINATION_DURATION = 1\.85;/);
+  assert.match(source, /const MOBILE_CHAPTER_DURATION = 0\.9;/);
+  assert.match(source, /const MOBILE_HOME_OPENING_DURATION = 2\.15;/);
+  assert.match(source, /isMobileViewport \? 0\.9 : 1\.15/);
+  assert.match(source, /panelBundles\[currentDestination\]\?\.chapters\[targetChapter\]\?\.scrollTo\(\{ top: 0 \}\)/);
+  assert.match(source, /<span className=\{styles\.expandIcon\} aria-hidden="true">⛶<\/span>/);
+  assert.doesNotMatch(source, />EXPAND\s/);
+  assert.match(source, /createPortal\(/);
+
+  assert.match(css, /Phase 1 mobile composition/);
+  assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*\.waypoint,[\s\S]*\.chapterRail \{\s*display: none;/s);
+  assert.match(css, /\.project,[\s\S]*\.homeProject \{[\s\S]*top: calc\(max\(8px, env\(safe-area-inset-top\)\) \+ 54px\);[\s\S]*bottom: calc\(max\(8px, env\(safe-area-inset-bottom\)\) \+ 60px\);/s);
+  assert.match(css, /\.mediaLightbox \{\s*position: fixed;\s*z-index: 100;/s);
+  assert.match(css, /\.productScreenshot img \{\s*max-height: min\(58svh, 500px\);\s*object-fit: cover;/s);
+  assert.match(globalCss, /animation: mobile-identity-exit 360ms ease 1\.78s forwards;/);
 });

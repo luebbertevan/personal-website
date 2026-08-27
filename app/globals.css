@@ -129,6 +129,13 @@ label:focus-within {
     font-size: clamp(16px, 5vw, 23px);
     animation-delay: 620ms;
   }
+
+  .site-root[data-live-mobile-transition] .site-identity {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-12px);
+    animation: none;
+  }
 }
 
 @keyframes mobile-identity-exit {

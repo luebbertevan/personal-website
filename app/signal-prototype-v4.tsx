@@ -551,12 +551,13 @@ export function SignalPrototypeV4() {
     const mount = mountRef.current;
     if (!mount || !shell) return;
     prefersReducedMotionRef.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const isMobileViewport = window.matchMedia("(max-width: 860px)").matches;
-    const destinationTravel = isMobileViewport ? MOBILE_DESTINATION_TRAVEL : DESTINATION_TRAVEL;
-    const chapterTravel = isMobileViewport ? MOBILE_CHAPTER_TRAVEL : CHAPTER_TRAVEL;
-    const destinationDuration = isMobileViewport ? MOBILE_DESTINATION_DURATION : DESTINATION_DURATION;
-    const chapterDuration = isMobileViewport ? MOBILE_CHAPTER_DURATION : CHAPTER_DURATION;
-    const homeOpeningDuration = isMobileViewport ? MOBILE_HOME_OPENING_DURATION : HOME_OPENING_DURATION;
+    const mobileViewportQuery = window.matchMedia("(max-width: 860px)");
+    let isMobileViewport = mobileViewportQuery.matches;
+    let destinationTravel = isMobileViewport ? MOBILE_DESTINATION_TRAVEL : DESTINATION_TRAVEL;
+    let chapterTravel = isMobileViewport ? MOBILE_CHAPTER_TRAVEL : CHAPTER_TRAVEL;
+    let destinationDuration = isMobileViewport ? MOBILE_DESTINATION_DURATION : DESTINATION_DURATION;
+    let chapterDuration = isMobileViewport ? MOBILE_CHAPTER_DURATION : CHAPTER_DURATION;
+    let homeOpeningDuration = isMobileViewport ? MOBILE_HOME_OPENING_DURATION : HOME_OPENING_DURATION;
     const siteRoot = shell.closest<HTMLElement>("[data-site-root]");
     const setAccentPalette = (palette: number[]) => {
       const value = palette.join(", ");
@@ -769,6 +770,18 @@ export function SignalPrototypeV4() {
 
       strandAnchor.set(isMobileViewport ? 0 : -0.54 * height / width, 0);
       updatePanelBounds();
+    };
+
+    const handleMobileViewportChange = (event: MediaQueryListEvent) => {
+      isMobileViewport = event.matches;
+      destinationTravel = isMobileViewport ? MOBILE_DESTINATION_TRAVEL : DESTINATION_TRAVEL;
+      chapterTravel = isMobileViewport ? MOBILE_CHAPTER_TRAVEL : CHAPTER_TRAVEL;
+      destinationDuration = isMobileViewport ? MOBILE_DESTINATION_DURATION : DESTINATION_DURATION;
+      chapterDuration = isMobileViewport ? MOBILE_CHAPTER_DURATION : CHAPTER_DURATION;
+      homeOpeningDuration = isMobileViewport ? MOBILE_HOME_OPENING_DURATION : HOME_OPENING_DURATION;
+      carbonUniforms.uMobileComposition.value = isMobileViewport ? 1 : 0;
+      siteRoot?.toggleAttribute("data-live-mobile-transition", isMobileViewport);
+      resize();
     };
 
     const move = (event: PointerEvent) => {
@@ -1285,6 +1298,7 @@ export function SignalPrototypeV4() {
     panelBundles.forEach(({ panel }) => panelResizeObserver.observe(panel));
 
     resize();
+    mobileViewportQuery.addEventListener("change", handleMobileViewportChange);
     window.addEventListener("resize", resize);
     window.addEventListener("keydown", keydown);
     shell.addEventListener("pointermove", move);
@@ -1295,6 +1309,8 @@ export function SignalPrototypeV4() {
       disposed = true;
       cancelAnimationFrame(animationFrame);
       panelResizeObserver.disconnect();
+      mobileViewportQuery.removeEventListener("change", handleMobileViewportChange);
+      siteRoot?.removeAttribute("data-live-mobile-transition");
       window.removeEventListener("resize", resize);
       window.removeEventListener("keydown", keydown);
       shell.removeEventListener("pointermove", move);

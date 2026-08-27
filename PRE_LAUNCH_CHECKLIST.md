@@ -51,6 +51,8 @@ The motion and responsive-structure portion was completed on August 27, 2026. Mo
 
 The follow-up framing correction keeps the mobile spine’s centerline passing through the viewport center throughout travel, without inheriting the desktop content-panel offset or velocity lead. Particle borders now measure the active panel’s responsive resting rectangle, account for the mobile panel’s vertical entrance motion, and automatically recalculate when the shell or any destination panel changes size.
 
+About now uses panel-width-aware composition independently from the global navigation breakpoint. Narrow desktop panels share the compact title-and-portrait opening used on phones, while wide mobile and tablet panels receive roomier sizing. The portrait occupies the opening row entirely above a full-width availability divider. Crossing live from desktop into the mobile navigation mode dismisses the opening identity immediately; a genuine mobile page load still receives the intended opening animation.
+
 - Keep the opening **Evan Luebbert / Software Engineer** identity near the top of the mobile viewport so it does not overlap the spine’s focal area.
 - Use **Software Engineer** beside the name for the opening and expanded-menu identity states. While reading, replace the role with the active project so the compact top bar provides project context.
 - Increase the role size in the full-screen menu and reduce the excessive vertical gap between the menu identity and the first index entry.

@@ -90,6 +90,8 @@ Complete this before mobile and responsive work so the responsive index is desig
 - [x] Allow project-specific small-screen breakpoints where content stops fitting before the global mobile threshold.
 - [ ] Refine mobile content density, chapter length, media crops, and custom composition chapter by chapter, beginning with About.
   - [x] Recompose the About opening with a restrained 28–34px title and a compact portrait aligned at the top of the first content row.
+  - [x] Move the portrait entirely above the opening divider and let the availability divider span the full panel width.
+  - [x] Make the About composition respond to content-panel width so narrow desktop panels and wide mobile panels receive appropriate shared layout rules.
 - [ ] Establish explicit phone, tablet, laptop, and large-desktop compositions instead of relying only on proportional scaling.
 - [ ] Extend the initial mobile resolution reduction into measured adaptive particle/render tiers for constrained devices without losing the strand’s identity.
 

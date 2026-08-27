@@ -575,9 +575,9 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(css, /\.chapter \.cardLabel,[\s\S]*?\.inheritanceMetrics dd strong \{\s*font-size: 13px;/s);
   assert.match(css, /\.mobileIdentityLockup strong \{[^}]*font-family: var\(--font-geist-mono\), monospace;[^}]*font-size: 13px;[^}]*letter-spacing: 0\.08em;/s);
   assert.match(css, /\.mobileIdentityLockup > span \{[^}]*font-size: 13px;[^}]*letter-spacing: 0\.08em;[^}]*text-transform: uppercase;/s);
-  assert.match(css, /\.mobileProjectIndex \{[^}]*margin-top: 12px;/s);
+  assert.match(css, /\.mobileProjectIndex \{[^}]*margin: 12px 10px 0;/s);
   assert.match(css, /\.mobileUtilityLinks a \{[^}]*font-size: 17px;/s);
-  assert.match(css, /\.mobileMenuFooter \{[^}]*margin-top: auto;/s);
+  assert.match(css, /\.mobileMenuFooter \{[^}]*margin: auto 10px 0;/s);
   assert.match(css, /\.mobileDock {[^}]*min-height: 52px;[^}]*grid-template-columns: 48px minmax\(0, 1fr\) 48px;/s);
   assert.match(css, /\.mobileDock \.mobileRoutePicker \{\s*display: flex;[^}]*align-items: center;[^}]*gap: 8px;/s);
   assert.match(css, /\.mobileRouteDivider \{[^}]*width: 5px;[^}]*height: 5px;/s);

@@ -47,6 +47,8 @@ Complete these shared-system corrections before tuning individual chapters:
 
 The interface and typography portion was completed on August 27, 2026. Mobile now uses one identity system with an expressive opening state and a shared compact header state that remains visually consistent when the project menu opens. Primary reading, supporting, navigation, and utility text uses a 17px mobile baseline; captions use 16px; and tertiary metadata and uppercase labels use 13px. The menu utilities have a dedicated bottom-aligned composition.
 
+The motion and responsive-structure portion was completed on August 27, 2026. Mobile project and chapter transitions now take a shorter route at a slower cadence, the strand is centered with less rotational drift on narrow screens, and the mobile panel is slightly more transparent so the visual remains legible behind the reading surface. Medium-width and short desktop windows now keep panels bounded to the viewport, give About a reliable internal scrolling path, and collapse Crux Vision, Inheritance, and Fosty layouts at project-specific content-fit breakpoints.
+
 - Keep the opening **Evan Luebbert / Software Engineer** identity near the top of the mobile viewport so it does not overlap the spine’s focal area.
 - Add **Software Engineer** to the compact top bar beside the name, using the active accent color and a restrained divider that matches the interface language.
 - Increase the role size in the full-screen menu and reduce the excessive vertical gap between the menu identity and the first index entry.

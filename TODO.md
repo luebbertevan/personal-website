@@ -77,17 +77,17 @@ Complete this before mobile and responsive work so the responsive index is desig
 
 - [x] Implement Phase 1 mobile foundations: compact identity bar, full-screen project/chapter menu, bottom chronological controls, current project/chapter picker, safe-area-aware viewport panel, single-column layout defaults, shorter transitions, mobile strand framing, and chapter scroll reset.
 - [x] Standardize expandable media at every screen size to two modes only: cropped or contained inline preview and a true full-screen lightbox, using an icon-only control with an accessible label.
-- [ ] Complete the Phase 1 stabilization pass before chapter-specific composition work:
+- [x] Complete the Phase 1 stabilization pass before chapter-specific composition work:
   - [x] Move the opening mobile identity from the middle to the top so it does not overlap the spine.
   - [x] Consolidate identity into two intentional states: the expressive opening and one compact name/role header reused when the menu opens.
   - [x] Add the accent-colored **Software Engineer** role to the compact header with a small square divider.
   - [x] Tighten the whitespace between the compact menu header and the first index entry.
   - [x] Use the approved mobile type scale: 17px for paragraph, supporting, navigation, and utility text; 16px captions; and 13px tertiary metadata and uppercase labels.
   - [x] Recompose the menu utilities as a bottom-aligned block, separate the visual control from the profile links, and use an icon for the visual control.
-  - [ ] Slow the mobile transitions and investigate reducing travel distance so the spine remains expressive without abrupt motion.
-  - [ ] Recenter and preserve more of the spine across narrow phone aspect ratios.
-- [ ] Audit the shared content panel and breakpoint logic across medium and medium-small screens. Fix the known About state where bottom content leaves the viewport without an available scrolling path.
-- [ ] Allow project-specific small-screen breakpoints where content stops fitting before the global mobile threshold.
+  - [x] Slow the mobile transitions and reduce travel distance so the spine remains expressive without abrupt motion.
+  - [x] Recenter and preserve more of the spine across narrow phone aspect ratios.
+- [x] Audit the shared content panel and breakpoint logic across medium and medium-small screens. Constrained desktop-style panels now remain viewport-bounded, and About has an internal scrolling path when its content exceeds the available height.
+- [x] Allow project-specific small-screen breakpoints where content stops fitting before the global mobile threshold.
 - [ ] Refine mobile content density, chapter length, media crops, and custom composition chapter by chapter, beginning with About.
 - [ ] Establish explicit phone, tablet, laptop, and large-desktop compositions instead of relying only on proportional scaling.
 - [ ] Extend the initial mobile resolution reduction into measured adaptive particle/render tiers for constrained devices without losing the strand’s identity.

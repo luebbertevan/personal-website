@@ -243,11 +243,13 @@ const DESTINATION_TRAVEL = 52;
 const DESTINATION_DURATION = 7.35;
 const CHAPTER_TRAVEL = 13;
 const CHAPTER_DURATION = 2.45;
+const MOBILE_DESTINATION_TRAVEL = 34;
+const MOBILE_CHAPTER_TRAVEL = 8;
 const MANUAL_ARRIVAL_PROGRESS = 0.88;
 const MANUAL_EDGE_DISTANCE = 3.2;
 const HOME_OPENING_DURATION = 4.75;
-const MOBILE_DESTINATION_DURATION = 1.85;
-const MOBILE_CHAPTER_DURATION = 0.9;
+const MOBILE_DESTINATION_DURATION = 3.25;
+const MOBILE_CHAPTER_DURATION = 1.55;
 const MOBILE_HOME_OPENING_DURATION = 2.15;
 const PARTICLE_ARRIVAL_START = 0.38;
 const PARTICLE_ARRIVAL_END = 0.70;
@@ -550,6 +552,8 @@ export function SignalPrototypeV4() {
     if (!mount || !shell) return;
     prefersReducedMotionRef.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const isMobileViewport = window.matchMedia("(max-width: 860px)").matches;
+    const destinationTravel = isMobileViewport ? MOBILE_DESTINATION_TRAVEL : DESTINATION_TRAVEL;
+    const chapterTravel = isMobileViewport ? MOBILE_CHAPTER_TRAVEL : CHAPTER_TRAVEL;
     const destinationDuration = isMobileViewport ? MOBILE_DESTINATION_DURATION : DESTINATION_DURATION;
     const chapterDuration = isMobileViewport ? MOBILE_CHAPTER_DURATION : CHAPTER_DURATION;
     const homeOpeningDuration = isMobileViewport ? MOBILE_HOME_OPENING_DURATION : HOME_OPENING_DURATION;
@@ -733,7 +737,7 @@ export function SignalPrototypeV4() {
         });
       }
 
-      strandAnchor.set(isMobileViewport ? -0.06 : -0.54 * height / width, 0);
+      strandAnchor.set(isMobileViewport ? 0 : -0.54 * height / width, 0);
       const panel = shell.querySelector<HTMLElement>("[data-destination-panel]");
       if (panel) {
         const shellRect = shell.getBoundingClientRect();
@@ -805,7 +809,7 @@ export function SignalPrototypeV4() {
         elapsed: 0,
         duration: arrival?.duration ?? destinationDuration,
         fromX: cameraX,
-        toX: arrival?.toX ?? cameraX + direction * DESTINATION_TRAVEL,
+        toX: arrival?.toX ?? cameraX + direction * destinationTravel,
         sourceDestination: currentDestination,
         targetDestination,
         sourceChapter: currentChapter,
@@ -831,7 +835,7 @@ export function SignalPrototypeV4() {
         elapsed: 0,
         duration: arrival?.duration ?? chapterDuration,
         fromX: cameraX,
-        toX: arrival?.toX ?? currentAnchorX + targetChapter * CHAPTER_TRAVEL,
+        toX: arrival?.toX ?? currentAnchorX + targetChapter * chapterTravel,
         sourceDestination: currentDestination,
         targetDestination: currentDestination,
         sourceChapter: currentChapter,
@@ -858,14 +862,14 @@ export function SignalPrototypeV4() {
 
     const getManualRoute = (direction: -1 | 1): ManualRoute | null => {
       const chapterCount = destinations[currentDestination].chapters;
-      const currentStopX = currentAnchorX + currentChapter * CHAPTER_TRAVEL;
+      const currentStopX = currentAnchorX + currentChapter * chapterTravel;
       if (direction > 0) {
         if (currentChapter < chapterCount - 1) {
           return {
             kind: "chapter",
             direction,
-            targetX: currentAnchorX + (currentChapter + 1) * CHAPTER_TRAVEL,
-            distance: CHAPTER_TRAVEL,
+            targetX: currentAnchorX + (currentChapter + 1) * chapterTravel,
+            distance: chapterTravel,
             targetDestination: currentDestination,
             targetChapter: currentChapter + 1,
           };
@@ -874,8 +878,8 @@ export function SignalPrototypeV4() {
           return {
             kind: "destination",
             direction,
-            targetX: currentStopX + DESTINATION_TRAVEL,
-            distance: DESTINATION_TRAVEL,
+            targetX: currentStopX + destinationTravel,
+            distance: destinationTravel,
             targetDestination: currentDestination + 1,
             targetChapter: 0,
           };
@@ -885,8 +889,8 @@ export function SignalPrototypeV4() {
           return {
             kind: "chapter",
             direction,
-            targetX: currentAnchorX + (currentChapter - 1) * CHAPTER_TRAVEL,
-            distance: CHAPTER_TRAVEL,
+            targetX: currentAnchorX + (currentChapter - 1) * chapterTravel,
+            distance: chapterTravel,
             targetDestination: currentDestination,
             targetChapter: currentChapter - 1,
           };
@@ -895,8 +899,8 @@ export function SignalPrototypeV4() {
           return {
             kind: "destination",
             direction,
-            targetX: currentStopX - DESTINATION_TRAVEL,
-            distance: DESTINATION_TRAVEL,
+            targetX: currentStopX - destinationTravel,
+            distance: destinationTravel,
             targetDestination: currentDestination - 1,
             targetChapter: 0,
           };
@@ -910,13 +914,13 @@ export function SignalPrototypeV4() {
       if (route.kind === "destination") {
         beginDestination(route.targetDestination, {
           toX: route.targetX,
-          duration: Math.max(isMobileViewport ? 0.72 : 1.45, destinationDuration * remaining / DESTINATION_TRAVEL),
+          duration: Math.max(isMobileViewport ? 1.2 : 1.45, destinationDuration * remaining / destinationTravel),
           manualArrival: true,
         });
       } else {
         beginChapter(route.targetChapter, {
           toX: route.targetX,
-          duration: Math.max(isMobileViewport ? 0.42 : 0.85, chapterDuration * remaining / CHAPTER_TRAVEL),
+          duration: Math.max(isMobileViewport ? 0.75 : 0.85, chapterDuration * remaining / chapterTravel),
           manualArrival: true,
         });
       }
@@ -956,7 +960,7 @@ export function SignalPrototypeV4() {
       let manualRoute: ManualRoute | null = null;
       let manualRouteProgress = 0;
       if (!transition) {
-        const currentStopX = currentAnchorX + currentChapter * CHAPTER_TRAVEL;
+        const currentStopX = currentAnchorX + currentChapter * chapterTravel;
         const targetOffset = manualCameraTarget - currentStopX;
         const manualDirection: -1 | 1 = targetOffset >= 0 ? 1 : -1;
         manualRoute = getManualRoute(manualDirection);
@@ -1229,7 +1233,8 @@ export function SignalPrototypeV4() {
       if (previousButton) previousButton.disabled = Boolean(transition) || atRouteStart;
       if (nextButton) nextButton.disabled = Boolean(transition) || atRouteEnd;
 
-      const cameraRoll = 1.46 * Math.sin(cameraX * 0.055) + 0.34 * Math.sin(cameraX * 0.017);
+      const rawCameraRoll = 1.46 * Math.sin(cameraX * 0.055) + 0.34 * Math.sin(cameraX * 0.017);
+      const cameraRoll = isMobileViewport ? rawCameraRoll * 0.38 : rawCameraRoll;
       strandTangent.set(
         Math.cos(cameraRoll) * mount.clientHeight / Math.max(mount.clientWidth, 1),
         -Math.sin(cameraRoll),

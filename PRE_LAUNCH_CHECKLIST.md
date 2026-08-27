@@ -6,12 +6,14 @@ This document records the finishing work required after the portfolio content is
 
 1. Finalize index descriptions and destination order.
 2. Redesign the mobile composition.
-3. Add direct, shareable project URLs and browser-history support.
-4. Add adaptive rendering and a non-WebGL fallback.
-5. Complete accessibility and reduced-motion behavior.
-6. Optimize the client bundle and media loading.
-7. Perform real-device and cross-browser QA.
-8. Complete metadata, analytics, repository cleanup, domain setup, and production deployment.
+3. Stabilize the shared mobile typography, navigation, spine framing, transition pacing, and responsive overflow behavior identified in the Phase 1 review.
+4. Refine the mobile composition chapter by chapter, beginning with About.
+5. Add direct, shareable project URLs and browser-history support.
+6. Add adaptive rendering and a non-WebGL fallback.
+7. Complete accessibility and reduced-motion behavior.
+8. Optimize the client bundle and media loading.
+9. Perform real-device and cross-browser QA.
+10. Complete metadata, analytics, repository cleanup, domain setup, and production deployment.
 
 Index discovery comes before responsive work because the descriptions and final destination order are part of the base content. Mobile navigation should be designed around that finished index rather than revisited afterward.
 
@@ -39,13 +41,27 @@ This preserves the two strongest and most personally distinctive case studies at
 
 Phase 1 was implemented on August 27, 2026. Mobile now uses a compact identity bar, a full-screen project index with descriptions and nested chapters, a bottom previous/current/next dock, a compact chapter picker, a nearly full-viewport content panel, safe-area-aware chrome, single-column layout foundations, shorter transitions, lower mobile render resolution, and automatic chapter scroll reset. The center navigation label shows the current project and chapter only; it does not show redundant progress.
 
+### Phase 1 review and stabilization
+
+Complete these shared-system corrections before tuning individual chapters:
+
+- Keep the opening **Evan Luebbert / Software Engineer** identity near the top of the mobile viewport so it does not overlap the spine’s focal area.
+- Add **Software Engineer** to the compact top bar beside the name, using the active accent color and a restrained divider that matches the interface language.
+- Increase the role size in the full-screen menu and reduce the excessive vertical gap between the menu identity and the first index entry.
+- Treat 16 CSS pixels as the low-end target for mobile paragraph and other primary reading text. Keep secondary supporting text around 15–16 pixels and reserve smaller sizes for genuinely tertiary metadata, not content or navigation.
+- Recompose the menu footer as a deliberate bottom-aligned utility area. Increase the GitHub, LinkedIn, and résumé link sizes, separate the visual-control action from the links, and give that action an icon. This remains temporary until Pause is replaced by the quality control described below.
+- Restore a slower, more deliberate mobile transition cadence. Preserve time to appreciate the spine; investigate shortening travel distance rather than making navigation abruptly fast.
+- Recalibrate the spine’s mobile anchor, travel path, and panel relationship so its focal structure stays as centered and visible as possible across narrow aspect ratios.
+- Audit responsive behavior by both width and available height. Medium and medium-small windows must never strand content below a fixed panel or remove its scrolling path.
+
 - Treat mobile as an intentional composition rather than a scaled-down desktop layout.
 - Use a compact project index or index drawer with the approved descriptions.
 - Prefer normal vertical reading for long case studies and provide sticky, touch-friendly chapter navigation.
 - Use touch targets of at least 44 by 44 CSS pixels and do not make essential information depend on hover.
 - Account for device safe areas, mobile browser bars, portrait and landscape orientations, zoom, and large text.
-- Test representative phone, tablet, laptop, and large-desktop sizes, including widths of 320, 375, 390, 768, and 1024 CSS pixels.
+- Test representative phone, tablet, laptop, and large-desktop sizes, including widths of 320, 375, 390, 600, 768, 860, and 1024 CSS pixels. At each relevant width, also test short viewport heights and reduced desktop windows rather than assuming width alone selects the correct composition.
 - Remove fixed-height and clipped-overflow behavior that can make content unreachable on short mobile screens.
+- Define breakpoint changes from actual content-fit failures. Allow individual chapters to enter the small-screen composition earlier when their layout requires it instead of forcing every chapter through one universal width threshold.
 
 Media now has two states at every screen size: an inline preview and a full-screen lightbox. Image and video controls use an icon-only full-screen affordance with an accessible label. Tall screenshots may be cropped in the inline preview but must remain fully visible in the lightbox. Decorative imagery such as the About portrait remains non-expandable.
 
@@ -95,6 +111,7 @@ Media now has two states at every screen size: an inline preview and a full-scre
 - Test touch, mouse, trackpad, and keyboard navigation.
 - Test a lower-powered or integrated-GPU computer, throttled CPU, and a slow network.
 - Check loading, resizing, device rotation, external links, résumé download, lightboxes, videos, and every navigation path.
+- Resize continuously through narrow desktop, tablet, and medium-small ranges; verify that every content panel remains internally scrollable whenever its content exceeds the available height, with special attention to About.
 - Check for broken links, browser-console errors, missing assets, unexpected layout shifts, and content that becomes clipped or unreachable.
 - Measure real-user loading, responsiveness, layout stability, and animation smoothness after launch.
 

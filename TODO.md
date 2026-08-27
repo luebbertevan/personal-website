@@ -77,6 +77,16 @@ Complete this before mobile and responsive work so the responsive index is desig
 
 - [x] Implement Phase 1 mobile foundations: compact identity bar, full-screen project/chapter menu, bottom chronological controls, current project/chapter picker, safe-area-aware viewport panel, single-column layout defaults, shorter transitions, mobile strand framing, and chapter scroll reset.
 - [x] Standardize expandable media at every screen size to two modes only: cropped or contained inline preview and a true full-screen lightbox, using an icon-only control with an accessible label.
+- [ ] Complete the Phase 1 stabilization pass before chapter-specific composition work:
+  - Move the opening mobile identity from the middle to the top so it does not overlap the spine.
+  - Add the accent-colored **Software Engineer** role to the compact top bar with a restrained divider.
+  - Increase the full-screen menu role size and tighten the whitespace beneath the identity block.
+  - Raise mobile paragraph and primary supporting text to a comfortable low-end standard of approximately 16px; keep important menu and utility links at a comparable readable size.
+  - Recompose the menu utilities as a bottom-aligned block, separate the visual control from the profile links, and use an icon for the visual control.
+  - Slow the mobile transitions and investigate reducing travel distance so the spine remains expressive without abrupt motion.
+  - Recenter and preserve more of the spine across narrow phone aspect ratios.
+- [ ] Audit the shared content panel and breakpoint logic across medium and medium-small screens. Fix the known About state where bottom content leaves the viewport without an available scrolling path.
+- [ ] Allow project-specific small-screen breakpoints where content stops fitting before the global mobile threshold.
 - [ ] Refine mobile content density, chapter length, media crops, and custom composition chapter by chapter, beginning with About.
 - [ ] Establish explicit phone, tablet, laptop, and large-desktop compositions instead of relying only on proportional scaling.
 - [ ] Extend the initial mobile resolution reduction into measured adaptive particle/render tiers for constrained devices without losing the strand’s identity.

@@ -2,6 +2,8 @@
 
 This is the canonical working task list for the portfolio. Design rationale and historical decisions live in [DESIGN_NOTES.md](./DESIGN_NOTES.md).
 
+The detailed launch criteria and current finishing-work decisions live in [PRE_LAUNCH_CHECKLIST.md](./PRE_LAUNCH_CHECKLIST.md).
+
 ## Now — real content integration
 
 The visual system and navigation proof are sufficiently mature. Use accurate content next so final layouts, chapter lengths, media needs, and responsive behavior are designed around reality rather than placeholders.
@@ -25,6 +27,18 @@ The visual system and navigation proof are sufficiently mature. Use accurate con
 - [ ] Record media ownership, credits, confidentiality constraints, and anything that needs redaction or replacement.
 - [ ] Decide which projects need the full multi-chapter treatment and which should remain concise link destinations.
 
+### Audit external profiles and public links
+
+- [ ] Review every section of LinkedIn for outdated titles, dates, descriptions, education, skills, availability, and contact information.
+- [ ] Rewrite the LinkedIn About section and headline so they match the current résumé and portfolio positioning.
+- [ ] Add missing current experience to LinkedIn and remove or correct duplicate and inaccurate entries.
+- [ ] Review all public GitHub repositories for accurate names, descriptions, visibility, topics, links, and README files.
+- [ ] Rename repositories where the current name is unclear or no longer matches the project.
+- [ ] Choose and reorder the GitHub repositories that should be pinned on the profile.
+- [ ] Update the GitHub profile bio, location, organization, and external links.
+- [ ] Verify that LinkedIn, GitHub, the résumé, and the portfolio all link to the correct current destinations and describe the same work consistently.
+- [ ] Repeat the public-link check before launch and remove any broken, private, placeholder, or outdated destinations.
+
 ### Add “About this site” as a portfolio project
 
 - [ ] Add a dedicated first-class destination explaining the site itself; do not implement it until the content phase begins.
@@ -42,6 +56,20 @@ The visual system and navigation proof are sufficiently mature. Use accurate con
 - [ ] Build the “About this site” destination once its narrative and development assets are collected.
 - [ ] Revisit navigation labels, direct-link behavior, project order, and where “About this site” belongs once the complete content set is visible.
 - [ ] Freeze the content structure before final responsive and performance work.
+
+### Finalize index discovery and order
+
+Complete this before mobile and responsive work so the responsive index is designed around finished base content.
+
+- [x] Add the approved one-sentence description underneath each main index destination; do not depend on hover-only popovers.
+  - **ABOUT** — The principles, interests, and experiences behind my work.
+  - **FOSTY** — An operations platform for animal rescue foster care.
+  - **CRUX VISION** — A video analysis tool for understanding climbing movement.
+  - **INHERITANCE** — A motion capture retargeting pipeline for ML training datasets.
+  - **VAL** — Product ownership and full stack development for a live recovery care platform.
+- [x] Use the working destination order: About, Fosty, Crux Vision, Val, Inheritance.
+- [ ] Confirm that the index descriptions remain visible and legible in the future mobile index treatment.
+- [ ] Add direct, shareable destination URLs and browser Back/Forward behavior.
 
 ## Later — final polish after content is stable
 

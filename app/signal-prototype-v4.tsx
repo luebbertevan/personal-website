@@ -14,33 +14,38 @@ import styles from "./signal-prototype.module.css";
 const destinations = [
   {
     label: "ABOUT",
+    description: "The principles, interests, and experiences behind my work.",
     chapters: 1,
     shaderColor: [1.0, 0.25, 0.0625] as const,
     cssColor: [255, 103, 49] as const,
   },
   {
     label: "FOSTY",
+    description: "An operations platform for animal rescue foster care.",
     chapters: 5,
     shaderColor: [0.925, 0.282, 0.6] as const,
     cssColor: [236, 72, 153] as const,
   },
   {
     label: "CRUX VISION",
+    description: "A video analysis tool for understanding climbing movement.",
     chapters: 5,
     shaderColor: [0.561, 0.902, 0.376] as const,
     cssColor: [143, 230, 96] as const,
   },
   {
-    label: "INHERITANCE",
-    chapters: 4,
-    shaderColor: [0.31, 0.68, 1.0] as const,
-    cssColor: [79, 173, 255] as const,
-  },
-  {
     label: "VAL",
+    description: "Product ownership and full stack development for a live recovery care platform.",
     chapters: 3,
     shaderColor: [0.839, 0.157, 0.157] as const,
     cssColor: [214, 40, 40] as const,
+  },
+  {
+    label: "INHERITANCE",
+    description: "A motion capture retargeting pipeline for ML training datasets.",
+    chapters: 4,
+    shaderColor: [0.31, 0.68, 1.0] as const,
+    cssColor: [79, 173, 255] as const,
   },
 ];
 
@@ -336,7 +341,7 @@ export function SignalPrototypeV4() {
       if (inheritanceVideoExpandedRef.current) {
         inheritanceVideoExpandedRef.current = false;
         setInheritanceVideoExpanded(false);
-        if (activeDestinationRef.current === 3 && !prefersReducedMotionRef.current) {
+        if (activeDestinationRef.current === 4 && !prefersReducedMotionRef.current) {
           window.requestAnimationFrame(() => {
             const activeVideo = activeChapterRef.current === 0
               ? inheritanceVideoRef.current
@@ -430,7 +435,7 @@ export function SignalPrototypeV4() {
   const closeInheritanceVideo = () => {
     inheritanceVideoExpandedRef.current = false;
     setInheritanceVideoExpanded(false);
-    if (activeDestinationRef.current === 3 && !prefersReducedMotionRef.current) {
+    if (activeDestinationRef.current === 4 && !prefersReducedMotionRef.current) {
       window.requestAnimationFrame(() => {
         const activeVideo = activeChapterRef.current === 0
           ? inheritanceVideoRef.current
@@ -540,11 +545,13 @@ export function SignalPrototypeV4() {
     finalScene.add(finalQuad);
     const emberLoom = createEmberLoom(renderer, renderTarget.texture);
 
-    const panelBundles = Array.from(shell.querySelectorAll<HTMLElement>("[data-destination-panel]")).map((panel) => ({
-      panel,
-      chapters: Array.from(panel.querySelectorAll<HTMLElement>("[data-project-chapter]")),
-      chapterButtons: Array.from(panel.querySelectorAll<HTMLButtonElement>("[data-chapter-index]")),
-    }));
+    const panelBundles = Array.from(shell.querySelectorAll<HTMLElement>("[data-destination-panel]"))
+      .sort((a, b) => Number(a.dataset.destinationPanel) - Number(b.dataset.destinationPanel))
+      .map((panel) => ({
+        panel,
+        chapters: Array.from(panel.querySelectorAll<HTMLElement>("[data-project-chapter]")),
+        chapterButtons: Array.from(panel.querySelectorAll<HTMLButtonElement>("[data-chapter-index]")),
+      }));
     const destinationButtons = Array.from(shell.querySelectorAll<HTMLButtonElement>("[data-destination-nav]"));
     const previousButton = shell.querySelector<HTMLButtonElement>("[data-route-previous]");
     const nextButton = shell.querySelector<HTMLButtonElement>("[data-route-next]");
@@ -592,8 +599,8 @@ export function SignalPrototypeV4() {
       const aboutPanel = shell.querySelector<HTMLElement>('[data-destination-panel="0"]');
       const fostyPanel = shell.querySelector<HTMLElement>('[data-destination-panel="1"]');
       const cruxPanel = shell.querySelector<HTMLElement>('[data-destination-panel="2"]');
-      const inheritancePanel = shell.querySelector<HTMLElement>('[data-destination-panel="3"]');
-      const valPanel = shell.querySelector<HTMLElement>('[data-destination-panel="4"]');
+      const valPanel = shell.querySelector<HTMLElement>('[data-destination-panel="3"]');
+      const inheritancePanel = shell.querySelector<HTMLElement>('[data-destination-panel="4"]');
       const referencePanels = [fostyPanel, cruxPanel, inheritancePanel, valPanel].filter(
         (panel): panel is HTMLElement => Boolean(panel),
       );
@@ -1031,7 +1038,7 @@ export function SignalPrototypeV4() {
           void activeVideo?.play().catch(() => undefined);
         }
         if (
-          activeDestinationForUi === 3
+          activeDestinationForUi === 4
           && !inheritanceVideoExpandedRef.current
           && !prefersReducedMotionRef.current
         ) {
@@ -1202,21 +1209,12 @@ export function SignalPrototypeV4() {
       <div className={styles.grain} aria-hidden="true" />
 
       <nav className={styles.waypoint} aria-label="Portfolio table of contents">
-        <button type="button" data-destination-nav onClick={() => navigateToDestination(0)}>
-          <strong>ABOUT</strong>
-        </button>
-        <button type="button" data-destination-nav onClick={() => navigateToDestination(1)}>
-          <strong>FOSTY</strong>
-        </button>
-        <button type="button" data-destination-nav onClick={() => navigateToDestination(2)}>
-          <strong>CRUX VISION</strong>
-        </button>
-        <button type="button" data-destination-nav onClick={() => navigateToDestination(3)}>
-          <strong>INHERITANCE</strong>
-        </button>
-        <button type="button" data-destination-nav onClick={() => navigateToDestination(4)}>
-          <strong>VAL</strong>
-        </button>
+        {destinations.map((destination, index) => (
+          <button key={destination.label} type="button" data-destination-nav onClick={() => navigateToDestination(index)}>
+            <strong>{destination.label}</strong>
+            <span className={styles.waypointDescription}>{destination.description}</span>
+          </button>
+        ))}
       </nav>
 
       <article className={`${styles.project} ${styles.homeProject}`} data-destination-panel="0" aria-hidden="false">
@@ -2310,7 +2308,7 @@ export function SignalPrototypeV4() {
         )}
       </article>
 
-      <article className={`${styles.project} ${styles.inheritanceProject}`} data-destination-panel="3" aria-hidden="true">
+      <article className={`${styles.project} ${styles.inheritanceProject}`} data-destination-panel="4" aria-hidden="true">
         <section className={`${styles.chapter} ${styles.inheritanceExperience}`} data-project-chapter>
           <div className={styles.projectMeta}>
             <span>INHERITANCE</span>
@@ -2721,7 +2719,7 @@ export function SignalPrototypeV4() {
         )}
       </article>
 
-      <article className={`${styles.project} ${styles.valProject}`} data-destination-panel="4" aria-hidden="true">
+      <article className={`${styles.project} ${styles.valProject}`} data-destination-panel="3" aria-hidden="true">
         <section className={`${styles.chapter} ${styles.valExperience}`} data-project-chapter>
           <div className={styles.projectMeta}>
             <span>VAL</span>

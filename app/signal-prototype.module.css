@@ -62,16 +62,17 @@
   top: clamp(164px, 20vh, 216px);
   left: clamp(28px, 3.5vw, 58px);
   display: grid;
-  width: min(234px, 19.2vw);
-  gap: 13px;
+  width: min(310px, 30vw);
+  gap: 8px;
   pointer-events: auto;
 }
 .waypoint button {
   display: grid;
   grid-template-columns: 1fr;
-  align-items: center;
+  gap: 5px;
+  align-items: start;
   width: 100%;
-  padding: 10.2px 16px;
+  padding: 11px 16px 12px;
   border: 0;
   border-top: 1px solid rgba(255, 255, 255, 0.22);
   border-bottom: 1px solid rgba(255, 255, 255, 0.22);
@@ -98,6 +99,20 @@
   font-size: clamp(18px, 1.05vw, 22px);
   font-weight: 520;
   letter-spacing: 0.10em;
+}
+.waypointDescription {
+  color: rgba(247, 244, 241, 0.58);
+  font-family: var(--font-geist-sans), sans-serif;
+  font-size: clamp(11px, 0.72vw, 13px);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  transition: color 180ms ease;
+}
+.waypoint button:hover .waypointDescription,
+.waypoint button:focus-visible .waypointDescription,
+.waypoint button[data-active] .waypointDescription {
+  color: rgba(247, 244, 241, 0.82);
 }
 
 .project {
@@ -3111,9 +3126,10 @@
     --case-study-body-size: 13px;
     min-height: 660px;
   }
-  .waypoint { top: 134px; left: 20px; width: min(186px, calc(60vw - 24px)); }
+  .waypoint { top: 134px; left: 20px; width: min(186px, calc(60vw - 24px)); gap: 13px; }
   .waypoint button { padding: 8.4px 14px; }
   .waypoint strong { font-size: 16px; }
+  .waypointDescription { display: none; }
   .project {
     top: auto;
     right: 20px;

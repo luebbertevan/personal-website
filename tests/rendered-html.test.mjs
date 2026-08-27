@@ -67,7 +67,14 @@ test("About navigation, contact actions, and public assets are wired correctly",
     readFile(new URL("../public/og.png", import.meta.url)),
   ]);
 
-  assert.match(source, /label:\s*"ABOUT",\s*chapters:\s*1,/);
+  assert.match(source, /label:\s*"ABOUT",\s*description:\s*"The principles, interests, and experiences behind my work\.",\s*chapters:\s*1,/);
+  assert.match(source, /label:\s*"FOSTY"[\s\S]*label:\s*"CRUX VISION"[\s\S]*label:\s*"VAL"[\s\S]*label:\s*"INHERITANCE"/);
+  assert.match(source, /destinations\.map\(\(destination, index\) => \([\s\S]*styles\.waypointDescription[\s\S]*destination\.description/);
+  assert.match(source, /querySelectorAll<HTMLElement>\("\[data-destination-panel\]"\)\)\s*\.sort\(\(a, b\) => Number\(a\.dataset\.destinationPanel\) - Number\(b\.dataset\.destinationPanel\)\)/);
+  assert.match(source, /styles\.valProject}`} data-destination-panel="3"/);
+  assert.match(source, /styles\.inheritanceProject}`} data-destination-panel="4"/);
+  assert.match(css, /\.waypoint \{[^}]*width: min\(310px, 30vw\);[^}]*gap: 8px;/s);
+  assert.match(css, /\.waypointDescription \{[^}]*font-family: var\(--font-geist-sans\), sans-serif;[^}]*font-size: clamp\(11px, 0\.72vw, 13px\);[^}]*line-height: 1\.35;/s);
   assert.doesNotMatch(source, /\['INTRODUCTION', 'INTERESTS', 'CONTACT'\]/);
   assert.match(pageSource, /<strong>Evan Luebbert<\/strong>\s*<span>Software Engineer<\/span>/);
   assert.doesNotMatch(source, /<span>ABOUT<\/span><span>APPROACH<\/span>/);
@@ -157,7 +164,7 @@ test("Fosty replaces both example projects with the Origin chapter", async () =>
   assert.match(css, /\.fostyQuote \{[^}]*border-left: 2px solid rgba\(var\(--accent-rgb\), 0\.78\);/s);
   assert.doesNotMatch(html, /FOSTY \/ CASE STUDY|01 OF 05 \/ ORIGIN|BEFORE FOSTY|THE RESPONSE/);
   assert.doesNotMatch(html, /Signal Atlas|Velvet Circuit|EXAMPLE PROJECT/);
-  assert.match(source, /label:\s*"FOSTY",\s*chapters:\s*5,/);
+  assert.match(source, /label:\s*"FOSTY",\s*description:\s*"An operations platform for animal rescue foster care\.",\s*chapters:\s*5,/);
   assert.match(source, /cssColor:\s*\[236, 72, 153\]/);
   assert.equal((source.match(/<article[^>]+data-destination-panel="/g) ?? []).length, 5);
   assert.match(source, /onClick=\{\(\) => navigateToChapter\(4\)\}>OUTCOME<\/button>/);
@@ -213,7 +220,7 @@ test("Val renders the text-only Experience, Contributions, and Production chapte
     source.indexOf('<div className={styles.routeControls}'),
   );
 
-  assert.match(source, /label:\s*"VAL",\s*chapters:\s*3,/);
+  assert.match(source, /label:\s*"VAL",\s*description:\s*"Product ownership and full stack development for a live recovery care platform\.",\s*chapters:\s*3,/);
   assert.match(source, /cssColor:\s*\[214, 40, 40\]/);
   assert.match(source, /shaderColor:\s*\[0\.839, 0\.157, 0\.157\]/);
   assert.match(html, /FULL-STACK ENGINEER \(CONTRACT\)/);
@@ -268,7 +275,7 @@ test("Inheritance renders the experience, challenge, engineering, and impact cha
     readFile(new URL("../public/images/inheritance-walking-comparison-poster.webp", import.meta.url)),
   ]);
 
-  assert.match(source, /label:\s*"INHERITANCE",\s*chapters:\s*4,/);
+  assert.match(source, /label:\s*"INHERITANCE",\s*description:\s*"A motion capture retargeting pipeline for ML training datasets\.",\s*chapters:\s*4,/);
   assert.match(html, /Motion Data for Machine Learning/);
   assert.match(html, /The Motion Data Bottleneck/);
   assert.match(html, /Archive of Motion Capture/);
@@ -406,7 +413,7 @@ test("Crux Vision renders all five case-study chapters with expandable media", a
   assert.match(html, /Crux Vision cannot replace the intuition and experience of a climber/);
   assert.match(html, /It complements the practice of analyzing movement and technique/);
   assert.match(html, /microscope for video analysis/);
-  assert.match(source, /label:\s*"CRUX VISION",\s*chapters:\s*5,/);
+  assert.match(source, /label:\s*"CRUX VISION",\s*description:\s*"A video analysis tool for understanding climbing movement\.",\s*chapters:\s*5,/);
   assert.match(source, /cssColor:\s*\[143, 230, 96\]/);
   assert.match(source, /src="\/videos\/crux-vision-origin-overlay\.mp4"/);
   assert.match(source, /poster="\/images\/crux-vision-origin-overlay-poster\.webp"/);

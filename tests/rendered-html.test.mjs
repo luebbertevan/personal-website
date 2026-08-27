@@ -559,8 +559,7 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.doesNotMatch(source, />EXPAND\s/);
   assert.match(source, /createPortal\(/);
   assert.equal([...source.matchAll(/className=\{styles\.mobileIdentityLockup\}/g)].length, 2);
-  assert.match(source, /<strong>Evan Luebbert<\/strong>\s*<i aria-hidden="true" \/>\s*<span>Software Engineer<\/span>/);
-  assert.doesNotMatch(source, /<strong>EVAN LUEBBERT<\/strong>/);
+  assert.match(source, /<strong>EVAN LUEBBERT<\/strong>\s*<i aria-hidden="true" \/>\s*<span>SOFTWARE ENGINEER<\/span>/);
   assert.match(source, /className=\{styles\.mobileUtilityLinks\}/);
   assert.match(source, /className=\{styles\.mobileVisualControl\}/);
   assert.match(source, /<i aria-hidden="true">\{paused \? "▶" : "Ⅱ"\}<\/i>/);
@@ -570,10 +569,13 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(css, /\.project,[\s\S]*\.homeProject \{[\s\S]*top: calc\(max\(8px, env\(safe-area-inset-top\)\) \+ 54px\);[\s\S]*bottom: calc\(max\(8px, env\(safe-area-inset-bottom\)\) \+ 60px\);/s);
   assert.match(css, /\.mediaLightbox \{\s*position: fixed;\s*z-index: 100;/s);
   assert.match(css, /\.productScreenshot img \{\s*max-height: min\(58svh, 500px\);\s*object-fit: cover;/s);
-  assert.match(css, /\.chapter p:not\(\.cardLabel\) \{\s*font-size: 16px;\s*line-height: 1\.5;/s);
-  assert.match(css, /\.mobileIdentityLockup > span \{[^}]*font-size: 12px;[^}]*text-transform: uppercase;/s);
+  assert.match(css, /\.chapter p:not\(\.cardLabel\) \{\s*font-size: 17px;\s*line-height: 1\.52;/s);
+  assert.match(css, /\.chapter figcaption \{\s*font-size: 16px;/s);
+  assert.match(css, /\.chapter \.cardLabel,[\s\S]*?\.inheritanceMetrics dd strong \{\s*font-size: 13px;/s);
+  assert.match(css, /\.mobileIdentityLockup strong \{[^}]*font-family: var\(--font-geist-mono\), monospace;[^}]*font-size: 13px;[^}]*letter-spacing: 0\.08em;/s);
+  assert.match(css, /\.mobileIdentityLockup > span \{[^}]*font-size: 13px;[^}]*letter-spacing: 0\.08em;[^}]*text-transform: uppercase;/s);
   assert.match(css, /\.mobileProjectIndex \{[^}]*margin-top: 12px;/s);
-  assert.match(css, /\.mobileUtilityLinks a \{[^}]*font-size: 16px;/s);
+  assert.match(css, /\.mobileUtilityLinks a \{[^}]*font-size: 17px;/s);
   assert.match(css, /\.mobileMenuFooter \{[^}]*margin-top: auto;/s);
   assert.match(globalCss, /animation: mobile-identity-exit 360ms ease 1\.78s forwards;/);
   assert.match(globalCss, /top: calc\(env\(safe-area-inset-top\) \+ 24px\);/);

@@ -82,7 +82,7 @@ Complete this before mobile and responsive work so the responsive index is desig
   - [x] Consolidate identity into two intentional states: the expressive opening and one compact name/role header reused when the menu opens.
   - [x] Add the accent-colored **Software Engineer** role to the compact header with a small square divider.
   - [x] Tighten the whitespace between the compact menu header and the first index entry.
-  - [x] Raise mobile paragraph and primary supporting text to a comfortable low-end standard of approximately 16px; keep important menu and utility links at a comparable readable size.
+  - [x] Use the approved mobile type scale: 17px for paragraph, supporting, navigation, and utility text; 16px captions; and 13px tertiary metadata and uppercase labels.
   - [x] Recompose the menu utilities as a bottom-aligned block, separate the visual control from the profile links, and use an icon for the visual control.
   - [ ] Slow the mobile transitions and investigate reducing travel distance so the spine remains expressive without abrupt motion.
   - [ ] Recenter and preserve more of the spine across narrow phone aspect ratios.

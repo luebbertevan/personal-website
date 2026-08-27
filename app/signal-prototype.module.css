@@ -3541,11 +3541,11 @@
     position: absolute;
     z-index: 14;
     top: max(8px, env(safe-area-inset-top));
-    right: 10px;
-    left: 10px;
+    right: 6px;
+    left: 6px;
     display: flex;
     min-height: 46px;
-    padding: 0 4px 0 10px;
+    padding: 0 2px 0 8px;
     align-items: center;
     justify-content: space-between;
     border: 1px solid rgba(255, 255, 255, 0.18);
@@ -3568,11 +3568,11 @@
   .mobileIdentityLockup strong {
     overflow: hidden;
     color: rgba(247, 244, 241, 0.94);
-    font-family: var(--font-geist-sans), sans-serif;
+    font-family: var(--font-geist-mono), monospace;
     font-size: 13px;
-    font-weight: 540;
+    font-weight: 500;
     line-height: 1;
-    letter-spacing: -0.01em;
+    letter-spacing: 0.08em;
     text-overflow: ellipsis;
   }
 
@@ -3588,7 +3588,7 @@
     overflow: hidden;
     color: rgb(var(--accent-rgb));
     font-family: var(--font-geist-mono), monospace;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
     line-height: 1;
     letter-spacing: 0.08em;
@@ -3598,7 +3598,7 @@
 
   .mobileHeader > button {
     display: grid;
-    width: 40px;
+    width: 36px;
     height: 38px;
     padding: 11px 9px;
     align-content: center;
@@ -3653,24 +3653,42 @@
 
   .projectMeta {
     margin-bottom: 16px;
-    font-size: 10px;
+    font-size: 13px;
     line-height: 1.3;
   }
 
   .chapter p:not(.cardLabel) {
-    font-size: 16px;
-    line-height: 1.5;
+    font-size: 17px;
+    line-height: 1.52;
   }
 
   .chapter figcaption {
-    font-size: 15px;
+    font-size: 16px;
     line-height: 1.42;
   }
 
   .interestList,
   .inheritancePipelineSteps li {
-    font-size: 16px;
-    line-height: 1.48;
+    font-size: 17px;
+    line-height: 1.5;
+  }
+
+  .chapter .cardLabel,
+  .aboutSinglePanel .projectMeta,
+  .chapter h4,
+  .chapter dt,
+  .inheritanceMetrics dd strong {
+    font-size: 13px;
+  }
+
+  .fostyMetric span,
+  .fostySignal span,
+  .inheritanceImpactMission h3 {
+    font-size: 13px;
+  }
+
+  .cruxQualityProfiles span {
+    font-size: 17px;
   }
 
   .fostyTechnologyTags li {
@@ -3681,7 +3699,7 @@
   .minimalContactLinks.cruxMediaActions a,
   .minimalContactLinks.cruxOutlookActions a,
   .minimalContactLinks.cruxOutlookActions button {
-    font-size: 14px;
+    font-size: 17px;
   }
 
   .project h1 {
@@ -3706,10 +3724,10 @@
   }
 
   .aboutSinglePanel {
-    --about-body-size: 16px;
-    --about-approach-size: 16px;
+    --about-body-size: 17px;
+    --about-approach-size: 17px;
     --about-intro-title-size: clamp(36px, 11vw, 52px);
-    --about-section-label-size: 11px;
+    --about-section-label-size: 13px;
     display: block;
     padding-bottom: 30px;
   }
@@ -3744,8 +3762,8 @@
   .approachCopy p,
   .personalNote > p:last-child,
   .aboutContact > p {
-    font-size: 16px;
-    line-height: 1.5;
+    font-size: 17px;
+    line-height: 1.52;
   }
 
   .aboutContact {
@@ -3819,7 +3837,7 @@
     bottom: max(8px, env(safe-area-inset-bottom));
     left: 8px;
     display: grid;
-    min-height: 52px;
+    min-height: 60px;
     grid-template-columns: 52px minmax(0, 1fr) 52px;
     border: 1px solid rgba(255, 255, 255, 0.2);
     background: rgba(5, 5, 7, 0.86);
@@ -3872,14 +3890,16 @@
 
   .mobileRoutePicker span {
     color: rgb(var(--accent-rgb));
-    font-size: 11px;
+    font-size: 17px;
+    line-height: 1.05;
     font-weight: 500;
     letter-spacing: 0.14em;
   }
 
   .mobileRoutePicker strong {
-    font-size: 13px;
+    font-size: 17px;
     font-weight: 500;
+    line-height: 1.05;
     letter-spacing: 0.08em;
   }
 
@@ -3897,7 +3917,7 @@
     inset: 0;
     display: flex;
     flex-direction: column;
-    padding: max(8px, env(safe-area-inset-top)) 10px max(14px, env(safe-area-inset-bottom));
+    padding: max(8px, env(safe-area-inset-top)) 6px max(14px, env(safe-area-inset-bottom));
     overflow-y: auto;
     color: rgba(247, 244, 241, 0.94);
     background:
@@ -3909,7 +3929,7 @@
   .mobileMenuHeader {
     display: flex;
     min-height: 46px;
-    padding: 0 4px 0 10px;
+    padding: 0 2px 0 8px;
     align-items: center;
     justify-content: space-between;
     gap: 18px;
@@ -3931,7 +3951,7 @@
 
   .mobileChapterSheet > header span {
     color: rgb(var(--accent-rgb));
-    font-size: 11px;
+    font-size: 13px;
     letter-spacing: 0.15em;
   }
 
@@ -3948,6 +3968,11 @@
     background: rgba(255, 255, 255, 0.04);
     font-size: 25px;
     cursor: pointer;
+  }
+
+  .mobileMenuHeader > button {
+    width: 36px;
+    height: 36px;
   }
 
   .mobileProjectIndex {
@@ -4006,8 +4031,8 @@
     margin: 7px 52px 0 0;
     color: rgba(247, 244, 241, 0.7);
     font-family: var(--font-geist-sans), sans-serif;
-    font-size: 16px;
-    line-height: 1.48;
+    font-size: 17px;
+    line-height: 1.5;
     letter-spacing: 0;
   }
 
@@ -4029,14 +4054,14 @@
     align-items: center;
     border-left: 1px solid rgba(255, 255, 255, 0.18);
     color: rgba(247, 244, 241, 0.72);
-    font-size: 14px;
+    font-size: 17px;
     letter-spacing: 0.09em;
   }
 
   .mobileProjectIndex ol button span,
   .mobileChapterSheet ol button span {
     color: rgba(247, 244, 241, 0.34);
-    font-size: 11px;
+    font-size: 13px;
   }
 
   .mobileProjectIndex ol button[data-active],
@@ -4066,7 +4091,7 @@
     color: rgba(247, 244, 241, 0.86);
     background: transparent;
     font-family: var(--font-geist-sans), sans-serif;
-    font-size: 16px;
+    font-size: 17px;
     letter-spacing: -0.01em;
     text-decoration: none;
     cursor: pointer;
@@ -4075,7 +4100,7 @@
   .mobileUtilityLinks a i {
     color: rgb(var(--accent-rgb));
     font-family: var(--font-geist-mono), monospace;
-    font-size: 13px;
+    font-size: 16px;
     font-style: normal;
   }
 
@@ -4089,7 +4114,7 @@
     color: rgba(247, 244, 241, 0.82);
     background: rgba(255, 255, 255, 0.04);
     font-family: var(--font-geist-mono), monospace;
-    font-size: 14px;
+    font-size: 17px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     cursor: pointer;

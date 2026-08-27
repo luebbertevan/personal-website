@@ -45,12 +45,12 @@ Phase 1 was implemented on August 27, 2026. Mobile now uses a compact identity b
 
 Complete these shared-system corrections before tuning individual chapters:
 
-The interface and typography portion was completed on August 27, 2026. Mobile now uses one identity system with an expressive opening state and a shared compact header state that remains visually consistent when the project menu opens. Primary reading text has a 16px mobile floor, navigation text is larger, and the menu utilities have a dedicated bottom-aligned composition.
+The interface and typography portion was completed on August 27, 2026. Mobile now uses one identity system with an expressive opening state and a shared compact header state that remains visually consistent when the project menu opens. Primary reading, supporting, navigation, and utility text uses a 17px mobile baseline; captions use 16px; and tertiary metadata and uppercase labels use 13px. The menu utilities have a dedicated bottom-aligned composition.
 
 - Keep the opening **Evan Luebbert / Software Engineer** identity near the top of the mobile viewport so it does not overlap the spine’s focal area.
 - Add **Software Engineer** to the compact top bar beside the name, using the active accent color and a restrained divider that matches the interface language.
 - Increase the role size in the full-screen menu and reduce the excessive vertical gap between the menu identity and the first index entry.
-- Treat 16 CSS pixels as the low-end target for mobile paragraph and other primary reading text. Keep secondary supporting text around 15–16 pixels and reserve smaller sizes for genuinely tertiary metadata, not content or navigation.
+- Use 17 CSS pixels for mobile paragraph, supporting, navigation, and utility text. Use 16 pixels for captions and 13 pixels for genuinely tertiary metadata and uppercase labels. Prioritize comfortable reading over creating hierarchy through small type.
 - Recompose the menu footer as a deliberate bottom-aligned utility area. Increase the GitHub, LinkedIn, and résumé link sizes, separate the visual-control action from the links, and give that action an icon. This remains temporary until Pause is replaced by the quality control described below.
 - Restore a slower, more deliberate mobile transition cadence. Preserve time to appreciate the spine; investigate shortening travel distance rather than making navigation abruptly fast.
 - Recalibrate the spine’s mobile anchor, travel path, and panel relationship so its focal structure stays as centered and visible as possible across narrow aspect ratios.

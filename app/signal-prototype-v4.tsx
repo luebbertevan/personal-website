@@ -1299,9 +1299,9 @@ export function SignalPrototypeV4() {
 
       <header className={styles.mobileHeader}>
         <div className={styles.mobileIdentityLockup}>
-          <strong>Evan Luebbert</strong>
+          <strong>EVAN LUEBBERT</strong>
           <i aria-hidden="true" />
-          <span>Software Engineer</span>
+          <span>SOFTWARE ENGINEER</span>
         </div>
         <button
           type="button"
@@ -3015,9 +3015,9 @@ export function SignalPrototypeV4() {
           <div ref={mobileDialogRef} className={styles.mobileMenu} role="dialog" aria-modal="true" aria-label="Portfolio menu">
             <header className={styles.mobileMenuHeader}>
               <div className={styles.mobileIdentityLockup}>
-                <strong>Evan Luebbert</strong>
+                <strong>EVAN LUEBBERT</strong>
                 <i aria-hidden="true" />
-                <span>Software Engineer</span>
+                <span>SOFTWARE ENGINEER</span>
               </div>
               <button type="button" aria-label="Close portfolio menu" onClick={() => setMobileOverlay(null)}>
                 <span aria-hidden="true">×</span>

@@ -1298,7 +1298,11 @@ export function SignalPrototypeV4() {
       <div className={styles.grain} aria-hidden="true" />
 
       <header className={styles.mobileHeader}>
-        <span>EVAN LUEBBERT</span>
+        <div className={styles.mobileIdentityLockup}>
+          <strong>Evan Luebbert</strong>
+          <i aria-hidden="true" />
+          <span>Software Engineer</span>
+        </div>
         <button
           type="button"
           aria-label="Open portfolio menu"
@@ -3010,9 +3014,10 @@ export function SignalPrototypeV4() {
         <div className={styles.mobileOverlay}>
           <div ref={mobileDialogRef} className={styles.mobileMenu} role="dialog" aria-modal="true" aria-label="Portfolio menu">
             <header className={styles.mobileMenuHeader}>
-              <div>
-                <strong>EVAN LUEBBERT</strong>
-                <span>SOFTWARE ENGINEER</span>
+              <div className={styles.mobileIdentityLockup}>
+                <strong>Evan Luebbert</strong>
+                <i aria-hidden="true" />
+                <span>Software Engineer</span>
               </div>
               <button type="button" aria-label="Close portfolio menu" onClick={() => setMobileOverlay(null)}>
                 <span aria-hidden="true">×</span>
@@ -3058,10 +3063,15 @@ export function SignalPrototypeV4() {
               })}
             </nav>
             <footer className={styles.mobileMenuFooter}>
-              <a href="https://github.com/luebbertevan" target="_blank" rel="noreferrer">GITHUB ↗</a>
-              <a href="https://www.linkedin.com/in/evan-luebbert/" target="_blank" rel="noreferrer">LINKEDIN ↗</a>
-              <a href="/documents/evan-luebbert-resume-2026.pdf" download="Evan-Luebbert-Resume-2026.pdf">RESUME ↓</a>
-              <button type="button" onClick={togglePause} aria-pressed={paused}>{paused ? "RESUME VISUALS" : "PAUSE VISUALS"}</button>
+              <nav className={styles.mobileUtilityLinks} aria-label="Profile links">
+                <a href="https://github.com/luebbertevan" target="_blank" rel="noreferrer">GitHub <i aria-hidden="true">↗</i></a>
+                <a href="https://www.linkedin.com/in/evan-luebbert/" target="_blank" rel="noreferrer">LinkedIn <i aria-hidden="true">↗</i></a>
+                <a href="/documents/evan-luebbert-resume-2026.pdf" download="Evan-Luebbert-Resume-2026.pdf">Resume <i aria-hidden="true">↓</i></a>
+              </nav>
+              <button className={styles.mobileVisualControl} type="button" onClick={togglePause} aria-pressed={paused}>
+                <i aria-hidden="true">{paused ? "▶" : "Ⅱ"}</i>
+                <span>{paused ? "Resume visuals" : "Pause visuals"}</span>
+              </button>
             </footer>
           </div>
         </div>

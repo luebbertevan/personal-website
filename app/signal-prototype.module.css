@@ -3553,10 +3553,47 @@
     background: rgba(5, 5, 7, 0.78);
     backdrop-filter: blur(16px);
     opacity: var(--chrome-presence);
+    transition: opacity 180ms linear;
+  }
+
+  .mobileIdentityLockup {
+    display: grid;
+    min-width: 0;
+    grid-template-columns: auto 5px minmax(0, auto);
+    align-items: center;
+    gap: 9px;
+    white-space: nowrap;
+  }
+
+  .mobileIdentityLockup strong {
+    overflow: hidden;
+    color: rgba(247, 244, 241, 0.94);
+    font-family: var(--font-geist-sans), sans-serif;
+    font-size: 13px;
+    font-weight: 540;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    text-overflow: ellipsis;
+  }
+
+  .mobileIdentityLockup > i {
+    display: block;
+    width: 5px;
+    height: 5px;
+    background: rgb(var(--accent-rgb));
+    box-shadow: 0 0 9px rgba(var(--accent-rgb), 0.55);
+  }
+
+  .mobileIdentityLockup > span {
+    overflow: hidden;
+    color: rgb(var(--accent-rgb));
     font-family: var(--font-geist-mono), monospace;
     font-size: 12px;
-    letter-spacing: 0.14em;
-    transition: opacity 180ms linear;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0.08em;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
   }
 
   .mobileHeader > button {
@@ -3618,6 +3655,33 @@
     margin-bottom: 16px;
     font-size: 10px;
     line-height: 1.3;
+  }
+
+  .chapter p:not(.cardLabel) {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .chapter figcaption {
+    font-size: 15px;
+    line-height: 1.42;
+  }
+
+  .interestList,
+  .inheritancePipelineSteps li {
+    font-size: 16px;
+    line-height: 1.48;
+  }
+
+  .fostyTechnologyTags li {
+    font-size: 13px;
+  }
+
+  .fostyActions a,
+  .minimalContactLinks.cruxMediaActions a,
+  .minimalContactLinks.cruxOutlookActions a,
+  .minimalContactLinks.cruxOutlookActions button {
+    font-size: 14px;
   }
 
   .project h1 {
@@ -3808,13 +3872,13 @@
 
   .mobileRoutePicker span {
     color: rgb(var(--accent-rgb));
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 500;
     letter-spacing: 0.14em;
   }
 
   .mobileRoutePicker strong {
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 500;
     letter-spacing: 0.08em;
   }
@@ -3833,7 +3897,7 @@
     inset: 0;
     display: flex;
     flex-direction: column;
-    padding: max(16px, env(safe-area-inset-top)) 16px max(18px, env(safe-area-inset-bottom));
+    padding: max(8px, env(safe-area-inset-top)) 10px max(14px, env(safe-area-inset-bottom));
     overflow-y: auto;
     color: rgba(247, 244, 241, 0.94);
     background:
@@ -3842,7 +3906,17 @@
     font-family: var(--font-geist-mono), monospace;
   }
 
-  .mobileMenuHeader,
+  .mobileMenuHeader {
+    display: flex;
+    min-height: 46px;
+    padding: 0 4px 0 10px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(5, 5, 7, 0.78);
+  }
+
   .mobileChapterSheet > header {
     display: flex;
     align-items: flex-start;
@@ -3850,21 +3924,11 @@
     gap: 18px;
   }
 
-  .mobileMenuHeader > div,
   .mobileChapterSheet > header > div {
     display: grid;
     gap: 6px;
   }
 
-  .mobileMenuHeader strong {
-    font-family: var(--font-geist-sans), sans-serif;
-    font-size: clamp(28px, 9vw, 42px);
-    font-weight: 500;
-    line-height: 1;
-    letter-spacing: -0.035em;
-  }
-
-  .mobileMenuHeader > div span,
   .mobileChapterSheet > header span {
     color: rgb(var(--accent-rgb));
     font-size: 11px;
@@ -3888,7 +3952,7 @@
 
   .mobileProjectIndex {
     display: grid;
-    margin-top: 34px;
+    margin-top: 12px;
     border-top: 1px solid rgba(255, 255, 255, 0.2);
   }
 
@@ -3942,8 +4006,8 @@
     margin: 7px 52px 0 0;
     color: rgba(247, 244, 241, 0.7);
     font-family: var(--font-geist-sans), sans-serif;
-    font-size: 15px;
-    line-height: 1.42;
+    font-size: 16px;
+    line-height: 1.48;
     letter-spacing: 0;
   }
 
@@ -3965,14 +4029,14 @@
     align-items: center;
     border-left: 1px solid rgba(255, 255, 255, 0.18);
     color: rgba(247, 244, 241, 0.72);
-    font-size: 12px;
+    font-size: 14px;
     letter-spacing: 0.09em;
   }
 
   .mobileProjectIndex ol button span,
   .mobileChapterSheet ol button span {
     color: rgba(247, 244, 241, 0.34);
-    font-size: 9px;
+    font-size: 11px;
   }
 
   .mobileProjectIndex ol button[data-active],
@@ -3983,25 +4047,60 @@
   }
 
   .mobileMenuFooter {
-    display: flex;
-    margin-top: 28px;
-    padding-top: 16px;
-    flex-wrap: wrap;
-    gap: 10px 20px;
+    display: grid;
+    margin-top: auto;
+    padding-top: 24px;
+    gap: 18px;
     border-top: 1px solid rgba(255, 255, 255, 0.18);
   }
 
-  .mobileMenuFooter a,
-  .mobileMenuFooter button {
-    padding: 4px 0;
+  .mobileUtilityLinks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 22px;
+  }
+
+  .mobileUtilityLinks a {
+    padding: 5px 0;
     border: 0;
-    color: rgba(247, 244, 241, 0.72);
+    color: rgba(247, 244, 241, 0.86);
     background: transparent;
-    font-family: inherit;
-    font-size: 10px;
-    letter-spacing: 0.11em;
+    font-family: var(--font-geist-sans), sans-serif;
+    font-size: 16px;
+    letter-spacing: -0.01em;
     text-decoration: none;
     cursor: pointer;
+  }
+
+  .mobileUtilityLinks a i {
+    color: rgb(var(--accent-rgb));
+    font-family: var(--font-geist-mono), monospace;
+    font-size: 13px;
+    font-style: normal;
+  }
+
+  .mobileVisualControl {
+    display: flex;
+    min-height: 48px;
+    padding: 0 14px;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(247, 244, 241, 0.82);
+    background: rgba(255, 255, 255, 0.04);
+    font-family: var(--font-geist-mono), monospace;
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .mobileVisualControl i {
+    width: 18px;
+    color: rgb(var(--accent-rgb));
+    font-size: 17px;
+    font-style: normal;
+    text-align: center;
   }
 
   .mobileChapterOverlay {

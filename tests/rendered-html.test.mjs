@@ -558,11 +558,24 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(source, /<span className=\{styles\.expandIcon\} aria-hidden="true">⛶<\/span>/);
   assert.doesNotMatch(source, />EXPAND\s/);
   assert.match(source, /createPortal\(/);
+  assert.equal([...source.matchAll(/className=\{styles\.mobileIdentityLockup\}/g)].length, 2);
+  assert.match(source, /<strong>Evan Luebbert<\/strong>\s*<i aria-hidden="true" \/>\s*<span>Software Engineer<\/span>/);
+  assert.doesNotMatch(source, /<strong>EVAN LUEBBERT<\/strong>/);
+  assert.match(source, /className=\{styles\.mobileUtilityLinks\}/);
+  assert.match(source, /className=\{styles\.mobileVisualControl\}/);
+  assert.match(source, /<i aria-hidden="true">\{paused \? "▶" : "Ⅱ"\}<\/i>/);
 
   assert.match(css, /Phase 1 mobile composition/);
   assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*\.waypoint,[\s\S]*\.chapterRail \{\s*display: none;/s);
   assert.match(css, /\.project,[\s\S]*\.homeProject \{[\s\S]*top: calc\(max\(8px, env\(safe-area-inset-top\)\) \+ 54px\);[\s\S]*bottom: calc\(max\(8px, env\(safe-area-inset-bottom\)\) \+ 60px\);/s);
   assert.match(css, /\.mediaLightbox \{\s*position: fixed;\s*z-index: 100;/s);
   assert.match(css, /\.productScreenshot img \{\s*max-height: min\(58svh, 500px\);\s*object-fit: cover;/s);
+  assert.match(css, /\.chapter p:not\(\.cardLabel\) \{\s*font-size: 16px;\s*line-height: 1\.5;/s);
+  assert.match(css, /\.mobileIdentityLockup > span \{[^}]*font-size: 12px;[^}]*text-transform: uppercase;/s);
+  assert.match(css, /\.mobileProjectIndex \{[^}]*margin-top: 12px;/s);
+  assert.match(css, /\.mobileUtilityLinks a \{[^}]*font-size: 16px;/s);
+  assert.match(css, /\.mobileMenuFooter \{[^}]*margin-top: auto;/s);
   assert.match(globalCss, /animation: mobile-identity-exit 360ms ease 1\.78s forwards;/);
+  assert.match(globalCss, /top: calc\(env\(safe-area-inset-top\) \+ 24px\);/);
+  assert.doesNotMatch(globalCss, /@media \(max-width: 860px\) \{[\s\S]*?\.site-identity \{[^}]*top: 50%;/s);
 });

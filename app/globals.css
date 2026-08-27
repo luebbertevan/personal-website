@@ -113,11 +113,10 @@ label:focus-within {
 @media (max-width: 860px) {
   .site-identity {
     z-index: 20;
-    top: 50%;
+    top: calc(env(safe-area-inset-top) + 24px);
     right: 24px;
     left: 24px;
     gap: 10px;
-    transform: translateY(-62%);
     animation: mobile-identity-exit 360ms ease 1.78s forwards;
   }
 
@@ -136,7 +135,7 @@ label:focus-within {
   to {
     opacity: 0;
     visibility: hidden;
-    transform: translateY(calc(-62% - 12px));
+    transform: translateY(-12px);
   }
 }
 

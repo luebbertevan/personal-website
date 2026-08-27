@@ -278,6 +278,8 @@ type RouteTransition = {
   cssFrom: number[];
   cssTo: number[];
   manualArrival: boolean;
+  panelHeightFrom?: number;
+  panelHeightTo?: number;
 };
 
 type ManualRoute = {
@@ -664,6 +666,7 @@ export function SignalPrototypeV4() {
     let homeIntroActive = true;
     let previousTime: number | null = null;
     let animationFrame = 0;
+    let contentMeasureFrame = 0;
     let disposed = false;
 
     const updatePanelBounds = () => {
@@ -693,6 +696,72 @@ export function SignalPrototypeV4() {
         bottom - verticalParticleGap,
         top + verticalParticleGap,
       );
+    };
+
+    const getPanelScale = (panel: HTMLElement) => (
+      Number.parseFloat(getComputedStyle(panel).getPropertyValue("--content-panel-scale")) || 1
+    );
+
+    const getChapterContentHeight = (chapter: HTMLElement) => {
+      const chapterStyle = getComputedStyle(chapter);
+      const paddingBottom = Number.parseFloat(chapterStyle.paddingBottom) || 0;
+      const contentBottom = Array.from(chapter.children).reduce((maximumBottom, child) => {
+        if (!(child instanceof HTMLElement)) return maximumBottom;
+        const childStyle = getComputedStyle(child);
+        const marginBottom = Number.parseFloat(childStyle.marginBottom) || 0;
+        return Math.max(maximumBottom, child.offsetTop + child.offsetHeight + marginBottom);
+      }, Number.parseFloat(chapterStyle.paddingTop) || 0);
+      return Math.ceil(contentBottom + paddingBottom);
+    };
+
+    const getTargetPanelHeight = (destinationIndex: number, chapterIndex: number) => {
+      const bundle = panelBundles[destinationIndex];
+      const chapter = bundle?.chapters[chapterIndex];
+      if (!bundle || !chapter) return 0;
+
+      const viewportHeight = Math.max(1, mount.clientHeight);
+      const panelScale = getPanelScale(bundle.panel);
+      const minimumPanelMargin = Math.max(24, Math.min(56, viewportHeight * 0.05));
+      const maximumPanelHeight = Math.max(300, (viewportHeight - minimumPanelMargin * 2) / panelScale);
+      const chapterRailHeight = destinationIndex === 0
+        ? 0
+        : Number.parseFloat(getComputedStyle(shell).getPropertyValue("--chapter-rail-height")) || 0;
+      const contentBreathingRoom = destinationIndex === 0
+        ? 0
+        : Math.max(16, Math.min(28, viewportHeight * 0.025));
+      const minimumPanelHeight = Math.min(
+        maximumPanelHeight,
+        destinationIndex === 0 ? 360 : chapterRailHeight + 360,
+      );
+      const measuredPanelHeight = getChapterContentHeight(chapter) + chapterRailHeight + contentBreathingRoom;
+      return THREE.MathUtils.clamp(measuredPanelHeight, minimumPanelHeight, maximumPanelHeight);
+    };
+
+    const applyPanelHeight = (destinationIndex: number, panelHeight: number) => {
+      const panel = panelBundles[destinationIndex]?.panel;
+      if (!panel || isMobileViewport || panelHeight <= 0) return;
+      const renderedPanelHeight = panelHeight * getPanelScale(panel);
+      const panelTop = (Math.max(1, mount.clientHeight) - renderedPanelHeight) / 2;
+      panel.style.setProperty("--dynamic-panel-height", `${panelHeight.toFixed(1)}px`);
+      panel.style.setProperty("--dynamic-panel-top", `${panelTop.toFixed(1)}px`);
+    };
+
+    const syncPanelHeight = (destinationIndex: number, chapterIndex: number) => {
+      applyPanelHeight(destinationIndex, getTargetPanelHeight(destinationIndex, chapterIndex));
+    };
+
+    const syncAllPanelHeights = () => {
+      if (isMobileViewport) {
+        panelBundles.forEach(({ panel }) => {
+          panel.style.removeProperty("--dynamic-panel-height");
+          panel.style.removeProperty("--dynamic-panel-top");
+        });
+        return;
+      }
+      panelBundles.forEach((_, destinationIndex) => {
+        const chapterIndex = destinationIndex === currentDestination ? currentChapter : 0;
+        syncPanelHeight(destinationIndex, chapterIndex);
+      });
     };
 
     const resize = () => {
@@ -746,27 +815,7 @@ export function SignalPrototypeV4() {
           panel.style.setProperty("--about-reference-link-size", `${linkSize.toFixed(2)}px`);
         });
       }
-      if (aboutPanel && width > 860) {
-        const renderedAboutHeight = aboutPanel.offsetHeight * aboutScale * contentPanelScale;
-        const minimumPanelMargin = Math.max(24, Math.min(56, height * 0.05));
-        const maximumRenderedPanelHeight = Math.max(360, height - minimumPanelMargin * 2);
-        const renderedPanelHeight = Math.min(renderedAboutHeight, maximumRenderedPanelHeight);
-        const centeredAboutTop = (height - renderedPanelHeight) / 2;
-        aboutPanel.style.setProperty("--about-panel-top", `${centeredAboutTop.toFixed(1)}px`);
-        referencePanels.forEach((panel) => {
-          panel.style.setProperty("--reference-panel-top", `${centeredAboutTop.toFixed(1)}px`);
-          panel.style.setProperty(
-            "--reference-panel-height",
-            `${(renderedPanelHeight / contentPanelScale).toFixed(1)}px`,
-          );
-        });
-      } else {
-        aboutPanel?.style.removeProperty("--about-panel-top");
-        referencePanels.forEach((panel) => {
-          panel.style.removeProperty("--reference-panel-top");
-          panel.style.removeProperty("--reference-panel-height");
-        });
-      }
+      syncAllPanelHeights();
 
       strandAnchor.set(isMobileViewport ? 0 : -0.54 * height / width, 0);
       updatePanelBounds();
@@ -822,6 +871,7 @@ export function SignalPrototypeV4() {
     ) => {
       const targetDestination = THREE.MathUtils.clamp(index, 0, destinations.length - 1);
       panelBundles[targetDestination]?.chapters[0]?.scrollTo({ top: 0 });
+      if (!isMobileViewport) syncPanelHeight(targetDestination, 0);
       if (targetDestination === currentDestination) {
         beginChapter(0);
         return;
@@ -853,6 +903,12 @@ export function SignalPrototypeV4() {
       const targetChapter = THREE.MathUtils.clamp(index, 0, destinations[currentDestination].chapters - 1);
       panelBundles[currentDestination]?.chapters[targetChapter]?.scrollTo({ top: 0 });
       if (targetChapter === currentChapter) return;
+      const panelHeightFrom = isMobileViewport
+        ? undefined
+        : getTargetPanelHeight(currentDestination, currentChapter);
+      const panelHeightTo = isMobileViewport
+        ? undefined
+        : getTargetPanelHeight(currentDestination, targetChapter);
       manualCameraTarget = cameraX;
       transition = {
         kind: "chapter",
@@ -869,6 +925,8 @@ export function SignalPrototypeV4() {
         cssFrom: [...currentCssPalette],
         cssTo: [...currentCssPalette],
         manualArrival: arrival?.manualArrival ?? false,
+        panelHeightFrom,
+        panelHeightTo,
       };
     };
 
@@ -1036,6 +1094,26 @@ export function SignalPrototypeV4() {
         particleTransitionActive = transition.kind === "destination" ? 1 : 0;
         transition.elapsed = Math.min(transition.duration, transition.elapsed + delta);
         transitionT = transition.elapsed / transition.duration;
+        if (
+          transition.kind === "chapter"
+          && !isMobileViewport
+          && transition.panelHeightFrom !== undefined
+          && transition.panelHeightTo !== undefined
+        ) {
+          const grows = transition.panelHeightTo >= transition.panelHeightFrom;
+          const panelHeightProgress = grows
+            ? THREE.MathUtils.smoothstep(transitionT, 0.04, 0.62)
+            : THREE.MathUtils.smoothstep(transitionT, 0.34, 0.92);
+          applyPanelHeight(
+            transition.sourceDestination,
+            THREE.MathUtils.lerp(
+              transition.panelHeightFrom,
+              transition.panelHeightTo,
+              panelHeightProgress,
+            ),
+          );
+          updatePanelBounds();
+        }
         particleTransitionProgress = transitionT;
         particleTravelDirection = Math.sign(transition.toX - transition.fromX) || 1;
         if (transition.kind === "destination") {
@@ -1297,6 +1375,34 @@ export function SignalPrototypeV4() {
     panelResizeObserver.observe(shell);
     panelBundles.forEach(({ panel }) => panelResizeObserver.observe(panel));
 
+    const contentResizeObserver = new ResizeObserver((entries) => {
+      if (isMobileViewport || transition) return;
+      cancelAnimationFrame(contentMeasureFrame);
+      contentMeasureFrame = requestAnimationFrame(() => {
+        if (disposed || isMobileViewport || transition) return;
+        const routesToMeasure = new Set<string>();
+        entries.forEach(({ target }) => {
+          const chapter = target.closest<HTMLElement>("[data-project-chapter]");
+          if (!chapter) return;
+          panelBundles.forEach((bundle, destinationIndex) => {
+            const chapterIndex = bundle.chapters.indexOf(chapter);
+            const expectedChapter = destinationIndex === currentDestination ? currentChapter : 0;
+            if (chapterIndex === expectedChapter) routesToMeasure.add(`${destinationIndex}:${chapterIndex}`);
+          });
+        });
+        routesToMeasure.forEach((route) => {
+          const [destinationIndex, chapterIndex] = route.split(":").map(Number);
+          syncPanelHeight(destinationIndex, chapterIndex);
+        });
+        updatePanelBounds();
+      });
+    });
+    panelBundles.forEach(({ chapters }) => {
+      chapters.forEach((chapter) => {
+        Array.from(chapter.children).forEach((child) => contentResizeObserver.observe(child));
+      });
+    });
+
     resize();
     mobileViewportQuery.addEventListener("change", handleMobileViewportChange);
     window.addEventListener("resize", resize);
@@ -1308,7 +1414,9 @@ export function SignalPrototypeV4() {
     return () => {
       disposed = true;
       cancelAnimationFrame(animationFrame);
+      cancelAnimationFrame(contentMeasureFrame);
       panelResizeObserver.disconnect();
+      contentResizeObserver.disconnect();
       mobileViewportQuery.removeEventListener("change", handleMobileViewportChange);
       siteRoot?.removeAttribute("data-live-mobile-transition");
       window.removeEventListener("resize", resize);

@@ -109,14 +109,15 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.match(css, /--surface-background: rgba\(5, 5, 7, 0\.76\);/);
   assert.match(css, /\.project \{[^}]*top: clamp\(112px, 12vh, 168px\);[^}]*bottom: clamp\(24px, 4vh, 52px\);/s);
   assert.match(css, /\.project \{[^}]*width: 58vw;/s);
-  assert.match(css, /@media \(min-width: 861px\) \{[\s\S]*\.homeProject \{[^}]*top: var\(--about-panel-top, clamp\(112px, 12vh, 168px\)\);[^}]*bottom: auto;[^}]*width: min\(980px, 58vw\);/s);
+  assert.match(css, /@media \(min-width: 861px\) \{[\s\S]*\.project \{[^}]*top: var\(--dynamic-panel-top, clamp\(112px, 12vh, 168px\)\);[^}]*bottom: auto;[^}]*height: var\(--dynamic-panel-height,/s);
+  assert.match(css, /@media \(min-width: 861px\) \{[\s\S]*\.homeProject \{[^}]*width: min\(980px, 58vw\);/s);
   assert.match(css, /\.chapter \{[^}]*top: 0;[^}]*right: max\(12px, calc\(clamp\(32px, 3vw, 52px\) - 15px\)\);[^}]*left: clamp\(32px, 3vw, 52px\);[^}]*padding-right: 15px;[^}]*transform: translate3d\(var\(--chapter-shift\), 0, 0\);/s);
   assert.match(css, /\.projectMeta span:last-child \{ text-align: right; \}/);
   assert.match(css, /\.chapterRail li \{[^}]*height: 100%;/s);
   assert.match(css, /\.chapterRail button,\s*\.chapterRail > li > span \{[^}]*width: 100%;[^}]*height: 100%;/s);
   assert.match(css, /\.routeControls button \{[^}]*background: var\(--surface-background\);/s);
   assert.match(css, /\.pause \{[^}]*background: var\(--surface-background\);/s);
-  assert.match(css, /\.approachCopy \{[^}]*max-width: 58ch;/s);
+  assert.match(css, /\.approachCopy \{[^}]*width: 100%;[^}]*max-width: none;/s);
   assert.match(css, /@media \(min-width: 1400px\) and \(min-height: 900px\) \{[\s\S]*\.availability,[\s\S]*\.approachCopy \{[^}]*width: 100%;[^}]*max-width: none;/s);
   assert.match(css, /@media \(min-width: 1400px\) and \(min-height: 900px\) \{[\s\S]*\.shell \{ --chapter-rail-height: 72px; \}[\s\S]*\.chapterRail \{ font-size: 15px; \}/s);
   assert.match(css, /@media \(min-width: 1400px\) and \(min-height: 900px\) \{[\s\S]*\.aboutSinglePanel \{[^}]*--about-body-size: 19\.2px;[^}]*--about-intro-title-size: 48px;[^}]*--about-section-label-size: 16px;/s);
@@ -206,7 +207,9 @@ test("Fosty replaces both example projects with the Origin chapter", async () =>
   assert.match(css, /\.project h2\.fostyStatement,\s*\.project h2\.fostyOutcomeSubtitle \{[^}]*font-size: calc\(var\(--fosty-body-size\) \* 1\.5\);/s);
   assert.match(css, /\.minimalContactLinks\.fostyLinks a \{\s*font-size: var\(--about-reference-link-size\);/s);
   assert.match(source, /const aboutScale = shouldScaleAboutPanel && aboutPanel && fostyPanel/);
-  assert.match(source, /--reference-panel-height/);
+  assert.match(source, /const getTargetPanelHeight = \(destinationIndex: number, chapterIndex: number\)/);
+  assert.match(source, /measuredPanelHeight = getChapterContentHeight\(chapter\) \+ chapterRailHeight \+ contentBreathingRoom/);
+  assert.match(source, /panel\.style\.setProperty\("--dynamic-panel-height"/);
 });
 
 test("Val renders the text-only Experience, Contributions, and Production chapters with the approved accent and copy", async () => {
@@ -567,6 +570,8 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(source, /const correctedTop = panelRect\.top - \(isMobileViewport \? renderedEntryShift : 0\);/);
   assert.match(source, /const panelResizeObserver = new ResizeObserver\(updatePanelBounds\);/);
   assert.match(source, /panelBundles\.forEach\(\(\{ panel \}\) => panelResizeObserver\.observe\(panel\)\);/);
+  assert.match(source, /const contentResizeObserver = new ResizeObserver/);
+  assert.match(source, /transition\.panelHeightTo >= transition\.panelHeightFrom/);
   assert.match(source, /mobileViewportQuery\.addEventListener\("change", handleMobileViewportChange\);/);
   assert.match(source, /siteRoot\?\.toggleAttribute\("data-live-mobile-transition", isMobileViewport\);/);
   assert.match(source, /isMobileViewport \? 0\.9 : 1\.15/);
@@ -597,18 +602,20 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(css, /\.mobileDock \.mobileRoutePicker \{\s*display: flex;[^}]*padding: 0 12px;[^}]*align-items: center;/s);
   assert.match(css, /\.mobileRoutePicker strong \{[^}]*font-size: 17px;[^}]*letter-spacing: 0\.1em;/s);
   assert.doesNotMatch(css, /\.mobileRouteDivider/);
-  assert.match(css, /@media \(min-width: 861px\) and \(max-width: 1399px\), \(min-width: 861px\) and \(max-height: 900px\) \{[\s\S]*?\.homeProject \.homeIntroduction \{[\s\S]*?overflow-y: auto;/s);
+  assert.match(css, /@media \(min-width: 861px\) \{[\s\S]*?\.homeProject \.homeIntroduction \{[\s\S]*?overflow-y: auto;/s);
+  assert.match(css, /@media \(min-width: 861px\) \{[\s\S]*?\.fostyLayout \{\s*flex: none;\s*grid-template-rows: auto auto auto;/s);
+  assert.match(css, /@media \(min-width: 861px\) and \(max-width: 1399px\), \(min-width: 861px\) and \(max-height: 900px\) \{\s*\.project \{\s*--content-panel-scale: 1;\s*\}\s*\}/s);
   assert.match(css, /@media \(min-width: 861px\) and \(max-width: 1200px\) \{[\s\S]*?\.cruxBody,[\s\S]*?grid-template-columns: 1fr;/s);
   assert.match(css, /@media \(min-width: 861px\) and \(max-width: 1160px\) \{[\s\S]*?\.inheritanceShowcase,[\s\S]*?grid-template-columns: 1fr;/s);
   assert.match(css, /@media \(min-width: 861px\) and \(max-width: 1040px\) \{[\s\S]*?\.fostyLayout,[\s\S]*?grid-template-columns: 1fr;/s);
   assert.match(css, /rgba\(5, 5, 7, 0\.82\);/);
   assert.match(css, /\.aboutSinglePanel \{\s*--about-body-size: 17px;\s*--about-approach-size: 17px;\s*--about-intro-title-size: clamp\(28px, 8\.2vw, 34px\);/s);
   assert.match(css, /\.project \{[^}]*container-type: inline-size;[^}]*container-name: project-panel;/s);
-  assert.match(css, /\.aboutLayout \{\s*display: grid;\s*grid-template-columns: minmax\(0, 1fr\) clamp\(68px, 20vw, 84px\);\s*grid-template-areas:\s*"title portrait"\s*"availability availability"\s*"approach approach"\s*"interests interests"\s*"note note"\s*"contact contact";/s);
+  assert.match(css, /\.aboutLayout \{\s*display: grid;\s*grid-template-columns: minmax\(0, 1fr\) clamp\(68px, 20vw, 84px\);\s*grid-template-areas:\s*"title portrait"\s*"availability portrait"\s*"approach approach"\s*"interests interests"\s*"note note"\s*"contact contact";/s);
   assert.match(css, /\.aboutMain,\s*\.aboutSidebar \{\s*display: contents;/s);
   assert.match(css, /\.headshot \{\s*grid-area: portrait;\s*width: 100%;/s);
-  assert.match(css, /@container project-panel \(max-width: 700px\) \{[\s\S]*?--about-intro-title-size: clamp\(28px, 6cqw, 38px\);[\s\S]*?"availability availability"[\s\S]*?"contact contact";/s);
-  assert.match(css, /@container project-panel \(min-width: 701px\) \{[\s\S]*?--about-intro-title-size: clamp\(34px, 5cqw, 42px\);[\s\S]*?clamp\(96px, 14cqw, 120px\);/s);
+  assert.match(css, /@container project-panel \(max-width: 700px\) \{[\s\S]*?--about-intro-title-size: clamp\(28px, 6cqw, 38px\);[\s\S]*?"availability portrait"[\s\S]*?"contact contact";/s);
+  assert.match(css, /@container project-panel \(min-width: 701px\) \{[\s\S]*?--about-intro-title-size: clamp\(34px, 5cqw, 42px\);[\s\S]*?clamp\(84px, 11cqw, 104px\);/s);
   assert.match(globalCss, /animation: mobile-identity-exit 360ms ease 1\.78s forwards;/);
   assert.match(globalCss, /\.site-root\[data-live-mobile-transition\] \.site-identity \{[^}]*visibility: hidden;[^}]*animation: none;/s);
   assert.match(globalCss, /top: calc\(env\(safe-area-inset-top\) \+ 24px\);/);

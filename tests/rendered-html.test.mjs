@@ -537,10 +537,11 @@ test("Crux Vision renders all five case-study chapters with expandable media", a
 });
 
 test("Phase 1 provides dedicated mobile navigation, viewport-first content, and two-state media", async () => {
-  const [source, css, globalCss] = await Promise.all([
+  const [source, css, globalCss, shaderSource] = await Promise.all([
     readFile(new URL("../app/signal-prototype-v4.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/signal-prototype.module.css", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
+    readFile(new URL("../app/signal-prototype.tsx", import.meta.url), "utf8"),
   ]);
 
   assert.match(source, /className=\{styles\.mobileHeader\}/);
@@ -560,6 +561,10 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(source, /const chapterTravel = isMobileViewport \? MOBILE_CHAPTER_TRAVEL : CHAPTER_TRAVEL;/);
   assert.match(source, /strandAnchor\.set\(isMobileViewport \? 0 : -0\.54 \* height \/ width, 0\);/);
   assert.match(source, /const cameraRoll = isMobileViewport \? rawCameraRoll \* 0\.38 : rawCameraRoll;/);
+  assert.match(source, /uMobileComposition: \{ value: isMobileViewport \? 1 : 0 \}/);
+  assert.match(source, /const correctedTop = panelRect\.top - \(isMobileViewport \? renderedEntryShift : 0\);/);
+  assert.match(source, /const panelResizeObserver = new ResizeObserver\(updatePanelBounds\);/);
+  assert.match(source, /panelBundles\.forEach\(\(\{ panel \}\) => panelResizeObserver\.observe\(panel\)\);/);
   assert.match(source, /isMobileViewport \? 0\.9 : 1\.15/);
   assert.match(source, /panelBundles\[currentDestination\]\?\.chapters\[targetChapter\]\?\.scrollTo\(\{ top: 0 \}\)/);
   assert.match(source, /<span className=\{styles\.expandIcon\} aria-hidden="true">⛶<\/span>/);
@@ -595,4 +600,7 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(globalCss, /animation: mobile-identity-exit 360ms ease 1\.78s forwards;/);
   assert.match(globalCss, /top: calc\(env\(safe-area-inset-top\) \+ 24px\);/);
   assert.doesNotMatch(globalCss, /@media \(max-width: 860px\) \{[\s\S]*?\.site-identity \{[^}]*top: 50%;/s);
+  assert.match(shaderSource, /screenPosition\.x \+= uProjectPresence \* 0\.54 \* \(1\.0 - uMobileComposition\);/);
+  assert.match(shaderSource, /float cameraLead = clamp\(uScrollVelocity \* 0\.075, -0\.75, 0\.75\) \* \(1\.0 - uMobileComposition\);/);
+  assert.match(shaderSource, /uPointer\.y \* 0\.035 \* \(1\.0 - uMobileComposition\)/);
 });

@@ -35,6 +35,7 @@ export const carbonPassShader = /* glsl */ `
   uniform float uCameraX;
   uniform float uScrollVelocity;
   uniform float uProjectPresence;
+  uniform float uMobileComposition;
   uniform vec3 uPaletteColor;
   varying vec2 vUv;
 
@@ -136,11 +137,12 @@ export const carbonPassShader = /* glsl */ `
 
     vec2 fragCoord = vUv * uResolution;
     vec2 screenPosition = (2.0 * fragCoord - uResolution) / uResolution.y;
-    screenPosition.x += uProjectPresence * 0.54;
+    screenPosition.x += uProjectPresence * 0.54 * (1.0 - uMobileComposition);
 
-    float cameraLead = clamp(uScrollVelocity * 0.075, -0.75, 0.75);
+    float cameraLead = clamp(uScrollVelocity * 0.075, -0.75, 0.75) * (1.0 - uMobileComposition);
     float orbitAngle = 0.32 * sin(uCameraX * 0.11) + 0.92 * sin(uCameraX * 0.027);
-    float cameraRoll = 1.46 * sin(uCameraX * 0.055) + 0.34 * sin(uCameraX * 0.017);
+    float cameraRoll = (1.46 * sin(uCameraX * 0.055) + 0.34 * sin(uCameraX * 0.017))
+      * mix(1.0, 0.38, uMobileComposition);
     float distanceDrift = 0.72 * (0.5 + 0.5 * sin(uCameraX * 0.071 + 1.4));
     float verticalPullback = 2.80 * smoothstep(0.62, 1.30, abs(cameraRoll));
     float scenicPhase = 0.5 + 0.5 * sin(uCameraX * 0.021 - 1.1);
@@ -157,7 +159,11 @@ export const carbonPassShader = /* glsl */ `
       sin(orbitAngle) * cameraDistance,
       -cos(orbitAngle) * cameraDistance
     );
-    vec3 cameraTarget = strandCenter + vec3(cameraLead, uPointer.y * 0.035, 0.0);
+    vec3 cameraTarget = strandCenter + vec3(
+      cameraLead,
+      uPointer.y * 0.035 * (1.0 - uMobileComposition),
+      0.0
+    );
     vec3 cameraForward = normalize(cameraTarget - rayOrigin);
 
     vec3 strandAxis = vec3(1.0, 0.0, 0.0);
@@ -328,6 +334,7 @@ export function SignalPrototype() {
       uCameraX: { value: 0 },
       uScrollVelocity: { value: 0 },
       uProjectPresence: { value: 0 },
+      uMobileComposition: { value: 0 },
     };
     const carbonMaterial = new THREE.ShaderMaterial({
       uniforms: carbonUniforms,

@@ -49,6 +49,8 @@ The interface and typography portion was completed on August 27, 2026. Mobile no
 
 The motion and responsive-structure portion was completed on August 27, 2026. Mobile project and chapter transitions now take a shorter route at a slower cadence, the strand is centered with less rotational drift on narrow screens, and the mobile panel is slightly more transparent so the visual remains legible behind the reading surface. Medium-width and short desktop windows now keep panels bounded to the viewport, give About a reliable internal scrolling path, and collapse Crux Vision, Inheritance, and Fosty layouts at project-specific content-fit breakpoints.
 
+The follow-up framing correction keeps the mobile spine’s centerline passing through the viewport center throughout travel, without inheriting the desktop content-panel offset or velocity lead. Particle borders now measure the active panel’s responsive resting rectangle, account for the mobile panel’s vertical entrance motion, and automatically recalculate when the shell or any destination panel changes size.
+
 - Keep the opening **Evan Luebbert / Software Engineer** identity near the top of the mobile viewport so it does not overlap the spine’s focal area.
 - Add **Software Engineer** to the compact top bar beside the name, using the active accent color and a restrained divider that matches the interface language.
 - Increase the role size in the full-screen menu and reduce the excessive vertical gap between the menu identity and the first index entry.

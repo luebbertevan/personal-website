@@ -586,6 +586,7 @@ export function SignalPrototypeV4() {
       uCameraX: { value: 0 },
       uScrollVelocity: { value: 0 },
       uProjectPresence: { value: 1 },
+      uMobileComposition: { value: isMobileViewport ? 1 : 0 },
       uPaletteColor: { value: new THREE.Vector3(...destinations[0].shaderColor) },
     };
     const carbonMaterial = new THREE.ShaderMaterial({
@@ -664,6 +665,35 @@ export function SignalPrototypeV4() {
     let animationFrame = 0;
     let disposed = false;
 
+    const updatePanelBounds = () => {
+      const width = Math.max(1, mount.clientWidth);
+      const height = Math.max(1, mount.clientHeight);
+      const panel = panelBundles[currentDestination]?.panel ?? panelBundles[0]?.panel;
+      if (!panel) return;
+
+      const shellRect = shell.getBoundingClientRect();
+      const panelRect = panel.getBoundingClientRect();
+      const renderedEntryShift = Number.parseFloat(
+        getComputedStyle(panel).getPropertyValue("--entry-shift"),
+      ) || 0;
+      const correctedLeft = panelRect.left - (isMobileViewport ? 0 : renderedEntryShift);
+      const correctedRight = panelRect.right - (isMobileViewport ? 0 : renderedEntryShift);
+      const correctedTop = panelRect.top - (isMobileViewport ? renderedEntryShift : 0);
+      const correctedBottom = panelRect.bottom - (isMobileViewport ? renderedEntryShift : 0);
+      const left = ((correctedLeft - shellRect.left) / width) * 2 - 1;
+      const right = ((correctedRight - shellRect.left) / width) * 2 - 1;
+      const top = 1 - ((correctedTop - shellRect.top) / height) * 2;
+      const bottom = 1 - ((correctedBottom - shellRect.top) / height) * 2;
+      const horizontalParticleGap = 16 / width;
+      const verticalParticleGap = 16 / height;
+      panelBounds.set(
+        left - horizontalParticleGap,
+        right + horizontalParticleGap,
+        bottom - verticalParticleGap,
+        top + verticalParticleGap,
+      );
+    };
+
     const resize = () => {
       const width = Math.max(1, mount.clientWidth);
       const height = Math.max(1, mount.clientHeight);
@@ -738,26 +768,7 @@ export function SignalPrototypeV4() {
       }
 
       strandAnchor.set(isMobileViewport ? 0 : -0.54 * height / width, 0);
-      const panel = shell.querySelector<HTMLElement>("[data-destination-panel]");
-      if (panel) {
-        const shellRect = shell.getBoundingClientRect();
-        const panelRect = panel.getBoundingClientRect();
-        const renderedEntryShift = Number.parseFloat(
-          getComputedStyle(panel).getPropertyValue("--entry-shift"),
-        ) || 0;
-        const left = ((panelRect.left - renderedEntryShift - shellRect.left) / width) * 2 - 1;
-        const right = ((panelRect.right - renderedEntryShift - shellRect.left) / width) * 2 - 1;
-        const top = 1 - ((panelRect.top - shellRect.top) / height) * 2;
-        const bottom = 1 - ((panelRect.bottom - shellRect.top) / height) * 2;
-        const horizontalParticleGap = 8 / width;
-        const verticalParticleGap = 8 / height;
-        panelBounds.set(
-          left - horizontalParticleGap,
-          right + horizontalParticleGap,
-          bottom - verticalParticleGap,
-          top + verticalParticleGap,
-        );
-      }
+      updatePanelBounds();
     };
 
     const move = (event: PointerEvent) => {
@@ -1104,6 +1115,7 @@ export function SignalPrototypeV4() {
         activeDestinationRef.current = activeDestinationForUi;
         activeChapterRef.current = activeChapterForUi;
         setActiveRoute({ destination: activeDestinationForUi, chapter: activeChapterForUi });
+        updatePanelBounds();
         const originVideo = cruxVideoRef.current;
         const movementVideo = cruxMovementVideoRef.current;
         const comparisonVideo = cruxComparisonVideoRef.current;
@@ -1268,6 +1280,10 @@ export function SignalPrototypeV4() {
       animationFrame = requestAnimationFrame(animate);
     };
 
+    const panelResizeObserver = new ResizeObserver(updatePanelBounds);
+    panelResizeObserver.observe(shell);
+    panelBundles.forEach(({ panel }) => panelResizeObserver.observe(panel));
+
     resize();
     window.addEventListener("resize", resize);
     window.addEventListener("keydown", keydown);
@@ -1278,6 +1294,7 @@ export function SignalPrototypeV4() {
     return () => {
       disposed = true;
       cancelAnimationFrame(animationFrame);
+      panelResizeObserver.disconnect();
       window.removeEventListener("resize", resize);
       window.removeEventListener("keydown", keydown);
       shell.removeEventListener("pointermove", move);

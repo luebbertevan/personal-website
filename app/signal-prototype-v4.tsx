@@ -14,7 +14,7 @@ import styles from "./signal-prototype.module.css";
 const destinations = [
   {
     label: "ABOUT",
-    description: "The principles, interests, and experiences behind my work.",
+    description: "Who I am and how I work.",
     chapters: 1,
     shaderColor: [1.0, 0.25, 0.0625] as const,
     cssColor: [255, 103, 49] as const,

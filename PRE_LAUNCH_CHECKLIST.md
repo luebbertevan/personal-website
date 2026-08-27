@@ -17,9 +17,9 @@ Index discovery comes before responsive work because the descriptions and final 
 
 ## Index descriptions
 
-Use visible supporting text underneath each destination name rather than hover-only popovers. The descriptions need to remain discoverable on touch devices and while using a keyboard.
+On desktop, reveal the supporting text underneath each destination name when the entry is hovered or receives keyboard focus. Keep the mobile descriptions directly available in the future touch-specific index, where hover is not available.
 
-- **ABOUT** — The principles, interests, and experiences behind my work.
+- **ABOUT** — Who I am and how I work.
 - **FOSTY** — An operations platform for animal rescue foster care.
 - **CRUX VISION** — A video analysis tool for understanding climbing movement.
 - **INHERITANCE** — A motion capture retargeting pipeline for ML training datasets.

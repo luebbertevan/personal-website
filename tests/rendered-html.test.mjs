@@ -67,14 +67,15 @@ test("About navigation, contact actions, and public assets are wired correctly",
     readFile(new URL("../public/og.png", import.meta.url)),
   ]);
 
-  assert.match(source, /label:\s*"ABOUT",\s*description:\s*"The principles, interests, and experiences behind my work\.",\s*chapters:\s*1,/);
+  assert.match(source, /label:\s*"ABOUT",\s*description:\s*"Who I am and how I work\.",\s*chapters:\s*1,/);
   assert.match(source, /label:\s*"FOSTY"[\s\S]*label:\s*"CRUX VISION"[\s\S]*label:\s*"VAL"[\s\S]*label:\s*"INHERITANCE"/);
   assert.match(source, /destinations\.map\(\(destination, index\) => \([\s\S]*styles\.waypointDescription[\s\S]*destination\.description/);
   assert.match(source, /querySelectorAll<HTMLElement>\("\[data-destination-panel\]"\)\)\s*\.sort\(\(a, b\) => Number\(a\.dataset\.destinationPanel\) - Number\(b\.dataset\.destinationPanel\)\)/);
   assert.match(source, /styles\.valProject}`} data-destination-panel="3"/);
   assert.match(source, /styles\.inheritanceProject}`} data-destination-panel="4"/);
-  assert.match(css, /\.waypoint \{[^}]*width: min\(310px, 30vw\);[^}]*gap: 8px;/s);
-  assert.match(css, /\.waypointDescription \{[^}]*font-family: var\(--font-geist-sans\), sans-serif;[^}]*font-size: clamp\(11px, 0\.72vw, 13px\);[^}]*line-height: 1\.35;/s);
+  assert.match(css, /\.waypoint \{[^}]*width: min\(310px, 30vw\);[^}]*gap: 10px;/s);
+  assert.match(css, /\.waypointDescription \{[^}]*max-height: 0;[^}]*opacity: 0;[^}]*font-family: var\(--font-geist-sans\), sans-serif;[^}]*font-size: clamp\(14px, 0\.9vw, 16px\);[^}]*line-height: 1\.35;/s);
+  assert.match(css, /\.waypoint button:hover \.waypointDescription,\s*\.waypoint button:focus-visible \.waypointDescription \{[^}]*max-height: 70px;[^}]*opacity: 1;/s);
   assert.doesNotMatch(source, /\['INTRODUCTION', 'INTERESTS', 'CONTACT'\]/);
   assert.match(pageSource, /<strong>Evan Luebbert<\/strong>\s*<span>Software Engineer<\/span>/);
   assert.doesNotMatch(source, /<span>ABOUT<\/span><span>APPROACH<\/span>/);

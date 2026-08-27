@@ -568,7 +568,12 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(source, /const cameraRoll = isMobileViewport \? rawCameraRoll \* 0\.38 : rawCameraRoll;/);
   assert.match(source, /uMobileComposition: \{ value: isMobileViewport \? 1 : 0 \}/);
   assert.match(source, /const correctedTop = panelRect\.top - \(isMobileViewport \? renderedEntryShift : 0\);/);
-  assert.match(source, /const panelResizeObserver = new ResizeObserver\(updatePanelBounds\);/);
+  assert.match(source, /const updatePanelBounds = \(destinationIndex = currentDestination\)/);
+  assert.match(source, /const horizontalParticleGap = 8 \/ width;/);
+  assert.match(source, /const verticalParticleGap = 8 \/ height;/);
+  assert.match(source, /updatePanelBounds\(activeDestinationForUi\);/);
+  assert.match(source, /currentDestination = transition\.targetDestination;[\s\S]*?updatePanelBounds\(currentDestination\);/);
+  assert.match(source, /const panelResizeObserver = new ResizeObserver\(\(\) => updatePanelBounds\(\)\);/);
   assert.match(source, /panelBundles\.forEach\(\(\{ panel \}\) => panelResizeObserver\.observe\(panel\)\);/);
   assert.match(source, /const contentResizeObserver = new ResizeObserver/);
   assert.match(source, /transition\.panelHeightTo >= transition\.panelHeightFrom/);

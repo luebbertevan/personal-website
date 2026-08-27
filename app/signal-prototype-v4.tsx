@@ -669,10 +669,10 @@ export function SignalPrototypeV4() {
     let contentMeasureFrame = 0;
     let disposed = false;
 
-    const updatePanelBounds = () => {
+    const updatePanelBounds = (destinationIndex = currentDestination) => {
       const width = Math.max(1, mount.clientWidth);
       const height = Math.max(1, mount.clientHeight);
-      const panel = panelBundles[currentDestination]?.panel ?? panelBundles[0]?.panel;
+      const panel = panelBundles[destinationIndex]?.panel ?? panelBundles[0]?.panel;
       if (!panel) return;
 
       const shellRect = shell.getBoundingClientRect();
@@ -688,8 +688,8 @@ export function SignalPrototypeV4() {
       const right = ((correctedRight - shellRect.left) / width) * 2 - 1;
       const top = 1 - ((correctedTop - shellRect.top) / height) * 2;
       const bottom = 1 - ((correctedBottom - shellRect.top) / height) * 2;
-      const horizontalParticleGap = 16 / width;
-      const verticalParticleGap = 16 / height;
+      const horizontalParticleGap = 8 / width;
+      const verticalParticleGap = 8 / height;
       panelBounds.set(
         left - horizontalParticleGap,
         right + horizontalParticleGap,
@@ -1160,6 +1160,7 @@ export function SignalPrototypeV4() {
           carbonUniforms.uPaletteColor.value.copy(currentShaderPalette);
           setAccentPalette(currentCssPalette);
           manualCameraTarget = cameraX;
+          updatePanelBounds(currentDestination);
           transition = null;
           transitionT = 0;
         }
@@ -1206,7 +1207,7 @@ export function SignalPrototypeV4() {
         activeDestinationRef.current = activeDestinationForUi;
         activeChapterRef.current = activeChapterForUi;
         setActiveRoute({ destination: activeDestinationForUi, chapter: activeChapterForUi });
-        updatePanelBounds();
+        updatePanelBounds(activeDestinationForUi);
         const originVideo = cruxVideoRef.current;
         const movementVideo = cruxMovementVideoRef.current;
         const comparisonVideo = cruxComparisonVideoRef.current;
@@ -1371,7 +1372,7 @@ export function SignalPrototypeV4() {
       animationFrame = requestAnimationFrame(animate);
     };
 
-    const panelResizeObserver = new ResizeObserver(updatePanelBounds);
+    const panelResizeObserver = new ResizeObserver(() => updatePanelBounds());
     panelResizeObserver.observe(shell);
     panelBundles.forEach(({ panel }) => panelResizeObserver.observe(panel));
 

@@ -4329,8 +4329,6 @@
     align-self: end;
   }
 
-  .introductionTitleLine { display: block; }
-
   .availability {
     grid-area: availability;
     width: 100%;
@@ -4348,7 +4346,7 @@
     grid-area: portrait;
     width: 100%;
     align-self: end;
-    transform: translateY(12px);
+    transform: translateY(6px);
   }
 }
 

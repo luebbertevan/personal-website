@@ -619,7 +619,8 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(css, /\.aboutLayout \{\s*display: grid;\s*grid-template-columns: minmax\(0, 1fr\) clamp\(68px, 20vw, 84px\);\s*grid-template-areas:\s*"title portrait"\s*"availability portrait"\s*"approach approach"\s*"interests interests"\s*"note note"\s*"contact contact";/s);
   assert.match(css, /\.aboutMain,\s*\.aboutSidebar \{\s*display: contents;/s);
   assert.match(css, /\.headshot \{\s*grid-area: portrait;\s*width: 100%;/s);
-  assert.match(css, /@container project-panel \(max-width: 700px\) \{[\s\S]*?font-size: clamp\(38px, 8cqw, 52px\);[\s\S]*?--about-intro-title-size: clamp\(30px, 5\.2cqw, 34px\);[\s\S]*?"meta portrait"\s*"title portrait"\s*"availability availability"[\s\S]*?\.introductionTitleLine \{ display: block; \}[\s\S]*?transform: translateY\(12px\);/s);
+  assert.match(css, /@container project-panel \(max-width: 700px\) \{[\s\S]*?font-size: clamp\(38px, 8cqw, 52px\);[\s\S]*?--about-intro-title-size: clamp\(30px, 5\.2cqw, 34px\);[\s\S]*?"meta portrait"\s*"title portrait"\s*"availability availability"[\s\S]*?transform: translateY\(6px\);/s);
+  assert.doesNotMatch(css, /@container project-panel \(max-width: 700px\) \{[\s\S]*?\.introductionTitleLine \{ display: block; \}/s);
   assert.match(css, /@container project-panel \(min-width: 701px\) \{[\s\S]*?--about-intro-title-size: clamp\(34px, 5cqw, 42px\);[\s\S]*?clamp\(84px, 11cqw, 104px\);/s);
   assert.match(globalCss, /animation: mobile-identity-exit 360ms ease 1\.78s forwards;/);
   assert.match(globalCss, /\.site-root\[data-live-mobile-transition\] \.site-identity \{[^}]*visibility: hidden;[^}]*animation: none;/s);

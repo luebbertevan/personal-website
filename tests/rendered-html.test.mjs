@@ -600,6 +600,10 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(css, /@media \(min-width: 861px\) and \(max-width: 1160px\) \{[\s\S]*?\.inheritanceShowcase,[\s\S]*?grid-template-columns: 1fr;/s);
   assert.match(css, /@media \(min-width: 861px\) and \(max-width: 1040px\) \{[\s\S]*?\.fostyLayout,[\s\S]*?grid-template-columns: 1fr;/s);
   assert.match(css, /rgba\(5, 5, 7, 0\.82\);/);
+  assert.match(css, /\.aboutSinglePanel \{\s*--about-body-size: 17px;\s*--about-approach-size: 17px;\s*--about-intro-title-size: clamp\(28px, 8\.2vw, 34px\);/s);
+  assert.match(css, /\.aboutLayout \{\s*display: grid;\s*grid-template-columns: minmax\(0, 1fr\) clamp\(68px, 20vw, 84px\);\s*grid-template-areas:\s*"intro portrait"\s*"approach approach"\s*"interests interests"\s*"note note"\s*"contact contact";/s);
+  assert.match(css, /\.aboutMain,\s*\.aboutSidebar \{\s*display: contents;/s);
+  assert.match(css, /\.headshot \{\s*grid-area: portrait;\s*width: 100%;/s);
   assert.match(globalCss, /animation: mobile-identity-exit 360ms ease 1\.78s forwards;/);
   assert.match(globalCss, /top: calc\(env\(safe-area-inset-top\) \+ 24px\);/);
   assert.doesNotMatch(globalCss, /@media \(max-width: 860px\) \{[\s\S]*?\.site-identity \{[^}]*top: 50%;/s);

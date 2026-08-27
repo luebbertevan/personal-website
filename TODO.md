@@ -89,6 +89,7 @@ Complete this before mobile and responsive work so the responsive index is desig
 - [x] Audit the shared content panel and breakpoint logic across medium and medium-small screens. Constrained desktop-style panels now remain viewport-bounded, and About has an internal scrolling path when its content exceeds the available height.
 - [x] Allow project-specific small-screen breakpoints where content stops fitting before the global mobile threshold.
 - [ ] Refine mobile content density, chapter length, media crops, and custom composition chapter by chapter, beginning with About.
+  - [x] Recompose the About opening with a restrained 28–34px title and a compact portrait aligned at the top of the first content row.
 - [ ] Establish explicit phone, tablet, laptop, and large-desktop compositions instead of relying only on proportional scaling.
 - [ ] Extend the initial mobile resolution reduction into measured adaptive particle/render tiers for constrained devices without losing the strand’s identity.
 

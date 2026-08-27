@@ -3811,36 +3811,43 @@
   .aboutSinglePanel {
     --about-body-size: 17px;
     --about-approach-size: 17px;
-    --about-intro-title-size: clamp(36px, 11vw, 52px);
+    --about-intro-title-size: clamp(28px, 8.2vw, 34px);
     --about-section-label-size: 13px;
     display: block;
     padding-bottom: 30px;
   }
 
   .aboutLayout {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) clamp(68px, 20vw, 84px);
+    grid-template-areas:
+      "intro portrait"
+      "approach approach"
+      "interests interests"
+      "note note"
+      "contact contact";
+    gap: 24px 14px;
+    align-items: start;
   }
 
   .aboutMain,
   .aboutSidebar {
-    display: flex;
-    flex-direction: column;
-    gap: 22px;
+    display: contents;
   }
 
-  .aboutSidebar {
-    align-items: stretch;
-  }
+  .introductionHeading { grid-area: intro; }
+  .aboutApproach { grid-area: approach; }
+  .aboutInterests { grid-area: interests; }
+  .personalNote { grid-area: note; }
 
   .headshot {
-    width: min(48vw, 176px);
+    grid-area: portrait;
+    width: 100%;
   }
 
   .homeProject h1.introductionTitle {
     font-size: var(--about-intro-title-size);
-    line-height: 1.02;
+    line-height: 1.06;
   }
 
   .availability,

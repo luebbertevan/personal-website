@@ -614,8 +614,8 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(css, /\.mobileMenuFooter \{[^}]*margin: auto 10px 0;/s);
   assert.match(css, /\.mobileProjectOverlay \{\s*background: transparent;\s*backdrop-filter: none;\s*\}/);
   assert.match(css, /\.shell\[data-mobile-project-menu-open\] \.project \{\s*visibility: hidden;\s*\}/);
-  assert.match(css, /\.mobileMenu \{[^}]*rgba\(5, 5, 7, 0\.68\);[^}]*backdrop-filter: blur\(8px\);/s);
-  assert.match(css, /\.mobileMenuHeader \{[^}]*background: rgba\(5, 5, 7, 0\.68\);/s);
+  assert.match(css, /\.mobileMenu \{[^}]*rgba\(5, 5, 7, 0\.48\);[^}]*backdrop-filter: none;/s);
+  assert.match(css, /\.mobileMenuHeader \{[^}]*background: rgba\(5, 5, 7, 0\.48\);/s);
   assert.match(css, /\.mobileMenuHeader > button span \{[^}]*width: 100%;[^}]*height: 100%;[^}]*place-items: center;[^}]*line-height: 1;[^}]*transform: translateY\(-1px\);/s);
   assert.match(css, /\.mobileDock {[^}]*min-height: 52px;[^}]*grid-template-columns: 48px minmax\(0, 1fr\) 48px;/s);
   assert.match(css, /\.mobileDock \.mobileRoutePicker \{\s*display: flex;[^}]*padding: 0 12px;[^}]*align-items: center;/s);

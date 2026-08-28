@@ -107,7 +107,7 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.match(pageSource, /className="site-root" data-site-root/);
   assert.match(source, /siteRoot\?\.style\.setProperty\("--accent-rgb", value\);/);
   assert.doesNotMatch(source, /<i>0[012]<\/i>/);
-  assert.match(css, /--surface-background: rgba\(5, 5, 7, 0\.76\);/);
+  assert.match(css, /--surface-background: rgba\(5, 5, 7, 0\.62\);/);
   assert.match(css, /\.project \{[^}]*top: clamp\(112px, 12vh, 168px\);[^}]*bottom: clamp\(24px, 4vh, 52px\);/s);
   assert.match(css, /\.project \{[^}]*width: 58vw;/s);
   assert.match(css, /@media \(min-width: 861px\) \{[\s\S]*\.project \{[^}]*top: var\(--dynamic-panel-top, clamp\(112px, 12vh, 168px\)\);[^}]*bottom: auto;[^}]*height: var\(--dynamic-panel-height,/s);
@@ -614,8 +614,11 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(css, /\.mobileMenuFooter \{[^}]*margin: auto 10px 0;/s);
   assert.match(css, /\.mobileProjectOverlay \{\s*background: transparent;\s*backdrop-filter: none;\s*\}/);
   assert.match(css, /\.shell\[data-mobile-project-menu-open\] \.project \{\s*visibility: hidden;\s*\}/);
-  assert.match(css, /\.mobileMenu \{[^}]*rgba\(5, 5, 7, 0\.68\);[^}]*backdrop-filter: none;/s);
-  assert.match(css, /\.mobileMenuHeader \{[^}]*background: rgba\(5, 5, 7, 0\.68\);/s);
+  assert.match(css, /\.mobileMenu \{[^}]*var\(--surface-background\);[^}]*backdrop-filter: none;/s);
+  assert.match(css, /\.mobileMenuHeader \{[^}]*background: var\(--surface-background\);/s);
+  assert.match(css, /\.mobileHeader \{[^}]*background: var\(--surface-background\);/s);
+  assert.match(css, /\.mobileDock \{[^}]*background: var\(--surface-background\);/s);
+  assert.match(css, /\.mobileChapterSheet \{[^}]*background: var\(--surface-background\);/s);
   assert.match(css, /\.mobileMenuHeader > button span \{[^}]*width: 100%;[^}]*height: 100%;[^}]*place-items: center;[^}]*line-height: 1;[^}]*transform: translateY\(-1px\);/s);
   assert.match(css, /\.mobileDock {[^}]*min-height: 52px;[^}]*grid-template-columns: 48px minmax\(0, 1fr\) 48px;/s);
   assert.match(css, /\.mobileDock \.mobileRoutePicker \{\s*display: flex;[^}]*padding: 0 12px;[^}]*align-items: center;/s);

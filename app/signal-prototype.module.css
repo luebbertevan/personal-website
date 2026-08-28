@@ -4019,6 +4019,10 @@
     backdrop-filter: none;
   }
 
+  .shell[data-mobile-project-menu-open] .project {
+    visibility: hidden;
+  }
+
   .mobileMenu {
     position: absolute;
     inset: 0;

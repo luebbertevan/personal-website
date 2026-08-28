@@ -1448,7 +1448,11 @@ export function SignalPrototypeV4() {
   const isLastRoute = activeRoute.destination === destinations.length - 1
     && activeRoute.chapter === activeDestination.chapters - 1;
   return (
-    <main ref={shellRef} className={styles.shell}>
+    <main
+      ref={shellRef}
+      className={styles.shell}
+      data-mobile-project-menu-open={mobileOverlay === "projects" ? "" : undefined}
+    >
       <div ref={mountRef} className={styles.canvas} aria-hidden="true" />
       <div className={styles.grain} aria-hidden="true" />
 

@@ -4388,6 +4388,58 @@
   }
 }
 
+/* Fosty Origin keeps its editorial portrait compact when the narrative no longer fits beside it. */
+.fostyHeading h1 {
+  font-size: clamp(40px, 6cqw, 52px);
+}
+
+@media (max-width: 1040px) {
+  .fostyLayout {
+    grid-template-columns: minmax(0, 1fr) clamp(84px, 16cqw, 92px);
+    grid-template-rows: auto auto auto;
+    grid-template-areas:
+      "heading photo"
+      "statement statement"
+      "story story";
+    column-gap: 14px;
+    align-content: start;
+    align-items: start;
+  }
+
+  .fostyPhoto {
+    width: 100%;
+    align-self: start;
+    justify-self: end;
+  }
+
+  .project h2.fostyStatement {
+    font-size: clamp(24px, 4cqw, 30px);
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+
+  .fostyStory {
+    width: 100%;
+  }
+
+  .fostyCopy {
+    max-width: 68ch;
+  }
+
+  .minimalContactLinks.fostyLinks {
+    display: grid;
+    width: fit-content;
+    max-width: 100%;
+    grid-template-columns: max-content max-content;
+    gap: 4px 18px;
+    justify-content: start;
+  }
+
+  .minimalContactLinks.fostyLinks a:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .project,
   .pause,

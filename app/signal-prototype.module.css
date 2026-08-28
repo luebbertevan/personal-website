@@ -2390,12 +2390,12 @@
 .productScreenshot > .expandIcon,
 .expandIcon {
   display: grid;
-  min-width: 30px;
-  min-height: 30px;
+  min-width: 28px;
+  min-height: 28px;
   padding: 0;
   place-items: center;
   font-family: var(--font-geist-sans), sans-serif;
-  font-size: 20px;
+  font-size: 26px;
   line-height: 1;
   letter-spacing: 0;
 }
@@ -3926,9 +3926,9 @@
 
   .productScreenshot > .expandIcon,
   .expandIcon {
-    min-width: 36px;
-    min-height: 36px;
-    font-size: 24px;
+    min-width: 30px;
+    min-height: 30px;
+    font-size: 30px;
   }
 
   .cruxVideoControls button {

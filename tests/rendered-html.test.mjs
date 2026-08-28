@@ -587,6 +587,8 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(source, /isMobileViewport \? 0\.9 : 1\.15/);
   assert.match(source, /panelBundles\[currentDestination\]\?\.chapters\[targetChapter\]\?\.scrollTo\(\{ top: 0 \}\)/);
   assert.match(source, /<span className=\{styles\.expandIcon\} aria-hidden="true">⛶<\/span>/);
+  assert.match(css, /\.productScreenshot > \.expandIcon,\s*\.expandIcon \{[^}]*min-width: 28px;[^}]*min-height: 28px;[^}]*padding: 0;[^}]*font-size: 26px;/s);
+  assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.productScreenshot > \.expandIcon,\s*\.expandIcon \{[^}]*min-width: 30px;[^}]*min-height: 30px;[^}]*font-size: 30px;/s);
   assert.doesNotMatch(source, />EXPAND\s/);
   assert.match(source, /createPortal\(/);
   assert.equal([...source.matchAll(/className=\{styles\.mobileIdentityLockup\}/g)].length, 2);

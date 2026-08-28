@@ -1,7 +1,7 @@
 .shell {
   --accent-rgb: 255, 103, 49;
   --chrome-presence: 0;
-  --surface-background: rgba(5, 5, 7, 0.62);
+  --surface-background: rgba(5, 5, 7, 0.65);
   --chapter-rail-height: 52px;
   --case-study-body-size: clamp(15px, 0.92vw, 20px);
   --body-text-color: rgba(247, 244, 241, 0.9);

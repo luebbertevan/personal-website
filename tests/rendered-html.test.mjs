@@ -107,7 +107,7 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.match(pageSource, /className="site-root" data-site-root/);
   assert.match(source, /siteRoot\?\.style\.setProperty\("--accent-rgb", value\);/);
   assert.doesNotMatch(source, /<i>0[012]<\/i>/);
-  assert.match(css, /--surface-background: rgba\(5, 5, 7, 0\.62\);/);
+  assert.match(css, /--surface-background: rgba\(5, 5, 7, 0\.65\);/);
   assert.match(css, /\.project \{[^}]*top: clamp\(112px, 12vh, 168px\);[^}]*bottom: clamp\(24px, 4vh, 52px\);/s);
   assert.match(css, /\.project \{[^}]*width: 58vw;/s);
   assert.match(css, /@media \(min-width: 861px\) \{[\s\S]*\.project \{[^}]*top: var\(--dynamic-panel-top, clamp\(112px, 12vh, 168px\)\);[^}]*bottom: auto;[^}]*height: var\(--dynamic-panel-height,/s);

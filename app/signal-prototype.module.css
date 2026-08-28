@@ -277,7 +277,10 @@
   line-height: 1.05;
   letter-spacing: -0.055em;
 }
-.introductionTitleLine { display: inline; }
+.introductionTitleLine {
+  display: inline-block;
+  white-space: nowrap;
+}
 .homeProject .description { max-width: 64ch; }
 .homeProject .chapterRail { grid-template-columns: repeat(3, 1fr); }
 .homeProject h1 { font-size: clamp(68px, 5.7vw, 98px); }

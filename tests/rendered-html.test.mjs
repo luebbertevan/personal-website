@@ -87,6 +87,7 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.match(source, /width="480"\s+height="600"/);
   assert.doesNotMatch(source, /<h1>Evan<br \/>Luebbert<\/h1>/);
   assert.match(source, /<span className=\{styles\.introductionTitleLine\}>I build software<\/span>\{\" \"\}\s*<span className=\{styles\.introductionTitleLine\}>I believe in\.<\/span>/);
+  assert.match(css, /\.introductionTitleLine \{\s*display: inline-block;\s*white-space: nowrap;\s*\}/);
   assert.doesNotMatch(source, /styles\.introductionSubtitle/);
   assert.match(source, /className=\{styles\.aboutLayout\}[\s\S]*className=\{styles\.aboutMain\}[\s\S]*className=\{styles\.availability\}[\s\S]*className=\{styles\.aboutApproach\}[\s\S]*className=\{styles\.aboutInterests\}[\s\S]*className=\{styles\.aboutSidebar\}[\s\S]*className=\{styles\.personalNote\}[\s\S]*className=\{styles\.aboutContact\}/);
   assert.match(css, /\.aboutMain \{[^}]*grid-area: main;[^}]*align-content: start;/s);

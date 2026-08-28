@@ -4033,7 +4033,7 @@
     color: rgba(247, 244, 241, 0.94);
     background:
       radial-gradient(circle at 86% 2%, rgba(var(--accent-rgb), 0.16), transparent 30%),
-      rgba(5, 5, 7, 0.82);
+      rgba(5, 5, 7, 0.68);
     backdrop-filter: blur(8px);
     font-family: var(--font-geist-mono), monospace;
   }
@@ -4046,7 +4046,7 @@
     justify-content: space-between;
     gap: 18px;
     border: 1px solid rgba(255, 255, 255, 0.18);
-    background: rgba(5, 5, 7, 0.78);
+    background: rgba(5, 5, 7, 0.68);
   }
 
   .mobileChapterSheet > header {

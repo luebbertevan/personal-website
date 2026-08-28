@@ -576,6 +576,10 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(source, /const panelResizeObserver = new ResizeObserver\(\(\) => updatePanelBounds\(\)\);/);
   assert.match(source, /panelBundles\.forEach\(\(\{ panel \}\) => panelResizeObserver\.observe\(panel\)\);/);
   assert.match(source, /const contentResizeObserver = new ResizeObserver/);
+  assert.match(source, /const getMeasurableChildren = \(element: HTMLElement\): HTMLElement\[\] =>/);
+  assert.match(source, /getComputedStyle\(child\)\.display === "contents"\s*\? getMeasurableChildren\(child\)/);
+  assert.match(source, /const contentBottom = getMeasurableChildren\(chapter\)\.reduce/);
+  assert.match(source, /getMeasurableChildren\(chapter\)\.forEach\(\(child\) => contentResizeObserver\.observe\(child\)\)/);
   assert.match(source, /transition\.panelHeightTo >= transition\.panelHeightFrom/);
   assert.match(source, /mobileViewportQuery\.addEventListener\("change", handleMobileViewportChange\);/);
   assert.match(source, /siteRoot\?\.toggleAttribute\("data-live-mobile-transition", isMobileViewport\);/);

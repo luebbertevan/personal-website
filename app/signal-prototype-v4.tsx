@@ -702,11 +702,19 @@ export function SignalPrototypeV4() {
       Number.parseFloat(getComputedStyle(panel).getPropertyValue("--content-panel-scale")) || 1
     );
 
+    const getMeasurableChildren = (element: HTMLElement): HTMLElement[] => (
+      Array.from(element.children).flatMap((child) => {
+        if (!(child instanceof HTMLElement)) return [];
+        return getComputedStyle(child).display === "contents"
+          ? getMeasurableChildren(child)
+          : [child];
+      })
+    );
+
     const getChapterContentHeight = (chapter: HTMLElement) => {
       const chapterStyle = getComputedStyle(chapter);
       const paddingBottom = Number.parseFloat(chapterStyle.paddingBottom) || 0;
-      const contentBottom = Array.from(chapter.children).reduce((maximumBottom, child) => {
-        if (!(child instanceof HTMLElement)) return maximumBottom;
+      const contentBottom = getMeasurableChildren(chapter).reduce((maximumBottom, child) => {
         const childStyle = getComputedStyle(child);
         const marginBottom = Number.parseFloat(childStyle.marginBottom) || 0;
         return Math.max(maximumBottom, child.offsetTop + child.offsetHeight + marginBottom);
@@ -1400,7 +1408,7 @@ export function SignalPrototypeV4() {
     });
     panelBundles.forEach(({ chapters }) => {
       chapters.forEach((chapter) => {
-        Array.from(chapter.children).forEach((child) => contentResizeObserver.observe(child));
+        getMeasurableChildren(chapter).forEach((child) => contentResizeObserver.observe(child));
       });
     });
 

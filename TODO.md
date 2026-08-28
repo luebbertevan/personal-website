@@ -88,7 +88,7 @@ Complete this before mobile and responsive work so the responsive index is desig
   - [x] Recenter and preserve more of the spine across narrow phone aspect ratios.
 - [x] Audit the shared content panel and breakpoint logic across medium and medium-small screens. Constrained desktop-style panels now remain viewport-bounded, and About has an internal scrolling path when its content exceeds the available height.
 - [x] Allow project-specific small-screen breakpoints where content stops fitting before the global mobile threshold.
-- [ ] Refine mobile content density, chapter length, media crops, and custom composition chapter by chapter, beginning with About.
+- [ ] Refine mobile content density, chapter length, media crops, and custom composition chapter by chapter. Continue from the stabilized About pass with Fosty, using [PHASE_2_MOBILE_HANDOFF.md](./PHASE_2_MOBILE_HANDOFF.md) as the implementation handoff.
   - [x] Recompose the About opening with a restrained 28–34px title and a compact portrait aligned at the top of the first content row.
   - [x] Test the portrait entirely above a full-width opening divider; retract the treatment after it introduced excessive vertical space.
   - [x] Make the About composition respond to content-panel width so narrow desktop panels and wide mobile panels receive appropriate shared layout rules.

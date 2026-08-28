@@ -1557,7 +1557,11 @@ export function SignalPrototypeV4() {
           <div className={styles.projectMeta}><span>FOSTY</span></div>
           <div className={styles.fostyLayout}>
             <div className={styles.fostyHeading}>
-              <p className={styles.cardLabel}>FOUNDER · FULL-STACK ENGINEER · PRODUCT DESIGNER</p>
+              <p className={styles.cardLabel}>
+                <span>FOUNDER ·</span>{" "}
+                <span>FULL-STACK ENGINEER ·</span>{" "}
+                <span>PRODUCT DESIGNER</span>
+              </p>
               <div className={styles.fostyTitleRow}>
                 <h1>Fosty</h1>
                 <p className={styles.fostyDate}>2025 TO PRESENT</p>

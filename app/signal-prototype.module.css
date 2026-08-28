@@ -503,6 +503,10 @@
   font-size: var(--about-reference-label-size);
   letter-spacing: 0.11em;
 }
+.fostyHeading .cardLabel span {
+  display: inline-block;
+  white-space: nowrap;
+}
 .fostyHeading h1 {
   font-size: var(--about-reference-title-size);
 }

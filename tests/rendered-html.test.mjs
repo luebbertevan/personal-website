@@ -203,6 +203,8 @@ test("Fosty replaces both example projects with the Origin chapter", async () =>
   assert.match(source, /--about-reference-link-size/);
   assert.match(css, /\.fostyOrigin \.projectMeta \{\s*font-size: var\(--about-reference-label-size\);/s);
   assert.match(css, /\.fostyHeading \.cardLabel \{[^}]*font-size: var\(--about-reference-label-size\);/s);
+  assert.match(source, /<span>FOUNDER ·<\/span>\{\" \"\}\s*<span>FULL-STACK ENGINEER ·<\/span>\{\" \"\}\s*<span>PRODUCT DESIGNER<\/span>/s);
+  assert.match(css, /\.fostyHeading \.cardLabel span \{\s*display: inline-block;\s*white-space: nowrap;/s);
   assert.match(css, /\.fostyDate \{[^}]*font-size: var\(--about-reference-label-size\);/s);
   assert.match(css, /\.fostyHeading h1 \{[^}]*font-size: var\(--about-reference-title-size\);/s);
   assert.match(css, /\.project h2\.fostyStatement,\s*\.project h2\.fostyOutcomeSubtitle \{[^}]*font-size: calc\(var\(--fosty-body-size\) \* 1\.5\);/s);

@@ -601,7 +601,7 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
 
   assert.match(css, /Phase 1 mobile composition/);
   assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*\.waypoint,[\s\S]*\.chapterRail \{\s*display: none;/s);
-  assert.match(css, /\.project,[\s\S]*\.homeProject \{[\s\S]*top: calc\(max\(8px, env\(safe-area-inset-top\)\) \+ 54px\);[\s\S]*bottom: calc\(max\(8px, env\(safe-area-inset-bottom\)\) \+ 60px\);/s);
+  assert.match(css, /\.project,[\s\S]*\.homeProject \{[\s\S]*top: calc\(max\(8px, env\(safe-area-inset-top\)\) \+ 54px\);[\s\S]*bottom: calc\(max\(8px, env\(safe-area-inset-bottom\)\) \+ 52px\);/s);
   assert.match(css, /\.mediaLightbox \{\s*position: fixed;\s*z-index: 100;/s);
   assert.match(css, /\.productScreenshot img \{\s*max-height: min\(58svh, 500px\);\s*object-fit: cover;/s);
   assert.match(css, /\.chapter p:not\(\.cardLabel\) \{\s*font-size: 17px;\s*line-height: 1\.52;/s);
@@ -620,7 +620,7 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(css, /\.mobileDock \{[^}]*background: var\(--surface-background\);/s);
   assert.match(css, /\.mobileChapterSheet \{[^}]*background: var\(--surface-background\);/s);
   assert.match(css, /\.mobileMenuHeader > button span \{[^}]*width: 100%;[^}]*height: 100%;[^}]*place-items: center;[^}]*line-height: 1;[^}]*transform: translateY\(-1px\);/s);
-  assert.match(css, /\.mobileDock {[^}]*min-height: 52px;[^}]*grid-template-columns: 48px minmax\(0, 1fr\) 48px;/s);
+  assert.match(css, /\.mobileDock {[^}]*min-height: 44px;[^}]*grid-template-columns: 44px minmax\(0, 1fr\) 44px;/s);
   assert.match(css, /\.mobileDock \.mobileRoutePicker \{\s*display: flex;[^}]*padding: 0 12px;[^}]*align-items: center;/s);
   assert.match(css, /\.mobileRoutePicker strong \{[^}]*font-size: 17px;[^}]*letter-spacing: 0\.1em;/s);
   assert.doesNotMatch(css, /\.mobileRouteDivider/);

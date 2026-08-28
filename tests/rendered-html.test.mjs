@@ -560,7 +560,7 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(source, /chapterLabels: \["ORIGIN", "PRODUCT", "DESIGN", "ENGINEERING", "OUTCOME"\]/);
   assert.match(source, /const MOBILE_DESTINATION_TRAVEL = 34;/);
   assert.match(source, /const MOBILE_CHAPTER_TRAVEL = 8;/);
-  assert.match(source, /const MOBILE_DESTINATION_DURATION = 3\.25;/);
+  assert.match(source, /const MOBILE_DESTINATION_DURATION = DESTINATION_DURATION;/);
   assert.match(source, /const MOBILE_CHAPTER_DURATION = 1\.55;/);
   assert.match(source, /const MOBILE_HOME_OPENING_DURATION = 2\.15;/);
   assert.match(source, /let destinationTravel = isMobileViewport \? MOBILE_DESTINATION_TRAVEL : DESTINATION_TRAVEL;/);

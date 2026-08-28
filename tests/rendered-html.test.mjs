@@ -613,7 +613,7 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(css, /\.mobileUtilityLinks a \{[^}]*font-size: 17px;/s);
   assert.match(css, /\.mobileMenuFooter \{[^}]*margin: auto 10px 0;/s);
   assert.match(css, /\.mobileProjectOverlay \{\s*background: transparent;\s*backdrop-filter: none;\s*\}/);
-  assert.match(css, /\.shell\[data-mobile-project-menu-open\] \.project \{\s*visibility: hidden;\s*\}/);
+  assert.match(css, /\.shell\[data-mobile-project-menu-open\] \.project,\s*\.shell\[data-mobile-project-menu-open\] \.mobileHeader,\s*\.shell\[data-mobile-project-menu-open\] \.mobileDock \{\s*visibility: hidden;\s*\}/);
   assert.match(css, /\.mobileMenu \{[^}]*var\(--surface-background\);[^}]*backdrop-filter: none;/s);
   assert.match(css, /\.mobileMenuHeader \{[^}]*background: var\(--surface-background\);/s);
   assert.match(css, /\.mobileHeader \{[^}]*background: var\(--surface-background\);/s);

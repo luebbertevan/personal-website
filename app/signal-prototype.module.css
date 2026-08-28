@@ -4019,7 +4019,9 @@
     backdrop-filter: none;
   }
 
-  .shell[data-mobile-project-menu-open] .project {
+  .shell[data-mobile-project-menu-open] .project,
+  .shell[data-mobile-project-menu-open] .mobileHeader,
+  .shell[data-mobile-project-menu-open] .mobileDock {
     visibility: hidden;
   }
 

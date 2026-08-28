@@ -554,6 +554,7 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(source, /className=\{styles\.mobileRoutePicker\}[\s\S]*?<strong>\{activeChapterLabel\}<\/strong>/s);
   assert.doesNotMatch(source, /className=\{styles\.mobileRouteDivider\}/);
   assert.match(source, /mobileOverlay === "projects"/);
+  assert.match(source, /className=\{`\$\{styles\.mobileOverlay\} \$\{styles\.mobileProjectOverlay\}`\}/);
   assert.match(source, /mobileOverlay === "chapters"/);
   assert.match(source, /Current chapter: \$\{activeChapterLabel\} in \$\{activeDestination\.label\}/);
   assert.doesNotMatch(source, /current project, chapter, and progress/i);
@@ -610,6 +611,8 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(css, /\.mobileProjectIndex \{[^}]*margin: 12px 10px 0;/s);
   assert.match(css, /\.mobileUtilityLinks a \{[^}]*font-size: 17px;/s);
   assert.match(css, /\.mobileMenuFooter \{[^}]*margin: auto 10px 0;/s);
+  assert.match(css, /\.mobileProjectOverlay \{\s*background: transparent;\s*backdrop-filter: none;\s*\}/);
+  assert.match(css, /\.mobileMenu \{[^}]*rgba\(5, 5, 7, 0\.82\);[^}]*backdrop-filter: blur\(8px\);/s);
   assert.match(css, /\.mobileMenuHeader > button span \{[^}]*width: 100%;[^}]*height: 100%;[^}]*place-items: center;[^}]*line-height: 1;[^}]*transform: translateY\(-1px\);/s);
   assert.match(css, /\.mobileDock {[^}]*min-height: 52px;[^}]*grid-template-columns: 48px minmax\(0, 1fr\) 48px;/s);
   assert.match(css, /\.mobileDock \.mobileRoutePicker \{\s*display: flex;[^}]*padding: 0 12px;[^}]*align-items: center;/s);

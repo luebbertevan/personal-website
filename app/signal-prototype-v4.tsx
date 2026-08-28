@@ -3168,7 +3168,7 @@ export function SignalPrototypeV4() {
       </button>
 
       {mobileOverlay === "projects" && (
-        <div className={styles.mobileOverlay}>
+        <div className={`${styles.mobileOverlay} ${styles.mobileProjectOverlay}`}>
           <div ref={mobileDialogRef} className={styles.mobileMenu} role="dialog" aria-modal="true" aria-label="Portfolio menu">
             <header className={styles.mobileMenuHeader}>
               <div className={styles.mobileIdentityLockup}>

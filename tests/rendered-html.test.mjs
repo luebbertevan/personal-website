@@ -306,9 +306,8 @@ test("Inheritance renders the experience, challenge, engineering, and impact cha
   assert.match(source, /poster="\/images\/inheritance-motion-collection-poster\.webp"/);
   assert.match(source, /muted\s+loop\s+playsInline/);
   assert.match(html, /A sample of retargeted motion capture animations\./);
-  assert.match(source, /onClick=\{openInheritanceVideo\}/);
-  assert.match(source, /inheritanceVideoExpanded && portalTarget && createPortal\(/);
-  assert.match(source, /aria-label=\{`Expanded \$\{expandedInheritanceVideo\.label\} video`\}/);
+  assert.match(source, /onClick=\{\(\) => openVideoFullscreen\(inheritanceVideoRef\.current\)\}/);
+  assert.doesNotMatch(source, /inheritanceVideoExpanded|expandedInheritanceVideo/);
   assert.match(css, /\.inheritanceShowcase \{[^}]*grid-template-columns: clamp\(156px, 20%, 202px\) minmax\(0, 1fr\);/s);
   assert.match(css, /\.inheritanceMetrics \{[^}]*grid-template-columns: minmax\(0, 1fr\);[^}]*grid-template-rows: repeat\(3, minmax\(0, 1fr\)\);/s);
   assert.match(css, /\.inheritanceMetrics dt \{[^}]*font-size: clamp\(22px, 1\.65vw, 30px\);/s);
@@ -361,9 +360,9 @@ test("Inheritance renders the experience, challenge, engineering, and impact cha
   assert.doesNotMatch(css, /\.inheritanceHighlightsLabel \{/);
   assert.match(css, /\.inheritanceHighlightGrid h4 \{[^}]*font-size: var\(--about-reference-label-size\);/s);
   assert.match(css, /\.inheritanceRotationHighlight \{[^}]*grid-column: 1 \/ -1;[^}]*grid-template-columns: minmax\(0, 1fr\);/s);
-  assert.match(source, /src:\s*"\/videos\/inheritance-walking-comparison\.mp4"/);
-  assert.match(source, /poster:\s*"\/images\/inheritance-walking-comparison-poster\.webp"/);
-  assert.match(source, /onClick=\{\(\) => openInheritanceVideo\(inheritanceWalkingVideo\)\}/);
+  assert.match(source, /src="\/videos\/inheritance-walking-comparison\.mp4"/);
+  assert.match(source, /poster="\/images\/inheritance-walking-comparison-poster\.webp"/);
+  assert.match(source, /onClick=\{\(\) => openVideoFullscreen\(inheritanceWalkingVideoRef\.current\)\}/);
   assert.match(html, /AMASS MOTION, REBUILT ON A PRODUCTION ARMATURE\./);
   assert.match(css, /\.inheritanceEngineeringHero \{[^}]*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);/s);
   assert.match(css, /\.inheritanceEngineeringIntro p,\s*\.inheritancePipeline p,\s*\.inheritancePipelineSteps li,\s*\.inheritanceHighlightGrid p \{[^}]*color: var\(--body-text-color\);/s);
@@ -416,6 +415,8 @@ test("Crux Vision renders all five case-study chapters with expandable media", a
   ]);
 
   assert.match(html, /Crux Vision is a movement-review tool I created to turn climbing footage into a workspace/);
+  assert.match(html, /PRODUCT DESIGNER · FULL-STACK ENGINEER/);
+  assert.doesNotMatch(html, /PERSONAL PROJECT · CREATOR/);
   assert.match(html, /Sometimes that means missing the bigger picture/);
   assert.match(html, /technical theory represented visually/);
   assert.match(html, /Crux Vision cannot replace the intuition and experience of a climber/);
@@ -523,7 +524,16 @@ test("Crux Vision renders all five case-study chapters with expandable media", a
   assert.doesNotMatch(source, /MOVEMENT OVERLAY · LIVE POSE|toggleCruxVideo|cruxVideoPaused/);
   assert.doesNotMatch(source, /className=\{styles\.cruxLead\}/);
   assert.match(css, /\.cruxProject \{[\s\S]*?width: min\(980px, 58vw\);/s);
-  assert.match(css, /\.mediaLightbox\.cruxVideoLightbox > video \{[^}]*width: 100%;[^}]*height: 100%;/s);
+  assert.doesNotMatch(css, /cruxVideoLightbox/);
+  assert.match(source, /const openVideoFullscreen = \(video: HTMLVideoElement \| null\) =>/);
+  assert.match(source, /video\.requestFullscreen\(\)/);
+  assert.match(source, /webkitEnterFullscreen/);
+  assert.equal((source.match(/onClick=\{\(\) => openVideoFullscreen\(/g) ?? []).length, 5);
+  assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.cruxProject \{\s*--crux-body-size: 17px;/s);
+  assert.match(css, /@media \(max-width: 1200px\) \{[\s\S]*?\.cruxNarrative \{\s*display: contents;/s);
+  assert.match(css, /@media \(max-width: 1200px\) \{[\s\S]*?\.cruxOriginVideoFrame \{[^}]*width: min\(100%, 640px\);[^}]*height: auto;[^}]*max-height: none;/s);
+  assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.cruxEngineeringHighlights \{\s*font-size: 17px;\s*line-height: 1\.52;/s);
+  assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.cruxOutlookLayout \{[^}]*padding-right: 6px;/s);
   assert.equal(video.subarray(4, 8).toString("ascii"), "ftyp");
   assert.equal(poster.subarray(0, 4).toString("ascii"), "RIFF");
   assert.equal(poster.subarray(8, 12).toString("ascii"), "WEBP");
@@ -632,7 +642,7 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(css, /@media \(min-width: 861px\) \{[\s\S]*?\.homeProject \.homeIntroduction \{[\s\S]*?overflow-y: auto;/s);
   assert.match(css, /@media \(min-width: 861px\) \{[\s\S]*?\.fostyLayout \{\s*flex: none;\s*grid-template-rows: auto auto auto;/s);
   assert.match(css, /@media \(min-width: 861px\) and \(max-width: 1399px\), \(min-width: 861px\) and \(max-height: 900px\) \{\s*\.project \{\s*--content-panel-scale: 1;\s*\}\s*\}/s);
-  assert.match(css, /@media \(min-width: 861px\) and \(max-width: 1200px\) \{[\s\S]*?\.cruxBody,[\s\S]*?grid-template-columns: 1fr;/s);
+  assert.match(css, /@media \(max-width: 1200px\) \{[\s\S]*?\.cruxBody,[\s\S]*?grid-template-columns: 1fr;/s);
   assert.match(css, /@media \(min-width: 861px\) and \(max-width: 1160px\) \{[\s\S]*?\.inheritanceShowcase,[\s\S]*?grid-template-columns: 1fr;/s);
   assert.match(css, /@media \(min-width: 861px\) and \(max-width: 1040px\) \{[\s\S]*?\.fostyLayout,[\s\S]*?grid-template-columns: 1fr;/s);
   assert.match(css, /rgba\(5, 5, 7, 0\.82\);/);

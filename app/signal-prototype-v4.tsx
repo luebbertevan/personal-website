@@ -191,54 +191,6 @@ const cruxEngineeringMedia = [
 
 type CruxMedia = CruxMovementMedia | (typeof cruxEngineeringMedia)[number];
 
-type CruxVideoMedia = {
-  src: string;
-  poster: string;
-  label: string;
-  width: number;
-  height: number;
-};
-
-const cruxOriginVideo: CruxVideoMedia = {
-  src: "/videos/crux-vision-origin-overlay.mp4",
-  poster: "/images/crux-vision-origin-overlay-poster.webp",
-  label: "Crux Vision movement overlay",
-  width: 926,
-  height: 1656,
-};
-
-const cruxMovementVideo: CruxVideoMedia = {
-  src: "/videos/crux-vision-movement-review.mp4",
-  poster: "/images/crux-vision-movement-review-poster.webp",
-  label: "Crux Vision slow-motion movement review",
-  width: 562,
-  height: 934,
-};
-
-const cruxComparisonVideo: CruxVideoMedia = {
-  src: "/videos/crux-vision-fail-vs-success.mp4",
-  poster: "/images/crux-vision-fail-vs-success-poster.webp",
-  label: "Crux Vision movement-trail comparison",
-  width: 1676,
-  height: 922,
-};
-
-const inheritanceMotionVideo: CruxVideoMedia = {
-  src: "/videos/inheritance-motion-collection.mp4",
-  poster: "/images/inheritance-motion-collection-poster.webp",
-  label: "Inheritance retargeted motion capture sample",
-  width: 1600,
-  height: 886,
-};
-
-const inheritanceWalkingVideo: CruxVideoMedia = {
-  src: "/videos/inheritance-walking-comparison.mp4",
-  poster: "/images/inheritance-walking-comparison-poster.webp",
-  label: "AMASS motion rebuilt on the Inheritance production armature",
-  width: 1372,
-  height: 1552,
-};
-
 const DESTINATION_TRAVEL = 52;
 const DESTINATION_DURATION = 7.35;
 const CHAPTER_TRAVEL = 13;
@@ -300,14 +252,11 @@ export function SignalPrototypeV4() {
   const cruxVideoRef = useRef<HTMLVideoElement>(null);
   const cruxMovementVideoRef = useRef<HTMLVideoElement>(null);
   const cruxComparisonVideoRef = useRef<HTMLVideoElement>(null);
-  const cruxExpandedVideoRef = useRef<HTMLVideoElement>(null);
   const inheritanceVideoRef = useRef<HTMLVideoElement>(null);
   const inheritanceWalkingVideoRef = useRef<HTMLVideoElement>(null);
   const navigationCommandRef = useRef<NavigationCommand | null>(null);
   const activeDestinationRef = useRef(0);
   const activeChapterRef = useRef(0);
-  const cruxVideoExpandedRef = useRef(false);
-  const inheritanceVideoExpandedRef = useRef(false);
   const prefersReducedMotionRef = useRef(false);
   const mobileDialogRef = useRef<HTMLDivElement>(null);
   const pendingMobileChapterRef = useRef<{ destination: number; chapter: number } | null>(null);
@@ -315,10 +264,6 @@ export function SignalPrototypeV4() {
   const [emailCopyStatus, setEmailCopyStatus] = useState<"idle" | "copied" | "selected">("idle");
   const [expandedMedia, setExpandedMedia] = useState<FostyMedia | null>(null);
   const [expandedCruxMedia, setExpandedCruxMedia] = useState<CruxMedia | null>(null);
-  const [cruxVideoExpanded, setCruxVideoExpanded] = useState(false);
-  const [expandedCruxVideo, setExpandedCruxVideo] = useState<CruxVideoMedia>(cruxOriginVideo);
-  const [inheritanceVideoExpanded, setInheritanceVideoExpanded] = useState(false);
-  const [expandedInheritanceVideo, setExpandedInheritanceVideo] = useState<CruxVideoMedia>(inheritanceMotionVideo);
   const [inheritanceImageExpanded, setInheritanceImageExpanded] = useState(false);
   const [activeRoute, setActiveRoute] = useState({ destination: 0, chapter: 0 });
   const [mobileOverlay, setMobileOverlay] = useState<"projects" | "chapters" | null>(null);
@@ -380,8 +325,6 @@ export function SignalPrototypeV4() {
     if (
       !expandedMedia
       && !expandedCruxMedia
-      && !cruxVideoExpanded
-      && !inheritanceVideoExpanded
       && !inheritanceImageExpanded
     ) return;
 
@@ -390,43 +333,12 @@ export function SignalPrototypeV4() {
       setExpandedMedia(null);
       setExpandedCruxMedia(null);
       setInheritanceImageExpanded(false);
-      if (cruxVideoExpandedRef.current) {
-        cruxVideoExpandedRef.current = false;
-        setCruxVideoExpanded(false);
-        if (
-          activeDestinationRef.current === 2
-          && !prefersReducedMotionRef.current
-        ) {
-          window.requestAnimationFrame(() => {
-            const activeVideo = activeChapterRef.current === 0
-              ? cruxVideoRef.current
-              : activeChapterRef.current === 1
-                ? cruxMovementVideoRef.current
-                : cruxComparisonVideoRef.current;
-            void activeVideo?.play().catch(() => undefined);
-          });
-        }
-      }
-      if (inheritanceVideoExpandedRef.current) {
-        inheritanceVideoExpandedRef.current = false;
-        setInheritanceVideoExpanded(false);
-        if (activeDestinationRef.current === 4 && !prefersReducedMotionRef.current) {
-          window.requestAnimationFrame(() => {
-            const activeVideo = activeChapterRef.current === 0
-              ? inheritanceVideoRef.current
-              : activeChapterRef.current === 2
-                ? inheritanceWalkingVideoRef.current
-                : null;
-            void activeVideo?.play().catch(() => undefined);
-          });
-        }
-      }
     };
 
     lightboxCloseRef.current?.focus();
     window.addEventListener("keydown", closeOnEscape);
     return () => window.removeEventListener("keydown", closeOnEscape);
-  }, [cruxVideoExpanded, expandedCruxMedia, expandedMedia, inheritanceImageExpanded, inheritanceVideoExpanded]);
+  }, [expandedCruxMedia, expandedMedia, inheritanceImageExpanded]);
 
   const togglePause = () => {
     pausedRef.current = !pausedRef.current;
@@ -437,10 +349,6 @@ export function SignalPrototypeV4() {
     setExpandedMedia(null);
     setExpandedCruxMedia(null);
     setInheritanceImageExpanded(false);
-    cruxVideoExpandedRef.current = false;
-    setCruxVideoExpanded(false);
-    inheritanceVideoExpandedRef.current = false;
-    setInheritanceVideoExpanded(false);
     navigationCommandRef.current = { type: "destination", value: index };
   };
 
@@ -448,10 +356,6 @@ export function SignalPrototypeV4() {
     setExpandedMedia(null);
     setExpandedCruxMedia(null);
     setInheritanceImageExpanded(false);
-    cruxVideoExpandedRef.current = false;
-    setCruxVideoExpanded(false);
-    inheritanceVideoExpandedRef.current = false;
-    setInheritanceVideoExpanded(false);
     navigationCommandRef.current = { type: "chapter", value: index };
   };
 
@@ -459,10 +363,6 @@ export function SignalPrototypeV4() {
     setExpandedMedia(null);
     setExpandedCruxMedia(null);
     setInheritanceImageExpanded(false);
-    cruxVideoExpandedRef.current = false;
-    setCruxVideoExpanded(false);
-    inheritanceVideoExpandedRef.current = false;
-    setInheritanceVideoExpanded(false);
     navigationCommandRef.current = { type: "step", value: direction };
   };
 
@@ -478,54 +378,52 @@ export function SignalPrototypeV4() {
     navigateToDestination(destination);
   };
 
-  const openCruxVideo = (video: CruxVideoMedia) => {
-    cruxVideoRef.current?.pause();
-    cruxMovementVideoRef.current?.pause();
-    cruxComparisonVideoRef.current?.pause();
-    setExpandedCruxVideo(video);
-    cruxVideoExpandedRef.current = true;
-    setCruxVideoExpanded(true);
-  };
+  const openVideoFullscreen = (video: HTMLVideoElement | null) => {
+    if (!video) return;
 
-  const closeCruxVideo = () => {
-    cruxVideoExpandedRef.current = false;
-    setCruxVideoExpanded(false);
-    if (
-      activeDestinationRef.current === 2
-      && !prefersReducedMotionRef.current
-    ) {
-      window.requestAnimationFrame(() => {
-        const activeVideo = activeChapterRef.current === 0
-          ? cruxVideoRef.current
-          : activeChapterRef.current === 1
-            ? cruxMovementVideoRef.current
-            : cruxComparisonVideoRef.current;
-        void activeVideo?.play().catch(() => undefined);
-      });
+    [
+      cruxVideoRef.current,
+      cruxMovementVideoRef.current,
+      cruxComparisonVideoRef.current,
+      inheritanceVideoRef.current,
+      inheritanceWalkingVideoRef.current,
+    ].forEach((candidate) => {
+      if (candidate && candidate !== video) candidate.pause();
+    });
+
+    const nativeVideo = video as HTMLVideoElement & { webkitEnterFullscreen?: () => void };
+    const playFullscreenVideo = () => void video.play().catch(() => undefined);
+    const resetInlineControls = () => {
+      video.controls = false;
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+      video.removeEventListener("webkitendfullscreen", resetInlineControls);
+    };
+    const handleFullscreenChange = () => {
+      if (document.fullscreenElement !== video) resetInlineControls();
+    };
+    const enterWebkitFullscreen = () => {
+      if (typeof nativeVideo.webkitEnterFullscreen !== "function") return false;
+      video.addEventListener("webkitendfullscreen", resetInlineControls, { once: true });
+      nativeVideo.webkitEnterFullscreen();
+      playFullscreenVideo();
+      return true;
+    };
+
+    video.controls = true;
+    if (!document.fullscreenEnabled && enterWebkitFullscreen()) return;
+
+    if (typeof video.requestFullscreen === "function") {
+      document.addEventListener("fullscreenchange", handleFullscreenChange);
+      void video.requestFullscreen()
+        .then(playFullscreenVideo)
+        .catch(() => {
+          document.removeEventListener("fullscreenchange", handleFullscreenChange);
+          if (!enterWebkitFullscreen()) resetInlineControls();
+        });
+      return;
     }
-  };
 
-  const openInheritanceVideo = (video: CruxVideoMedia = inheritanceMotionVideo) => {
-    inheritanceVideoRef.current?.pause();
-    inheritanceWalkingVideoRef.current?.pause();
-    setExpandedInheritanceVideo(video);
-    inheritanceVideoExpandedRef.current = true;
-    setInheritanceVideoExpanded(true);
-  };
-
-  const closeInheritanceVideo = () => {
-    inheritanceVideoExpandedRef.current = false;
-    setInheritanceVideoExpanded(false);
-    if (activeDestinationRef.current === 4 && !prefersReducedMotionRef.current) {
-      window.requestAnimationFrame(() => {
-        const activeVideo = activeChapterRef.current === 0
-          ? inheritanceVideoRef.current
-          : activeChapterRef.current === 2
-            ? inheritanceWalkingVideoRef.current
-            : null;
-        void activeVideo?.play().catch(() => undefined);
-      });
-    }
+    if (!enterWebkitFullscreen()) resetInlineControls();
   };
 
   const copyEmailValue = async (emailElement: HTMLElement | null) => {
@@ -865,10 +763,6 @@ export function SignalPrototypeV4() {
       event.preventDefault();
       setExpandedMedia(null);
       setExpandedCruxMedia(null);
-      cruxVideoExpandedRef.current = false;
-      setCruxVideoExpanded(false);
-      inheritanceVideoExpandedRef.current = false;
-      setInheritanceVideoExpanded(false);
       navigationCommandRef.current = { type: "step", value: direction as -1 | 1 };
       impulse = Math.min(1, impulse + 0.16);
     };
@@ -1227,7 +1121,6 @@ export function SignalPrototypeV4() {
         inheritanceVideo?.pause();
         inheritanceWalkingVideo?.pause();
         const shouldPlayCruxVideo = activeDestinationForUi === 2
-          && !cruxVideoExpandedRef.current
           && !prefersReducedMotionRef.current;
         if (shouldPlayCruxVideo) {
           const activeVideo = activeChapterForUi === 0
@@ -1239,7 +1132,6 @@ export function SignalPrototypeV4() {
         }
         if (
           activeDestinationForUi === 4
-          && !inheritanceVideoExpandedRef.current
           && !prefersReducedMotionRef.current
         ) {
           const activeVideo = activeChapterForUi === 0
@@ -1838,7 +1730,7 @@ export function SignalPrototypeV4() {
           </div>
           <div className={styles.cruxLayout}>
             <header className={styles.cruxHeading}>
-              <p className={styles.cardLabel}>PERSONAL PROJECT · CREATOR &amp; FULL-STACK ENGINEER</p>
+              <p className={styles.cardLabel}>PRODUCT DESIGNER · FULL-STACK ENGINEER</p>
               <div className={styles.cruxTitleRow}>
                 <h1>Crux Vision</h1>
                 <p className={styles.cruxDate}>2025 TO PRESENT</p>
@@ -1922,7 +1814,7 @@ export function SignalPrototypeV4() {
                     Your browser does not support embedded video.
                   </video>
                   <div className={styles.cruxVideoControls}>
-                    <button type="button" onClick={() => openCruxVideo(cruxOriginVideo)} aria-label="Expand the Crux Vision overlay video">
+                    <button type="button" onClick={() => openVideoFullscreen(cruxVideoRef.current)} aria-label="View the Crux Vision overlay video fullscreen">
                       <span className={styles.expandIcon} aria-hidden="true">⛶</span>
                     </button>
                   </div>
@@ -1992,8 +1884,8 @@ export function SignalPrototypeV4() {
                 <div className={styles.cruxVideoControls}>
                   <button
                     type="button"
-                    onClick={() => openCruxVideo(cruxMovementVideo)}
-                    aria-label="Expand the slow-motion Crux Vision review video"
+                    onClick={() => openVideoFullscreen(cruxMovementVideoRef.current)}
+                    aria-label="View the slow-motion Crux Vision review video fullscreen"
                   >
                     <span className={styles.expandIcon} aria-hidden="true">⛶</span>
                   </button>
@@ -2108,8 +2000,8 @@ export function SignalPrototypeV4() {
                 <div className={styles.cruxVideoControls}>
                   <button
                     type="button"
-                    onClick={() => openCruxVideo(cruxComparisonVideo)}
-                    aria-label="Expand the Crux Vision movement-trail comparison video"
+                    onClick={() => openVideoFullscreen(cruxComparisonVideoRef.current)}
+                    aria-label="View the Crux Vision movement-trail comparison video fullscreen"
                   >
                     <span className={styles.expandIcon} aria-hidden="true">⛶</span>
                   </button>
@@ -2550,40 +2442,6 @@ export function SignalPrototypeV4() {
           </div>,
           portalTarget,
         )}
-        {cruxVideoExpanded && portalTarget && createPortal(
-          <div
-            className={`${styles.mediaLightbox} ${styles.cruxVideoLightbox}`}
-            role="dialog"
-            aria-modal="true"
-            aria-label={`Expanded ${expandedCruxVideo.label} video`}
-            onClick={closeCruxVideo}
-          >
-            <button
-              ref={lightboxCloseRef}
-              type="button"
-              aria-label="Close expanded video"
-              onClick={closeCruxVideo}
-            >
-              <span aria-hidden="true">×</span>
-            </button>
-            <video
-              ref={cruxExpandedVideoRef}
-              src={expandedCruxVideo.src}
-              poster={expandedCruxVideo.poster}
-              autoPlay
-              muted
-              loop
-              playsInline
-              controls
-              width={expandedCruxVideo.width}
-              height={expandedCruxVideo.height}
-              onClick={(event) => event.stopPropagation()}
-            >
-              Your browser does not support embedded video.
-            </video>
-          </div>,
-          portalTarget,
-        )}
       </article>
 
       <article className={`${styles.project} ${styles.inheritanceProject}`} data-destination-panel="4" aria-hidden="true">
@@ -2633,7 +2491,11 @@ export function SignalPrototypeV4() {
                   Your browser does not support embedded video.
                 </video>
                 <div className={styles.cruxVideoControls}>
-                  <button type="button" onClick={openInheritanceVideo} aria-label="Expand the retargeted motion capture sample video">
+                  <button
+                    type="button"
+                    onClick={() => openVideoFullscreen(inheritanceVideoRef.current)}
+                    aria-label="View the retargeted motion capture sample video fullscreen"
+                  >
                     <span className={styles.expandIcon} aria-hidden="true">⛶</span>
                   </button>
                 </div>
@@ -2762,19 +2624,19 @@ export function SignalPrototypeV4() {
                 <button
                   type="button"
                   className={styles.inheritanceEngineeringMediaButton}
-                  onClick={() => openInheritanceVideo(inheritanceWalkingVideo)}
-                  aria-label="Expand the AMASS and production armature walking comparison video"
+                  onClick={() => openVideoFullscreen(inheritanceWalkingVideoRef.current)}
+                  aria-label="View the AMASS and production armature walking comparison video fullscreen"
                 >
                   <video
                     ref={inheritanceWalkingVideoRef}
-                    src={inheritanceWalkingVideo.src}
-                    poster={inheritanceWalkingVideo.poster}
+                    src="/videos/inheritance-walking-comparison.mp4"
+                    poster="/images/inheritance-walking-comparison-poster.webp"
                     muted
                     loop
                     playsInline
                     preload="metadata"
-                    width={inheritanceWalkingVideo.width}
-                    height={inheritanceWalkingVideo.height}
+                    width={1372}
+                    height={1552}
                     aria-label="A synchronized comparison of AMASS surface motion and the rebuilt production armature animation"
                   >
                     Your browser does not support embedded video.
@@ -2942,39 +2804,6 @@ export function SignalPrototypeV4() {
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(2)}>ENGINEERING</button></li>
           <li><button type="button" data-chapter-index onClick={() => navigateToChapter(3)}>IMPACT</button></li>
         </ol>
-        {inheritanceVideoExpanded && portalTarget && createPortal(
-          <div
-            className={`${styles.mediaLightbox} ${styles.cruxVideoLightbox}`}
-            role="dialog"
-            aria-modal="true"
-            aria-label={`Expanded ${expandedInheritanceVideo.label} video`}
-            onClick={closeInheritanceVideo}
-          >
-            <button
-              ref={lightboxCloseRef}
-              type="button"
-              aria-label="Close expanded video"
-              onClick={closeInheritanceVideo}
-            >
-              <span aria-hidden="true">×</span>
-            </button>
-            <video
-              src={expandedInheritanceVideo.src}
-              poster={expandedInheritanceVideo.poster}
-              autoPlay
-              muted
-              loop
-              playsInline
-              controls
-              width={expandedInheritanceVideo.width}
-              height={expandedInheritanceVideo.height}
-              onClick={(event) => event.stopPropagation()}
-            >
-              Your browser does not support embedded video.
-            </video>
-          </div>,
-          portalTarget,
-        )}
         {inheritanceImageExpanded && portalTarget && createPortal(
           <div
             className={styles.mediaLightbox}

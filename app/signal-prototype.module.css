@@ -1393,11 +1393,6 @@
   gap: clamp(14px, 1.5vw, 22px);
   align-items: start;
 }
-.inheritanceTechnology .cardLabel {
-  margin: 7px 0 0;
-  font-size: var(--about-reference-label-size);
-  letter-spacing: 0.11em;
-}
 .inheritanceTechnology .fostyTechnologyTags {
   gap: 7px;
 }
@@ -1419,6 +1414,7 @@
   gap: clamp(9px, 1vh, 12px);
   align-content: start;
 }
+.inheritanceTechnology h3,
 .inheritancePipeline h3,
 .inheritanceHighlightsLabel,
 .inheritanceHighlightGrid h4 {
@@ -3271,7 +3267,6 @@
     grid-template-columns: 86px minmax(0, 1fr);
     gap: 10px;
   }
-  .inheritanceTechnology .cardLabel { margin-top: 5px; font-size: 9px; }
   .inheritanceTechnology .fostyTechnologyTags { gap: 5px; }
   .inheritanceTechnology .fostyTechnologyTags li { padding: 5px 7px; }
   .inheritancePipeline {
@@ -4429,7 +4424,6 @@
   .inheritanceImpact .projectMeta,
   .inheritanceHeading .cardLabel,
   .inheritanceHeading .inheritanceDate,
-  .inheritanceTechnology .cardLabel,
   .inheritanceImpactMission h3,
   .inheritanceHighlightsLabel,
   .inheritanceMetrics dd strong,

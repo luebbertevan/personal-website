@@ -360,7 +360,10 @@ test("Inheritance renders the experience, challenge, engineering, and impact cha
   assert.match(html, /RECONCILING REST POSES/);
   assert.match(html, /BALANCING PROPORTIONS AND MOTION/);
   assert.match(html, /TRANSLATING THREE ROTATION SYSTEMS/);
-  assert.match(css, /\.inheritancePipeline h3,\s*\.inheritanceHighlightsLabel,/s);
+  assert.match(source, /<h3 id="inheritance-technology-heading">TECHNOLOGY<\/h3>/);
+  assert.doesNotMatch(source, /<h3 className=\{styles\.cardLabel\} id="inheritance-technology-heading">/);
+  assert.match(css, /\.inheritanceTechnology h3,\s*\.inheritancePipeline h3,\s*\.inheritanceHighlightsLabel,/s);
+  assert.doesNotMatch(css, /\.inheritanceTechnology \.cardLabel/);
   assert.match(css, /\.inheritanceHighlightGrid h4 \{[^}]*font-size: var\(--about-reference-label-size\);/s);
   assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*\.inheritanceHighlightsLabel \{[^}]*font-size: 18px;[^}]*font-weight: 520;[\s\S]*\.inheritanceHighlightGrid h4 \{[^}]*font-size: 13px;[^}]*font-weight: 560;/s);
   assert.match(css, /@container project-panel \(max-width: 700px\) \{[\s\S]*\.inheritanceHighlightsLabel \{[^}]*font-size: 18px;[^}]*font-weight: 520;[\s\S]*\.inheritanceHighlightGrid h4 \{[^}]*font-size: 13px;[^}]*font-weight: 560;/s);

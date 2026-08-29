@@ -794,35 +794,24 @@
   object-fit: contain;
 }
 .cruxVideoControls {
-  position: absolute;
-  z-index: 2;
-  right: 9px;
-  bottom: 9px;
-  display: flex;
-  gap: 5px;
-  justify-content: flex-end;
+  display: contents;
 }
 .cruxVideoControls button {
-  display: inline-flex;
-  min-height: 0;
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
   padding: 0;
-  align-items: center;
-  justify-content: center;
   border: 0;
-  color: rgba(247, 244, 241, 0.88);
   background: transparent;
   font: inherit;
-  cursor: pointer;
+  cursor: zoom-in;
 }
 .cruxVideoControls button:hover,
 .cruxVideoControls button:focus-visible {
   outline: none;
-}
-.cruxVideoControls button:hover .expandIcon,
-.cruxVideoControls button:focus-visible .expandIcon {
-  border-color: rgb(var(--accent-rgb));
-  color: rgb(var(--accent-rgb));
-  background: rgba(3, 6, 3, 0.94);
 }
 .cruxMediaActions {
   display: flex;
@@ -2333,17 +2322,15 @@
   height: auto;
   transition: transform 240ms ease;
 }
-.productScreenshot > .expandIcon,
-.inheritanceAmassButton > .expandIcon,
-.inheritanceEngineeringMediaButton > .expandIcon {
+.expandIcon {
   position: absolute;
   z-index: 1;
   right: 13px;
   bottom: 12px;
-}
-.productScreenshot > .expandIcon,
-.expandIcon {
+  box-sizing: border-box;
   display: grid;
+  width: 28px;
+  height: 28px;
   min-width: 28px;
   min-height: 28px;
   padding: 0;
@@ -2355,6 +2342,19 @@
   font-size: 26px;
   line-height: 1;
   letter-spacing: 0;
+  transition: border-color 160ms ease, color 160ms ease, background 160ms ease;
+}
+.productScreenshot:hover .expandIcon,
+.productScreenshot:focus-visible .expandIcon,
+.inheritanceAmassButton:hover .expandIcon,
+.inheritanceAmassButton:focus-visible .expandIcon,
+.inheritanceEngineeringMediaButton:hover .expandIcon,
+.inheritanceEngineeringMediaButton:focus-visible .expandIcon,
+.cruxVideoControls button:hover .expandIcon,
+.cruxVideoControls button:focus-visible .expandIcon {
+  border-color: rgb(var(--accent-rgb));
+  color: rgb(var(--accent-rgb));
+  background: rgba(3, 6, 3, 0.94);
 }
 .productScreenshot i { color: rgb(var(--accent-rgb)); font-style: normal; }
 .productScreenshot:hover img,
@@ -3340,8 +3340,6 @@
   .cruxStoryScroll p { line-height: 1.42; }
   .cruxStoryScroll p + p { margin-top: 9px; }
   .cruxMediaColumn { gap: 7px; }
-  .cruxVideoControls { right: 5px; bottom: 5px; }
-  .cruxVideoControls button { min-height: 25px; padding: 4px 5px; font-size: 6px; }
   .minimalContactLinks.cruxMediaActions { gap: 5px 10px; }
   .minimalContactLinks.cruxMediaActions a { padding: 3px 0; font-size: 9px; }
   .cruxChapterRail { font-size: 7px; }
@@ -3954,18 +3952,12 @@
     object-position: top;
   }
 
-  .productScreenshot > .expandIcon,
   .expandIcon {
+    width: 30px;
+    height: 30px;
     min-width: 30px;
     min-height: 30px;
     font-size: 30px;
-  }
-
-  .cruxVideoControls button {
-    min-width: 40px;
-    min-height: 40px;
-    padding: 0;
-    justify-content: center;
   }
 
   .mobileDock {

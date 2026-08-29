@@ -609,9 +609,15 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(source, /isMobileViewport \? 0\.9 : 1\.15/);
   assert.match(source, /panelBundles\[currentDestination\]\?\.chapters\[targetChapter\]\?\.scrollTo\(\{ top: 0 \}\)/);
   assert.match(source, /function MediaExpandIcon\(\) \{\s*return <span aria-hidden="true" className=\{styles\.expandIcon\}>⛶<\/span>;/);
+  assert.equal((source.match(/⛶/g) ?? []).length, 1);
   assert.equal([...source.matchAll(/<MediaExpandIcon \/>/g)].length, 15);
-  assert.match(css, /\.productScreenshot > \.expandIcon,\s*\.expandIcon \{[^}]*min-width: 28px;[^}]*min-height: 28px;[^}]*padding: 0;[^}]*font-size: 26px;/s);
-  assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.productScreenshot > \.expandIcon,\s*\.expandIcon \{[^}]*min-width: 30px;[^}]*min-height: 30px;[^}]*font-size: 30px;/s);
+  assert.match(css, /\.expandIcon \{[^}]*position: absolute;[^}]*right: 13px;[^}]*bottom: 12px;[^}]*width: 28px;[^}]*height: 28px;[^}]*min-width: 28px;[^}]*min-height: 28px;[^}]*font-size: 26px;/s);
+  assert.match(css, /\.cruxVideoControls \{\s*display: contents;\s*\}/s);
+  assert.match(css, /\.cruxVideoControls button \{[^}]*position: absolute;[^}]*inset: 0;[^}]*width: 100%;[^}]*height: 100%;[^}]*cursor: zoom-in;/s);
+  assert.doesNotMatch(css, /\.cruxVideoControls \.expandIcon \{/s);
+  assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.expandIcon \{[^}]*width: 30px;[^}]*height: 30px;[^}]*min-width: 30px;[^}]*min-height: 30px;[^}]*font-size: 30px;/s);
+  assert.doesNotMatch(css, /\.cruxVideoControls \{\s*right: 5px;\s*bottom: 5px;/s);
+  assert.doesNotMatch(css, /\.cruxVideoControls button \{[^}]*min-width: 40px;[^}]*min-height: 40px;/s);
   assert.doesNotMatch(source, />EXPAND\s/);
   assert.match(source, /createPortal\(/);
   assert.equal([...source.matchAll(/className=\{styles\.mobileIdentityLockup\}/g)].length, 2);

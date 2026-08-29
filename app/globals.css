@@ -67,6 +67,11 @@ body {
   animation: identity-title-reveal 480ms cubic-bezier(0.2, 0.8, 0.2, 1) 1.5s both;
 }
 
+.site-root[data-direct-entry] .site-identity strong,
+.site-root[data-direct-entry] .site-identity span {
+  animation: none;
+}
+
 @keyframes identity-name-reveal {
   from {
     opacity: 0;
@@ -131,6 +136,13 @@ label:focus-within {
   }
 
   .site-root[data-live-mobile-transition] .site-identity {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-12px);
+    animation: none;
+  }
+
+  .site-root[data-direct-entry] .site-identity {
     opacity: 0;
     visibility: hidden;
     transform: translateY(-12px);

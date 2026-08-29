@@ -77,7 +77,9 @@ Media now has two states at every screen size: an inline preview and a full-scre
 
 ## Direct navigation and sharing
 
-- Give each case study a direct, shareable URL, preferably a route such as `/work/fosty` rather than only a client-side destination.
+Implemented on August 29, 2026. Projects use concise root-level routes (`/fosty`, `/crux-vision`, `/val`, and `/inheritance`), and later chapters append a stable chapter slug. Native browser history remains synchronized without replacing or remounting the persistent visual world. Fresh deep links initialize the correct camera coordinate, palette, project, and chapter, skip the general About opening, and use a short project-specific particle reveal. The root route retains the full signature opening.
+
+- Give each case study a direct, shareable URL, using the approved concise route structure such as `/fosty` rather than only a client-side destination.
 - If real routes are deferred, add stable URL fragments as a minimum fallback.
 - Keep the URL synchronized with destination and chapter navigation.
 - Support browser Back and Forward behavior.

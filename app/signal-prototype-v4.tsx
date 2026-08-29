@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type TouchEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type TouchEvent } from "react";
 import { createPortal } from "react-dom";
 import * as THREE from "three";
 import { createEmberLoom } from "./ember-loom";
@@ -10,50 +10,15 @@ import {
   getSignalCameraDistance,
   screenVertexShader,
 } from "./signal-prototype";
+import {
+  destinations,
+  getAdjacentPortfolioRoute,
+  getPortfolioPath,
+  getPortfolioTitle,
+  parsePortfolioPathname,
+  type PortfolioRoute,
+} from "./portfolio-routes";
 import styles from "./signal-prototype.module.css";
-
-const destinations = [
-  {
-    label: "ABOUT",
-    description: "What I build and why.",
-    chapters: 1,
-    chapterLabels: ["OVERVIEW"],
-    shaderColor: [1.0, 0.25, 0.0625] as const,
-    cssColor: [255, 103, 49] as const,
-  },
-  {
-    label: "FOSTY",
-    description: "An operations platform for animal rescue foster care.",
-    chapters: 5,
-    chapterLabels: ["ORIGIN", "PRODUCT", "DESIGN", "ENGINEERING", "OUTCOME"],
-    shaderColor: [0.925, 0.282, 0.6] as const,
-    cssColor: [236, 72, 153] as const,
-  },
-  {
-    label: "CRUX VISION",
-    description: "A video analysis tool for understanding climbing movement.",
-    chapters: 5,
-    chapterLabels: ["ORIGIN", "MOVEMENT REVIEW", "VISUAL OVERLAY", "ENGINEERING", "OUTLOOK"],
-    shaderColor: [0.561, 0.902, 0.376] as const,
-    cssColor: [143, 230, 96] as const,
-  },
-  {
-    label: "VAL",
-    description: "Product ownership and full stack development for a live recovery care platform.",
-    chapters: 3,
-    chapterLabels: ["EXPERIENCE", "CONTRIBUTIONS", "PRODUCTION"],
-    shaderColor: [0.839, 0.157, 0.157] as const,
-    cssColor: [214, 40, 40] as const,
-  },
-  {
-    label: "INHERITANCE",
-    description: "A motion capture retargeting pipeline for ML training datasets.",
-    chapters: 4,
-    chapterLabels: ["EXPERIENCE", "CHALLENGE", "ENGINEERING", "IMPACT"],
-    shaderColor: [0.31, 0.68, 1.0] as const,
-    cssColor: [79, 173, 255] as const,
-  },
-];
 
 const fostyProductMedia = [
   {
@@ -206,6 +171,7 @@ const MOBILE_HOME_OPENING_DURATION = 2.15;
 const MOBILE_SWIPE_DISTANCE = 56;
 const MOBILE_SWIPE_MAX_DURATION = 800;
 const MOBILE_SWIPE_DIRECTION_RATIO = 1.25;
+const DIRECT_ENTRY_DURATION = 0.72;
 const PARTICLE_ARRIVAL_START = 0.38;
 const PARTICLE_ARRIVAL_END = 0.70;
 const PARTICLE_DISTURBANCE_START = 0.02;
@@ -213,10 +179,7 @@ const PARTICLE_DISTURBANCE_END = 0.98;
 const PANEL_ARRIVAL_START = 0.80;
 const PANEL_ARRIVAL_END = 0.985;
 
-type NavigationCommand =
-  | { type: "destination"; value: number }
-  | { type: "chapter"; value: number }
-  | { type: "step"; value: -1 | 1 };
+type NavigationCommand = { type: "route"; route: PortfolioRoute };
 
 type RouteTransition = {
   kind: "destination" | "chapter";
@@ -250,7 +213,12 @@ function MediaExpandIcon() {
   return <span aria-hidden="true" className={styles.expandIcon}>⛶</span>;
 }
 
-export function SignalPrototypeV4() {
+type SignalPrototypeV4Props = {
+  initialRoute: PortfolioRoute;
+};
+
+export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
+  const initialRouteRef = useRef(initialRoute);
   const shellRef = useRef<HTMLElement>(null);
   const mountRef = useRef<HTMLDivElement>(null);
   const emailRef = useRef<HTMLElement>(null);
@@ -262,20 +230,19 @@ export function SignalPrototypeV4() {
   const inheritanceVideoRef = useRef<HTMLVideoElement>(null);
   const inheritanceWalkingVideoRef = useRef<HTMLVideoElement>(null);
   const navigationCommandRef = useRef<NavigationCommand | null>(null);
-  const activeDestinationRef = useRef(0);
-  const activeChapterRef = useRef(0);
+  const activeDestinationRef = useRef(initialRoute.destination);
+  const activeChapterRef = useRef(initialRoute.chapter);
   const prefersReducedMotionRef = useRef(false);
   const mobileDialogRef = useRef<HTMLDivElement>(null);
-  const pendingMobileChapterRef = useRef<{ destination: number; chapter: number } | null>(null);
   const mobileSwipeStartRef = useRef<{ x: number; y: number; startedAt: number } | null>(null);
   const [paused, setPaused] = useState(false);
   const [emailCopyStatus, setEmailCopyStatus] = useState<"idle" | "copied" | "selected">("idle");
   const [expandedMedia, setExpandedMedia] = useState<FostyMedia | null>(null);
   const [expandedCruxMedia, setExpandedCruxMedia] = useState<CruxMedia | null>(null);
   const [inheritanceImageExpanded, setInheritanceImageExpanded] = useState(false);
-  const [activeRoute, setActiveRoute] = useState({ destination: 0, chapter: 0 });
+  const [activeRoute, setActiveRoute] = useState(initialRoute);
   const [mobileOverlay, setMobileOverlay] = useState<"projects" | "chapters" | null>(null);
-  const [expandedMenuProject, setExpandedMenuProject] = useState(0);
+  const [expandedMenuProject, setExpandedMenuProject] = useState(initialRoute.destination);
   const [portalTarget] = useState<HTMLElement | null>(() => (
     typeof document === "undefined"
       ? null
@@ -321,15 +288,6 @@ export function SignalPrototypeV4() {
   }, [mobileOverlay]);
 
   useEffect(() => {
-    const pendingChapter = pendingMobileChapterRef.current;
-    if (!pendingChapter || pendingChapter.destination !== activeRoute.destination) return;
-    pendingMobileChapterRef.current = null;
-    if (pendingChapter.chapter !== activeRoute.chapter) {
-      navigationCommandRef.current = { type: "chapter", value: pendingChapter.chapter };
-    }
-  }, [activeRoute]);
-
-  useEffect(() => {
     if (
       !expandedMedia
       && !expandedCruxMedia
@@ -353,26 +311,69 @@ export function SignalPrototypeV4() {
     setPaused(pausedRef.current);
   };
 
-  const navigateToDestination = (index: number) => {
+  const syncBrowserRoute = (route: PortfolioRoute, push: boolean) => {
+    const path = getPortfolioPath(route);
+    if (push && window.location.pathname !== path) {
+      window.history.pushState({ portfolioRoute: route }, "", path);
+    }
+  };
+
+  const requestRoute = (route: PortfolioRoute, push = true) => {
     setExpandedMedia(null);
     setExpandedCruxMedia(null);
     setInheritanceImageExpanded(false);
-    navigationCommandRef.current = { type: "destination", value: index };
+    syncBrowserRoute(route, push);
+    navigationCommandRef.current = { type: "route", route };
+  };
+
+  const navigateToDestination = (index: number) => {
+    requestRoute({ destination: index, chapter: 0 });
   };
 
   const navigateToChapter = (index: number) => {
-    setExpandedMedia(null);
-    setExpandedCruxMedia(null);
-    setInheritanceImageExpanded(false);
-    navigationCommandRef.current = { type: "chapter", value: index };
+    requestRoute({ destination: activeDestinationRef.current, chapter: index });
   };
 
   const stepRoute = (direction: -1 | 1) => {
-    setExpandedMedia(null);
-    setExpandedCruxMedia(null);
-    setInheritanceImageExpanded(false);
-    navigationCommandRef.current = { type: "step", value: direction };
+    const target = getAdjacentPortfolioRoute({
+      destination: activeDestinationRef.current,
+      chapter: activeChapterRef.current,
+    }, direction);
+    if (target) requestRoute(target);
   };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      const route = parsePortfolioPathname(window.location.pathname);
+      if (!route) return;
+      setMobileOverlay(null);
+      setExpandedMenuProject(route.destination);
+      requestRoute(route, false);
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  });
+
+  useEffect(() => {
+    const destination = destinations[activeRoute.destination];
+    const title = getPortfolioTitle(activeRoute);
+    const url = `${window.location.origin}${getPortfolioPath(activeRoute)}`;
+    document.title = title;
+    document.querySelector<HTMLMetaElement>('meta[name="description"]')
+      ?.setAttribute("content", destination.description);
+    document.querySelector<HTMLLinkElement>('link[rel="canonical"]')
+      ?.setAttribute("href", url);
+    document.querySelector<HTMLMetaElement>('meta[property="og:title"]')
+      ?.setAttribute("content", title);
+    document.querySelector<HTMLMetaElement>('meta[property="og:description"]')
+      ?.setAttribute("content", destination.description);
+    document.querySelector<HTMLMetaElement>('meta[property="og:url"]')
+      ?.setAttribute("content", url);
+    document.querySelector<HTMLMetaElement>('meta[name="twitter:title"]')
+      ?.setAttribute("content", title);
+    document.querySelector<HTMLMetaElement>('meta[name="twitter:description"]')
+      ?.setAttribute("content", destination.description);
+  }, [activeRoute]);
 
   const handleMobileSwipeStart = (event: TouchEvent<HTMLElement>) => {
     mobileSwipeStartRef.current = null;
@@ -392,7 +393,7 @@ export function SignalPrototypeV4() {
     mobileSwipeStartRef.current = {
       x: touch.clientX,
       y: touch.clientY,
-      startedAt: Date.now(),
+      startedAt: event.timeStamp,
     };
   };
 
@@ -406,7 +407,7 @@ export function SignalPrototypeV4() {
     const deltaY = touch.clientY - start.y;
     const horizontalDistance = Math.abs(deltaX);
     if (
-      Date.now() - start.startedAt > MOBILE_SWIPE_MAX_DURATION
+      event.timeStamp - start.startedAt > MOBILE_SWIPE_MAX_DURATION
       || horizontalDistance < MOBILE_SWIPE_DISTANCE
       || horizontalDistance < Math.abs(deltaY) * MOBILE_SWIPE_DIRECTION_RATIO
     ) return;
@@ -417,13 +418,7 @@ export function SignalPrototypeV4() {
   const navigateToMobileRoute = (destination: number, chapter: number) => {
     setMobileOverlay(null);
     setExpandedMenuProject(destination);
-    if (destination === activeDestinationRef.current) {
-      pendingMobileChapterRef.current = null;
-      navigateToChapter(chapter);
-      return;
-    }
-    pendingMobileChapterRef.current = { destination, chapter };
-    navigateToDestination(destination);
+    requestRoute({ destination, chapter });
   };
 
   const openVideoFullscreen = (video: HTMLVideoElement | null) => {
@@ -495,6 +490,7 @@ export function SignalPrototypeV4() {
   const copyOutlookEmail = () => copyEmailValue(outlookEmailRef.current);
 
   useEffect(() => {
+    const initialRenderRoute = initialRouteRef.current;
     const shell = shellRef.current;
     const mount = mountRef.current;
     if (!mount || !shell) return;
@@ -536,7 +532,7 @@ export function SignalPrototypeV4() {
       uScrollVelocity: { value: 0 },
       uProjectPresence: { value: 1 },
       uMobileComposition: { value: isMobileViewport ? 1 : 0 },
-      uPaletteColor: { value: new THREE.Vector3(...destinations[0].shaderColor) },
+      uPaletteColor: { value: new THREE.Vector3(...destinations[initialRenderRoute.destination].shaderColor) },
     };
     const carbonMaterial = new THREE.ShaderMaterial({
       uniforms: carbonUniforms,
@@ -599,21 +595,25 @@ export function SignalPrototypeV4() {
     const framePalette = new THREE.Vector3();
     let impulse = 0;
     let elapsed = 0;
-    let cameraX = 0;
-    let manualCameraTarget = 0;
+    let cameraX = initialRenderRoute.chapter * chapterTravel;
+    let manualCameraTarget = cameraX;
     let cameraVelocity = 0;
-    let currentDestination = 0;
-    let currentChapter = 0;
+    let currentDestination = initialRenderRoute.destination;
+    let currentChapter = initialRenderRoute.chapter;
     let currentAnchorX = 0;
-    let currentShaderPalette = new THREE.Vector3(...destinations[0].shaderColor);
-    let currentCssPalette: number[] = [...destinations[0].cssColor];
+    let currentShaderPalette = new THREE.Vector3(...destinations[currentDestination].shaderColor);
+    let currentCssPalette: number[] = [...destinations[currentDestination].cssColor];
     let transition: RouteTransition | null = null;
     let homeIntroElapsed = 0;
-    let homeIntroActive = true;
+    let homeIntroActive = initialRenderRoute.destination === 0;
+    let directEntryElapsed = 0;
+    let directEntryActive = initialRenderRoute.destination > 0 && !prefersReducedMotionRef.current;
+    let queuedRouteAfterDestination: PortfolioRoute | null = null;
     let previousTime: number | null = null;
     let animationFrame = 0;
     let contentMeasureFrame = 0;
     let disposed = false;
+    setAccentPalette(currentCssPalette);
 
     const updatePanelBounds = (destinationIndex = currentDestination) => {
       const width = Math.max(1, mount.clientWidth);
@@ -800,7 +800,7 @@ export function SignalPrototypeV4() {
     };
 
     const keydown = (event: KeyboardEvent) => {
-      if (homeIntroActive) return;
+      if (homeIntroActive || directEntryActive) return;
       if (transition || navigationCommandRef.current) return;
       const direction = event.key === "ArrowRight" || event.key === "ArrowDown" || event.key === "PageDown"
         ? 1
@@ -811,7 +811,14 @@ export function SignalPrototypeV4() {
       event.preventDefault();
       setExpandedMedia(null);
       setExpandedCruxMedia(null);
-      navigationCommandRef.current = { type: "step", value: direction as -1 | 1 };
+      const target = getAdjacentPortfolioRoute({
+        destination: currentDestination,
+        chapter: currentChapter,
+      }, direction as -1 | 1);
+      if (target) {
+        syncBrowserRoute(target, true);
+        navigationCommandRef.current = { type: "route", route: target };
+      }
       impulse = Math.min(1, impulse + 0.16);
     };
 
@@ -880,18 +887,6 @@ export function SignalPrototypeV4() {
       };
     };
 
-    const beginStep = (direction: -1 | 1) => {
-      const chapterCount = destinations[currentDestination].chapters;
-      if (direction > 0) {
-        if (currentChapter < chapterCount - 1) beginChapter(currentChapter + 1);
-        else if (currentDestination < destinations.length - 1) beginDestination(currentDestination + 1);
-      } else if (currentChapter > 0) {
-        beginChapter(currentChapter - 1);
-      } else if (currentDestination > 0) {
-        beginDestination(currentDestination - 1);
-      }
-    };
-
     const getManualRoute = (direction: -1 | 1): ManualRoute | null => {
       const chapterCount = destinations[currentDestination].chapters;
       const currentStopX = currentAnchorX + currentChapter * chapterTravel;
@@ -943,6 +938,10 @@ export function SignalPrototypeV4() {
 
     const beginManualArrival = (route: ManualRoute) => {
       const remaining = Math.abs(route.targetX - cameraX);
+      syncBrowserRoute({
+        destination: route.targetDestination,
+        chapter: route.targetChapter,
+      }, true);
       if (route.kind === "destination") {
         beginDestination(route.targetDestination, {
           toX: route.targetX,
@@ -967,7 +966,12 @@ export function SignalPrototypeV4() {
         homeIntroElapsed = Math.min(homeOpeningDuration, homeIntroElapsed + delta);
         if (homeIntroElapsed >= homeOpeningDuration) homeIntroActive = false;
       }
+      if (directEntryActive && !pausedRef.current) {
+        directEntryElapsed = Math.min(DIRECT_ENTRY_DURATION, directEntryElapsed + delta);
+        if (directEntryElapsed >= DIRECT_ENTRY_DURATION) directEntryActive = false;
+      }
       const homeOpeningT = THREE.MathUtils.clamp(homeIntroElapsed / homeOpeningDuration, 0, 1);
+      const directEntryT = THREE.MathUtils.clamp(directEntryElapsed / DIRECT_ENTRY_DURATION, 0, 1);
       const pageContentPresence = THREE.MathUtils.smoothstep(
         homeOpeningT,
         PANEL_ARRIVAL_START,
@@ -978,14 +982,24 @@ export function SignalPrototypeV4() {
       pointer.lerp(pointerTarget, 1.0 - Math.exp(-delta * 5.0));
       impulse *= Math.exp(-delta * 2.3);
 
-      if (!transition && navigationCommandRef.current) {
+      if (!transition && !homeIntroActive && !directEntryActive && navigationCommandRef.current) {
         const command = navigationCommandRef.current;
         navigationCommandRef.current = null;
-        if (!homeIntroActive) {
-          if (command.type === "destination") beginDestination(command.value);
-          else if (command.type === "chapter") beginChapter(command.value);
-          else beginStep(command.value);
+        queuedRouteAfterDestination = null;
+        if (command.route.destination === currentDestination) {
+          beginChapter(command.route.chapter);
+        } else {
+          if (command.route.chapter > 0) queuedRouteAfterDestination = command.route;
+          beginDestination(command.route.destination);
         }
+      } else if (
+        !transition
+        && queuedRouteAfterDestination
+        && queuedRouteAfterDestination.destination === currentDestination
+      ) {
+        const queuedRoute = queuedRouteAfterDestination;
+        queuedRouteAfterDestination = null;
+        beginChapter(queuedRoute.chapter);
       }
 
       const previousCameraX = cameraX;
@@ -1039,6 +1053,11 @@ export function SignalPrototypeV4() {
           PARTICLE_DISTURBANCE_START,
           PARTICLE_DISTURBANCE_END,
         ));
+      } else if (directEntryActive) {
+        particleTransitionActive = 1;
+        particleTransitionProgress = directEntryT;
+        particleStructurePresence = THREE.MathUtils.smoothstep(directEntryT, 0.08, 0.72);
+        particleStructureDisturbance = 1 - THREE.MathUtils.smoothstep(directEntryT, 0.12, 0.92);
       }
       if (transition) {
         particleTransitionActive = transition.kind === "destination" ? 1 : 0;
@@ -1204,6 +1223,14 @@ export function SignalPrototypeV4() {
           chapterOpacities.fill(0);
           chapterOpacities[0] = homeReveal;
           chapterShifts[0] = 18 * (1 - homeOpeningT);
+        }
+
+        if (directEntryActive && destinationIndex === currentDestination && !transition) {
+          const directPanelPresence = THREE.MathUtils.smoothstep(directEntryT, 0.34, 0.96);
+          panelOpacity = directPanelPresence;
+          chapterOpacities.fill(0);
+          chapterOpacities[currentChapter] = directPanelPresence;
+          chapterShifts[currentChapter] = 18 * (1 - directEntryT);
         }
 
         if (transition?.kind === "destination") {
@@ -1391,6 +1418,12 @@ export function SignalPrototypeV4() {
     <main
       ref={shellRef}
       className={styles.shell}
+      style={{
+        "--accent-rgb": destinations[initialRoute.destination].cssColor.join(", "),
+        "--chrome-presence": initialRoute.destination > 0 ? 1 : 0,
+      } as CSSProperties}
+      data-initial-destination={initialRoute.destination}
+      data-initial-chapter={initialRoute.chapter}
       data-mobile-project-menu-open={mobileOverlay === "projects" ? "" : undefined}
       onTouchStart={handleMobileSwipeStart}
       onTouchEnd={handleMobileSwipeEnd}
@@ -1439,7 +1472,7 @@ export function SignalPrototypeV4() {
         ))}
       </nav>
 
-      <article className={`${styles.project} ${styles.homeProject}`} data-destination-panel="0" aria-hidden="false">
+      <article className={`${styles.project} ${styles.homeProject}`} data-destination-panel="0" aria-hidden={initialRoute.destination !== 0}>
         <section className={`${styles.chapter} ${styles.homeIntroduction} ${styles.aboutSinglePanel}`} data-project-chapter>
           <div className={styles.projectMeta} data-about-reference-label><span>ABOUT</span></div>
           <div className={styles.aboutLayout}>
@@ -1506,7 +1539,7 @@ export function SignalPrototypeV4() {
         </section>
       </article>
 
-      <article className={`${styles.project} ${styles.fostyProject}`} data-destination-panel="1" aria-hidden="true">
+      <article className={`${styles.project} ${styles.fostyProject}`} data-destination-panel="1" aria-hidden={initialRoute.destination !== 1}>
         <section className={`${styles.chapter} ${styles.fostyOrigin}`} data-project-chapter>
           <div className={styles.projectMeta}><span>FOSTY</span></div>
           <div className={styles.fostyLayout}>
@@ -1784,7 +1817,7 @@ export function SignalPrototypeV4() {
         )}
       </article>
 
-      <article className={`${styles.project} ${styles.cruxProject}`} data-destination-panel="2" aria-hidden="true">
+      <article className={`${styles.project} ${styles.cruxProject}`} data-destination-panel="2" aria-hidden={initialRoute.destination !== 2}>
         <section className={`${styles.chapter} ${styles.cruxOrigin}`} data-project-chapter>
           <div className={styles.projectMeta}>
             <span>CRUX VISION</span>
@@ -2506,7 +2539,7 @@ export function SignalPrototypeV4() {
         )}
       </article>
 
-      <article className={`${styles.project} ${styles.inheritanceProject}`} data-destination-panel="4" aria-hidden="true">
+      <article className={`${styles.project} ${styles.inheritanceProject}`} data-destination-panel="4" aria-hidden={initialRoute.destination !== 4}>
         <section className={`${styles.chapter} ${styles.inheritanceExperience}`} data-project-chapter>
           <div className={styles.projectMeta}>
             <span>INHERITANCE</span>
@@ -2897,7 +2930,7 @@ export function SignalPrototypeV4() {
         )}
       </article>
 
-      <article className={`${styles.project} ${styles.valProject}`} data-destination-panel="3" aria-hidden="true">
+      <article className={`${styles.project} ${styles.valProject}`} data-destination-panel="3" aria-hidden={initialRoute.destination !== 3}>
         <section className={`${styles.chapter} ${styles.valExperience}`} data-project-chapter>
           <div className={styles.projectMeta}>
             <span>VAL</span>

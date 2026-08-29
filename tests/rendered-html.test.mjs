@@ -4,13 +4,21 @@ import test from "node:test";
 
 const projectRoot = new URL("../", import.meta.url);
 
-async function render() {
+async function readPortfolioSource() {
+  const sources = await Promise.all([
+    readFile(new URL("../app/signal-prototype-v4.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/portfolio-routes.ts", import.meta.url), "utf8"),
+  ]);
+  return sources.join("\n");
+}
+
+async function render(pathname = "/") {
   const workerUrl = new URL("../dist/server/index.js", import.meta.url);
   workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
   const { default: worker } = await import(workerUrl.href);
 
   return worker.fetch(
-    new Request("http://localhost/", {
+    new Request(new URL(pathname, "http://localhost"), {
       headers: { accept: "text/html" },
     }),
     {
@@ -58,8 +66,8 @@ test("server-renders the approved single-panel About content", async () => {
 
 test("About navigation, contact actions, and public assets are wired correctly", async () => {
   const [source, pageSource, css, globalCss, headshot, resume, socialImage] = await Promise.all([
-    readFile(new URL("../app/signal-prototype-v4.tsx", import.meta.url), "utf8"),
-    readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
+    readPortfolioSource(),
+    readFile(new URL("../app/portfolio-page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/signal-prototype.module.css", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../public/images/evan-luebbert-headshot.webp", import.meta.url)),
@@ -104,7 +112,7 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.match(globalCss, /animation: identity-title-reveal 480ms[^;]*1\.5s both;/);
   assert.match(globalCss, /\.site-identity span \{[^}]*color-mix\(in srgb, rgb\(var\(--accent-rgb\)\) 72%, white 28%\);[^}]*text-shadow: 0 1px 3px rgba\(3, 3, 5, 0\.92\);/s);
   assert.doesNotMatch(globalCss, /border-bottom: 2px solid rgba\(var\(--accent-rgb\), 0\.9\)|box-shadow: 0 10px 18px -12px/);
-  assert.match(pageSource, /className="site-root" data-site-root/);
+  assert.match(pageSource, /className="site-root"\s+data-site-root/);
   assert.match(source, /siteRoot\?\.style\.setProperty\("--accent-rgb", value\);/);
   assert.doesNotMatch(source, /<i>0[012]<\/i>/);
   assert.match(css, /--surface-background: rgba\(5, 5, 7, 0\.65\);/);
@@ -150,11 +158,49 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.ok(projectRoot);
 });
 
+test("direct project routes preserve the portfolio shell and provide route metadata", async () => {
+  const routeCases = [
+    ["/fosty", "1", "0", "Fosty — Evan Luebbert"],
+    ["/crux-vision/engineering", "2", "3", "ENGINEERING — Crux Vision — Evan Luebbert"],
+    ["/val/contributions", "3", "1", "CONTRIBUTIONS — Val — Evan Luebbert"],
+    ["/inheritance/impact", "4", "3", "IMPACT — Inheritance — Evan Luebbert"],
+  ];
+
+  for (const [pathname, destination, chapter, title] of routeCases) {
+    const response = await render(pathname);
+    assert.equal(response.status, 200, pathname);
+    const html = await response.text();
+    assert.match(html, new RegExp(`data-initial-destination="${destination}"`));
+    assert.match(html, new RegExp(`data-initial-chapter="${chapter}"`));
+    assert.match(html, new RegExp(`<title>${title}</title>`));
+    assert.match(html, new RegExp(`rel="canonical" href="https://signal-spine-poc\\.luebbertevan\\.chatgpt\\.site${pathname}"`));
+    assert.match(html, /data-direct-entry=""/);
+  }
+
+  const firstChapterAlias = await render("/fosty/origin");
+  assert.equal(firstChapterAlias.status, 308);
+  assert.equal(firstChapterAlias.headers.get("location"), "http://localhost/fosty");
+
+  const missingRoute = await render("/not-a-project");
+  assert.equal(missingRoute.status, 404);
+});
+
+test("client navigation synchronizes native history without remounting the portfolio", async () => {
+  const source = await readPortfolioSource();
+  assert.match(source, /window\.history\.pushState\(\{ portfolioRoute: route \}, "", path\);/);
+  assert.match(source, /window\.addEventListener\("popstate", handlePopState\);/);
+  assert.match(source, /navigationCommandRef\.current = \{ type: "route", route \};/);
+  assert.match(source, /let currentDestination = initialRenderRoute\.destination;/);
+  assert.match(source, /let currentChapter = initialRenderRoute\.chapter;/);
+  assert.match(source, /let directEntryActive = initialRenderRoute\.destination > 0/);
+  assert.doesNotMatch(source, /router\.push|router\.replace/);
+});
+
 test("Fosty replaces both example projects with the Origin chapter", async () => {
   const response = await render();
   const html = await response.text();
   const [source, css] = await Promise.all([
-    readFile(new URL("../app/signal-prototype-v4.tsx", import.meta.url), "utf8"),
+    readPortfolioSource(),
     readFile(new URL("../app/signal-prototype.module.css", import.meta.url), "utf8"),
   ]);
 
@@ -220,7 +266,7 @@ test("Val renders the text-only Experience, Contributions, and Production chapte
   const response = await render();
   const html = await response.text();
   const [source, css] = await Promise.all([
-    readFile(new URL("../app/signal-prototype-v4.tsx", import.meta.url), "utf8"),
+    readPortfolioSource(),
     readFile(new URL("../app/signal-prototype.module.css", import.meta.url), "utf8"),
   ]);
   const valArticle = source.slice(
@@ -276,7 +322,7 @@ test("Inheritance renders the experience, challenge, engineering, and impact cha
   const response = await render();
   const html = await response.text();
   const [source, css, video, poster, amassImage, walkingVideo, walkingPoster] = await Promise.all([
-    readFile(new URL("../app/signal-prototype-v4.tsx", import.meta.url), "utf8"),
+    readPortfolioSource(),
     readFile(new URL("../app/signal-prototype.module.css", import.meta.url), "utf8"),
     readFile(new URL("../public/videos/inheritance-motion-collection.mp4", import.meta.url)),
     readFile(new URL("../public/images/inheritance-motion-collection-poster.webp", import.meta.url)),
@@ -408,7 +454,7 @@ test("Crux Vision renders all five case-study chapters with expandable media", a
     confidenceControls,
     continuitySmoothing,
   ] = await Promise.all([
-    readFile(new URL("../app/signal-prototype-v4.tsx", import.meta.url), "utf8"),
+    readPortfolioSource(),
     readFile(new URL("../app/signal-prototype.module.css", import.meta.url), "utf8"),
     readFile(new URL("../public/videos/crux-vision-origin-overlay.mp4", import.meta.url)),
     readFile(new URL("../public/images/crux-vision-origin-overlay-poster.webp", import.meta.url)),
@@ -573,7 +619,7 @@ test("Crux Vision renders all five case-study chapters with expandable media", a
 
 test("Phase 1 provides dedicated mobile navigation, viewport-first content, and two-state media", async () => {
   const [source, css, globalCss, shaderSource] = await Promise.all([
-    readFile(new URL("../app/signal-prototype-v4.tsx", import.meta.url), "utf8"),
+    readPortfolioSource(),
     readFile(new URL("../app/signal-prototype.module.css", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../app/signal-prototype.tsx", import.meta.url), "utf8"),

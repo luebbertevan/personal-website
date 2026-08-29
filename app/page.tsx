@@ -1,13 +1,6 @@
-import { SignalPrototypeV4 } from "./signal-prototype-v4";
+import { PortfolioPage } from "./portfolio-page";
+import { HOME_ROUTE } from "./portfolio-routes";
 
 export default function Home() {
-  return (
-    <div className="site-root" data-site-root>
-      <div className="site-identity">
-        <strong>Evan Luebbert</strong>
-        <span>Software Engineer</span>
-      </div>
-      <SignalPrototypeV4 />
-    </div>
-  );
+  return <PortfolioPage initialRoute={HOME_ROUTE} />;
 }

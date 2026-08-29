@@ -27,6 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Evan Luebbert",
     description,
+    alternates: { canonical: origin },
     openGraph: {
       type: "website",
       url: origin,

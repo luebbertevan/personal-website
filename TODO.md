@@ -69,7 +69,7 @@ Complete this before mobile and responsive work so the responsive index is desig
   - **VAL** — Product ownership and full stack development for a live recovery care platform.
 - [x] Use the working destination order: About, Fosty, Crux Vision, Val, Inheritance.
 - [x] Keep index descriptions visible and legible in the mobile project menu.
-- [ ] Add direct, shareable destination URLs and browser Back/Forward behavior.
+- [x] Add direct, shareable destination URLs and browser Back/Forward behavior. Projects use concise root-level routes such as `/fosty`; later chapters extend the route, such as `/fosty/engineering`. In-site navigation updates native browser history without remounting the persistent WebGL experience, while direct visits initialize the requested destination and chapter with a short project-specific reveal.
 
 ## Later — final polish after content is stable
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type TouchEvent } from "react";
 import { createPortal } from "react-dom";
 import * as THREE from "three";
 import { createEmberLoom } from "./ember-loom";
@@ -203,6 +203,9 @@ const HOME_OPENING_DURATION = 4.75;
 const MOBILE_DESTINATION_DURATION = DESTINATION_DURATION;
 const MOBILE_CHAPTER_DURATION = 1.55;
 const MOBILE_HOME_OPENING_DURATION = 2.15;
+const MOBILE_SWIPE_DISTANCE = 56;
+const MOBILE_SWIPE_MAX_DURATION = 800;
+const MOBILE_SWIPE_DIRECTION_RATIO = 1.25;
 const PARTICLE_ARRIVAL_START = 0.38;
 const PARTICLE_ARRIVAL_END = 0.70;
 const PARTICLE_DISTURBANCE_START = 0.02;
@@ -264,6 +267,7 @@ export function SignalPrototypeV4() {
   const prefersReducedMotionRef = useRef(false);
   const mobileDialogRef = useRef<HTMLDivElement>(null);
   const pendingMobileChapterRef = useRef<{ destination: number; chapter: number } | null>(null);
+  const mobileSwipeStartRef = useRef<{ x: number; y: number; startedAt: number } | null>(null);
   const [paused, setPaused] = useState(false);
   const [emailCopyStatus, setEmailCopyStatus] = useState<"idle" | "copied" | "selected">("idle");
   const [expandedMedia, setExpandedMedia] = useState<FostyMedia | null>(null);
@@ -368,6 +372,46 @@ export function SignalPrototypeV4() {
     setExpandedCruxMedia(null);
     setInheritanceImageExpanded(false);
     navigationCommandRef.current = { type: "step", value: direction };
+  };
+
+  const handleMobileSwipeStart = (event: TouchEvent<HTMLElement>) => {
+    mobileSwipeStartRef.current = null;
+    if (
+      window.matchMedia("(min-width: 861px)").matches
+      || mobileOverlay
+      || expandedMedia
+      || expandedCruxMedia
+      || inheritanceImageExpanded
+      || event.touches.length !== 1
+    ) return;
+
+    const target = event.target instanceof Element ? event.target : null;
+    if (target?.closest("button, a, input, textarea, select, video, [role='dialog'], [role='slider']")) return;
+
+    const touch = event.touches[0];
+    mobileSwipeStartRef.current = {
+      x: touch.clientX,
+      y: touch.clientY,
+      startedAt: Date.now(),
+    };
+  };
+
+  const handleMobileSwipeEnd = (event: TouchEvent<HTMLElement>) => {
+    const start = mobileSwipeStartRef.current;
+    mobileSwipeStartRef.current = null;
+    if (!start || event.changedTouches.length !== 1) return;
+
+    const touch = event.changedTouches[0];
+    const deltaX = touch.clientX - start.x;
+    const deltaY = touch.clientY - start.y;
+    const horizontalDistance = Math.abs(deltaX);
+    if (
+      Date.now() - start.startedAt > MOBILE_SWIPE_MAX_DURATION
+      || horizontalDistance < MOBILE_SWIPE_DISTANCE
+      || horizontalDistance < Math.abs(deltaY) * MOBILE_SWIPE_DIRECTION_RATIO
+    ) return;
+
+    stepRoute(deltaX < 0 ? 1 : -1);
   };
 
   const navigateToMobileRoute = (destination: number, chapter: number) => {
@@ -1348,6 +1392,9 @@ export function SignalPrototypeV4() {
       ref={shellRef}
       className={styles.shell}
       data-mobile-project-menu-open={mobileOverlay === "projects" ? "" : undefined}
+      onTouchStart={handleMobileSwipeStart}
+      onTouchEnd={handleMobileSwipeEnd}
+      onTouchCancel={() => { mobileSwipeStartRef.current = null; }}
     >
       <div ref={mountRef} className={styles.canvas} aria-hidden="true" />
       <div className={styles.grain} aria-hidden="true" />
@@ -1358,18 +1405,29 @@ export function SignalPrototypeV4() {
           <i aria-hidden="true" />
           <span>{activeDestination.label}</span>
         </div>
-        <button
-          type="button"
-          aria-label="Open portfolio menu"
-          aria-expanded={mobileOverlay === "projects"}
-          onClick={() => {
-            setExpandedMenuProject(activeRoute.destination);
-            setMobileOverlay("projects");
-          }}
-        >
-          <i aria-hidden="true" />
-          <i aria-hidden="true" />
-        </button>
+        <div className={styles.mobileHeaderActions}>
+          <nav className={styles.mobileLandscapeRouteControls} aria-label="Landscape mobile portfolio navigation">
+            <button type="button" onClick={() => stepRoute(-1)} aria-label="Previous chapter or project" disabled={isFirstRoute}>
+              <span aria-hidden="true">←</span>
+            </button>
+            <button type="button" onClick={() => stepRoute(1)} aria-label="Next chapter or project" disabled={isLastRoute}>
+              <span aria-hidden="true">→</span>
+            </button>
+          </nav>
+          <button
+            className={styles.mobileMenuButton}
+            type="button"
+            aria-label="Open portfolio menu"
+            aria-expanded={mobileOverlay === "projects"}
+            onClick={() => {
+              setExpandedMenuProject(activeRoute.destination);
+              setMobileOverlay("projects");
+            }}
+          >
+            <i aria-hidden="true" />
+            <i aria-hidden="true" />
+          </button>
+        </div>
       </header>
 
       <nav className={styles.waypoint} aria-label="Portfolio table of contents">

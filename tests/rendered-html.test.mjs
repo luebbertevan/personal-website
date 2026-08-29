@@ -577,6 +577,11 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
 
   assert.match(source, /className=\{styles\.mobileHeader\}/);
   assert.match(source, /className=\{styles\.mobileDock\}/);
+  assert.match(source, /className=\{styles\.mobileLandscapeRouteControls\} aria-label="Landscape mobile portfolio navigation"/);
+  assert.match(source, /onTouchStart=\{handleMobileSwipeStart\}/);
+  assert.match(source, /onTouchEnd=\{handleMobileSwipeEnd\}/);
+  assert.match(source, /horizontalDistance < MOBILE_SWIPE_DISTANCE[\s\S]*horizontalDistance < Math\.abs\(deltaY\) \* MOBILE_SWIPE_DIRECTION_RATIO/s);
+  assert.match(source, /stepRoute\(deltaX < 0 \? 1 : -1\);/);
   assert.match(source, /<div className=\{styles\.mobileIdentityLockup\}>\s*<strong>EVAN LUEBBERT<\/strong>\s*<i aria-hidden="true" \/>\s*<span>\{activeDestination\.label\}<\/span>/);
   assert.match(source, /className=\{styles\.mobileRoutePicker\}[\s\S]*?<strong>\{activeChapterLabel\}<\/strong>/s);
   assert.doesNotMatch(source, /className=\{styles\.mobileRouteDivider\}/);
@@ -634,6 +639,7 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(source, /<i aria-hidden="true">\{paused \? "▶" : "Ⅱ"\}<\/i>/);
 
   assert.match(css, /Phase 1 mobile composition/);
+  assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.shell \{[^}]*touch-action: pan-y pinch-zoom;/s);
   assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*\.waypoint,[\s\S]*\.chapterRail \{\s*display: none;/s);
   assert.match(css, /\.project,[\s\S]*\.homeProject \{[\s\S]*top: calc\(max\(8px, env\(safe-area-inset-top\)\) \+ 54px\);[\s\S]*bottom: calc\(max\(8px, env\(safe-area-inset-bottom\)\) \+ 52px\);/s);
   assert.match(css, /\.mediaLightbox \{\s*position: fixed;\s*z-index: 100;/s);
@@ -657,6 +663,7 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(css, /\.mobileDock {[^}]*min-height: 44px;[^}]*grid-template-columns: 44px minmax\(0, 1fr\) 44px;/s);
   assert.match(css, /\.mobileDock \.mobileRoutePicker \{\s*display: flex;[^}]*padding: 0 12px;[^}]*align-items: center;/s);
   assert.match(css, /\.mobileRoutePicker strong \{[^}]*font-size: 17px;[^}]*letter-spacing: 0\.1em;/s);
+  assert.match(css, /@media \(max-width: 860px\) and \(orientation: landscape\) \{[\s\S]*?\.project,[\s\S]*?bottom: max\(8px, env\(safe-area-inset-bottom\)\);[\s\S]*?\.mobileDock \{\s*display: none;[\s\S]*?\.mobileLandscapeRouteControls \{[^}]*display: grid;[^}]*grid-template-columns: repeat\(2, 38px\);/s);
   assert.doesNotMatch(css, /\.mobileRouteDivider/);
   assert.match(css, /@media \(min-width: 861px\) \{[\s\S]*?\.homeProject \.homeIntroduction \{[\s\S]*?overflow-y: auto;/s);
   assert.match(css, /@media \(min-width: 861px\) \{[\s\S]*?\.fostyLayout \{\s*flex: none;\s*grid-template-rows: auto auto auto;/s);

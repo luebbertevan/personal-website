@@ -29,7 +29,8 @@
 
 .mobileHeader,
 .mobileDock,
-.mobileOverlay {
+.mobileOverlay,
+.mobileLandscapeRouteControls {
   display: none;
 }
 
@@ -3596,6 +3597,7 @@
   .shell {
     --case-study-body-size: 15px;
     min-height: 0;
+    touch-action: pan-y pinch-zoom;
     cursor: default;
   }
 
@@ -3627,6 +3629,16 @@
     backdrop-filter: blur(16px);
     opacity: var(--chrome-presence);
     transition: opacity 180ms linear;
+  }
+
+  .mobileHeader > .mobileIdentityLockup {
+    flex: 1 1 auto;
+  }
+
+  .mobileHeaderActions {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
   }
 
   .mobileIdentityLockup {
@@ -3669,7 +3681,7 @@
     text-transform: uppercase;
   }
 
-  .mobileHeader > button {
+  .mobileMenuButton {
     display: grid;
     width: 36px;
     height: 38px;
@@ -3682,7 +3694,7 @@
     cursor: pointer;
   }
 
-  .mobileHeader > button i {
+  .mobileMenuButton i {
     display: block;
     width: 100%;
     height: 1px;
@@ -4330,6 +4342,46 @@
     width: 100%;
     height: 100%;
     object-fit: contain;
+  }
+}
+
+@media (max-width: 860px) and (orientation: landscape) {
+  .project,
+  .homeProject {
+    bottom: max(8px, env(safe-area-inset-bottom));
+  }
+
+  .mobileDock {
+    display: none;
+  }
+
+  .mobileLandscapeRouteControls {
+    display: grid;
+    height: 38px;
+    grid-template-columns: repeat(2, 38px);
+  }
+
+  .mobileLandscapeRouteControls button {
+    display: grid;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    place-items: center;
+    border: 0;
+    border-left: 1px solid rgba(255, 255, 255, 0.15);
+    color: rgba(247, 244, 241, 0.88);
+    background: transparent;
+    font-family: var(--font-geist-mono), monospace;
+    cursor: pointer;
+  }
+
+  .mobileLandscapeRouteControls button:disabled {
+    opacity: 0.28;
+    cursor: default;
+  }
+
+  .mobileLandscapeRouteControls span[aria-hidden] {
+    font-size: 22px;
   }
 }
 

@@ -653,6 +653,7 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(css, /\.chapter \.cardLabel,[\s\S]*?\.inheritanceMetrics dd strong \{\s*font-size: 13px;/s);
   assert.match(css, /\.mobileIdentityLockup strong \{[^}]*font-family: var\(--font-geist-mono\), monospace;[^}]*font-size: 13px;[^}]*letter-spacing: 0\.08em;/s);
   assert.match(css, /\.mobileIdentityLockup > span \{[^}]*font-size: 13px;[^}]*letter-spacing: 0\.08em;[^}]*text-transform: uppercase;/s);
+  assert.match(css, /\.mobileHeader > \.mobileIdentityLockup \{[^}]*flex: 1 1 auto;[^}]*justify-content: start;[^}]*text-align: left;/s);
   assert.match(css, /\.mobileProjectIndex \{[^}]*margin: 12px 10px 0;/s);
   assert.match(css, /\.mobileUtilityLinks a \{[^}]*font-size: 17px;/s);
   assert.match(css, /\.mobileMenuFooter \{[^}]*margin: auto 10px 0;/s);

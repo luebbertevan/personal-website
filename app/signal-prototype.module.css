@@ -3628,6 +3628,8 @@
 
   .mobileHeader > .mobileIdentityLockup {
     flex: 1 1 auto;
+    justify-content: start;
+    text-align: left;
   }
 
   .mobileHeaderActions {

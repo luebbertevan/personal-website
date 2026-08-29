@@ -668,7 +668,7 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(css, /\.mobileDock {[^}]*min-height: 44px;[^}]*grid-template-columns: 44px minmax\(0, 1fr\) 44px;/s);
   assert.match(css, /\.mobileDock \.mobileRoutePicker \{\s*display: flex;[^}]*padding: 0 12px;[^}]*align-items: center;/s);
   assert.match(css, /\.mobileRoutePicker strong \{[^}]*font-size: 17px;[^}]*letter-spacing: 0\.1em;/s);
-  assert.match(css, /@media \(max-width: 860px\) and \(orientation: landscape\) \{[\s\S]*?\.project,[\s\S]*?bottom: max\(8px, env\(safe-area-inset-bottom\)\);[\s\S]*?\.mobileDock \{\s*display: none;[\s\S]*?\.mobileLandscapeRouteControls \{[^}]*display: grid;[^}]*grid-template-columns: repeat\(2, 38px\);/s);
+  assert.match(css, /@media \(max-width: 860px\) and \(orientation: landscape\) \{[\s\S]*?\.project,[\s\S]*?bottom: max\(8px, env\(safe-area-inset-bottom\)\);[\s\S]*?\.mobileDock \{\s*display: none;[\s\S]*?\.mobileLandscapeRouteControls \{[^}]*display: grid;[^}]*grid-template-columns: repeat\(2, 52px\);[\s\S]*?\.mobileLandscapeRouteControls button \{[^}]*width: 52px;/s);
   assert.doesNotMatch(css, /\.mobileRouteDivider/);
   assert.match(css, /@media \(min-width: 861px\) \{[\s\S]*?\.homeProject \.homeIntroduction \{[\s\S]*?overflow-y: auto;/s);
   assert.match(css, /@media \(min-width: 861px\) \{[\s\S]*?\.fostyLayout \{\s*flex: none;\s*grid-template-rows: auto auto auto;/s);

@@ -4368,12 +4368,12 @@
   .mobileLandscapeRouteControls {
     display: grid;
     height: 38px;
-    grid-template-columns: repeat(2, 38px);
+    grid-template-columns: repeat(2, 52px);
   }
 
   .mobileLandscapeRouteControls button {
     display: grid;
-    width: 38px;
+    width: 52px;
     height: 38px;
     padding: 0;
     place-items: center;

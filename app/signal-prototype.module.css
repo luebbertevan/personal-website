@@ -3924,6 +3924,10 @@
     grid-template-columns: 1fr;
   }
 
+  /* Mobile Inheritance narrative order: demonstration before impact metrics. */
+  .inheritanceVideoFrame { order: 1; }
+  .inheritanceMetrics { order: 2; }
+
   .cruxEngineeringHighlights {
     font-size: 17px;
     line-height: 1.52;

@@ -3002,30 +3002,15 @@
     font-size: var(--about-intro-title-size);
   }
 
-  /* Let introductory layouts expose their intrinsic height for active-chapter sizing. */
+  /* Let scrolling introductory layouts expose their intrinsic height for active-chapter sizing. */
   .fostyLayout {
     flex: none;
     grid-template-rows: auto auto auto;
   }
-  .cruxLayout,
-  .cruxBody,
   .inheritanceLayout,
   .valLayout {
     flex: none;
     min-height: auto;
-  }
-  .cruxBody { align-items: start; }
-  .cruxOrigin {
-    overflow-x: hidden;
-    overflow-y: auto;
-  }
-  .cruxNarrative {
-    overflow: visible;
-    mask-image: none;
-  }
-  .cruxMediaColumn,
-  .cruxOrigin .cruxMediaColumn {
-    grid-template-rows: auto;
   }
 }
 
@@ -3514,7 +3499,6 @@
 
 /* Complex case-study layouts collapse at the width where their own content stops fitting. */
 @media (max-width: 1200px) {
-  .cruxBody,
   .cruxMovementIntro,
   .cruxMovementFeature,
   .cruxMovementFeatureWide,
@@ -3529,19 +3513,25 @@
     grid-template-columns: 1fr;
   }
 
-  .cruxNarrative {
-    display: contents;
+}
+
+/* Crux Origin becomes a linear reading flow only with the mobile navigation shell. */
+@media (max-width: 860px) {
+  .cruxBody {
+    grid-template-columns: 1fr;
+    flex: none;
+    min-height: auto;
+    gap: 18px;
+    align-items: start;
   }
 
-  .cruxLayout,
-  .cruxBody {
+  .cruxLayout {
     flex: none;
     min-height: auto;
   }
 
-  .cruxBody {
-    gap: 18px;
-    align-items: start;
+  .cruxNarrative {
+    display: contents;
   }
 
   .cruxOriginLead { order: 1; }

@@ -535,8 +535,8 @@ test("Crux Vision renders all five case-study chapters with expandable media", a
   assert.match(source, /webkitEnterFullscreen/);
   assert.equal((source.match(/onClick=\{\(\) => openVideoFullscreen\(/g) ?? []).length, 5);
   assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.cruxProject \{\s*--crux-body-size: 17px;/s);
-  assert.match(css, /@media \(max-width: 1200px\) \{[\s\S]*?\.cruxNarrative \{\s*display: contents;/s);
-  assert.match(css, /@media \(max-width: 1200px\) \{[\s\S]*?\.cruxOriginVideoFrame \{[^}]*width: min\(100%, 640px\);[^}]*height: auto;[^}]*max-height: none;/s);
+  assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.cruxNarrative \{\s*display: contents;/s);
+  assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.cruxOriginVideoFrame \{[^}]*width: min\(100%, 640px\);[^}]*height: auto;[^}]*max-height: none;/s);
   assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.cruxEngineeringHighlights \{\s*font-size: 17px;\s*line-height: 1\.52;/s);
   assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.cruxOutlookLayout \{[^}]*padding-right: 6px;/s);
   assert.equal(video.subarray(4, 8).toString("ascii"), "ftyp");
@@ -648,7 +648,9 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(css, /@media \(min-width: 861px\) \{[\s\S]*?\.homeProject \.homeIntroduction \{[\s\S]*?overflow-y: auto;/s);
   assert.match(css, /@media \(min-width: 861px\) \{[\s\S]*?\.fostyLayout \{\s*flex: none;\s*grid-template-rows: auto auto auto;/s);
   assert.match(css, /@media \(min-width: 861px\) and \(max-width: 1399px\), \(min-width: 861px\) and \(max-height: 900px\) \{\s*\.project \{\s*--content-panel-scale: 1;\s*\}\s*\}/s);
-  assert.match(css, /@media \(max-width: 1200px\) \{[\s\S]*?\.cruxBody,[\s\S]*?grid-template-columns: 1fr;/s);
+  assert.match(css, /@media \(max-width: 1200px\) \{[\s\S]*?\.cruxMovementIntro,[\s\S]*?grid-template-columns: 1fr;/s);
+  assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.cruxBody \{[^}]*grid-template-columns: 1fr;[^}]*flex: none;[^}]*min-height: auto;/s);
+  assert.doesNotMatch(css, /@media \(min-width: 861px\) \{[\s\S]*?\.cruxLayout,\s*\.cruxBody[\s\S]*?flex: none;/s);
   assert.match(css, /@media \(min-width: 861px\) and \(max-width: 1160px\) \{[\s\S]*?\.inheritanceShowcase,[\s\S]*?grid-template-columns: 1fr;/s);
   assert.match(css, /@media \(min-width: 861px\) and \(max-width: 1040px\) \{[\s\S]*?\.fostyLayout,[\s\S]*?grid-template-columns: 1fr;/s);
   assert.match(css, /rgba\(5, 5, 7, 0\.82\);/);

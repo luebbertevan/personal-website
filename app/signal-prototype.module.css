@@ -3946,6 +3946,17 @@
     padding-right: 6px;
   }
 
+  .cruxOutlookInvitation,
+  .minimalContactLinks.cruxOutlookActions {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .minimalContactLinks.cruxOutlookActions {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
   .productScreenshot img {
     max-height: min(58svh, 500px);
     object-fit: cover;

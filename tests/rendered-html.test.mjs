@@ -539,6 +539,8 @@ test("Crux Vision renders all five case-study chapters with expandable media", a
   assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.cruxOriginVideoFrame \{[^}]*width: min\(100%, 640px\);[^}]*height: auto;[^}]*max-height: none;/s);
   assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.cruxEngineeringHighlights \{\s*font-size: 17px;\s*line-height: 1\.52;/s);
   assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.cruxOutlookLayout \{[^}]*padding-right: 6px;/s);
+  assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.cruxOutlookInvitation,\s*\.minimalContactLinks\.cruxOutlookActions \{[^}]*min-width: 0;[^}]*max-width: 100%;/s);
+  assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.minimalContactLinks\.cruxOutlookActions \{[^}]*display: flex;[^}]*flex-wrap: wrap;/s);
   assert.equal(video.subarray(4, 8).toString("ascii"), "ftyp");
   assert.equal(poster.subarray(0, 4).toString("ascii"), "RIFF");
   assert.equal(poster.subarray(8, 12).toString("ascii"), "WEBP");

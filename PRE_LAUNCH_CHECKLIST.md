@@ -88,21 +88,23 @@ Implemented on August 29, 2026. Projects use concise root-level routes (`/fosty`
 
 ## Adaptive rendering and performance
 
-- Replace Pause with a persistent **Auto / Full / Reduced** visual-quality control.
+The adaptive rendering and resilience pass was completed on August 29, 2026. The finished interface is automatic and has no visitor-facing quality control. Full, Balanced, and Reduced all render the authentic WebGL strand; lower tiers reduce technical cost without substituting a CSS interpretation. A hidden diagnostic view can force tiers during validation. Renderer failure and unrecoverable context loss use a deliberately minimal near-black emergency background with no imitation strand, while direct-route content remains usable.
+
+- Replace Pause with an automatic **Full / Balanced / Reduced** quality system and keep validation controls out of the normal visitor interface.
 - Use capability hints only as an initial estimate; measure real frame time and downgrade when the current machine cannot sustain the experience.
 - Define approximately these tiers:
   - **Full:** current particle density and resolution with all visual passes.
   - **Balanced/Auto fallback:** reduced particle density and pixel ratio with simpler post-processing.
   - **Reduced:** substantially fewer particles, a lower render resolution, an optional 30 FPS cap, no depth-of-field or atmospheric effects, and poster images instead of automatic video playback.
 - Pause rendering when the document is hidden.
-- Remember a visitor's manual quality choice locally.
+- Keep manual tier overrides limited to the hidden diagnostic view; do not expose or persist them as visitor preferences.
 - Load video sources only when their chapter or lightbox needs them.
 - Split the large case-study client component so visitors do not need to parse every interactive feature before the first view becomes usable.
 - Establish a performance budget for initial JavaScript, initial media transfer, and sustained animation frame time.
 
 ## Resilience and fallback behavior
 
-- Provide a branded static background if WebGL is unavailable or renderer creation fails.
+- Provide a deliberately minimal near-black emergency background if WebGL is unavailable or renderer creation fails. Do not imitate the strand with CSS or a lower-fidelity substitute.
 - Keep the index and portfolio content usable without the particle system.
 - Handle WebGL context loss without leaving the site blank.
 - Provide an intentional loading state during visual initialization.

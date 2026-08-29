@@ -95,13 +95,13 @@ Complete this before mobile and responsive work so the responsive index is desig
   - [x] Retract the full-width-divider treatment: let the portrait span the title and availability rows so it no longer creates artificial vertical space.
 - [x] Size desktop panels to the active chapter content, capped by the available viewport, and coordinate the panel and particle-border height during chapter transitions.
 - [ ] Establish explicit phone, tablet, laptop, and large-desktop compositions instead of relying only on proportional scaling.
-- [ ] Extend the initial mobile resolution reduction into measured adaptive particle/render tiers for constrained devices without losing the strand’s identity.
+- [x] Extend the initial mobile resolution reduction into measured adaptive particle/render tiers for constrained devices without losing the strand’s identity. Full, Balanced, and Reduced all preserve the authentic WebGL strand; Auto selects an initial tier and downgrades only after sustained slow frame-time windows.
 
 ### Replace Pause with low-performance mode
 
-- [ ] Remove Pause rather than repairing it: it does not stop the complete particle system and interrupting time damages particle transition state.
-- [ ] Add a low-performance mode that preserves navigation and transition continuity while reducing render resolution, device-pixel ratio, particle density, post-processing, and optional atmospheric layers.
-- [ ] Consider automatic capability detection plus a persistent manual toggle; define exact behavior after final desktop and mobile compositions are known.
+- [x] Remove Pause rather than repairing it: it does not stop the complete particle system and interrupting time damages particle transition state.
+- [x] Add a low-performance mode that preserves navigation and transition continuity while reducing render resolution, device-pixel ratio, particle density, post-processing, and optional atmospheric layers.
+- [x] Use automatic capability detection and sustained frame-time measurement without adding a visitor-facing quality control. A hidden diagnostic view remains available for validation only.
 
 ### Interface cleanup and final art direction
 

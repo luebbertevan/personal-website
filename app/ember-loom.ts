@@ -1,8 +1,6 @@
 import * as THREE from "three";
 import { GPUComputationRenderer } from "three/examples/jsm/misc/GPUComputationRenderer.js";
 
-const SIMULATION_SIZE = 160;
-
 const positionShader = /* glsl */ `
   uniform float uDelta;
 
@@ -307,13 +305,15 @@ export type EmberLoom = {
 export function createEmberLoom(
   renderer: THREE.WebGLRenderer,
   carbonDepthTexture: THREE.Texture,
+  simulationSize = 160,
 ): EmberLoom | null {
-  const gpuCompute = new GPUComputationRenderer(SIMULATION_SIZE, SIMULATION_SIZE, renderer);
+  const safeSimulationSize = Math.max(32, Math.floor(simulationSize));
+  const gpuCompute = new GPUComputationRenderer(safeSimulationSize, safeSimulationSize, renderer);
   const positionTexture = gpuCompute.createTexture();
   const velocityTexture = gpuCompute.createTexture();
   const positionData = positionTexture.image.data;
   const velocityData = velocityTexture.image.data;
-  const particleCount = SIMULATION_SIZE * SIMULATION_SIZE;
+  const particleCount = safeSimulationSize * safeSimulationSize;
 
   for (let i = 0; i < particleCount; i += 1) {
     const offset = i * 4;
@@ -378,8 +378,8 @@ export function createEmberLoom(
   const particleUvs = new Float32Array(particleCount * 2);
   const particleSeeds = new Float32Array(particleCount);
   for (let i = 0; i < particleCount; i += 1) {
-    particleUvs[i * 2] = (i % SIMULATION_SIZE + 0.5) / SIMULATION_SIZE;
-    particleUvs[i * 2 + 1] = (Math.floor(i / SIMULATION_SIZE) + 0.5) / SIMULATION_SIZE;
+    particleUvs[i * 2] = (i % safeSimulationSize + 0.5) / safeSimulationSize;
+    particleUvs[i * 2 + 1] = (Math.floor(i / safeSimulationSize) + 0.5) / safeSimulationSize;
     particleSeeds[i] = positionData[i * 4 + 3];
   }
   geometry.setAttribute("particleUv", new THREE.InstancedBufferAttribute(particleUvs, 2));

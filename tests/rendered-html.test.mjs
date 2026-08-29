@@ -125,7 +125,7 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.match(css, /\.chapterRail li \{[^}]*height: 100%;/s);
   assert.match(css, /\.chapterRail button,\s*\.chapterRail > li > span \{[^}]*width: 100%;[^}]*height: 100%;/s);
   assert.match(css, /\.routeControls button \{[^}]*background: var\(--surface-background\);/s);
-  assert.match(css, /\.pause \{[^}]*background: var\(--surface-background\);/s);
+  assert.doesNotMatch(css, /\.pause\b/);
   assert.match(css, /\.approachCopy \{[^}]*width: 100%;[^}]*max-width: none;/s);
   assert.match(css, /@media \(min-width: 1400px\) and \(min-height: 900px\) \{[\s\S]*\.availability,[\s\S]*\.approachCopy \{[^}]*width: 100%;[^}]*max-width: none;/s);
   assert.match(css, /@media \(min-width: 1400px\) and \(min-height: 900px\) \{[\s\S]*\.shell \{ --chapter-rail-height: 72px; \}[\s\S]*\.chapterRail \{ font-size: 15px; \}/s);
@@ -194,6 +194,49 @@ test("client navigation synchronizes native history without remounting the portf
   assert.match(source, /let currentChapter = initialRenderRoute\.chapter;/);
   assert.match(source, /let directEntryActive = initialRenderRoute\.destination > 0/);
   assert.doesNotMatch(source, /router\.push|router\.replace/);
+});
+
+test("visual rendering adapts automatically and fails safely without visitor-facing controls", async () => {
+  const [response, source, qualitySource, emberSource, shaderSource, css] = await Promise.all([
+    render("/crux-vision/engineering"),
+    readFile(new URL("../app/signal-prototype-v4.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/visual-quality.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/ember-loom.ts", import.meta.url), "utf8"),
+    readFile(new URL("../app/signal-prototype.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/signal-prototype.module.css", import.meta.url), "utf8"),
+  ]);
+  const html = await response.text();
+
+  assert.equal(response.status, 200);
+  assert.match(html, /data-visual-state="loading"/);
+  assert.doesNotMatch(html, /aria-label="Visual rendering diagnostics"/);
+  assert.match(html, /<noscript>[\s\S]*aria-label="Portfolio pages"/);
+
+  assert.match(qualitySource, /particleSimulationSize: 160/);
+  assert.match(qualitySource, /particleSimulationSize: 128/);
+  assert.match(qualitySource, /particleSimulationSize: 96/);
+  assert.match(qualitySource, /minimumFrameInterval: 1000 \/ 30/);
+  assert.match(qualitySource, /export function estimateInitialVisualQuality/);
+  assert.match(qualitySource, /export function getNextLowerVisualQuality/);
+  assert.match(emberSource, /simulationSize = 160/);
+  assert.match(emberSource, /new GPUComputationRenderer\(safeSimulationSize, safeSimulationSize, renderer\)/);
+  assert.match(shaderSource, /uniform float uPostProcessingEnabled;/);
+  assert.match(shaderSource, /if \(uPostProcessingEnabled < 0\.5\)/);
+
+  assert.match(source, /searchParams\.get\("visual-debug"\) === "1"/);
+  assert.match(source, /qualityMode === "auto"/);
+  assert.match(source, /performanceSamples\.length >= 90/);
+  assert.match(source, /consecutiveSlowWindows >= 2/);
+  assert.match(source, /document\.addEventListener\("visibilitychange", handleVisibilityChange\)/);
+  assert.match(source, /addEventListener\("webglcontextlost", handleContextLost\)/);
+  assert.match(source, /addEventListener\("webglcontextrestored", handleContextRestored\)/);
+  assert.match(source, /catch \{\s*activateFallback\("WebGL renderer unavailable"\);/);
+  assert.match(source, /window\.location\.assign\(getPortfolioPath\(route\)\)/);
+  assert.doesNotMatch(source, /PAUSE VISUALS|RESUME VISUALS|togglePause|pausedRef/);
+
+  assert.match(css, /\.shell\[data-visual-state="fallback"\] \{[\s\S]*#070504;/);
+  assert.doesNotMatch(css, /data-visual-state="fallback"[^}]*strand/i);
+  assert.match(css, /@media \(scripting: none\)/);
 });
 
 test("Fosty replaces both example projects with the Origin chapter", async () => {
@@ -618,11 +661,12 @@ test("Crux Vision renders all five case-study chapters with expandable media", a
 });
 
 test("Phase 1 provides dedicated mobile navigation, viewport-first content, and two-state media", async () => {
-  const [source, css, globalCss, shaderSource] = await Promise.all([
+  const [source, css, globalCss, shaderSource, visualQualitySource] = await Promise.all([
     readPortfolioSource(),
     readFile(new URL("../app/signal-prototype.module.css", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../app/signal-prototype.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/visual-quality.ts", import.meta.url), "utf8"),
   ]);
 
   assert.match(source, /className=\{styles\.mobileHeader\}/);
@@ -668,7 +712,10 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(source, /transition\.panelHeightTo >= transition\.panelHeightFrom/);
   assert.match(source, /mobileViewportQuery\.addEventListener\("change", handleMobileViewportChange\);/);
   assert.match(source, /siteRoot\?\.toggleAttribute\("data-live-mobile-transition", isMobileViewport\);/);
-  assert.match(source, /isMobileViewport \? 0\.9 : 1\.15/);
+  assert.match(source, /activeQualityProfile\.mobilePixelRatioCap/);
+  assert.match(source, /activeQualityProfile\.desktopPixelRatioCap/);
+  assert.match(visualQualitySource, /mobilePixelRatioCap: 0\.9/);
+  assert.match(visualQualitySource, /desktopPixelRatioCap: 1\.15/);
   assert.match(source, /panelBundles\[currentDestination\]\?\.chapters\[targetChapter\]\?\.scrollTo\(\{ top: 0 \}\)/);
   assert.match(source, /function MediaExpandIcon\(\) \{\s*return <span aria-hidden="true" className=\{styles\.expandIcon\}>⛶<\/span>;/);
   assert.equal((source.match(/⛶/g) ?? []).length, 1);
@@ -685,8 +732,7 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.equal([...source.matchAll(/className=\{styles\.mobileIdentityLockup\}/g)].length, 2);
   assert.match(source, /<strong>EVAN LUEBBERT<\/strong>\s*<i aria-hidden="true" \/>\s*<span>SOFTWARE ENGINEER<\/span>/);
   assert.match(source, /className=\{styles\.mobileUtilityLinks\}/);
-  assert.match(source, /className=\{styles\.mobileVisualControl\}/);
-  assert.match(source, /<i aria-hidden="true">\{paused \? "▶" : "Ⅱ"\}<\/i>/);
+  assert.doesNotMatch(source, /className=\{styles\.mobileVisualControl\}|PAUSE VISUALS|RESUME VISUALS/);
 
   assert.match(css, /Phase 1 mobile composition/);
   assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.shell \{[^}]*touch-action: pan-y pinch-zoom;/s);

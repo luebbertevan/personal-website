@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type CSSProperties, type TouchEvent } from "react";
 import { createPortal } from "react-dom";
+import Link from "next/link";
 import * as THREE from "three";
 import { createEmberLoom } from "./ember-loom";
 import {
@@ -18,6 +19,14 @@ import {
   parsePortfolioPathname,
   type PortfolioRoute,
 } from "./portfolio-routes";
+import {
+  estimateInitialVisualQuality,
+  getNextLowerVisualQuality,
+  isVisualQualityTier,
+  visualQualityProfiles,
+  visualQualityTiers,
+  type VisualQualityTier,
+} from "./visual-quality";
 import styles from "./signal-prototype.module.css";
 
 const fostyProductMedia = [
@@ -217,6 +226,14 @@ type SignalPrototypeV4Props = {
   initialRoute: PortfolioRoute;
 };
 
+type VisualDiagnostics = {
+  state: "loading" | "ready" | "fallback";
+  tier: VisualQualityTier;
+  mode: "auto" | "forced";
+  fps: number | null;
+  reason: string;
+};
+
 export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
   const initialRouteRef = useRef(initialRoute);
   const shellRef = useRef<HTMLElement>(null);
@@ -230,12 +247,13 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
   const inheritanceVideoRef = useRef<HTMLVideoElement>(null);
   const inheritanceWalkingVideoRef = useRef<HTMLVideoElement>(null);
   const navigationCommandRef = useRef<NavigationCommand | null>(null);
+  const qualityCommandRef = useRef<VisualQualityTier | "auto" | null>(null);
+  const visualFallbackRef = useRef(false);
   const activeDestinationRef = useRef(initialRoute.destination);
   const activeChapterRef = useRef(initialRoute.chapter);
   const prefersReducedMotionRef = useRef(false);
   const mobileDialogRef = useRef<HTMLDivElement>(null);
   const mobileSwipeStartRef = useRef<{ x: number; y: number; startedAt: number } | null>(null);
-  const [paused, setPaused] = useState(false);
   const [emailCopyStatus, setEmailCopyStatus] = useState<"idle" | "copied" | "selected">("idle");
   const [expandedMedia, setExpandedMedia] = useState<FostyMedia | null>(null);
   const [expandedCruxMedia, setExpandedCruxMedia] = useState<CruxMedia | null>(null);
@@ -243,12 +261,12 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
   const [activeRoute, setActiveRoute] = useState(initialRoute);
   const [mobileOverlay, setMobileOverlay] = useState<"projects" | "chapters" | null>(null);
   const [expandedMenuProject, setExpandedMenuProject] = useState(initialRoute.destination);
+  const [visualDiagnostics, setVisualDiagnostics] = useState<VisualDiagnostics | null>(null);
   const [portalTarget] = useState<HTMLElement | null>(() => (
     typeof document === "undefined"
       ? null
       : document.querySelector<HTMLElement>("[data-site-root]") ?? document.body
   ));
-  const pausedRef = useRef(false);
 
   useEffect(() => {
     if (!mobileOverlay) return;
@@ -306,11 +324,6 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
     return () => window.removeEventListener("keydown", closeOnEscape);
   }, [expandedCruxMedia, expandedMedia, inheritanceImageExpanded]);
 
-  const togglePause = () => {
-    pausedRef.current = !pausedRef.current;
-    setPaused(pausedRef.current);
-  };
-
   const syncBrowserRoute = (route: PortfolioRoute, push: boolean) => {
     const path = getPortfolioPath(route);
     if (push && window.location.pathname !== path) {
@@ -322,8 +335,30 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
     setExpandedMedia(null);
     setExpandedCruxMedia(null);
     setInheritanceImageExpanded(false);
+    if (visualFallbackRef.current) {
+      window.location.assign(getPortfolioPath(route));
+      return;
+    }
     syncBrowserRoute(route, push);
     navigationCommandRef.current = { type: "route", route };
+  };
+
+  const setDiagnosticVisualMode = (mode: VisualQualityTier | "auto" | "fallback") => {
+    if (mode === "fallback" || visualFallbackRef.current) {
+      const url = new URL(window.location.href);
+      url.searchParams.set("visual-debug", "1");
+      if (mode === "fallback") {
+        url.searchParams.set("visual-fallback", "1");
+        url.searchParams.delete("visual-quality");
+      } else {
+        url.searchParams.delete("visual-fallback");
+        if (mode === "auto") url.searchParams.delete("visual-quality");
+        else url.searchParams.set("visual-quality", mode);
+      }
+      window.location.replace(url);
+      return;
+    }
+    qualityCommandRef.current = mode;
   };
 
   const navigateToDestination = (index: number) => {
@@ -509,12 +544,88 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
       siteRoot?.style.setProperty("--accent-rgb", value);
     };
 
-    const renderer = new THREE.WebGLRenderer({
-      antialias: false,
-      alpha: false,
-      powerPreference: "high-performance",
-      preserveDrawingBuffer: false,
+    const searchParams = new URLSearchParams(window.location.search);
+    const diagnosticsEnabled = searchParams.get("visual-debug") === "1";
+    const forcedQualityParam = searchParams.get("visual-quality");
+    const forcedQuality = isVisualQualityTier(forcedQualityParam) ? forcedQualityParam : null;
+    const forceFallback = diagnosticsEnabled && searchParams.get("visual-fallback") === "1";
+    const navigatorWithMemory = navigator as Navigator & { deviceMemory?: number };
+    let qualityMode: "auto" | "forced" = forcedQuality ? "forced" : "auto";
+    let activeQualityTier = forcedQuality ?? estimateInitialVisualQuality({
+      isMobile: isMobileViewport,
+      hardwareConcurrency: navigator.hardwareConcurrency,
+      deviceMemory: navigatorWithMemory.deviceMemory,
     });
+    let activeQualityProfile = visualQualityProfiles[activeQualityTier];
+    let diagnosticFps: number | null = null;
+    let diagnosticReason = forcedQuality ? "diagnostic override" : "initial capability estimate";
+
+    const publishDiagnostics = (state: VisualDiagnostics["state"]) => {
+      shell.dataset.visualState = state;
+      shell.dataset.visualQuality = activeQualityTier;
+      shell.dataset.visualQualityMode = qualityMode;
+      if (!diagnosticsEnabled) return;
+      setVisualDiagnostics({
+        state,
+        tier: activeQualityTier,
+        mode: qualityMode,
+        fps: diagnosticFps,
+        reason: diagnosticReason,
+      });
+    };
+
+    const revealRouteWithoutVisuals = (route: PortfolioRoute) => {
+      shell.style.setProperty("--chrome-presence", "1");
+      const panels = Array.from(shell.querySelectorAll<HTMLElement>("[data-destination-panel]"));
+      panels.forEach((panel, destinationIndex) => {
+        const panelActive = destinationIndex === route.destination;
+        panel.style.setProperty("--entry-presence", panelActive ? "1" : "0");
+        panel.style.setProperty("--entry-shift", "0px");
+        panel.inert = !panelActive;
+        panel.setAttribute("aria-hidden", panelActive ? "false" : "true");
+        const chapters = Array.from(panel.querySelectorAll<HTMLElement>("[data-project-chapter]"));
+        chapters.forEach((chapter, chapterIndex) => {
+          const chapterActive = panelActive && chapterIndex === route.chapter;
+          chapter.style.setProperty("--chapter-presence", chapterActive ? "1" : "0");
+          chapter.style.setProperty("--chapter-shift", "0px");
+          chapter.style.setProperty("--chapter-wipe", chapterActive ? "0%" : "100%");
+          chapter.style.setProperty("--chapter-blur", "0px");
+          chapter.inert = !chapterActive;
+          chapter.setAttribute("aria-hidden", chapterActive ? "false" : "true");
+        });
+      });
+    };
+
+    const activateFallback = (reason: string) => {
+      visualFallbackRef.current = true;
+      diagnosticReason = reason;
+      const fallbackRoute = {
+        destination: activeDestinationRef.current,
+        chapter: activeChapterRef.current,
+      };
+      setAccentPalette([...destinations[fallbackRoute.destination].cssColor]);
+      revealRouteWithoutVisuals(fallbackRoute);
+      publishDiagnostics("fallback");
+    };
+
+    publishDiagnostics("loading");
+    if (forceFallback) {
+      activateFallback("forced emergency fallback");
+      return;
+    }
+
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        antialias: false,
+        alpha: false,
+        powerPreference: "high-performance",
+        preserveDrawingBuffer: false,
+      });
+    } catch {
+      activateFallback("WebGL renderer unavailable");
+      return;
+    }
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.NoToneMapping;
     mount.appendChild(renderer.domElement);
@@ -562,6 +673,7 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
       uTime: { value: 0 },
       uImpulse: { value: 0 },
       uFocalDepth: { value: 0.5 },
+      uPostProcessingEnabled: { value: activeQualityProfile.postProcessingEnabled ? 1 : 0 },
     };
     const finalMaterial = new THREE.ShaderMaterial({
       uniforms: finalUniforms,
@@ -574,7 +686,11 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
     const finalQuad = new THREE.Mesh(geometry, finalMaterial);
     finalQuad.frustumCulled = false;
     finalScene.add(finalQuad);
-    const emberLoom = createEmberLoom(renderer, renderTarget.texture);
+    let emberLoom = createEmberLoom(
+      renderer,
+      renderTarget.texture,
+      activeQualityProfile.particleSimulationSize,
+    );
 
     const panelBundles = Array.from(shell.querySelectorAll<HTMLElement>("[data-destination-panel]"))
       .sort((a, b) => Number(a.dataset.destinationPanel) - Number(b.dataset.destinationPanel))
@@ -610,9 +726,17 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
     let directEntryActive = initialRenderRoute.destination > 0 && !prefersReducedMotionRef.current;
     let queuedRouteAfterDestination: PortfolioRoute | null = null;
     let previousTime: number | null = null;
+    let lastRenderedFrameAt = 0;
     let animationFrame = 0;
     let contentMeasureFrame = 0;
+    let performanceSamples: number[] = [];
+    let consecutiveSlowWindows = 0;
+    let qualityWarmupUntil = 0;
+    let contextLost = false;
+    let firstFrameRendered = false;
     let disposed = false;
+    visualFallbackRef.current = false;
+    if (!emberLoom) diagnosticReason = "particle simulation unavailable; strand preserved";
     setAccentPalette(currentCssPalette);
 
     const updatePanelBounds = (destinationIndex = currentDestination) => {
@@ -721,13 +845,18 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
     const resize = () => {
       const width = Math.max(1, mount.clientWidth);
       const height = Math.max(1, mount.clientHeight);
-      const dpr = Math.min(window.devicePixelRatio, isMobileViewport ? 0.9 : 1.15);
+      const dprCap = isMobileViewport
+        ? activeQualityProfile.mobilePixelRatioCap
+        : activeQualityProfile.desktopPixelRatioCap;
+      const dpr = Math.min(window.devicePixelRatio, dprCap);
       renderer.setPixelRatio(dpr);
       renderer.setSize(width, height, false);
 
       const pixelWidth = Math.max(1, Math.floor(width * dpr));
       const pixelHeight = Math.max(1, Math.floor(height * dpr));
-      const studyScale = isMobileViewport ? 0.66 : width > 1600 ? 0.62 : width > 900 ? 0.74 : 0.78;
+      const studyScale = isMobileViewport
+        ? activeQualityProfile.mobileStudyScale
+        : activeQualityProfile.desktopStudyScale(width);
       const targetWidth = Math.max(1, Math.floor(pixelWidth * studyScale));
       const targetHeight = Math.max(1, Math.floor(pixelHeight * studyScale));
       renderTarget.setSize(targetWidth, targetHeight);
@@ -775,6 +904,39 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
       updatePanelBounds();
     };
 
+    const applyQualityTier = (tier: VisualQualityTier, reason: string) => {
+      diagnosticReason = reason;
+      if (tier !== activeQualityTier) {
+        const nextProfile = visualQualityProfiles[tier];
+        const nextEmberLoom = createEmberLoom(
+          renderer,
+          renderTarget.texture,
+          nextProfile.particleSimulationSize,
+        );
+        if (nextEmberLoom) {
+          emberLoom?.dispose();
+          emberLoom = nextEmberLoom;
+        } else {
+          diagnosticReason = `${reason}; existing particle simulation preserved`;
+        }
+        activeQualityTier = tier;
+        activeQualityProfile = nextProfile;
+        finalUniforms.uPostProcessingEnabled.value = nextProfile.postProcessingEnabled ? 1 : 0;
+        if (tier === "reduced") {
+          cruxVideoRef.current?.pause();
+          cruxMovementVideoRef.current?.pause();
+          cruxComparisonVideoRef.current?.pause();
+          inheritanceVideoRef.current?.pause();
+          inheritanceWalkingVideoRef.current?.pause();
+        }
+        performanceSamples = [];
+        consecutiveSlowWindows = 0;
+        qualityWarmupUntil = performance.now() + 4000;
+        resize();
+      }
+      publishDiagnostics(firstFrameRendered ? "ready" : "loading");
+    };
+
     const handleMobileViewportChange = (event: MediaQueryListEvent) => {
       isMobileViewport = event.matches;
       destinationTravel = isMobileViewport ? MOBILE_DESTINATION_TRAVEL : DESTINATION_TRAVEL;
@@ -784,7 +946,19 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
       homeOpeningDuration = isMobileViewport ? MOBILE_HOME_OPENING_DURATION : HOME_OPENING_DURATION;
       carbonUniforms.uMobileComposition.value = isMobileViewport ? 1 : 0;
       siteRoot?.toggleAttribute("data-live-mobile-transition", isMobileViewport);
-      resize();
+      const estimatedTier = estimateInitialVisualQuality({
+        isMobile: isMobileViewport,
+        hardwareConcurrency: navigator.hardwareConcurrency,
+        deviceMemory: navigatorWithMemory.deviceMemory,
+      });
+      if (
+        qualityMode === "auto"
+        && visualQualityTiers.indexOf(estimatedTier) > visualQualityTiers.indexOf(activeQualityTier)
+      ) {
+        applyQualityTier(estimatedTier, "viewport capability estimate");
+      } else {
+        resize();
+      }
     };
 
     const move = (event: PointerEvent) => {
@@ -816,6 +990,10 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
         chapter: currentChapter,
       }, direction as -1 | 1);
       if (target) {
+        if (visualFallbackRef.current) {
+          window.location.assign(getPortfolioPath(target));
+          return;
+        }
         syncBrowserRoute(target, true);
         navigationCommandRef.current = { type: "route", route: target };
       }
@@ -958,15 +1136,45 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
     };
 
     const animate = (now: number) => {
-      if (disposed) return;
-      const delta = previousTime === null ? 0 : Math.min(0.04, (now - previousTime) / 1000);
+      if (disposed || contextLost || document.hidden) return;
+      if (qualityWarmupUntil === 0) qualityWarmupUntil = now + 6000;
+
+      const qualityCommand = qualityCommandRef.current;
+      if (qualityCommand) {
+        qualityCommandRef.current = null;
+        if (qualityCommand === "auto") {
+          qualityMode = "auto";
+          const estimatedTier = estimateInitialVisualQuality({
+            isMobile: isMobileViewport,
+            hardwareConcurrency: navigator.hardwareConcurrency,
+            deviceMemory: navigatorWithMemory.deviceMemory,
+          });
+          applyQualityTier(estimatedTier, "diagnostic return to auto");
+        } else {
+          qualityMode = "forced";
+          applyQualityTier(qualityCommand, "diagnostic override");
+        }
+      }
+
+      if (
+        activeQualityProfile.minimumFrameInterval > 0
+        && lastRenderedFrameAt > 0
+        && now - lastRenderedFrameAt < activeQualityProfile.minimumFrameInterval - 1
+      ) {
+        animationFrame = requestAnimationFrame(animate);
+        return;
+      }
+
+      const rawFrameInterval = previousTime === null ? 0 : now - previousTime;
+      const delta = previousTime === null ? 0 : Math.min(0.04, rawFrameInterval / 1000);
       previousTime = now;
-      if (!pausedRef.current) elapsed += delta;
-      if (homeIntroActive && !pausedRef.current) {
+      lastRenderedFrameAt = now;
+      elapsed += delta;
+      if (homeIntroActive) {
         homeIntroElapsed = Math.min(homeOpeningDuration, homeIntroElapsed + delta);
         if (homeIntroElapsed >= homeOpeningDuration) homeIntroActive = false;
       }
-      if (directEntryActive && !pausedRef.current) {
+      if (directEntryActive) {
         directEntryElapsed = Math.min(DIRECT_ENTRY_DURATION, directEntryElapsed + delta);
         if (directEntryElapsed >= DIRECT_ENTRY_DURATION) directEntryActive = false;
       }
@@ -1188,7 +1396,8 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
         inheritanceVideo?.pause();
         inheritanceWalkingVideo?.pause();
         const shouldPlayCruxVideo = activeDestinationForUi === 2
-          && !prefersReducedMotionRef.current;
+          && !prefersReducedMotionRef.current
+          && activeQualityTier !== "reduced";
         if (shouldPlayCruxVideo) {
           const activeVideo = activeChapterForUi === 0
             ? originVideo
@@ -1200,6 +1409,7 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
         if (
           activeDestinationForUi === 4
           && !prefersReducedMotionRef.current
+          && activeQualityTier !== "reduced"
         ) {
           const activeVideo = activeChapterForUi === 0
             ? inheritanceVideo
@@ -1319,7 +1529,7 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
         -Math.sin(cameraRoll),
       ).normalize();
       emberLoom?.update({
-        delta: pausedRef.current ? 0 : delta,
+        delta,
         time: elapsed,
         pointer,
         impulse,
@@ -1344,7 +1554,85 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
         renderer.render(emberLoom.scene, camera);
         renderer.autoClear = true;
       }
+
+      if (!firstFrameRendered) {
+        firstFrameRendered = true;
+        publishDiagnostics("ready");
+      }
+
+      if (rawFrameInterval > 0 && rawFrameInterval < 100) {
+        performanceSamples.push(rawFrameInterval);
+        if (performanceSamples.length >= 90) {
+          const averageFrameInterval = performanceSamples.reduce((sum, sample) => sum + sample, 0)
+            / performanceSamples.length;
+          const sortedSamples = [...performanceSamples].sort((a, b) => a - b);
+          const percentile75 = sortedSamples[Math.floor(sortedSamples.length * 0.75)];
+          diagnosticFps = Math.round(1000 / averageFrameInterval);
+          performanceSamples = [];
+
+          if (
+            qualityMode === "auto"
+            && now >= qualityWarmupUntil
+            && activeQualityTier !== "reduced"
+          ) {
+            const slowFrameThreshold = activeQualityTier === "full" ? 22 : 25;
+            if (averageFrameInterval > slowFrameThreshold || percentile75 > slowFrameThreshold + 2) {
+              consecutiveSlowWindows += 1;
+            } else {
+              consecutiveSlowWindows = Math.max(0, consecutiveSlowWindows - 1);
+            }
+            if (consecutiveSlowWindows >= 2) {
+              applyQualityTier(
+                getNextLowerVisualQuality(activeQualityTier),
+                `sustained ${diagnosticFps} FPS`,
+              );
+            } else {
+              publishDiagnostics("ready");
+            }
+          } else {
+            publishDiagnostics("ready");
+          }
+        }
+      }
       animationFrame = requestAnimationFrame(animate);
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        cancelAnimationFrame(animationFrame);
+        animationFrame = 0;
+        previousTime = null;
+        lastRenderedFrameAt = 0;
+        return;
+      }
+      if (!disposed && !contextLost && animationFrame === 0) {
+        qualityWarmupUntil = performance.now() + 2000;
+        animationFrame = requestAnimationFrame(animate);
+      }
+    };
+
+    const handleContextLost = (event: Event) => {
+      event.preventDefault();
+      contextLost = true;
+      cancelAnimationFrame(animationFrame);
+      animationFrame = 0;
+      activateFallback("WebGL context lost; waiting for recovery");
+    };
+
+    const handleContextRestored = () => {
+      if (disposed) return;
+      contextLost = false;
+      visualFallbackRef.current = false;
+      previousTime = null;
+      lastRenderedFrameAt = 0;
+      firstFrameRendered = false;
+      qualityWarmupUntil = performance.now() + 4000;
+      diagnosticReason = "WebGL context restored";
+      publishDiagnostics("loading");
+      resize();
+      if (!document.hidden && animationFrame === 0) {
+        animationFrame = requestAnimationFrame(animate);
+      }
     };
 
     const panelResizeObserver = new ResizeObserver(() => updatePanelBounds());
@@ -1383,9 +1671,12 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
     mobileViewportQuery.addEventListener("change", handleMobileViewportChange);
     window.addEventListener("resize", resize);
     window.addEventListener("keydown", keydown);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
     shell.addEventListener("pointermove", move);
     shell.addEventListener("pointerdown", excite);
-    animationFrame = requestAnimationFrame(animate);
+    renderer.domElement.addEventListener("webglcontextlost", handleContextLost);
+    renderer.domElement.addEventListener("webglcontextrestored", handleContextRestored);
+    if (!document.hidden) animationFrame = requestAnimationFrame(animate);
 
     return () => {
       disposed = true;
@@ -1397,8 +1688,11 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
       siteRoot?.removeAttribute("data-live-mobile-transition");
       window.removeEventListener("resize", resize);
       window.removeEventListener("keydown", keydown);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
       shell.removeEventListener("pointermove", move);
       shell.removeEventListener("pointerdown", excite);
+      renderer.domElement.removeEventListener("webglcontextlost", handleContextLost);
+      renderer.domElement.removeEventListener("webglcontextrestored", handleContextRestored);
       renderTarget.dispose();
       emberLoom?.dispose();
       carbonMaterial.dispose();
@@ -1424,6 +1718,7 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
       } as CSSProperties}
       data-initial-destination={initialRoute.destination}
       data-initial-chapter={initialRoute.chapter}
+      data-visual-state="loading"
       data-mobile-project-menu-open={mobileOverlay === "projects" ? "" : undefined}
       onTouchStart={handleMobileSwipeStart}
       onTouchEnd={handleMobileSwipeEnd}
@@ -1431,6 +1726,46 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
     >
       <div ref={mountRef} className={styles.canvas} aria-hidden="true" />
       <div className={styles.grain} aria-hidden="true" />
+
+      {visualDiagnostics && (
+        <aside className={styles.visualDiagnostics} aria-label="Visual rendering diagnostics" aria-live="polite">
+          <div>
+            <span>{visualDiagnostics.state}</span>
+            <strong>{visualDiagnostics.mode} · {visualDiagnostics.tier}</strong>
+            <small>{visualDiagnostics.fps ? `${visualDiagnostics.fps} FPS · ` : ""}{visualDiagnostics.reason}</small>
+          </div>
+          <nav aria-label="Force a visual rendering tier">
+            <button type="button" onClick={() => setDiagnosticVisualMode("auto")}>AUTO</button>
+            {visualQualityTiers.map((tier) => (
+              <button key={tier} type="button" onClick={() => setDiagnosticVisualMode(tier)}>
+                {tier.toUpperCase()}
+              </button>
+            ))}
+            <button type="button" onClick={() => setDiagnosticVisualMode("fallback")}>EMERGENCY</button>
+          </nav>
+        </aside>
+      )}
+
+      <noscript>
+        <nav className={styles.noScriptNavigation} aria-label="Portfolio pages">
+          <Link href="/">ABOUT</Link>
+          {destinations.slice(1).map((destination, destinationIndex) => (
+            <span key={destination.slug}>
+              <Link href={getPortfolioPath({ destination: destinationIndex + 1, chapter: 0 })}>
+                {destination.label}
+              </Link>
+              {destination.chapterLabels.slice(1).map((chapter, chapterIndex) => (
+                <Link
+                  key={chapter}
+                  href={getPortfolioPath({ destination: destinationIndex + 1, chapter: chapterIndex + 1 })}
+                >
+                  {chapter}
+                </Link>
+              ))}
+            </span>
+          ))}
+        </nav>
+      </noscript>
 
       <header className={styles.mobileHeader}>
         <div className={styles.mobileIdentityLockup}>
@@ -3102,10 +3437,6 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
         </button>
       </nav>
 
-      <button className={styles.pause} type="button" onClick={togglePause} aria-pressed={paused}>
-        <span>{paused ? "RESUME VISUALS" : "PAUSE VISUALS"}</span><i>{paused ? "▶" : "Ⅱ"}</i>
-      </button>
-
       {mobileOverlay === "projects" && (
         <div className={`${styles.mobileOverlay} ${styles.mobileProjectOverlay}`}>
           <div ref={mobileDialogRef} className={styles.mobileMenu} role="dialog" aria-modal="true" aria-label="Portfolio menu">
@@ -3164,10 +3495,6 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                 <a href="https://www.linkedin.com/in/evan-luebbert/" target="_blank" rel="noreferrer">LinkedIn <i aria-hidden="true">↗</i></a>
                 <a href="/documents/evan-luebbert-resume-2026.pdf" download="Evan-Luebbert-Resume-2026.pdf">Resume <i aria-hidden="true">↓</i></a>
               </nav>
-              <button className={styles.mobileVisualControl} type="button" onClick={togglePause} aria-pressed={paused}>
-                <i aria-hidden="true">{paused ? "▶" : "Ⅱ"}</i>
-                <span>{paused ? "Resume visuals" : "Pause visuals"}</span>
-              </button>
             </footer>
           </div>
         </div>

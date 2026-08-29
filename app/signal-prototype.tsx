@@ -238,6 +238,7 @@ export const depthOfFieldShader = /* glsl */ `
   uniform float uTime;
   uniform float uImpulse;
   uniform float uFocalDepth;
+  uniform float uPostProcessingEnabled;
   varying vec2 vUv;
 
   const float GOLDEN_ANGLE = 2.39996323;
@@ -256,6 +257,13 @@ export const depthOfFieldShader = /* glsl */ `
 
   void main() {
     vec2 uv = vUv;
+    if (uPostProcessingEnabled < 0.5) {
+      vec3 directColor = texture2D(uSource, uv).rgb;
+      directColor = directColor / (1.0 + directColor * 0.28);
+      directColor = pow(max(directColor, 0.0), vec3(0.88));
+      gl_FragColor = vec4(directColor, 1.0);
+      return;
+    }
     float sourceDepth = texture2D(uSource, uv).a;
     float focus = abs(uFocalDepth - sourceDepth) * 1.312;
     vec2 pixel = vec2(0.002 * uResolution.y / uResolution.x, 0.002);

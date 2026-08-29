@@ -35,7 +35,26 @@
 }
 
 .canvas { z-index: 0; }
+.canvas {
+  opacity: 1;
+  transition: opacity 260ms ease;
+}
 .canvas canvas { display: block; }
+
+.shell[data-visual-state="loading"] .canvas,
+.shell[data-visual-state="fallback"] .canvas {
+  opacity: 0;
+}
+
+.shell[data-visual-state="fallback"] {
+  background:
+    radial-gradient(circle at 18% 82%, rgba(var(--accent-rgb), 0.035), transparent 36%),
+    #070504;
+}
+
+.shell[data-visual-state="fallback"] .grain {
+  opacity: 0.045;
+}
 
 .grain {
   z-index: 1;
@@ -48,9 +67,79 @@
   mix-blend-mode: soft-light;
 }
 
+.visualDiagnostics {
+  position: fixed;
+  z-index: 120;
+  top: 12px;
+  left: 50%;
+  display: grid;
+  width: min(680px, calc(100vw - 24px));
+  padding: 10px 12px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  border: 1px solid rgba(var(--accent-rgb), 0.72);
+  color: rgba(247, 244, 241, 0.9);
+  background: rgba(5, 5, 7, 0.94);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.42);
+  font-family: var(--font-geist-mono), monospace;
+  transform: translateX(-50%);
+}
+
+.visualDiagnostics > div {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
+.visualDiagnostics span,
+.visualDiagnostics small {
+  color: rgba(247, 244, 241, 0.58);
+  font-size: 10px;
+  line-height: 1.3;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.visualDiagnostics strong {
+  color: rgb(var(--accent-rgb));
+  font-size: 12px;
+  font-weight: 560;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.visualDiagnostics nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+}
+
+.visualDiagnostics button {
+  min-height: 32px;
+  padding: 0 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(247, 244, 241, 0.76);
+  background: rgba(255, 255, 255, 0.035);
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+.visualDiagnostics button:hover,
+.visualDiagnostics button:focus-visible {
+  border-color: rgb(var(--accent-rgb));
+  color: white;
+  outline: none;
+}
+
+.noScriptNavigation {
+  display: none;
+}
+
 .waypoint,
 .project,
-.pause,
 .routeControls {
   position: absolute;
   z-index: 2;
@@ -59,7 +148,6 @@
 }
 
 .waypoint,
-.pause,
 .routeControls {
   opacity: var(--chrome-presence);
   transition: opacity 180ms linear;
@@ -2861,30 +2949,6 @@
 .routeControls button:disabled { opacity: 0.28; cursor: default; }
 .routeControls button span { font-size: 22px; letter-spacing: 0; }
 
-.pause {
-  left: clamp(28px, 3.5vw, 58px);
-  bottom: clamp(28px, 3.5vw, 48px);
-  display: flex;
-  width: 190px;
-  padding: 13px 14px;
-  align-items: center;
-  justify-content: space-between;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  color: rgba(255, 255, 255, 0.78);
-  background: var(--surface-background);
-  font-size: 14px;
-  cursor: pointer;
-  transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
-}
-.pause:hover,
-.pause:focus-visible {
-  border-color: rgba(var(--accent-rgb), 0.9);
-  color: white;
-  background: rgba(var(--accent-rgb), 0.1);
-  outline: none;
-}
-.pause i { color: rgb(var(--accent-rgb)); font-style: normal; font-size: 17px; letter-spacing: 0; }
-
 @media (min-width: 861px) and (max-width: 1200px) {
   .aboutLayout {
     --portrait-width: 110px;
@@ -3427,7 +3491,6 @@
   .chapterRail button { padding: 0 8px; }
   .routeControls { right: auto; bottom: 76px; left: 20px; width: 156px; }
   .routeControls button { min-height: 38px; padding: 0; font-size: 12px; }
-  .pause { right: auto; bottom: 20px; left: 20px; width: 156px; font-size: 11px; }
 }
 
 @media (max-width: 600px) {
@@ -3602,7 +3665,6 @@
 
   .waypoint,
   .routeControls,
-  .pause,
   .chapterRail {
     display: none;
   }
@@ -4288,30 +4350,6 @@
     font-style: normal;
   }
 
-  .mobileVisualControl {
-    display: flex;
-    min-height: 48px;
-    padding: 0 14px;
-    align-items: center;
-    gap: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: rgba(247, 244, 241, 0.82);
-    background: rgba(255, 255, 255, 0.04);
-    font-family: var(--font-geist-mono), monospace;
-    font-size: 17px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    cursor: pointer;
-  }
-
-  .mobileVisualControl i {
-    width: 18px;
-    color: rgb(var(--accent-rgb));
-    font-size: 17px;
-    font-style: normal;
-    text-align: center;
-  }
-
   .mobileChapterOverlay {
     display: flex;
     padding: 12px;
@@ -4619,9 +4657,104 @@
   }
 }
 
+@media (max-width: 700px) {
+  .visualDiagnostics {
+    top: 6px;
+    width: calc(100vw - 12px);
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .visualDiagnostics nav {
+    justify-content: flex-start;
+  }
+}
+
+@media (scripting: none) {
+  .shell {
+    --chrome-presence: 1 !important;
+    min-height: 0;
+    overflow: auto;
+    cursor: default;
+  }
+
+  .canvas,
+  .waypoint,
+  .routeControls,
+  .mobileHeader,
+  .mobileDock,
+  .chapterRail {
+    display: none !important;
+  }
+
+  .noScriptNavigation {
+    position: relative;
+    z-index: 20;
+    display: flex;
+    padding: 18px;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(5, 5, 7, 0.96);
+    font-family: var(--font-geist-mono), monospace;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+  }
+
+  .noScriptNavigation > span {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .noScriptNavigation a {
+    color: rgba(247, 244, 241, 0.78);
+    text-decoration-color: rgba(var(--accent-rgb), 0.65);
+    text-underline-offset: 4px;
+  }
+
+  .project[aria-hidden="true"] {
+    display: none;
+  }
+
+  .project[aria-hidden="false"] {
+    --entry-presence: 1;
+    --entry-shift: 0px;
+    position: relative;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    width: min(1100px, calc(100vw - 32px));
+    height: calc(100svh - 96px);
+    margin: 18px auto;
+    opacity: 1;
+    transform: none;
+  }
+
+  .project[aria-hidden="false"] > [data-project-chapter] {
+    display: none;
+  }
+
+  .shell[data-initial-chapter="0"] .project[aria-hidden="false"] > [data-project-chapter]:nth-of-type(1),
+  .shell[data-initial-chapter="1"] .project[aria-hidden="false"] > [data-project-chapter]:nth-of-type(2),
+  .shell[data-initial-chapter="2"] .project[aria-hidden="false"] > [data-project-chapter]:nth-of-type(3),
+  .shell[data-initial-chapter="3"] .project[aria-hidden="false"] > [data-project-chapter]:nth-of-type(4),
+  .shell[data-initial-chapter="4"] .project[aria-hidden="false"] > [data-project-chapter]:nth-of-type(5) {
+    --chapter-presence: 1;
+    --chapter-shift: 0px;
+    --chapter-wipe: 0%;
+    --chapter-blur: 0px;
+    display: block;
+    opacity: 1;
+    clip-path: none;
+    filter: none;
+    transform: none;
+    pointer-events: auto;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .project,
-  .pause,
   .routeControls button,
   .chapter > a { transition: none; }
 }

@@ -362,7 +362,8 @@ test("Inheritance renders the experience, challenge, engineering, and impact cha
   assert.match(html, /TRANSLATING THREE ROTATION SYSTEMS/);
   assert.match(css, /\.inheritancePipeline h3,\s*\.inheritanceHighlightsLabel,/s);
   assert.match(css, /\.inheritanceHighlightGrid h4 \{[^}]*font-size: var\(--about-reference-label-size\);/s);
-  assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*\.inheritanceHighlightsLabel \{[^}]*font-size: 13px;[^}]*font-weight: 520;[\s\S]*\.inheritanceHighlightGrid h4 \{[^}]*font-size: 18px;[^}]*font-weight: 560;/s);
+  assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*\.inheritanceHighlightsLabel \{[^}]*font-size: 18px;[^}]*font-weight: 520;[\s\S]*\.inheritanceHighlightGrid h4 \{[^}]*font-size: 13px;[^}]*font-weight: 560;/s);
+  assert.match(css, /@container project-panel \(max-width: 700px\) \{[\s\S]*\.inheritanceHighlightsLabel \{[^}]*font-size: 18px;[^}]*font-weight: 520;[\s\S]*\.inheritanceHighlightGrid h4 \{[^}]*font-size: 13px;[^}]*font-weight: 560;/s);
   assert.match(css, /@container project-panel \(max-width: 700px\) \{[\s\S]*\.inheritanceIntro p,[\s\S]*font-size: 17px;[\s\S]*\.inheritanceVideoFrame figcaption,\s*\.inheritanceAmassFigure figcaption,\s*\.inheritanceEngineeringFigure figcaption \{[^}]*font-size: 13px;/s);
   assert.doesNotMatch(css, /\.inheritanceAmassFigure figcaption \{\s*font-size: 16px;/s);
   assert.match(css, /\.inheritanceRotationHighlight \{[^}]*grid-column: 1 \/ -1;[^}]*grid-template-columns: minmax\(0, 1fr\);/s);

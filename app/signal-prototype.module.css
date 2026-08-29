@@ -3741,6 +3741,7 @@
   }
 
   .inheritanceVideoFrame figcaption,
+  .inheritanceAmassFigure figcaption,
   .inheritanceEngineeringFigure figcaption {
     font-size: 13px;
     line-height: 1.35;
@@ -4350,15 +4351,11 @@
   }
 
   .inheritanceVideoFrame figcaption,
+  .inheritanceAmassFigure figcaption,
   .inheritanceEngineeringFigure figcaption {
     font-size: 13px;
     line-height: 1.35;
     letter-spacing: 0.06em;
-  }
-
-  .inheritanceAmassFigure figcaption {
-    font-size: 16px;
-    line-height: 1.42;
   }
 
   .inheritanceExperience .projectMeta,

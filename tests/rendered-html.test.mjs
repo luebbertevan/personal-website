@@ -207,6 +207,7 @@ test("Fosty replaces both example projects with the Origin chapter", async () =>
   assert.match(css, /\.fostyHeading \.cardLabel span \{\s*display: inline-block;\s*white-space: nowrap;/s);
   assert.match(css, /\.fostyDate \{[^}]*font-size: var\(--about-reference-label-size\);/s);
   assert.match(css, /\.fostyHeading h1 \{[^}]*font-size: var\(--about-reference-title-size\);/s);
+  assert.match(css, /@media \(max-width: 1040px\) \{\s*\.fostyDesignBody \{\s*display: flex;\s*flex-direction: column;\s*\}\s*\.fostyDesignArtifact \{\s*order: 1;\s*margin: 12px 0 0;/s);
   assert.match(css, /\.project h2\.fostyStatement,\s*\.project h2\.fostyOutcomeSubtitle \{[^}]*font-size: calc\(var\(--fosty-body-size\) \* 1\.5\);/s);
   assert.match(css, /\.minimalContactLinks\.fostyLinks a \{\s*font-size: var\(--about-reference-link-size\);/s);
   assert.match(source, /const aboutScale = shouldScaleAboutPanel && aboutPanel && fostyPanel/);

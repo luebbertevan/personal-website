@@ -4398,6 +4398,16 @@
 }
 
 @media (max-width: 1040px) {
+  .fostyDesignBody {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .fostyDesignArtifact {
+    order: 1;
+    margin: 12px 0 0;
+  }
+
   .fostyLayout {
     grid-template-columns: minmax(0, 1fr) clamp(84px, 16cqw, 92px);
     grid-template-rows: auto auto auto;

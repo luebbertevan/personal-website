@@ -537,6 +537,8 @@ test("Crux Vision renders all five case-study chapters with expandable media", a
   assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.cruxProject \{\s*--crux-body-size: 17px;/s);
   assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.cruxNarrative \{\s*display: contents;/s);
   assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.cruxOriginVideoFrame \{[^}]*width: min\(100%, 640px\);[^}]*height: auto;[^}]*max-height: none;/s);
+  assert.match(css, /@media \(max-width: 600px\) \{[\s\S]*?\.cruxMovementVideoFrame \{\s*width: 100%;\s*height: auto;\s*\}/s);
+  assert.doesNotMatch(css, /\.cruxMovementVideoFrame \{[^}]*width: min\(100%, 260px\);/s);
   assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.cruxEngineeringHighlights \{\s*font-size: 17px;\s*line-height: 1\.52;/s);
   assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.cruxOutlookLayout \{[^}]*padding-right: 6px;/s);
   assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.cruxOutlookInvitation,\s*\.minimalContactLinks\.cruxOutlookActions \{[^}]*min-width: 0;[^}]*max-width: 100%;/s);

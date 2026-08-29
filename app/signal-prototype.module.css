@@ -3466,7 +3466,7 @@
     mask-image: none;
   }
   .cruxMovementIntro { grid-template-columns: 1fr; }
-  .cruxMovementVideoFrame { width: min(100%, 260px); height: auto; }
+  .cruxMovementVideoFrame { width: 100%; height: auto; }
   .cruxMovementFeature,
   .cruxMovementFeatureWide { grid-template-columns: 1fr; }
   .cruxVisualIntro,

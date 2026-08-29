@@ -452,6 +452,8 @@ test("Crux Vision renders all five case-study chapters with expandable media", a
   assert.match(html, /PRESERVING UNCERTAINTY/);
   assert.match(html, /Crux Vision shows an honest gap instead of inventing a continuous path/);
   assert.match(html, /TECHNICAL HIGHLIGHTS/);
+  assert.equal((html.match(/technicalHighlightsLabel/g) ?? []).length, 3);
+  assert.match(css, /\.technicalHighlightsLabel \{[^}]*font-family: var\(--font-geist-sans\), sans-serif;/s);
   assert.match(html, /Progressive, on-device pose analysis in a module worker/);
   assert.match(html, /MediaPipe Pose/);
   assert.match(html, /MediaBunny/);

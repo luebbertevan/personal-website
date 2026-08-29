@@ -1726,7 +1726,7 @@ export function SignalPrototypeV4() {
               </div>
               <div className={styles.fostyEngineeringDetails}>
                 <section className={styles.fostyEngineeringSection}>
-                  <p className={styles.cardLabel}>TECHNICAL HIGHLIGHTS</p>
+                  <p className={`${styles.cardLabel} ${styles.technicalHighlightsLabel}`}>TECHNICAL HIGHLIGHTS</p>
                   <ul className={styles.fostyEngineeringHighlights}>
                     <li>Role-specific coordinator and foster workflows</li>
                     <li>Animal lifecycle, group and placement management</li>
@@ -2193,7 +2193,7 @@ export function SignalPrototypeV4() {
                 the movement without disguising that uncertainty.
               </p>
               <section className={styles.cruxEngineeringDetails}>
-                <p className={styles.cardLabel}>TECHNICAL HIGHLIGHTS</p>
+                <p className={`${styles.cardLabel} ${styles.technicalHighlightsLabel}`}>TECHNICAL HIGHLIGHTS</p>
                 <ul className={styles.cruxEngineeringHighlights}>
                   <li>Progressive, on-device pose analysis in a module worker</li>
                   <li>Presentation-timestamp synchronization for live overlays</li>
@@ -2817,7 +2817,12 @@ export function SignalPrototypeV4() {
             </section>
 
             <section className={styles.inheritanceEngineeringHighlights} aria-labelledby="inheritance-highlights-heading">
-              <h3 className={styles.inheritanceHighlightsLabel} id="inheritance-highlights-heading">ENGINEERING HIGHLIGHTS</h3>
+              <h3
+                className={`${styles.inheritanceHighlightsLabel} ${styles.technicalHighlightsLabel}`}
+                id="inheritance-highlights-heading"
+              >
+                ENGINEERING HIGHLIGHTS
+              </h3>
               <div className={styles.inheritanceHighlightGrid}>
                 <article>
                   <h4>RECONCILING REST POSES</h4>

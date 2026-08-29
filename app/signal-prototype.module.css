@@ -3941,6 +3941,19 @@
   .inheritanceVideoFrame { order: 1; }
   .inheritanceMetrics { order: 2; }
 
+  .inheritanceMetrics div {
+    grid-template-columns: max-content minmax(0, 1fr);
+    align-content: initial;
+    align-items: baseline;
+    column-gap: 12px;
+    row-gap: 0;
+  }
+
+  .inheritanceMetrics dd strong {
+    display: block;
+    white-space: nowrap;
+  }
+
   .cruxEngineeringHighlights {
     font-size: 17px;
     line-height: 1.52;

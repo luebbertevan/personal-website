@@ -544,6 +544,7 @@ test("Crux Vision renders all five case-study chapters with expandable media", a
   assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.cruxEngineeringHighlights \{\s*font-size: 17px;\s*line-height: 1\.52;/s);
   assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.cruxOutlookLayout \{[^}]*padding-right: 6px;/s);
   assert.match(css, /Mobile Inheritance narrative order: demonstration before impact metrics\. \*\/\s*\.inheritanceVideoFrame \{ order: 1; \}\s*\.inheritanceMetrics \{ order: 2; \}/s);
+  assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.inheritanceMetrics div \{[^}]*grid-template-columns: max-content minmax\(0, 1fr\);[^}]*align-items: baseline;[^}]*column-gap: 12px;[\s\S]*?\.inheritanceMetrics dd strong \{[^}]*white-space: nowrap;/s);
   assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.cruxOutlookInvitation,\s*\.minimalContactLinks\.cruxOutlookActions \{[^}]*min-width: 0;[^}]*max-width: 100%;/s);
   assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.minimalContactLinks\.cruxOutlookActions \{[^}]*display: flex;[^}]*flex-wrap: wrap;/s);
   assert.equal(video.subarray(4, 8).toString("ascii"), "ftyp");

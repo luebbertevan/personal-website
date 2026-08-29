@@ -268,6 +268,8 @@ test("Val renders the text-only Experience, Contributions, and Production chapte
   assert.match(css, /\.valContributionsHeader \+ \.valTextSection \{[^}]*padding-top: 0;[^}]*border-top: 0;/s);
   assert.doesNotMatch(valArticle, /column-count|grid-template-columns:\s*repeat\([^)]*\)/);
   assert.match(css, /\.chapterRail\.valChapterRail \{ grid-template-columns: repeat\(3, minmax\(0, 1fr\)\); \}/);
+  assert.match(css, /@container project-panel \(max-width: 700px\) \{[\s\S]*\.valBody p,\s*\.valContributionsHeader > p,\s*\.valTextSection p,\s*\.valFeatureCopy p \{[^}]*font-size: 17px;[^}]*line-height: 1\.52;/s);
+  assert.match(css, /\.valExperience \.projectMeta,\s*\.valContributions \.projectMeta,\s*\.valProduction \.projectMeta,[\s\S]*\.valTechnology \.fostyTechnologyTags li \{[^}]*font-size: 13px;/s);
 });
 
 test("Inheritance renders the experience, challenge, engineering, and impact chapters with project media", async () => {
@@ -308,8 +310,10 @@ test("Inheritance renders the experience, challenge, engineering, and impact cha
   assert.match(html, /A sample of retargeted motion capture animations\./);
   assert.match(source, /onClick=\{\(\) => openVideoFullscreen\(inheritanceVideoRef\.current\)\}/);
   assert.doesNotMatch(source, /inheritanceVideoExpanded|expandedInheritanceVideo/);
+  assert.match(source, /className=\{styles\.inheritanceVideoMedia\}[\s\S]*className=\{styles\.cruxVideoControls\}/s);
   assert.match(css, /\.inheritanceShowcase \{[^}]*grid-template-columns: clamp\(156px, 20%, 202px\) minmax\(0, 1fr\);/s);
   assert.match(css, /\.inheritanceMetrics \{[^}]*grid-template-columns: minmax\(0, 1fr\);[^}]*grid-template-rows: repeat\(3, minmax\(0, 1fr\)\);/s);
+  assert.match(css, /@media \(max-width: 600px\) \{[\s\S]*\.inheritanceMetrics \{\s*grid-template-columns: minmax\(0, 1fr\);\s*grid-template-rows: auto;/s);
   assert.match(css, /\.inheritanceMetrics dt \{[^}]*font-size: clamp\(22px, 1\.65vw, 30px\);/s);
   assert.match(css, /\.inheritanceMetrics dd strong \{[^}]*font-size: clamp\(11px, 0\.82vw, 14px\);/s);
   assert.match(source, /<dt>11,265<\/dt><dd><strong>NEW MOTIONS AVAILABLE<\/strong><\/dd>/);
@@ -357,8 +361,9 @@ test("Inheritance renders the experience, challenge, engineering, and impact cha
   assert.match(html, /BALANCING PROPORTIONS AND MOTION/);
   assert.match(html, /TRANSLATING THREE ROTATION SYSTEMS/);
   assert.match(css, /\.inheritancePipeline h3,\s*\.inheritanceHighlightsLabel,/s);
-  assert.doesNotMatch(css, /\.inheritanceHighlightsLabel \{/);
   assert.match(css, /\.inheritanceHighlightGrid h4 \{[^}]*font-size: var\(--about-reference-label-size\);/s);
+  assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*\.inheritanceHighlightsLabel \{[^}]*font-size: 13px;[^}]*font-weight: 520;[\s\S]*\.inheritanceHighlightGrid h4 \{[^}]*font-size: 18px;[^}]*font-weight: 560;/s);
+  assert.match(css, /@container project-panel \(max-width: 700px\) \{[\s\S]*\.inheritanceIntro p,[\s\S]*font-size: 17px;[\s\S]*\.inheritanceVideoFrame figcaption,[\s\S]*font-size: 13px;/s);
   assert.match(css, /\.inheritanceRotationHighlight \{[^}]*grid-column: 1 \/ -1;[^}]*grid-template-columns: minmax\(0, 1fr\);/s);
   assert.match(source, /src="\/videos\/inheritance-walking-comparison\.mp4"/);
   assert.match(source, /poster="\/images\/inheritance-walking-comparison-poster\.webp"/);
@@ -603,7 +608,8 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(source, /siteRoot\?\.toggleAttribute\("data-live-mobile-transition", isMobileViewport\);/);
   assert.match(source, /isMobileViewport \? 0\.9 : 1\.15/);
   assert.match(source, /panelBundles\[currentDestination\]\?\.chapters\[targetChapter\]\?\.scrollTo\(\{ top: 0 \}\)/);
-  assert.match(source, /<span className=\{styles\.expandIcon\} aria-hidden="true">⛶<\/span>/);
+  assert.match(source, /function MediaExpandIcon\(\) \{\s*return <span aria-hidden="true" className=\{styles\.expandIcon\}>⛶<\/span>;/);
+  assert.equal([...source.matchAll(/<MediaExpandIcon \/>/g)].length, 15);
   assert.match(css, /\.productScreenshot > \.expandIcon,\s*\.expandIcon \{[^}]*min-width: 28px;[^}]*min-height: 28px;[^}]*padding: 0;[^}]*font-size: 26px;/s);
   assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.productScreenshot > \.expandIcon,\s*\.expandIcon \{[^}]*min-width: 30px;[^}]*min-height: 30px;[^}]*font-size: 30px;/s);
   assert.doesNotMatch(source, />EXPAND\s/);

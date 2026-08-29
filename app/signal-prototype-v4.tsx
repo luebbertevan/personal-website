@@ -243,6 +243,10 @@ type ManualRoute = {
   targetChapter: number;
 };
 
+function MediaExpandIcon() {
+  return <span aria-hidden="true" className={styles.expandIcon}>⛶</span>;
+}
+
 export function SignalPrototypeV4() {
   const shellRef = useRef<HTMLElement>(null);
   const mountRef = useRef<HTMLDivElement>(null);
@@ -1519,7 +1523,7 @@ export function SignalPrototypeV4() {
                         height={item.height}
                         loading="lazy"
                       />
-                      <span className={styles.expandIcon} aria-hidden="true">⛶</span>
+                      <MediaExpandIcon />
                     </button>
                     <figcaption className={styles.productCaption}>
                       <span>{item.title}</span>
@@ -1557,7 +1561,7 @@ export function SignalPrototypeV4() {
                     height={fostyDesignMedia.height}
                     loading="lazy"
                   />
-                  <span className={styles.expandIcon} aria-hidden="true">⛶</span>
+                  <MediaExpandIcon />
                 </button>
                 <figcaption>
                   <span>{fostyDesignMedia.title}</span>
@@ -1815,7 +1819,7 @@ export function SignalPrototypeV4() {
                   </video>
                   <div className={styles.cruxVideoControls}>
                     <button type="button" onClick={() => openVideoFullscreen(cruxVideoRef.current)} aria-label="View the Crux Vision overlay video fullscreen">
-                      <span className={styles.expandIcon} aria-hidden="true">⛶</span>
+                      <MediaExpandIcon />
                     </button>
                   </div>
                 </figure>
@@ -1855,7 +1859,7 @@ export function SignalPrototypeV4() {
                         width={cruxMovementMedia[0].width}
                         height={cruxMovementMedia[0].height}
                       />
-                      <span className={styles.expandIcon} aria-hidden="true">⛶</span>
+                      <MediaExpandIcon />
                     </button>
                   </div>
                   <div className={styles.productCaption}>
@@ -1887,7 +1891,7 @@ export function SignalPrototypeV4() {
                     onClick={() => openVideoFullscreen(cruxMovementVideoRef.current)}
                     aria-label="View the slow-motion Crux Vision review video fullscreen"
                   >
-                    <span className={styles.expandIcon} aria-hidden="true">⛶</span>
+                    <MediaExpandIcon />
                   </button>
                 </div>
               </figure>
@@ -1909,7 +1913,7 @@ export function SignalPrototypeV4() {
                       width={cruxMovementMedia[1].width}
                       height={cruxMovementMedia[1].height}
                     />
-                    <span className={styles.expandIcon} aria-hidden="true">⛶</span>
+                    <MediaExpandIcon />
                   </button>
                 </div>
                 <div className={styles.cruxPrecisionDetails}>
@@ -1934,7 +1938,7 @@ export function SignalPrototypeV4() {
                       width={cruxMovementMedia[2].width}
                       height={cruxMovementMedia[2].height}
                     />
-                    <span className={styles.expandIcon} aria-hidden="true">⛶</span>
+                    <MediaExpandIcon />
                   </button>
                 </div>
               </li>
@@ -1951,7 +1955,7 @@ export function SignalPrototypeV4() {
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={item.src} alt={item.alt} width={item.width} height={item.height} />
-                      <span className={styles.expandIcon} aria-hidden="true">⛶</span>
+                      <MediaExpandIcon />
                     </button>
                   ))}
                 </div>
@@ -2003,7 +2007,7 @@ export function SignalPrototypeV4() {
                     onClick={() => openVideoFullscreen(cruxComparisonVideoRef.current)}
                     aria-label="View the Crux Vision movement-trail comparison video fullscreen"
                   >
-                    <span className={styles.expandIcon} aria-hidden="true">⛶</span>
+                    <MediaExpandIcon />
                   </button>
                 </div>
               </div>
@@ -2205,7 +2209,7 @@ export function SignalPrototypeV4() {
                       width={cruxEngineeringMedia[0].width}
                       height={cruxEngineeringMedia[0].height}
                     />
-                    <span className={styles.expandIcon} aria-hidden="true">⛶</span>
+                    <MediaExpandIcon />
                   </button>
                 </figure>
 
@@ -2249,7 +2253,7 @@ export function SignalPrototypeV4() {
                       width={cruxEngineeringMedia[1].width}
                       height={cruxEngineeringMedia[1].height}
                     />
-                    <span className={styles.expandIcon} aria-hidden="true">⛶</span>
+                    <MediaExpandIcon />
                   </button>
                 </figure>
 
@@ -2289,7 +2293,7 @@ export function SignalPrototypeV4() {
                     width={cruxEngineeringMedia[2].width}
                     height={cruxEngineeringMedia[2].height}
                   />
-                  <span className={styles.expandIcon} aria-hidden="true">⛶</span>
+                  <MediaExpandIcon />
                 </button>
               </figure>
 
@@ -2476,28 +2480,30 @@ export function SignalPrototypeV4() {
                 <div><dt>$70K</dt><dd><strong>MOTION CAPTURE VALUE</strong></dd></div>
               </dl>
               <figure className={styles.inheritanceVideoFrame}>
-                <video
-                  ref={inheritanceVideoRef}
-                  src="/videos/inheritance-motion-collection.mp4"
-                  poster="/images/inheritance-motion-collection-poster.webp"
-                  muted
-                  loop
-                  playsInline
-                  preload="metadata"
-                  width="1600"
-                  height="886"
-                  aria-label="A collection of retargeted motion capture animations playing in Blender"
-                >
-                  Your browser does not support embedded video.
-                </video>
-                <div className={styles.cruxVideoControls}>
-                  <button
-                    type="button"
-                    onClick={() => openVideoFullscreen(inheritanceVideoRef.current)}
-                    aria-label="View the retargeted motion capture sample video fullscreen"
+                <div className={styles.inheritanceVideoMedia}>
+                  <video
+                    ref={inheritanceVideoRef}
+                    src="/videos/inheritance-motion-collection.mp4"
+                    poster="/images/inheritance-motion-collection-poster.webp"
+                    muted
+                    loop
+                    playsInline
+                    preload="metadata"
+                    width="1600"
+                    height="886"
+                    aria-label="A collection of retargeted motion capture animations playing in Blender"
                   >
-                    <span className={styles.expandIcon} aria-hidden="true">⛶</span>
-                  </button>
+                    Your browser does not support embedded video.
+                  </video>
+                  <div className={styles.cruxVideoControls}>
+                    <button
+                      type="button"
+                      onClick={() => openVideoFullscreen(inheritanceVideoRef.current)}
+                      aria-label="View the retargeted motion capture sample video fullscreen"
+                    >
+                      <MediaExpandIcon />
+                    </button>
+                  </div>
                 </div>
                 <figcaption>A sample of retargeted motion capture animations.</figcaption>
               </figure>
@@ -2589,7 +2595,7 @@ export function SignalPrototypeV4() {
                     width="1554"
                     height="1074"
                   />
-                  <span className={styles.expandIcon} aria-hidden="true">⛶</span>
+                  <MediaExpandIcon />
                 </button>
                 <figcaption>THE MOTION AND BODY DIVERSITY REPRESENTED IN AMASS.</figcaption>
               </figure>
@@ -2641,7 +2647,7 @@ export function SignalPrototypeV4() {
                   >
                     Your browser does not support embedded video.
                   </video>
-                  <span className={styles.expandIcon} aria-hidden="true">⛶</span>
+                  <MediaExpandIcon />
                 </button>
                 <figcaption>AMASS MOTION, REBUILT ON A PRODUCTION ARMATURE.</figcaption>
               </figure>

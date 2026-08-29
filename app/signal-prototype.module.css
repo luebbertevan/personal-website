@@ -804,28 +804,26 @@
 }
 .cruxVideoControls button {
   display: inline-flex;
-  min-height: 30px;
-  padding: 6px 8px;
+  min-height: 0;
+  padding: 0;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  border: 1px solid rgba(var(--accent-rgb), 0.56);
+  border: 0;
   color: rgba(247, 244, 241, 0.88);
-  background: rgba(3, 6, 3, 0.82);
+  background: transparent;
   font: inherit;
-  font-size: 8px;
-  letter-spacing: 0.1em;
   cursor: pointer;
-  backdrop-filter: blur(8px);
 }
 .cruxVideoControls button:hover,
 .cruxVideoControls button:focus-visible {
+  outline: none;
+}
+.cruxVideoControls button:hover .expandIcon,
+.cruxVideoControls button:focus-visible .expandIcon {
   border-color: rgb(var(--accent-rgb));
   color: rgb(var(--accent-rgb));
   background: rgba(3, 6, 3, 0.94);
-  outline: none;
 }
-.cruxVideoControls button span { font-size: 11px; letter-spacing: 0; }
 .cruxMediaActions {
   display: flex;
   gap: 5px clamp(12px, 1vw, 18px);
@@ -1143,9 +1141,12 @@
   background: rgba(3, 6, 9, 0.9);
   box-shadow: 0 0 44px rgba(var(--accent-rgb), 0.16);
 }
-.inheritanceVideoFrame::after {
+.inheritanceVideoMedia {
+  position: relative;
+}
+.inheritanceVideoMedia::after {
   position: absolute;
-  inset: 0 0 27px;
+  inset: 0;
   content: "";
   background: repeating-linear-gradient(0deg, transparent 0 4px, rgba(var(--accent-rgb), 0.018) 4px 5px);
   pointer-events: none;
@@ -1288,21 +1289,6 @@
 .inheritanceAmassButton:focus-visible img {
   filter: brightness(0.82);
 }
-.inheritanceAmassButton > span {
-  position: absolute;
-  right: 7px;
-  bottom: 7px;
-  padding: 6px 8px;
-  border: 1px solid rgba(var(--accent-rgb), 0.62);
-  color: rgba(247, 244, 241, 0.9);
-  background: rgba(3, 7, 14, 0.88);
-  font-size: 8px;
-  letter-spacing: 0.09em;
-}
-.inheritanceAmassButton > span i {
-  margin-left: 3px;
-  font-style: normal;
-}
 .inheritanceAmassFigure figcaption {
   margin: 0;
   padding: 10px 12px;
@@ -1401,22 +1387,6 @@
 .inheritanceEngineeringMediaButton:hover video,
 .inheritanceEngineeringMediaButton:focus-visible video {
   filter: brightness(0.76);
-}
-.inheritanceEngineeringMediaButton > span {
-  position: absolute;
-  z-index: 1;
-  right: 8px;
-  bottom: 8px;
-  padding: 6px 8px;
-  border: 1px solid rgba(var(--accent-rgb), 0.62);
-  color: rgba(247, 244, 241, 0.9);
-  background: rgba(3, 7, 14, 0.88);
-  font-size: 8px;
-  letter-spacing: 0.09em;
-}
-.inheritanceEngineeringMediaButton > span i {
-  margin-left: 3px;
-  font-style: normal;
 }
 .inheritanceEngineeringFigure figcaption {
   margin: 0;
@@ -2363,17 +2333,13 @@
   height: auto;
   transition: transform 240ms ease;
 }
-.productScreenshot > span {
+.productScreenshot > .expandIcon,
+.inheritanceAmassButton > .expandIcon,
+.inheritanceEngineeringMediaButton > .expandIcon {
   position: absolute;
   z-index: 1;
   right: 13px;
   bottom: 12px;
-  padding: 7px 9px;
-  border: 1px solid rgba(var(--accent-rgb), 0.64);
-  background: rgba(4, 4, 7, 0.82);
-  color: rgba(247, 244, 241, 0.84);
-  font-size: 10px;
-  letter-spacing: 0.12em;
 }
 .productScreenshot > .expandIcon,
 .expandIcon {
@@ -2382,6 +2348,9 @@
   min-height: 28px;
   padding: 0;
   place-items: center;
+  border: 1px solid rgba(var(--accent-rgb), 0.64);
+  color: rgba(247, 244, 241, 0.84);
+  background: rgba(4, 4, 7, 0.82);
   font-family: var(--font-geist-sans), sans-serif;
   font-size: 26px;
   line-height: 1;
@@ -3495,7 +3464,7 @@
   }
   .inheritanceShowcase { grid-template-columns: 1fr; }
   .inheritanceMetrics {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto;
   }
   .inheritanceStory { grid-template-columns: 1fr; }
@@ -3783,6 +3752,13 @@
     line-height: 1.42;
   }
 
+  .inheritanceVideoFrame figcaption,
+  .inheritanceEngineeringFigure figcaption {
+    font-size: 13px;
+    line-height: 1.35;
+    letter-spacing: 0.06em;
+  }
+
   .interestList,
   .inheritancePipelineSteps li {
     font-size: 17px;
@@ -3795,6 +3771,20 @@
   .chapter dt,
   .inheritanceMetrics dd strong {
     font-size: 13px;
+  }
+
+  .inheritanceHighlightsLabel {
+    font-size: 13px;
+    font-weight: 520;
+    line-height: 1.1;
+    letter-spacing: 0.08em;
+  }
+
+  .inheritanceHighlightGrid h4 {
+    font-size: 18px;
+    font-weight: 560;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
   }
 
   .fostyMetric span,
@@ -4347,6 +4337,79 @@
 
 /* Content composition follows the panel width independently from the navigation mode. */
 @container project-panel (max-width: 700px) {
+  .inheritanceIntro p,
+  .inheritanceStory p,
+  .inheritanceChallengeHeading p,
+  .inheritanceChallengeCopy p,
+  .inheritanceEngineeringIntro p,
+  .inheritancePipeline p,
+  .inheritancePipelineSteps li,
+  .inheritanceHighlightGrid p,
+  .inheritanceImpactLead p,
+  .inheritanceImpactMission p,
+  .inheritanceImpactConclusion p {
+    font-size: 17px;
+    line-height: 1.52;
+  }
+
+  .inheritanceVideoFrame figcaption,
+  .inheritanceEngineeringFigure figcaption {
+    font-size: 13px;
+    line-height: 1.35;
+    letter-spacing: 0.06em;
+  }
+
+  .inheritanceAmassFigure figcaption {
+    font-size: 16px;
+    line-height: 1.42;
+  }
+
+  .inheritanceExperience .projectMeta,
+  .inheritanceChallenge .projectMeta,
+  .inheritanceEngineering .projectMeta,
+  .inheritanceImpact .projectMeta,
+  .inheritanceHeading .cardLabel,
+  .inheritanceHeading .inheritanceDate,
+  .inheritanceTechnology .cardLabel,
+  .inheritanceImpactMission h3,
+  .inheritanceHighlightsLabel,
+  .inheritanceMetrics dd strong,
+  .inheritanceTechnology .fostyTechnologyTags li {
+    font-size: 13px;
+  }
+
+  .inheritanceHighlightsLabel {
+    font-weight: 520;
+    line-height: 1.1;
+    letter-spacing: 0.08em;
+  }
+
+  .inheritanceHighlightGrid h4 {
+    font-size: 18px;
+    font-weight: 560;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+
+  .valBody p,
+  .valContributionsHeader > p,
+  .valTextSection p,
+  .valFeatureCopy p {
+    font-size: 17px;
+    line-height: 1.52;
+  }
+
+  .valExperience .projectMeta,
+  .valContributions .projectMeta,
+  .valProduction .projectMeta,
+  .valHeading .cardLabel,
+  .valHeading .valDate,
+  .valTextSection h3,
+  .valFeatureSpotlight .cardLabel,
+  .valTechnology .fostyTechnologyTags li {
+    font-size: 13px;
+  }
+
   .fostyHeading h1,
   .cruxHeading h1,
   .inheritanceHeading h1,

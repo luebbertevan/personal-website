@@ -10,11 +10,11 @@ The visual system and navigation proof are sufficiently mature. Use accurate con
 
 ### Connect the project to GitHub
 
-- [ ] Create the GitHub repository that will own the personal website source.
-- [ ] Decide whether the repository should be public or private before pushing any code or development history.
-- [ ] Connect the local project to that repository and push the complete intentional history without disturbing the existing Sites deployment workflow.
-- [ ] Replace the starter README with a project-specific overview, setup instructions, architecture notes, screenshots, credits, and the deployed-site link.
-- [ ] Add an appropriate license and confirm that no private content, credentials, restricted media, or confidential project assets are included.
+- [x] Create the GitHub repository that owns the personal website source.
+- [x] Publish the repository publicly after auditing the complete history and assets.
+- [x] Make GitHub the canonical `origin`, retain Sites as a deployment-only remote, and push the complete intentional history.
+- [x] Replace the starter README with a concise project overview, setup instructions, architecture notes, social preview, licensing, and the deployed-site link.
+- [x] Add scoped source-code and media licensing and confirm that no private content, credentials, restricted media, or confidential project assets are included.
 - [ ] Decide whether the finished “About this site” section should link directly to the source repository.
 
 ### Collect content

@@ -95,6 +95,6 @@ The proof of concept is visually and interactively sufficient. The next phase is
 - Local repository: `/Users/evan/Personal Website`
 - Branch: `main`
 - Hosted site: <https://evan-luebbert.luebbertevan.chatgpt.site>
-- The existing `origin` is the Sites source remote. Connecting a separate GitHub repository remains an explicit TODO and must preserve the Sites workflow.
+- GitHub is the canonical `origin`: <https://github.com/luebbertevan/personal-website>. The `sites` remote is retained only as a deployment transport while the site remains hosted there.
 - The repository README provides a concise project overview, local setup instructions, architecture notes, licensing, and the deployed link.
 - Documentation-only handoff changes do not require a site deployment. Runtime changes should be built and visually checked in proportion to their risk before publishing.

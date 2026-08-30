@@ -2530,8 +2530,8 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                 MediaPipe output with missing data or detection errors. The engineering challenge was to preserve
                 the movement without disguising that uncertainty.
               </p>
-              <section className={styles.cruxEngineeringDetails}>
-                <p className={`${styles.cardLabel} ${styles.technicalHighlightsLabel}`}>TECHNICAL HIGHLIGHTS</p>
+              <section className={styles.cruxEngineeringDetails} aria-labelledby="crux-technical-highlights-heading">
+                <h3 id="crux-technical-highlights-heading">TECHNICAL HIGHLIGHTS</h3>
                 <ul className={styles.cruxEngineeringHighlights}>
                   <li>Progressive, on-device pose analysis in a module worker</li>
                   <li>Presentation-timestamp synchronization for live overlays</li>
@@ -2541,8 +2541,8 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
               </section>
             </div>
 
-            <section className={styles.cruxTechnology}>
-              <p className={styles.cardLabel}>TECHNOLOGY</p>
+            <section className={styles.cruxTechnology} aria-labelledby="crux-technology-heading">
+              <h3 id="crux-technology-heading">TECHNOLOGY</h3>
               <ul className={styles.fostyTechnologyTags} aria-label="Crux Vision technology">
                 {["React", "TypeScript", "Vite", "MediaPipe Pose", "MediaBunny", "Canvas 2D", "Web Workers"].map(
                   (technology) => <li key={technology}>{technology}</li>,

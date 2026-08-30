@@ -561,7 +561,7 @@ test("Crux Vision renders all five case-study chapters with expandable media", a
   assert.match(html, /PRESERVING UNCERTAINTY/);
   assert.match(html, /Crux Vision shows an honest gap instead of inventing a continuous path/);
   assert.match(html, /TECHNICAL HIGHLIGHTS/);
-  assert.equal((html.match(/technicalHighlightsLabel/g) ?? []).length, 3);
+  assert.equal((html.match(/technicalHighlightsLabel/g) ?? []).length, 2);
   assert.match(css, /\.technicalHighlightsLabel \{[^}]*font-family: var\(--font-geist-sans\), sans-serif;/s);
   assert.match(html, /Progressive, on-device pose analysis in a module worker/);
   assert.match(html, /MediaPipe Pose/);
@@ -643,6 +643,11 @@ test("Crux Vision renders all five case-study chapters with expandable media", a
   assert.match(css, /@media \(max-width: 600px\) \{[\s\S]*?\.cruxMovementVideoFrame \{\s*width: 100%;\s*height: auto;\s*\}/s);
   assert.doesNotMatch(css, /\.cruxMovementVideoFrame \{[^}]*width: min\(100%, 260px\);/s);
   assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.cruxEngineeringHighlights \{\s*font-size: 17px;\s*line-height: 1\.52;/s);
+  assert.match(source, /<section className=\{styles\.cruxEngineeringDetails\} aria-labelledby="crux-technical-highlights-heading">\s*<h3 id="crux-technical-highlights-heading">TECHNICAL HIGHLIGHTS<\/h3>/s);
+  assert.match(source, /<section className=\{styles\.cruxTechnology\} aria-labelledby="crux-technology-heading">\s*<h3 id="crux-technology-heading">TECHNOLOGY<\/h3>/s);
+  assert.doesNotMatch(source, /cruxEngineeringDetails[\s\S]{0,180}styles\.cardLabel/s);
+  assert.doesNotMatch(source, /cruxTechnology[\s\S]{0,180}styles\.cardLabel/s);
+  assert.match(css, /\.cruxEngineeringDetails h3,\s*\.cruxTechnology h3,\s*\.cruxEngineeringCopy h3,[\s\S]*?font-size: clamp\(17px, 1\.45vw, 23px\);/s);
   assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.cruxOutlookLayout \{[^}]*padding-right: 6px;/s);
   assert.match(css, /Mobile Inheritance narrative order: demonstration before impact metrics\. \*\/\s*\.inheritanceVideoFrame \{ order: 1; \}\s*\.inheritanceMetrics \{ order: 2; \}/s);
   assert.match(css, /@media \(max-width: 860px\) \{[\s\S]*?\.inheritanceMetrics div \{[^}]*grid-template-columns: max-content minmax\(0, 1fr\);[^}]*align-items: baseline;[^}]*column-gap: 12px;[\s\S]*?\.inheritanceMetrics dd strong \{[^}]*white-space: nowrap;/s);

@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: ProjectRoutePageProps): Promi
   const title = getPortfolioTitle(route);
   const origin = await getRequestOrigin();
   const canonicalUrl = `${origin}${getPortfolioPath(route)}`;
-  const socialImage = `${origin}/og.png`;
+  const socialImage = `${origin}/og.jpg`;
 
   return {
     title,

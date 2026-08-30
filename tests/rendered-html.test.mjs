@@ -59,7 +59,7 @@ test("server-renders the approved single-panel About content", async () => {
   assert.match(html, /<span>Software Engineer<\/span>/);
   assert.match(html, /Evan Luebbert smiling outdoors\./);
   assert.match(html, /<title>Evan Luebbert<\/title>/);
-  assert.match(html, /\/og\.png/);
+  assert.match(html, /\/og\.jpg/);
   assert.match(html, /rel="preload"[^>]*href="\/fonts\/geist-sans-latin\.woff2"[^>]*as="font"/i);
   assert.match(html, /rel="preload"[^>]*href="\/fonts\/geist-mono-latin\.woff2"[^>]*as="font"/i);
   assert.doesNotMatch(html, /@font-face/i);
@@ -75,7 +75,7 @@ test("About navigation, contact actions, and public assets are wired correctly",
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../public/images/evan-luebbert-headshot.webp", import.meta.url)),
     readFile(new URL("../public/documents/evan-luebbert-resume-2026.pdf", import.meta.url)),
-    readFile(new URL("../public/og.png", import.meta.url)),
+    readFile(new URL("../public/og.jpg", import.meta.url)),
   ]);
 
   assert.match(source, /label:\s*"ABOUT",\s*description:\s*"What I build and why\.",\s*chapters:\s*1,/);
@@ -159,7 +159,7 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.equal(headshot.subarray(0, 4).toString("ascii"), "RIFF");
   assert.equal(headshot.subarray(8, 12).toString("ascii"), "WEBP");
   assert.equal(resume.subarray(0, 4).toString("ascii"), "%PDF");
-  assert.deepEqual([...socialImage.subarray(1, 4)], [80, 78, 71]);
+  assert.deepEqual([...socialImage.subarray(0, 3)], [255, 216, 255]);
   assert.doesNotMatch(source, /PORTFOLIO PROTOTYPE|DYNAMIC ROUTE ONLINE|SCROLL · ARROWS · CLICK TABS/);
 
   assert.ok(projectRoot);

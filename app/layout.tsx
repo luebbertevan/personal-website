@@ -10,7 +10,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const protocol = requestHeaders.get("x-forwarded-proto")
     ?? (host.startsWith("localhost") ? "http" : "https");
   const origin = `${protocol}://${host}`;
-  const socialImage = `${origin}/og.png`;
+  const socialImage = `${origin}/og.jpg`;
   const description = "I build software I believe in. Software engineering and design is my superpower.";
 
   return {

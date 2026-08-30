@@ -217,7 +217,7 @@ test("visual rendering adapts automatically and fails safely without visitor-fac
   assert.match(qualitySource, /particleSimulationSize: 96/);
   assert.match(qualitySource, /minimumFrameInterval: 1000 \/ 30/);
   assert.match(qualitySource, /export function estimateInitialVisualQuality/);
-  assert.match(qualitySource, /hardwareConcurrency === "number" && hardwareConcurrency <= 3/);
+  assert.match(qualitySource, /hardwareConcurrency === "number" && hardwareConcurrency <= 4/);
   assert.match(qualitySource, /export function getNextLowerVisualQuality/);
   assert.match(emberSource, /simulationSize = 160/);
   assert.match(emberSource, /new GPUComputationRenderer\(safeSimulationSize, safeSimulationSize, renderer\)/);
@@ -229,7 +229,8 @@ test("visual rendering adapts automatically and fails safely without visitor-fac
   assert.match(source, /searchParams\.get\("visual-debug"\) === "1"/);
   assert.match(source, /qualityMode === "auto"/);
   assert.match(source, /performanceSamples\.length >= 90/);
-  assert.match(source, /consecutiveSlowWindows >= 3/);
+  assert.match(source, /const slowFrameThreshold = activeQualityTier === "full" \? 22 : 25/);
+  assert.match(source, /consecutiveSlowWindows >= 2/);
   assert.match(source, /emberLoom\?\.setParticleCount\(nextProfile\.particleSimulationSize \*\* 2\)/);
   assert.doesNotMatch(source, /const nextEmberLoom = createEmberLoom/);
   assert.match(source, /getPortfolioUrlWithVisualSettings/);

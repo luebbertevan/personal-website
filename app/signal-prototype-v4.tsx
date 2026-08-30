@@ -947,7 +947,7 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
         }
         performanceSamples = [];
         consecutiveSlowWindows = 0;
-        qualityWarmupUntil = performance.now() + 6000;
+        qualityWarmupUntil = performance.now() + 4000;
         resize();
       }
       publishDiagnostics(firstFrameRendered ? "ready" : "loading");
@@ -1153,7 +1153,7 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
 
     const animate = (now: number) => {
       if (disposed || contextLost || document.hidden) return;
-      if (qualityWarmupUntil === 0) qualityWarmupUntil = now + 8000;
+      if (qualityWarmupUntil === 0) qualityWarmupUntil = now + 6000;
 
       const qualityCommand = qualityCommandRef.current;
       if (qualityCommand) {
@@ -1591,13 +1591,13 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
             && now >= qualityWarmupUntil
             && activeQualityTier !== "reduced"
           ) {
-            const slowFrameThreshold = activeQualityTier === "full" ? 25 : 29;
-            if (averageFrameInterval > slowFrameThreshold || percentile75 > slowFrameThreshold + 4) {
+            const slowFrameThreshold = activeQualityTier === "full" ? 22 : 25;
+            if (averageFrameInterval > slowFrameThreshold || percentile75 > slowFrameThreshold + 2) {
               consecutiveSlowWindows += 1;
             } else {
               consecutiveSlowWindows = Math.max(0, consecutiveSlowWindows - 1);
             }
-            if (consecutiveSlowWindows >= 3) {
+            if (consecutiveSlowWindows >= 2) {
               applyQualityTier(
                 getNextLowerVisualQuality(activeQualityTier),
                 `sustained ${diagnosticFps} FPS`,

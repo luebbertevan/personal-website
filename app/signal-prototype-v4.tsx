@@ -222,6 +222,20 @@ function MediaExpandIcon() {
   return <span aria-hidden="true" className={styles.expandIcon}>⛶</span>;
 }
 
+function activateDeferredVideo(video: HTMLVideoElement) {
+  const source = video.dataset.src;
+  if (!source || video.getAttribute("src") === source) return;
+  video.src = source;
+  video.load();
+}
+
+function deactivateDeferredVideo(video: HTMLVideoElement) {
+  video.pause();
+  if (!video.hasAttribute("src")) return;
+  video.removeAttribute("src");
+  video.load();
+}
+
 type SignalPrototypeV4Props = {
   initialRoute: PortfolioRoute;
 };
@@ -282,6 +296,7 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
   const [expandedCruxMedia, setExpandedCruxMedia] = useState<CruxMedia | null>(null);
   const [inheritanceImageExpanded, setInheritanceImageExpanded] = useState(false);
   const [activeRoute, setActiveRoute] = useState(initialRoute);
+  const [pendingMediaRoute, setPendingMediaRoute] = useState<PortfolioRoute | null>(null);
   const [mobileOverlay, setMobileOverlay] = useState<"projects" | "chapters" | null>(null);
   const [expandedMenuProject, setExpandedMenuProject] = useState(initialRoute.destination);
   const [visualDiagnostics, setVisualDiagnostics] = useState<VisualDiagnostics | null>(null);
@@ -385,6 +400,7 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
       window.location.assign(getPortfolioUrlWithVisualSettings(route));
       return;
     }
+    setPendingMediaRoute(route);
     syncBrowserRoute(route, push);
     navigationCommandRef.current = { type: "route", route };
   };
@@ -520,6 +536,8 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
     ].forEach((candidate) => {
       if (candidate && candidate !== video) candidate.pause();
     });
+
+    activateDeferredVideo(video);
 
     const nativeVideo = video as HTMLVideoElement & { webkitEnterFullscreen?: () => void };
     const playFullscreenVideo = () => void video.play().catch(() => undefined);
@@ -821,16 +839,25 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
     };
 
     const syncActiveProjectVideo = (destinationIndex: number, chapterIndex: number) => {
-      getProjectVideos().forEach((video) => video?.pause());
-      if (prefersReducedMotionRef.current || activeQualityTier === "reduced") return;
-
       const activeVideo = getActiveProjectVideo(destinationIndex, chapterIndex);
-      if (!activeVideo) return;
+      getProjectVideos().forEach((video) => {
+        if (!video) return;
+        if (video === activeVideo) video.pause();
+        else deactivateDeferredVideo(video);
+      });
+      if (
+        !activeVideo
+        || prefersReducedMotionRef.current
+        || activeQualityTier === "reduced"
+      ) {
+        if (activeVideo) deactivateDeferredVideo(activeVideo);
+        return;
+      }
+
+      activateDeferredVideo(activeVideo);
       activeVideo.muted = true;
       void activeVideo.play().catch(() => undefined);
     };
-
-    syncActiveProjectVideo(currentDestination, currentChapter);
 
     const updatePanelBounds = (destinationIndex = currentDestination) => {
       const width = Math.max(1, mount.clientWidth);
@@ -1016,6 +1043,7 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
         consecutiveSlowWindows = 0;
         qualityWarmupUntil = performance.now() + 4000;
         resize();
+        syncActiveProjectVideo(currentDestination, currentChapter);
       }
       publishDiagnostics(firstFrameRendered ? "ready" : "loading");
     };
@@ -1474,6 +1502,7 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
         activeDestinationRef.current = activeDestinationForUi;
         activeChapterRef.current = activeChapterForUi;
         setActiveRoute({ destination: activeDestinationForUi, chapter: activeChapterForUi });
+        setPendingMediaRoute(null);
         updatePanelBounds(activeDestinationForUi);
         syncActiveProjectVideo(activeDestinationForUi, activeChapterForUi);
       }
@@ -1616,6 +1645,7 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
       if (!firstFrameRendered) {
         firstFrameRendered = true;
         publishDiagnostics("ready");
+        syncActiveProjectVideo(currentDestination, currentChapter);
       }
 
       if (rawFrameInterval > 0 && rawFrameInterval < 100) {
@@ -1763,6 +1793,10 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
 
   const activeDestination = destinations[activeRoute.destination];
   const activeChapterLabel = activeDestination.chapterLabels[activeRoute.chapter];
+  const shouldLoadChapterMedia = (destination: number, chapter: number) => (
+    (activeRoute.destination === destination && activeRoute.chapter === chapter)
+    || (pendingMediaRoute?.destination === destination && pendingMediaRoute.chapter === chapter)
+  );
   const isFirstRoute = activeRoute.destination === 0 && activeRoute.chapter === 0;
   const isLastRoute = activeRoute.destination === destinations.length - 1
     && activeRoute.chapter === activeDestination.chapters - 1;
@@ -1904,7 +1938,7 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                 {/* The source is pre-cropped and optimized, so native image loading is intentional. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="/images/evan-luebbert-headshot.webp"
+                  src={shouldLoadChapterMedia(0, 0) ? "/images/evan-luebbert-headshot.webp" : undefined}
                   alt="Evan Luebbert smiling outdoors."
                   width="480"
                   height="600"
@@ -1964,7 +1998,7 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
               {/* The source is optimized for this compact editorial crop. */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/images/evan-fostering-kitten.webp"
+                src={shouldLoadChapterMedia(1, 0) ? "/images/evan-fostering-kitten.webp" : undefined}
                 alt="Evan holding a foster kitten."
                 width="1040"
                 height="1384"
@@ -2001,7 +2035,7 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                       {/* These are product screenshots, so native image loading preserves the authored pixels. */}
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
-                        src={item.src}
+                        src={shouldLoadChapterMedia(1, 1) ? item.src : undefined}
                         alt={item.alt}
                         width={item.width}
                         height={item.height}
@@ -2039,7 +2073,7 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                   {/* This process artifact is kept at its authored aspect ratio. */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={fostyDesignMedia.src}
+                    src={shouldLoadChapterMedia(1, 2) ? fostyDesignMedia.src : undefined}
                     alt={fostyDesignMedia.alt}
                     width={fostyDesignMedia.width}
                     height={fostyDesignMedia.height}
@@ -2236,7 +2270,7 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                   <figure className={styles.cruxOriginScreenshot}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src="/images/crux-vision-find-the-move.webp"
+                      src={shouldLoadChapterMedia(2, 0) ? "/images/crux-vision-find-the-move.webp" : undefined}
                       alt="Crux Vision introduction reading Find the move that matters and See your climbing in motion."
                       width={604}
                       height={504}
@@ -2291,12 +2325,12 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                 <figure className={`${styles.cruxVideoFrame} ${styles.cruxOriginVideoFrame}`}>
                   <video
                     ref={cruxVideoRef}
-                    src="/videos/crux-vision-origin-overlay.mp4"
-                    poster="/images/crux-vision-origin-overlay-poster.webp"
+                    data-src="/videos/crux-vision-origin-overlay.mp4"
+                    poster={shouldLoadChapterMedia(2, 0) ? "/images/crux-vision-origin-overlay-poster.webp" : undefined}
                     muted
                     loop
                     playsInline
-                    preload="metadata"
+                    preload="none"
                     aria-label="A portrait climbing video with a synchronized pose skeleton and movement trails"
                   >
                     Your browser does not support embedded video.
@@ -2338,10 +2372,11 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
-                        src={cruxMovementMedia[0].src}
+                        src={shouldLoadChapterMedia(2, 1) ? cruxMovementMedia[0].src : undefined}
                         alt={cruxMovementMedia[0].alt}
                         width={cruxMovementMedia[0].width}
                         height={cruxMovementMedia[0].height}
+                        loading="lazy"
                       />
                       <MediaExpandIcon />
                     </button>
@@ -2359,12 +2394,12 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
               <figure className={`${styles.cruxVideoFrame} ${styles.cruxMovementVideoFrame}`}>
                 <video
                   ref={cruxMovementVideoRef}
-                  src="/videos/crux-vision-movement-review.mp4"
-                  poster="/images/crux-vision-movement-review-poster.webp"
+                  data-src="/videos/crux-vision-movement-review.mp4"
+                  poster={shouldLoadChapterMedia(2, 1) ? "/images/crux-vision-movement-review-poster.webp" : undefined}
                   muted
                   loop
                   playsInline
-                  preload="metadata"
+                  preload="none"
                   aria-label="A climbing move reviewed at quarter speed with three joint trails"
                 >
                   Your browser does not support embedded video.
@@ -2392,10 +2427,11 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={cruxMovementMedia[1].src}
+                      src={shouldLoadChapterMedia(2, 1) ? cruxMovementMedia[1].src : undefined}
                       alt={cruxMovementMedia[1].alt}
                       width={cruxMovementMedia[1].width}
                       height={cruxMovementMedia[1].height}
+                      loading="lazy"
                     />
                     <MediaExpandIcon />
                   </button>
@@ -2417,10 +2453,11 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={cruxMovementMedia[2].src}
+                      src={shouldLoadChapterMedia(2, 1) ? cruxMovementMedia[2].src : undefined}
                       alt={cruxMovementMedia[2].alt}
                       width={cruxMovementMedia[2].width}
                       height={cruxMovementMedia[2].height}
+                      loading="lazy"
                     />
                     <MediaExpandIcon />
                   </button>
@@ -2438,7 +2475,13 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                       aria-label={`Expand the ${item.title.toLowerCase()} screenshot`}
                     >
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={item.src} alt={item.alt} width={item.width} height={item.height} />
+                      <img
+                        src={shouldLoadChapterMedia(2, 1) ? item.src : undefined}
+                        alt={item.alt}
+                        width={item.width}
+                        height={item.height}
+                        loading="lazy"
+                      />
                       <MediaExpandIcon />
                     </button>
                   ))}
@@ -2475,12 +2518,12 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
               <div className={`${styles.cruxVideoFrame} ${styles.cruxComparisonVideoFrame}`}>
                 <video
                   ref={cruxComparisonVideoRef}
-                  src="/videos/crux-vision-fail-vs-success.mp4"
-                  poster="/images/crux-vision-fail-vs-success-poster.webp"
+                  data-src="/videos/crux-vision-fail-vs-success.mp4"
+                  poster={shouldLoadChapterMedia(2, 2) ? "/images/crux-vision-fail-vs-success-poster.webp" : undefined}
                   muted
                   loop
                   playsInline
-                  preload="metadata"
+                  preload="none"
                   aria-label="Two attempts at the same dynamic climbing move compared with ankle, hip, and shoulder movement trails"
                 >
                   Your browser does not support embedded video.
@@ -2501,10 +2544,11 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
               <aside className={styles.cruxTrailLegend} aria-label="Selected movement trails">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src="/images/crux-vision-trail-legend.webp"
+                  src={shouldLoadChapterMedia(2, 2) ? "/images/crux-vision-trail-legend.webp" : undefined}
                   alt="Hip midpoint in orange, shoulder midpoint in cyan, and left ankle in magenta."
                   width={352}
                   height={316}
+                  loading="lazy"
                 />
               </aside>
               <section className={styles.cruxVisualSection} aria-labelledby="crux-visual-move">
@@ -2688,10 +2732,11 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={cruxEngineeringMedia[0].src}
+                      src={shouldLoadChapterMedia(2, 3) ? cruxEngineeringMedia[0].src : undefined}
                       alt={cruxEngineeringMedia[0].alt}
                       width={cruxEngineeringMedia[0].width}
                       height={cruxEngineeringMedia[0].height}
+                      loading="lazy"
                     />
                     <MediaExpandIcon />
                   </button>
@@ -2732,10 +2777,11 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
-                      src={cruxEngineeringMedia[1].src}
+                      src={shouldLoadChapterMedia(2, 3) ? cruxEngineeringMedia[1].src : undefined}
                       alt={cruxEngineeringMedia[1].alt}
                       width={cruxEngineeringMedia[1].width}
                       height={cruxEngineeringMedia[1].height}
+                      loading="lazy"
                     />
                     <MediaExpandIcon />
                   </button>
@@ -2772,10 +2818,11 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={cruxEngineeringMedia[2].src}
+                    src={shouldLoadChapterMedia(2, 3) ? cruxEngineeringMedia[2].src : undefined}
                     alt={cruxEngineeringMedia[2].alt}
                     width={cruxEngineeringMedia[2].width}
                     height={cruxEngineeringMedia[2].height}
+                    loading="lazy"
                   />
                   <MediaExpandIcon />
                 </button>
@@ -2967,12 +3014,12 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                 <div className={styles.inheritanceVideoMedia}>
                   <video
                     ref={inheritanceVideoRef}
-                    src="/videos/inheritance-motion-collection.mp4"
-                    poster="/images/inheritance-motion-collection-poster.webp"
+                    data-src="/videos/inheritance-motion-collection.mp4"
+                    poster={shouldLoadChapterMedia(4, 0) ? "/images/inheritance-motion-collection-poster.webp" : undefined}
                     muted
                     loop
                     playsInline
-                    preload="metadata"
+                    preload="none"
                     width="1600"
                     height="886"
                     aria-label="A collection of retargeted motion capture animations playing in Blender"
@@ -3074,10 +3121,11 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src="/images/inheritance-amass-diversity.webp"
+                    src={shouldLoadChapterMedia(4, 1) ? "/images/inheritance-amass-diversity.webp" : undefined}
                     alt="A wide collection of AMASS body models showing varied poses, movements, and body shapes."
                     width="1554"
                     height="1074"
+                    loading="lazy"
                   />
                   <MediaExpandIcon />
                 </button>
@@ -3119,12 +3167,12 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                 >
                   <video
                     ref={inheritanceWalkingVideoRef}
-                    src="/videos/inheritance-walking-comparison.mp4"
-                    poster="/images/inheritance-walking-comparison-poster.webp"
+                    data-src="/videos/inheritance-walking-comparison.mp4"
+                    poster={shouldLoadChapterMedia(4, 2) ? "/images/inheritance-walking-comparison-poster.webp" : undefined}
                     muted
                     loop
                     playsInline
-                    preload="metadata"
+                    preload="none"
                     width={1372}
                     height={1552}
                     aria-label="A synchronized comparison of AMASS surface motion and the rebuilt production armature animation"

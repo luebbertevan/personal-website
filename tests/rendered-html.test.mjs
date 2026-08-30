@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
+import { gzipSync } from "node:zlib";
 
 const projectRoot = new URL("../", import.meta.url);
 
@@ -201,6 +202,68 @@ test("client navigation synchronizes native history without remounting the portf
   assert.match(source, /const activeVideo = getActiveProjectVideo\(destinationIndex, chapterIndex\);[\s\S]*activeVideo\.muted = true;[\s\S]*activeVideo\.play\(\)/);
   assert.match(source, /eventTarget\s*&& eventTarget !== document\.body\s*&& eventTarget !== document\.documentElement\s*&& eventTarget !== shell/);
   assert.doesNotMatch(source, /router\.push|router\.replace/);
+});
+
+test("project media loads only for the current or incoming chapter", async () => {
+  const [homeResponse, cruxResponse, source] = await Promise.all([
+    render(),
+    render("/crux-vision"),
+    readPortfolioSource(),
+  ]);
+  const [homeHtml, cruxHtml] = await Promise.all([
+    homeResponse.text(),
+    cruxResponse.text(),
+  ]);
+
+  assert.match(homeHtml, /src="\/images\/evan-luebbert-headshot\.webp"/);
+  assert.doesNotMatch(homeHtml, /src="\/images\/(?:fosty|crux-vision|inheritance)-/);
+  assert.doesNotMatch(homeHtml, /<video[^>]*\ssrc=/);
+  assert.doesNotMatch(homeHtml, /<video[^>]*\sposter=/);
+
+  assert.match(cruxHtml, /src="\/images\/crux-vision-find-the-move\.webp"/);
+  assert.match(cruxHtml, /poster="\/images\/crux-vision-origin-overlay-poster\.webp"/);
+  assert.doesNotMatch(cruxHtml, /<video[^>]*\ssrc=/);
+  assert.doesNotMatch(cruxHtml, /poster="\/images\/(?:crux-vision-movement-review|crux-vision-fail-vs-success|inheritance)-/);
+
+  assert.match(source, /const \[pendingMediaRoute, setPendingMediaRoute\] = useState<PortfolioRoute \| null>\(null\);/);
+  assert.match(source, /setPendingMediaRoute\(route\);[\s\S]*navigationCommandRef\.current = \{ type: "route", route \};/);
+  assert.match(source, /function activateDeferredVideo\(video: HTMLVideoElement\)/);
+  assert.match(source, /function deactivateDeferredVideo\(video: HTMLVideoElement\)/);
+  assert.equal((source.match(/data-src="\/videos\//g) ?? []).length, 5);
+  assert.equal((source.match(/preload="none"/g) ?? []).length, 5);
+});
+
+test("the initial interactive bundle stays within its launch budget", async () => {
+  const manifest = JSON.parse(await readFile(
+    new URL("../dist/client/.vite/manifest.json", import.meta.url),
+    "utf8",
+  ));
+  const initialEntries = [
+    "virtual:vinext-app-browser-entry",
+    "app/signal-prototype-v4.tsx",
+  ];
+  const visitedEntries = new Set();
+  const assetFiles = new Set();
+  const visit = (entryKey) => {
+    if (visitedEntries.has(entryKey)) return;
+    visitedEntries.add(entryKey);
+    const entry = manifest[entryKey];
+    assert.ok(entry, `Missing build manifest entry: ${entryKey}`);
+    if (entry.file) assetFiles.add(entry.file);
+    for (const importedEntry of entry.imports ?? []) visit(importedEntry);
+  };
+  initialEntries.forEach(visit);
+
+  let totalGzipBytes = 0;
+  for (const assetFile of assetFiles) {
+    const contents = await readFile(new URL(`../dist/client/${assetFile}`, import.meta.url));
+    totalGzipBytes += gzipSync(contents, { level: 9 }).byteLength;
+  }
+
+  assert.ok(
+    totalGzipBytes <= 270 * 1024,
+    `Initial interactive JavaScript is ${Math.round(totalGzipBytes / 1024)} KiB gzip; budget is 270 KiB`,
+  );
 });
 
 test("visual rendering adapts automatically and fails safely without visitor-facing controls", async () => {
@@ -410,8 +473,8 @@ test("Inheritance renders the experience, challenge, engineering, and impact cha
   assert.match(source, /href="https:\/\/www\.inheritance\.ai\/"/);
   assert.match(source, /At <a href="https:\/\/www\.inheritance\.ai\/"[^>]*>Inheritance<\/a>, I built/);
   assert.doesNotMatch(source, /Visit Inheritance|inheritanceLinks/);
-  assert.match(source, /src="\/videos\/inheritance-motion-collection\.mp4"/);
-  assert.match(source, /poster="\/images\/inheritance-motion-collection-poster\.webp"/);
+  assert.match(source, /data-src="\/videos\/inheritance-motion-collection\.mp4"/);
+  assert.match(source, /poster=\{shouldLoadChapterMedia\(4, 0\) \? "\/images\/inheritance-motion-collection-poster\.webp" : undefined\}/);
   assert.match(source, /muted\s+loop\s+playsInline/);
   assert.match(html, /A sample of retargeted motion capture animations\./);
   assert.match(source, /onClick=\{\(\) => openVideoFullscreen\(inheritanceVideoRef\.current\)\}/);
@@ -442,7 +505,7 @@ test("Inheritance renders the experience, challenge, engineering, and impact cha
   assert.match(css, /\.inheritanceExperience \{[^}]*overflow-x: hidden;[^}]*overflow-y: auto;/s);
   assert.match(css, /\.inheritanceIntro p \{[^}]*width: 100%;[^}]*max-width: none;/s);
   assert.match(css, /\.inheritanceIntro p,\s*\.inheritanceStory p \{[^}]*color: var\(--body-text-color\);/s);
-  assert.match(source, /src="\/images\/inheritance-amass-diversity\.webp"/);
+  assert.match(source, /src=\{shouldLoadChapterMedia\(4, 1\) \? "\/images\/inheritance-amass-diversity\.webp" : undefined\}/);
   assert.match(html, /THE MOTION AND BODY DIVERSITY REPRESENTED IN AMASS\./);
   assert.match(source, /onClick=\{\(\) => setInheritanceImageExpanded\(true\)\}/);
   assert.match(source, /inheritanceImageExpanded && portalTarget && createPortal\(/);
@@ -476,8 +539,8 @@ test("Inheritance renders the experience, challenge, engineering, and impact cha
   assert.match(css, /@container project-panel \(max-width: 700px\) \{[\s\S]*\.inheritanceIntro p,[\s\S]*font-size: 17px;[\s\S]*\.inheritanceVideoFrame figcaption,\s*\.inheritanceAmassFigure figcaption,\s*\.inheritanceEngineeringFigure figcaption \{[^}]*font-size: 13px;/s);
   assert.doesNotMatch(css, /\.inheritanceAmassFigure figcaption \{\s*font-size: 16px;/s);
   assert.match(css, /\.inheritanceRotationHighlight \{[^}]*grid-column: 1 \/ -1;[^}]*grid-template-columns: minmax\(0, 1fr\);/s);
-  assert.match(source, /src="\/videos\/inheritance-walking-comparison\.mp4"/);
-  assert.match(source, /poster="\/images\/inheritance-walking-comparison-poster\.webp"/);
+  assert.match(source, /data-src="\/videos\/inheritance-walking-comparison\.mp4"/);
+  assert.match(source, /poster=\{shouldLoadChapterMedia\(4, 2\) \? "\/images\/inheritance-walking-comparison-poster\.webp" : undefined\}/);
   assert.match(source, /onClick=\{\(\) => openVideoFullscreen\(inheritanceWalkingVideoRef\.current\)\}/);
   assert.match(html, /AMASS MOTION, REBUILT ON A PRODUCTION ARMATURE\./);
   assert.match(css, /\.inheritanceEngineeringHero \{[^}]*grid-template-columns: repeat\(2, minmax\(0, 1fr\)\);/s);
@@ -540,9 +603,9 @@ test("Crux Vision renders all five case-study chapters with expandable media", a
   assert.match(html, /microscope for video analysis/);
   assert.match(source, /label:\s*"CRUX VISION",\s*description:\s*"A video analysis tool for understanding climbing movement\.",\s*chapters:\s*5,/);
   assert.match(source, /cssColor:\s*\[143, 230, 96\]/);
-  assert.match(source, /src="\/videos\/crux-vision-origin-overlay\.mp4"/);
-  assert.match(source, /poster="\/images\/crux-vision-origin-overlay-poster\.webp"/);
-  assert.match(source, /src="\/images\/crux-vision-find-the-move\.webp"/);
+  assert.match(source, /data-src="\/videos\/crux-vision-origin-overlay\.mp4"/);
+  assert.match(source, /poster=\{shouldLoadChapterMedia\(2, 0\) \? "\/images\/crux-vision-origin-overlay-poster\.webp" : undefined\}/);
+  assert.match(source, /src=\{shouldLoadChapterMedia\(2, 0\) \? "\/images\/crux-vision-find-the-move\.webp" : undefined\}/);
   assert.match(html, /Public beta/);
   assert.doesNotMatch(html, /Try the public beta/);
   assert.match(source, /href="https:\/\/crux-vision-rebuild\.vercel\.app\/"/);
@@ -553,14 +616,14 @@ test("Crux Vision renders all five case-study chapters with expandable media", a
   assert.match(html, /REVIEW WITH PRECISION/);
   assert.match(html, /FOCUS THE INVESTIGATION/);
   assert.match(source, /onClick=\{\(\) => navigateToChapter\(1\)\}>MOVEMENT REVIEW<\/button>/);
-  assert.match(source, /src="\/videos\/crux-vision-movement-review\.mp4"/);
+  assert.match(source, /data-src="\/videos\/crux-vision-movement-review\.mp4"/);
   assert.match(source, /cruxMovementMedia\[0\]/);
   assert.match(html, /Movement made visible/);
   assert.match(html, /READING THE TRAILS/);
   assert.match(html, /Crux Vision gave that theory a visible form/);
   assert.match(source, /onClick=\{\(\) => navigateToChapter\(2\)\}>VISUAL OVERLAY<\/button>/);
-  assert.match(source, /src="\/videos\/crux-vision-fail-vs-success\.mp4"/);
-  assert.match(source, /src="\/images\/crux-vision-trail-legend\.webp"/);
+  assert.match(source, /data-src="\/videos\/crux-vision-fail-vs-success\.mp4"/);
+  assert.match(source, /src=\{shouldLoadChapterMedia\(2, 2\) \? "\/images\/crux-vision-trail-legend\.webp" : undefined\}/);
   assert.match(html, /Building visuals from video/);
   assert.match(html, /keeping the analysis focused and reducing processing time/);
   assert.match(html, /drawing the overlay as results arrive so the climber can begin reviewing the movement/);

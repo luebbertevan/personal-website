@@ -90,6 +90,8 @@ Implemented on August 29, 2026. Projects use concise root-level routes (`/fosty`
 
 The adaptive rendering and resilience pass was completed on August 29, 2026. The finished interface is automatic and has no visitor-facing quality control. Full, Balanced, and Reduced all render the authentic WebGL strand; lower tiers reduce technical cost without substituting a CSS interpretation. A hidden diagnostic view can force tiers during validation. Renderer failure and unrecoverable context loss use a deliberately minimal near-black emergency background with no imitation strand, while direct-route content remains usable.
 
+The client-loading pass was completed on August 30, 2026 without deferring or remounting the WebGL world. The renderer, strand, particle simulation, route controller, and destination-panel shells remain available as one continuous experience. Images and video posters now load only for the current or incoming chapter, and an MP4 source is attached only when its chapter becomes active or the visitor explicitly opens it fullscreen. On the About route this reduced observed page media from 19 images and five video requests to the single 63 KiB headshot and no video requests. The initial interactive JavaScript budget is 270 KiB gzip; the completed production build is approximately 254 KiB gzip. Existing automatic quality thresholds remain the animation-frame budget: Full downgrades after sustained averages above 22 ms, Balanced above 25 ms, and Reduced intentionally caps near 30 FPS.
+
 - Replace Pause with an automatic **Full / Balanced / Reduced** quality system and keep validation controls out of the normal visitor interface.
 - Use capability hints only as an initial estimate; measure real frame time and downgrade when the current machine cannot sustain the experience.
 - Define approximately these tiers:
@@ -99,7 +101,7 @@ The adaptive rendering and resilience pass was completed on August 29, 2026. The
 - Pause rendering when the document is hidden.
 - Keep manual tier overrides limited to the hidden diagnostic view; do not expose or persist them as visitor preferences.
 - Load video sources only when their chapter or lightbox needs them.
-- Split the large case-study client component so visitors do not need to parse every interactive feature before the first view becomes usable.
+- Keep project-level code splitting conditional on evidence that the interactive-JavaScript budget or real loading behavior has regressed. Do not split the tightly coordinated destination panels solely to reduce a chunk-size warning when doing so would risk panel measurement, particle framing, or seamless transitions.
 - Establish a performance budget for initial JavaScript, initial media transfer, and sustained animation frame time.
 
 ## Resilience and fallback behavior

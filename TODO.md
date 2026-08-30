@@ -103,6 +103,15 @@ Complete this before mobile and responsive work so the responsive index is desig
 - [x] Add a low-performance mode that preserves navigation and transition continuity while reducing render resolution, device-pixel ratio, particle density, post-processing, and optional atmospheric layers.
 - [x] Use automatic capability detection and sustained frame-time measurement without adding a visitor-facing quality control. A hidden diagnostic view remains available for validation only.
 
+### Client bundle and media loading
+
+- [x] Preserve the WebGL strand, particle simulation, route controller, and destination shells as one continuously mounted experience.
+- [x] Load images and video posters only for the current or incoming chapter.
+- [x] Attach MP4 sources only for the active chapter or an explicit fullscreen request; unload inactive project videos.
+- [x] Remove external font requests and retain local system-font fallbacks.
+- [x] Enforce a 270 KiB gzip initial interactive-JavaScript budget in the production test suite.
+- [x] Defer project-level code splitting unless measurement shows that the budget or visitor experience has regressed; seamless panel measurement and particle framing take priority over an isolated chunk-size warning.
+
 ### Interface cleanup and final art direction
 
 - [ ] Remove prototype diagnostics, placeholder labels, redundant instructions, random status text, and HUD copy that does not help visitors navigate or understand the work.

@@ -239,6 +239,7 @@ test("visual rendering adapts automatically and fails safely without visitor-fac
   assert.match(source, /addEventListener\("webglcontextlost", handleContextLost\)/);
   assert.match(source, /addEventListener\("webglcontextrestored", handleContextRestored\)/);
   assert.match(source, /catch \{\s*activateFallback\("WebGL renderer unavailable"\);/);
+  assert.match(source, /if \(prefersReducedMotionRef\.current\) \{\s*activateFallback\("reduced motion preference"\);\s*return;\s*\}/);
   assert.match(source, /window\.location\.assign\(getPortfolioUrlWithVisualSettings\(route\)\)/);
   assert.doesNotMatch(source, /PAUSE VISUALS|RESUME VISUALS|togglePause|pausedRef/);
 

@@ -635,6 +635,10 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
       activateFallback("forced emergency fallback");
       return;
     }
+    if (prefersReducedMotionRef.current) {
+      activateFallback("reduced motion preference");
+      return;
+    }
 
     let renderer: THREE.WebGLRenderer;
     try {

@@ -10,7 +10,7 @@ This document records the finishing work required after the portfolio content is
 4. Refine the mobile composition chapter by chapter, beginning with About.
 5. Add direct, shareable project URLs and browser-history support.
 6. Add adaptive rendering and a non-WebGL fallback.
-7. Complete accessibility and reduced-motion behavior.
+7. Apply the minimal reduced-motion fallback; defer broader accessibility auditing.
 8. Optimize the client bundle and media loading.
 9. Perform real-device and cross-browser QA.
 10. Complete metadata, analytics, repository cleanup, domain setup, and production deployment.
@@ -111,6 +111,8 @@ The adaptive rendering and resilience pass was completed on August 29, 2026. The
 - Preserve basic access to content when JavaScript is unavailable.
 
 ## Accessibility and motion
+
+The minimal launch scope was implemented on August 30, 2026. When a visitor's operating system requests reduced motion at page load, the site deliberately skips WebGL initialization and uses the existing near-black static presentation with no strand, particles, camera travel, or automatic video playback. Portfolio content and direct-route navigation remain available, and returning to the normal visual experience only requires disabling the preference and refreshing. Broader accessibility, high-contrast, large-text, zoom, and multi-screen-reader auditing is deferred rather than treated as a launch requirement.
 
 - Make reduced motion skip or drastically shorten the opening and disable continuous decorative motion, not only CSS transitions and automatic video playback.
 - Verify complete keyboard navigation and visible focus states.

@@ -23,4 +23,4 @@ Use `npm test` to create a production build and run the rendered-page checks.
 
 ## License
 
-The source code is available under the MIT License. Portfolio copy, résumé content, photography, screenshots, video, and other media are excluded from that license and remain the property of their respective owners. See [LICENSE](LICENSE).
+The source code is available under the [MIT License](LICENSE). Portfolio copy, résumé content, photography, screenshots, video, and other media are excluded from that license; see [CONTENT-LICENSE.md](CONTENT-LICENSE.md).

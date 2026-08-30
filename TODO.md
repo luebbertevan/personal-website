@@ -1,4 +1,4 @@
-# Signal Spine — Project Todo
+# Evan Luebbert Portfolio — Project Todo
 
 This is the canonical working task list for the portfolio. Design rationale and historical decisions live in [DESIGN_NOTES.md](./DESIGN_NOTES.md).
 
@@ -10,7 +10,7 @@ The visual system and navigation proof are sufficiently mature. Use accurate con
 
 ### Connect the project to GitHub
 
-- [ ] Create or choose the GitHub repository that will own the Signal Spine source.
+- [ ] Create the GitHub repository that will own the personal website source.
 - [ ] Decide whether the repository should be public or private before pushing any code or development history.
 - [ ] Connect the local project to that repository and push the complete intentional history without disturbing the existing Sites deployment workflow.
 - [ ] Replace the starter README with a project-specific overview, setup instructions, architecture notes, screenshots, credits, and the deployed-site link.
@@ -42,7 +42,7 @@ The visual system and navigation proof are sufficiently mature. Use accurate con
 ### Add “About this site” as a portfolio project
 
 - [ ] Add a dedicated first-class destination explaining the site itself; do not implement it until the content phase begins.
-- [ ] Treat Signal Spine as an authored project rather than a footer colophon—it should be navigable from the main index and receive its own particle-built presentation.
+- [ ] Treat the site itself as an authored project rather than a footer colophon—it should be navigable from the main index and receive its own particle-built presentation.
 - [ ] Define its story chapters from: concept and goals, visual references, liquid-glass strand development, procedural camera path, particle system, navigation model, sound/music direction, responsive/performance decisions, tools/technology, and lessons or outcome.
 - [ ] Collect development imagery and motion: shader studies, transition iterations, particle experiments, screenshots, short clips, and behind-the-scenes diagrams.
 - [ ] Credit relevant inspirations, reference works, tools, and collaborators appropriately.

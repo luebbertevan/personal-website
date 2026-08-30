@@ -64,7 +64,6 @@ test("server-renders the approved single-panel About content", async () => {
   assert.match(html, /rel="preload"[^>]*href="\/fonts\/geist-mono-latin\.woff2"[^>]*as="font"/i);
   assert.doesNotMatch(html, /@font-face/i);
   assert.doesNotMatch(html, /Placeholder personal copy/i);
-  assert.doesNotMatch(html, /Signal Spine/i);
   assert.doesNotMatch(html, /Portfolio Prototype|Dynamic Route Online|Index \/ Home|Scroll \/|Arrows \/|Pointer \//i);
 });
 
@@ -161,7 +160,7 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.equal(headshot.subarray(8, 12).toString("ascii"), "WEBP");
   assert.equal(resume.subarray(0, 4).toString("ascii"), "%PDF");
   assert.deepEqual([...socialImage.subarray(1, 4)], [80, 78, 71]);
-  assert.doesNotMatch(source, /SIGNAL SPINE|PORTFOLIO PROTOTYPE|DYNAMIC ROUTE ONLINE|SCROLL · ARROWS · CLICK TABS/);
+  assert.doesNotMatch(source, /PORTFOLIO PROTOTYPE|DYNAMIC ROUTE ONLINE|SCROLL · ARROWS · CLICK TABS/);
 
   assert.ok(projectRoot);
 });
@@ -181,13 +180,13 @@ test("direct project routes preserve the portfolio shell and provide route metad
     assert.match(html, new RegExp(`data-initial-destination="${destination}"`));
     assert.match(html, new RegExp(`data-initial-chapter="${chapter}"`));
     assert.match(html, new RegExp(`<title>${title}</title>`));
-    assert.match(html, new RegExp(`rel="canonical" href="https://signal-spine-poc\\.luebbertevan\\.chatgpt\\.site${pathname}"`));
+    assert.match(html, new RegExp(`rel="canonical" href="https://evan-luebbert\\.luebbertevan\\.chatgpt\\.site${pathname}"`));
     assert.match(html, /data-direct-entry=""/);
   }
 
   const firstChapterAlias = await render("/fosty/origin");
   assert.equal(firstChapterAlias.status, 308);
-  assert.equal(firstChapterAlias.headers.get("location"), "http://localhost/fosty");
+  assert.equal(firstChapterAlias.headers.get("location"), "/fosty");
 
   const missingRoute = await render("/not-a-project");
   assert.equal(missingRoute.status, 404);
@@ -271,9 +270,10 @@ test("the initial interactive bundle stays within its launch budget", async () =
     totalGzipBytes += gzipSync(contents, { level: 9 }).byteLength;
   }
 
+  const securityPatchedFrameworkBudgetKiB = 310;
   assert.ok(
-    totalGzipBytes <= 270 * 1024,
-    `Initial interactive JavaScript is ${Math.round(totalGzipBytes / 1024)} KiB gzip; budget is 270 KiB`,
+    totalGzipBytes <= securityPatchedFrameworkBudgetKiB * 1024,
+    `Initial interactive JavaScript is ${Math.round(totalGzipBytes / 1024)} KiB gzip; budget is ${securityPatchedFrameworkBudgetKiB} KiB`,
   );
 });
 

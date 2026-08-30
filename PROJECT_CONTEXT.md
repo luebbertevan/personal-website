@@ -1,10 +1,10 @@
-# Signal Spine — Current Project Context
+# Evan Luebbert Portfolio — Current Project Context
 
 This is the concise handoff for future work on the personal website. It records the current product state, settled interaction decisions, known limitations, and the next intended phase. The canonical task list is [TODO.md](./TODO.md); deeper design history is in [DESIGN_NOTES.md](./DESIGN_NOTES.md).
 
 ## Product intent
 
-Signal Spine is a personal portfolio built as one cohesive interactive world rather than a conventional website with a decorative background. A continuously rendered liquid-glass strand is the narrative path. Camera travel, color, particles, HUD-like content, mouse response, and eventually sound should make exploring 4–6 projects feel cinematic and satisfying while keeping the actual portfolio readable and directly navigable.
+This project is a personal portfolio built as one cohesive interactive world rather than a conventional website with a decorative background. A continuously rendered liquid-glass strand is the narrative path. Camera travel, color, particles, HUD-like content, and mouse response make exploring the featured projects feel cinematic while keeping the portfolio readable and directly navigable.
 
 The accepted visual foundation is a dark, high-contrast, molten colored-glass strand inspired primarily by the rendering language of [this Shadertoy study](https://www.shadertoy.com/view/llK3Dy). Other reference themes include audio-reactive geometry, fractal grids, constellations, sci-fi interface language, and the reactive particle behavior on [Igloo](https://www.igloo.inc/). Fractal/grid/constellation ideas are supporting flourishes, not the primary visual.
 
@@ -64,7 +64,7 @@ The same Home assembly should occur whenever Home is entered, not only on initia
 - Home is a first-class destination in the index and will contain the owner's name, personal headline, short biography, and key social/contact links.
 - Project panels should occupy at least half of a desktop viewport and use large, readable typography. The strand shifts to preserve negative space and should not overlap the content.
 - Projects may use multiple chapters for title, description, media, context/impact, and external links. Real projects may receive individually tuned layouts based on their text and media.
-- Signal Spine itself must become a dedicated portfolio project, “About this site,” covering the concept, references, shader, camera path, particle system, navigation, sound direction, tools, development process, and lessons.
+- The site itself may become a dedicated portfolio project, “About this site,” covering the concept, references, shader, camera path, particle system, navigation, tools, development process, and lessons.
 - Project selection must remain immediately available; nobody should be forced to scroll the entire strand to reach a specific project.
 - A curated music track should begin without an upfront opt-in dialog. A discreet music-note control may later allow visitors to choose their own track. Final browser/audio policy behavior still needs to be designed and tested.
 - Fractal grids, matrix/constellation patterns, sci-fi greebles, scan effects, and project-aware annotations may be added as restrained embellishments during final art direction.
@@ -94,7 +94,7 @@ The proof of concept is visually and interactively sufficient. The next phase is
 
 - Local repository: `/Users/evan/Personal Website`
 - Branch: `main`
-- Hosted proof: <https://signal-spine-poc.luebbertevan.chatgpt.site>
+- Hosted site: <https://evan-luebbert.luebbertevan.chatgpt.site>
 - The existing `origin` is the Sites source remote. Connecting a separate GitHub repository remains an explicit TODO and must preserve the Sites workflow.
-- The starter README is intentionally still present and must later be replaced with a Signal Spine overview, setup/architecture notes, screenshots, credits, license, and deployed link.
+- The repository README provides a concise project overview, local setup instructions, architecture notes, licensing, and the deployed link.
 - Documentation-only handoff changes do not require a site deployment. Runtime changes should be built and visually checked in proportion to their risk before publishing.

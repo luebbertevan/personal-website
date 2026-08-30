@@ -1,4 +1,4 @@
-# Signal Spine — Discovery Notes
+# Evan Luebbert Portfolio — Discovery Notes
 
 ## Locked visual direction
 

@@ -20,7 +20,7 @@ async function getRequestOrigin() {
   const requestHeaders = await headers();
   const host = requestHeaders.get("x-forwarded-host")
     ?? requestHeaders.get("host")
-    ?? "signal-spine-poc.luebbertevan.chatgpt.site";
+    ?? "evan-luebbert.luebbertevan.chatgpt.site";
   const protocol = requestHeaders.get("x-forwarded-proto")
     ?? (host.startsWith("localhost") ? "http" : "https");
   return `${protocol}://${host}`;

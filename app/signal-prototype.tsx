@@ -605,7 +605,7 @@ export function SignalPrototype() {
       <header className={styles.header}>
         <div>
           <span>PORTFOLIO PROTOTYPE / 01</span>
-          <strong>SIGNAL SPINE</strong>
+          <strong>EVAN LUEBBERT</strong>
         </div>
         <div className={styles.live}><i /> WAYPOINT SYSTEM ONLINE</div>
       </header>

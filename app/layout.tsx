@@ -6,7 +6,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const requestHeaders = await headers();
   const host = requestHeaders.get("x-forwarded-host")
     ?? requestHeaders.get("host")
-    ?? "signal-spine-poc.luebbertevan.chatgpt.site";
+    ?? "evan-luebbert.luebbertevan.chatgpt.site";
   const protocol = requestHeaders.get("x-forwarded-proto")
     ?? (host.startsWith("localhost") ? "http" : "https");
   const origin = `${protocol}://${host}`;

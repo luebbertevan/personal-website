@@ -59,6 +59,7 @@ test("server-renders the approved single-panel About content", async () => {
   assert.match(html, /Evan Luebbert smiling outdoors\./);
   assert.match(html, /<title>Evan Luebbert<\/title>/);
   assert.match(html, /\/og\.png/);
+  assert.doesNotMatch(html, /rel="preload"[^>]*as="font"|geist-[^"']*\.woff2|@font-face/i);
   assert.doesNotMatch(html, /Placeholder personal copy/i);
   assert.doesNotMatch(html, /Signal Spine/i);
   assert.doesNotMatch(html, /Portfolio Prototype|Dynamic Route Online|Index \/ Home|Scroll \/|Arrows \/|Pointer \//i);
@@ -108,6 +109,8 @@ test("About navigation, contact actions, and public assets are wired correctly",
   assert.match(css, /\.minimalContactLinks i \{[^}]*font-size: 1em;/s);
   assert.match(globalCss, /\.site-identity strong \{[^}]*font-size: clamp\(52px, 3\.25vw, 68px\);/s);
   assert.match(globalCss, /\.site-identity span \{[^}]*font-size: clamp\(24px, 1\.44vw, 28px\);/s);
+  assert.match(globalCss, /--font-geist-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;/);
+  assert.match(globalCss, /--font-geist-mono: ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, monospace;/);
   assert.match(globalCss, /animation: identity-name-reveal 480ms[^;]*1s both;/);
   assert.match(globalCss, /animation: identity-title-reveal 480ms[^;]*1\.5s both;/);
   assert.match(globalCss, /\.site-identity span \{[^}]*color-mix\(in srgb, rgb\(var\(--accent-rgb\)\) 72%, white 28%\);[^}]*text-shadow: 0 1px 3px rgba\(3, 3, 5, 0\.92\);/s);

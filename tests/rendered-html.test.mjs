@@ -1,9 +1,35 @@
 import assert from "node:assert/strict";
+import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
-import test from "node:test";
+import { fileURLToPath } from "node:url";
+import test, { after, before } from "node:test";
 import { gzipSync } from "node:zlib";
+import next from "next";
 
 const projectRoot = new URL("../", import.meta.url);
+let nextApplication;
+let server;
+let serverOrigin;
+
+before(async () => {
+  nextApplication = next({ dev: false, dir: fileURLToPath(projectRoot) });
+  await nextApplication.prepare();
+  server = createServer(nextApplication.getRequestHandler());
+  await new Promise((resolve, reject) => {
+    server.once("error", reject);
+    server.listen(0, "127.0.0.1", resolve);
+  });
+  const address = server.address();
+  assert.ok(address && typeof address === "object");
+  serverOrigin = `http://127.0.0.1:${address.port}`;
+});
+
+after(async () => {
+  if (server) {
+    await new Promise((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
+  }
+  await nextApplication?.close();
+});
 
 async function readPortfolioSource() {
   const sources = await Promise.all([
@@ -14,24 +40,10 @@ async function readPortfolioSource() {
 }
 
 async function render(pathname = "/") {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
-  const { default: worker } = await import(workerUrl.href);
-
-  return worker.fetch(
-    new Request(new URL(pathname, "http://localhost"), {
-      headers: { accept: "text/html" },
-    }),
-    {
-      ASSETS: {
-        fetch: async () => new Response("Not found", { status: 404 }),
-      },
-    },
-    {
-      waitUntil() {},
-      passThroughOnException() {},
-    },
-  );
+  return fetch(new URL(pathname, serverOrigin), {
+    headers: { accept: "text/html" },
+    redirect: "manual",
+  });
 }
 
 test("server-renders the approved single-panel About content", async () => {
@@ -180,7 +192,7 @@ test("direct project routes preserve the portfolio shell and provide route metad
     assert.match(html, new RegExp(`data-initial-destination="${destination}"`));
     assert.match(html, new RegExp(`data-initial-chapter="${chapter}"`));
     assert.match(html, new RegExp(`<title>${title}</title>`));
-    assert.match(html, new RegExp(`rel="canonical" href="https://evan-luebbert\\.luebbertevan\\.chatgpt\\.site${pathname}"`));
+    assert.match(html, new RegExp(`rel="canonical" href="https://evanluebbert\\.com${pathname}"`));
     assert.match(html, /data-direct-entry=""/);
   }
 
@@ -244,36 +256,24 @@ test("project media loads only for the current or incoming chapter", async () =>
 });
 
 test("the initial interactive bundle stays within its launch budget", async () => {
-  const manifest = JSON.parse(await readFile(
-    new URL("../dist/client/.vite/manifest.json", import.meta.url),
-    "utf8",
-  ));
-  const initialEntries = [
-    "virtual:vinext-app-browser-entry",
-    "app/signal-prototype-v4.tsx",
-  ];
-  const visitedEntries = new Set();
-  const assetFiles = new Set();
-  const visit = (entryKey) => {
-    if (visitedEntries.has(entryKey)) return;
-    visitedEntries.add(entryKey);
-    const entry = manifest[entryKey];
-    assert.ok(entry, `Missing build manifest entry: ${entryKey}`);
-    if (entry.file) assetFiles.add(entry.file);
-    for (const importedEntry of entry.imports ?? []) visit(importedEntry);
-  };
-  initialEntries.forEach(visit);
+  const response = await render();
+  const html = await response.text();
+  const assetFiles = new Set(
+    [...html.matchAll(/<script[^>]+src="(\/_next\/static\/chunks\/[^"?]+\.js)(?:\?[^"?]*)?"/g)]
+      .map((match) => match[1].replace("/_next/", "")),
+  );
+  assert.ok(assetFiles.size > 0, "No initial JavaScript assets found in rendered HTML");
 
   let totalGzipBytes = 0;
   for (const assetFile of assetFiles) {
-    const contents = await readFile(new URL(`../dist/client/${assetFile}`, import.meta.url));
+    const contents = await readFile(new URL(`../.next/${assetFile}`, import.meta.url));
     totalGzipBytes += gzipSync(contents, { level: 9 }).byteLength;
   }
 
-  const securityPatchedFrameworkBudgetKiB = 310;
+  const nativeNextFrameworkBudgetKiB = 360;
   assert.ok(
-    totalGzipBytes <= securityPatchedFrameworkBudgetKiB * 1024,
-    `Initial interactive JavaScript is ${Math.round(totalGzipBytes / 1024)} KiB gzip; budget is ${securityPatchedFrameworkBudgetKiB} KiB`,
+    totalGzipBytes <= nativeNextFrameworkBudgetKiB * 1024,
+    `Initial interactive JavaScript is ${Math.round(totalGzipBytes / 1024)} KiB gzip; budget is ${nativeNextFrameworkBudgetKiB} KiB`,
   );
 });
 

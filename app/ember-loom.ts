@@ -312,8 +312,8 @@ export function createEmberLoom(
   const gpuCompute = new GPUComputationRenderer(safeSimulationSize, safeSimulationSize, renderer);
   const positionTexture = gpuCompute.createTexture();
   const velocityTexture = gpuCompute.createTexture();
-  const positionData = positionTexture.image.data;
-  const velocityData = velocityTexture.image.data;
+  const positionData = positionTexture.image.data as Float32Array;
+  const velocityData = velocityTexture.image.data as Float32Array;
   const particleCount = safeSimulationSize * safeSimulationSize;
 
   for (let i = 0; i < particleCount; i += 1) {

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import { notFound, permanentRedirect } from "next/navigation";
 import { PortfolioPage } from "../../portfolio-page";
 import {
@@ -16,16 +15,6 @@ type ProjectRoutePageProps = {
   }>;
 };
 
-async function getRequestOrigin() {
-  const requestHeaders = await headers();
-  const host = requestHeaders.get("x-forwarded-host")
-    ?? requestHeaders.get("host")
-    ?? "evan-luebbert.luebbertevan.chatgpt.site";
-  const protocol = requestHeaders.get("x-forwarded-proto")
-    ?? (host.startsWith("localhost") ? "http" : "https");
-  return `${protocol}://${host}`;
-}
-
 export async function generateMetadata({ params }: ProjectRoutePageProps): Promise<Metadata> {
   const { project, chapter = [] } = await params;
   const route = resolvePortfolioRoute(project, chapter);
@@ -33,9 +22,8 @@ export async function generateMetadata({ params }: ProjectRoutePageProps): Promi
 
   const destination = destinations[route.destination];
   const title = getPortfolioTitle(route);
-  const origin = await getRequestOrigin();
-  const canonicalUrl = `${origin}${getPortfolioPath(route)}`;
-  const socialImage = `${origin}/og.jpg`;
+  const canonicalUrl = `https://evanluebbert.com${getPortfolioPath(route)}`;
+  const socialImage = "https://evanluebbert.com/og.jpg";
 
   return {
     title,

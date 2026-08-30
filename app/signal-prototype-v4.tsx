@@ -234,6 +234,29 @@ type VisualDiagnostics = {
   reason: string;
 };
 
+function getPortfolioUrlWithVisualSettings(route: PortfolioRoute) {
+  const path = getPortfolioPath(route);
+  const currentParams = new URLSearchParams(window.location.search);
+  const nextParams = new URLSearchParams();
+  ["visual-debug", "visual-quality", "visual-fallback"].forEach((key) => {
+    const value = currentParams.get(key);
+    if (value !== null) nextParams.set(key, value);
+  });
+  const query = nextParams.toString();
+  return query ? `${path}?${query}` : path;
+}
+
+function syncBrowserRoute(route: PortfolioRoute, push: boolean) {
+  const path = getPortfolioPath(route);
+  if (push && window.location.pathname !== path) {
+    window.history.pushState(
+      { portfolioRoute: route },
+      "",
+      getPortfolioUrlWithVisualSettings(route),
+    );
+  }
+}
+
 export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
   const initialRouteRef = useRef(initialRoute);
   const shellRef = useRef<HTMLElement>(null);
@@ -324,19 +347,12 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
     return () => window.removeEventListener("keydown", closeOnEscape);
   }, [expandedCruxMedia, expandedMedia, inheritanceImageExpanded]);
 
-  const syncBrowserRoute = (route: PortfolioRoute, push: boolean) => {
-    const path = getPortfolioPath(route);
-    if (push && window.location.pathname !== path) {
-      window.history.pushState({ portfolioRoute: route }, "", path);
-    }
-  };
-
   const requestRoute = (route: PortfolioRoute, push = true) => {
     setExpandedMedia(null);
     setExpandedCruxMedia(null);
     setInheritanceImageExpanded(false);
     if (visualFallbackRef.current) {
-      window.location.assign(getPortfolioPath(route));
+      window.location.assign(getPortfolioUrlWithVisualSettings(route));
       return;
     }
     syncBrowserRoute(route, push);
@@ -358,6 +374,12 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
       window.location.replace(url);
       return;
     }
+    const url = new URL(window.location.href);
+    url.searchParams.set("visual-debug", "1");
+    url.searchParams.delete("visual-fallback");
+    if (mode === "auto") url.searchParams.delete("visual-quality");
+    else url.searchParams.set("visual-quality", mode);
+    window.history.replaceState(window.history.state, "", url);
     qualityCommandRef.current = mode;
   };
 
@@ -686,11 +708,15 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
     const finalQuad = new THREE.Mesh(geometry, finalMaterial);
     finalQuad.frustumCulled = false;
     finalScene.add(finalQuad);
-    let emberLoom = createEmberLoom(
+    const particleSimulationCapacity = diagnosticsEnabled
+      ? visualQualityProfiles.full.particleSimulationSize
+      : activeQualityProfile.particleSimulationSize;
+    const emberLoom = createEmberLoom(
       renderer,
       renderTarget.texture,
-      activeQualityProfile.particleSimulationSize,
+      particleSimulationCapacity,
     );
+    emberLoom?.setParticleCount(activeQualityProfile.particleSimulationSize ** 2);
 
     const panelBundles = Array.from(shell.querySelectorAll<HTMLElement>("[data-destination-panel]"))
       .sort((a, b) => Number(a.dataset.destinationPanel) - Number(b.dataset.destinationPanel))
@@ -908,17 +934,7 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
       diagnosticReason = reason;
       if (tier !== activeQualityTier) {
         const nextProfile = visualQualityProfiles[tier];
-        const nextEmberLoom = createEmberLoom(
-          renderer,
-          renderTarget.texture,
-          nextProfile.particleSimulationSize,
-        );
-        if (nextEmberLoom) {
-          emberLoom?.dispose();
-          emberLoom = nextEmberLoom;
-        } else {
-          diagnosticReason = `${reason}; existing particle simulation preserved`;
-        }
+        emberLoom?.setParticleCount(nextProfile.particleSimulationSize ** 2);
         activeQualityTier = tier;
         activeQualityProfile = nextProfile;
         finalUniforms.uPostProcessingEnabled.value = nextProfile.postProcessingEnabled ? 1 : 0;
@@ -931,7 +947,7 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
         }
         performanceSamples = [];
         consecutiveSlowWindows = 0;
-        qualityWarmupUntil = performance.now() + 4000;
+        qualityWarmupUntil = performance.now() + 6000;
         resize();
       }
       publishDiagnostics(firstFrameRendered ? "ready" : "loading");
@@ -991,7 +1007,7 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
       }, direction as -1 | 1);
       if (target) {
         if (visualFallbackRef.current) {
-          window.location.assign(getPortfolioPath(target));
+          window.location.assign(getPortfolioUrlWithVisualSettings(target));
           return;
         }
         syncBrowserRoute(target, true);
@@ -1137,7 +1153,7 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
 
     const animate = (now: number) => {
       if (disposed || contextLost || document.hidden) return;
-      if (qualityWarmupUntil === 0) qualityWarmupUntil = now + 6000;
+      if (qualityWarmupUntil === 0) qualityWarmupUntil = now + 8000;
 
       const qualityCommand = qualityCommandRef.current;
       if (qualityCommand) {
@@ -1575,13 +1591,13 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
             && now >= qualityWarmupUntil
             && activeQualityTier !== "reduced"
           ) {
-            const slowFrameThreshold = activeQualityTier === "full" ? 22 : 25;
-            if (averageFrameInterval > slowFrameThreshold || percentile75 > slowFrameThreshold + 2) {
+            const slowFrameThreshold = activeQualityTier === "full" ? 25 : 29;
+            if (averageFrameInterval > slowFrameThreshold || percentile75 > slowFrameThreshold + 4) {
               consecutiveSlowWindows += 1;
             } else {
               consecutiveSlowWindows = Math.max(0, consecutiveSlowWindows - 1);
             }
-            if (consecutiveSlowWindows >= 2) {
+            if (consecutiveSlowWindows >= 3) {
               applyQualityTier(
                 getNextLowerVisualQuality(activeQualityTier),
                 `sustained ${diagnosticFps} FPS`,

@@ -66,8 +66,8 @@ export function estimateInitialVisualQuality({
 
   if (
     isMobile
-    || (typeof deviceMemory === "number" && deviceMemory <= 4)
-    || (typeof hardwareConcurrency === "number" && hardwareConcurrency <= 4)
+    || (typeof deviceMemory === "number" && deviceMemory <= 3)
+    || (typeof hardwareConcurrency === "number" && hardwareConcurrency <= 3)
   ) {
     return "balanced";
   }

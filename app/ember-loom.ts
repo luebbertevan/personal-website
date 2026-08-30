@@ -299,6 +299,7 @@ export type EmberLoom = {
   scene: THREE.Scene;
   update: (frame: EmberLoomFrame) => void;
   resize: (width: number, height: number) => void;
+  setParticleCount: (count: number) => void;
   dispose: () => void;
 };
 
@@ -448,6 +449,9 @@ export function createEmberLoom(
     },
     resize(width, height) {
       renderUniforms.uResolution.value.set(width, height);
+    },
+    setParticleCount(count) {
+      geometry.instanceCount = THREE.MathUtils.clamp(Math.floor(count), 0, particleCount);
     },
     dispose() {
       geometry.dispose();

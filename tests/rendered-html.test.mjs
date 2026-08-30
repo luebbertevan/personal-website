@@ -187,7 +187,7 @@ test("direct project routes preserve the portfolio shell and provide route metad
 
 test("client navigation synchronizes native history without remounting the portfolio", async () => {
   const source = await readPortfolioSource();
-  assert.match(source, /window\.history\.pushState\(\{ portfolioRoute: route \}, "", path\);/);
+  assert.match(source, /window\.history\.pushState\([\s\S]*getPortfolioUrlWithVisualSettings\(route\),[\s\S]*\);/);
   assert.match(source, /window\.addEventListener\("popstate", handlePopState\);/);
   assert.match(source, /navigationCommandRef\.current = \{ type: "route", route \};/);
   assert.match(source, /let currentDestination = initialRenderRoute\.destination;/);
@@ -217,24 +217,32 @@ test("visual rendering adapts automatically and fails safely without visitor-fac
   assert.match(qualitySource, /particleSimulationSize: 96/);
   assert.match(qualitySource, /minimumFrameInterval: 1000 \/ 30/);
   assert.match(qualitySource, /export function estimateInitialVisualQuality/);
+  assert.match(qualitySource, /hardwareConcurrency === "number" && hardwareConcurrency <= 3/);
   assert.match(qualitySource, /export function getNextLowerVisualQuality/);
   assert.match(emberSource, /simulationSize = 160/);
   assert.match(emberSource, /new GPUComputationRenderer\(safeSimulationSize, safeSimulationSize, renderer\)/);
+  assert.match(emberSource, /setParticleCount\(count\)/);
+  assert.match(emberSource, /geometry\.instanceCount = THREE\.MathUtils\.clamp/);
   assert.match(shaderSource, /uniform float uPostProcessingEnabled;/);
   assert.match(shaderSource, /if \(uPostProcessingEnabled < 0\.5\)/);
 
   assert.match(source, /searchParams\.get\("visual-debug"\) === "1"/);
   assert.match(source, /qualityMode === "auto"/);
   assert.match(source, /performanceSamples\.length >= 90/);
-  assert.match(source, /consecutiveSlowWindows >= 2/);
+  assert.match(source, /consecutiveSlowWindows >= 3/);
+  assert.match(source, /emberLoom\?\.setParticleCount\(nextProfile\.particleSimulationSize \*\* 2\)/);
+  assert.doesNotMatch(source, /const nextEmberLoom = createEmberLoom/);
+  assert.match(source, /getPortfolioUrlWithVisualSettings/);
+  assert.match(source, /\["visual-debug", "visual-quality", "visual-fallback"\]/);
   assert.match(source, /document\.addEventListener\("visibilitychange", handleVisibilityChange\)/);
   assert.match(source, /addEventListener\("webglcontextlost", handleContextLost\)/);
   assert.match(source, /addEventListener\("webglcontextrestored", handleContextRestored\)/);
   assert.match(source, /catch \{\s*activateFallback\("WebGL renderer unavailable"\);/);
-  assert.match(source, /window\.location\.assign\(getPortfolioPath\(route\)\)/);
+  assert.match(source, /window\.location\.assign\(getPortfolioUrlWithVisualSettings\(route\)\)/);
   assert.doesNotMatch(source, /PAUSE VISUALS|RESUME VISUALS|togglePause|pausedRef/);
 
   assert.match(css, /\.shell\[data-visual-state="fallback"\] \{[\s\S]*#070504;/);
+  assert.match(css, /\.shell\[data-visual-state="fallback"\]::before/);
   assert.doesNotMatch(css, /data-visual-state="fallback"[^}]*strand/i);
   assert.match(css, /@media \(scripting: none\)/);
 });

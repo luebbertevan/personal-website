@@ -245,11 +245,13 @@ function handleMediaReady(event: SyntheticEvent<HTMLImageElement | HTMLVideoElem
 function activateDeferredVideo(video: HTMLVideoElement) {
   const source = video.dataset.src;
   if (!source) return;
+  const frame = video.closest<HTMLElement>("[data-media-frame]");
+  const posterIsReady = frame?.dataset.mediaPosterReady === "true";
   if (video.getAttribute("src") === source) {
-    setMediaLoadingState(video, video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA);
+    setMediaLoadingState(video, !posterIsReady && video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA);
     return;
   }
-  setMediaLoadingState(video, true);
+  setMediaLoadingState(video, !posterIsReady);
   video.src = source;
   video.load();
 }
@@ -331,6 +333,48 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
       ? null
       : document.querySelector<HTMLElement>("[data-site-root]") ?? document.body
   ));
+
+  useEffect(() => {
+    const shell = shellRef.current;
+    if (!shell) return;
+
+    shell.querySelectorAll<HTMLImageElement>("[data-media-frame] img").forEach((image) => {
+      if (image.complete) setMediaLoadingState(image, false);
+    });
+
+    let cancelled = false;
+    const posterProbes: HTMLImageElement[] = [];
+    shell.querySelectorAll<HTMLVideoElement>("[data-media-frame] video[poster]").forEach((video) => {
+      const frame = video.closest<HTMLElement>("[data-media-frame]");
+      const posterSource = video.poster;
+      if (!frame || !posterSource) return;
+      if (
+        frame.dataset.mediaPosterSource === posterSource
+        && frame.dataset.mediaPosterReady === "true"
+      ) {
+        setMediaLoadingState(video, false);
+        return;
+      }
+
+      frame.dataset.mediaPosterSource = posterSource;
+      frame.dataset.mediaPosterReady = "false";
+      const posterProbe = new Image();
+      posterProbe.onload = () => {
+        if (cancelled || frame.dataset.mediaPosterSource !== posterSource) return;
+        frame.dataset.mediaPosterReady = "true";
+        setMediaLoadingState(video, false);
+      };
+      posterProbe.src = posterSource;
+      posterProbes.push(posterProbe);
+    });
+
+    return () => {
+      cancelled = true;
+      posterProbes.forEach((posterProbe) => {
+        posterProbe.onload = null;
+      });
+    };
+  }, [activeRoute, pendingMediaRoute]);
 
   useEffect(() => {
     if (!mobileOverlay) return;

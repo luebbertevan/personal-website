@@ -239,7 +239,9 @@ test("project media loads only for the current or incoming chapter", async () =>
   assert.equal((source.match(/<MediaLoadingIndicator \/>/g) ?? []).length, 22);
   assert.equal((source.match(/onLoad=\{handleMediaReady\}/g) ?? []).length, 17);
   assert.equal((source.match(/onLoadedData=\{handleMediaReady\}/g) ?? []).length, 5);
-  assert.match(source, /setMediaLoadingState\(video, true\);[\s\S]*video\.src = source;/);
+  assert.match(source, /const posterIsReady = frame\?\.dataset\.mediaPosterReady === "true";/);
+  assert.match(source, /if \(image\.complete\) setMediaLoadingState\(image, false\);/);
+  assert.match(source, /const posterProbe = new Image\(\);[\s\S]*frame\.dataset\.mediaPosterReady = "true";[\s\S]*setMediaLoadingState\(video, false\);/);
 });
 
 test("the initial interactive bundle stays within its launch budget", async () => {

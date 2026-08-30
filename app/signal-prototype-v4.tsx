@@ -769,6 +769,39 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
     if (!emberLoom) diagnosticReason = "particle simulation unavailable; strand preserved";
     setAccentPalette(currentCssPalette);
 
+    const getProjectVideos = () => [
+      cruxVideoRef.current,
+      cruxMovementVideoRef.current,
+      cruxComparisonVideoRef.current,
+      inheritanceVideoRef.current,
+      inheritanceWalkingVideoRef.current,
+    ];
+
+    const getActiveProjectVideo = (destinationIndex: number, chapterIndex: number) => {
+      if (destinationIndex === 2) {
+        if (chapterIndex === 0) return cruxVideoRef.current;
+        if (chapterIndex === 1) return cruxMovementVideoRef.current;
+        if (chapterIndex === 2) return cruxComparisonVideoRef.current;
+      }
+      if (destinationIndex === 4) {
+        if (chapterIndex === 0) return inheritanceVideoRef.current;
+        if (chapterIndex === 2) return inheritanceWalkingVideoRef.current;
+      }
+      return null;
+    };
+
+    const syncActiveProjectVideo = (destinationIndex: number, chapterIndex: number) => {
+      getProjectVideos().forEach((video) => video?.pause());
+      if (prefersReducedMotionRef.current || activeQualityTier === "reduced") return;
+
+      const activeVideo = getActiveProjectVideo(destinationIndex, chapterIndex);
+      if (!activeVideo) return;
+      activeVideo.muted = true;
+      void activeVideo.play().catch(() => undefined);
+    };
+
+    syncActiveProjectVideo(currentDestination, currentChapter);
+
     const updatePanelBounds = (destinationIndex = currentDestination) => {
       const width = Math.max(1, mount.clientWidth);
       const height = Math.max(1, mount.clientHeight);
@@ -1405,39 +1438,7 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
         activeChapterRef.current = activeChapterForUi;
         setActiveRoute({ destination: activeDestinationForUi, chapter: activeChapterForUi });
         updatePanelBounds(activeDestinationForUi);
-        const originVideo = cruxVideoRef.current;
-        const movementVideo = cruxMovementVideoRef.current;
-        const comparisonVideo = cruxComparisonVideoRef.current;
-        const inheritanceVideo = inheritanceVideoRef.current;
-        const inheritanceWalkingVideo = inheritanceWalkingVideoRef.current;
-        originVideo?.pause();
-        movementVideo?.pause();
-        comparisonVideo?.pause();
-        inheritanceVideo?.pause();
-        inheritanceWalkingVideo?.pause();
-        const shouldPlayCruxVideo = activeDestinationForUi === 2
-          && !prefersReducedMotionRef.current
-          && activeQualityTier !== "reduced";
-        if (shouldPlayCruxVideo) {
-          const activeVideo = activeChapterForUi === 0
-            ? originVideo
-            : activeChapterForUi === 1
-              ? movementVideo
-              : comparisonVideo;
-          void activeVideo?.play().catch(() => undefined);
-        }
-        if (
-          activeDestinationForUi === 4
-          && !prefersReducedMotionRef.current
-          && activeQualityTier !== "reduced"
-        ) {
-          const activeVideo = activeChapterForUi === 0
-            ? inheritanceVideo
-            : activeChapterForUi === 2
-              ? inheritanceWalkingVideo
-              : null;
-          void activeVideo?.play().catch(() => undefined);
-        }
+        syncActiveProjectVideo(activeDestinationForUi, activeChapterForUi);
       }
 
       panelBundles.forEach((bundle, destinationIndex) => {

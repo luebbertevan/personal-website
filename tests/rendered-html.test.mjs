@@ -193,6 +193,9 @@ test("client navigation synchronizes native history without remounting the portf
   assert.match(source, /let currentDestination = initialRenderRoute\.destination;/);
   assert.match(source, /let currentChapter = initialRenderRoute\.chapter;/);
   assert.match(source, /let directEntryActive = initialRenderRoute\.destination > 0/);
+  assert.match(source, /syncActiveProjectVideo\(currentDestination, currentChapter\);/);
+  assert.match(source, /syncActiveProjectVideo\(activeDestinationForUi, activeChapterForUi\);/);
+  assert.match(source, /const activeVideo = getActiveProjectVideo\(destinationIndex, chapterIndex\);[\s\S]*activeVideo\.muted = true;[\s\S]*activeVideo\.play\(\)/);
   assert.doesNotMatch(source, /router\.push|router\.replace/);
 });
 

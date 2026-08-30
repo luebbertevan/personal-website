@@ -231,6 +231,11 @@ test("project media loads only for the current or incoming chapter", async () =>
   assert.match(source, /function deactivateDeferredVideo\(video: HTMLVideoElement\)/);
   assert.equal((source.match(/data-src="\/videos\//g) ?? []).length, 5);
   assert.equal((source.match(/preload="none"/g) ?? []).length, 5);
+  assert.equal((source.match(/data-media-frame=""/g) ?? []).length, 22);
+  assert.equal((source.match(/<MediaLoadingIndicator \/>/g) ?? []).length, 22);
+  assert.equal((source.match(/onLoad=\{handleMediaReady\}/g) ?? []).length, 17);
+  assert.equal((source.match(/onLoadedData=\{handleMediaReady\}/g) ?? []).length, 5);
+  assert.match(source, /setMediaLoadingState\(video, true\);[\s\S]*video\.src = source;/);
 });
 
 test("the initial interactive bundle stays within its launch budget", async () => {

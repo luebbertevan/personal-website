@@ -2439,6 +2439,39 @@
   letter-spacing: 0;
   transition: border-color 160ms ease, color 160ms ease, background 160ms ease;
 }
+[data-media-frame] {
+  position: relative;
+}
+.mediaLoadingIndicator {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  visibility: hidden;
+  opacity: 0;
+  background: rgba(4, 6, 7, 0.72);
+  pointer-events: none;
+  transition: opacity 160ms ease, visibility 0s linear 160ms;
+}
+[data-media-frame][data-media-loading="true"] > .mediaLoadingIndicator {
+  visibility: visible;
+  opacity: 1;
+  transition-delay: 0s;
+}
+.mediaLoadingIndicator::before {
+  width: clamp(22px, 2.2vw, 32px);
+  aspect-ratio: 1;
+  border: 2px solid rgba(var(--accent-rgb), 0.24);
+  border-top-color: rgb(var(--accent-rgb));
+  border-radius: 50%;
+  box-shadow: 0 0 18px rgba(var(--accent-rgb), 0.2);
+  content: "";
+  animation: mediaLoadingSpin 720ms linear infinite;
+}
+@keyframes mediaLoadingSpin {
+  to { transform: rotate(1turn); }
+}
 .productScreenshot:hover .expandIcon,
 .productScreenshot:focus-visible .expandIcon,
 .inheritanceAmassButton:hover .expandIcon,
@@ -2490,7 +2523,7 @@
 }
 .mediaLightbox > button {
   position: absolute;
-  z-index: 1;
+  z-index: 3;
   top: clamp(5px, 0.4vw, 8px);
   right: clamp(5px, 0.4vw, 8px);
   display: grid;
@@ -4767,4 +4800,5 @@
   .project,
   .routeControls button,
   .chapter > a { transition: none; }
+  .mediaLoadingIndicator::before { animation: none; }
 }

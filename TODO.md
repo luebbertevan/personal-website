@@ -108,6 +108,7 @@ Complete this before mobile and responsive work so the responsive index is desig
 - [x] Preserve the WebGL strand, particle simulation, route controller, and destination shells as one continuously mounted experience.
 - [x] Load images and video posters only for the current or incoming chapter.
 - [x] Attach MP4 sources only for the active chapter or an explicit fullscreen request; unload inactive project videos.
+- [x] Show an accent-colored loading spinner inside visible media frames until each requested image or video is ready; keep inactive deferred media quiet.
 - [x] Remove external font requests and retain local system-font fallbacks.
 - [x] Enforce a 270 KiB gzip initial interactive-JavaScript budget in the production test suite.
 - [x] Defer project-level code splitting unless measurement shows that the budget or visitor experience has regressed; seamless panel measurement and particle framing take priority over an isolated chunk-size warning.

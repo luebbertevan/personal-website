@@ -1,6 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties, type TouchEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type SyntheticEvent,
+  type TouchEvent,
+} from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import * as THREE from "three";
@@ -222,15 +229,34 @@ function MediaExpandIcon() {
   return <span aria-hidden="true" className={styles.expandIcon}>⛶</span>;
 }
 
+function MediaLoadingIndicator() {
+  return <span aria-hidden="true" className={styles.mediaLoadingIndicator} />;
+}
+
+function setMediaLoadingState(media: HTMLElement, isLoading: boolean) {
+  const frame = media.closest<HTMLElement>("[data-media-frame]");
+  if (frame) frame.dataset.mediaLoading = isLoading ? "true" : "false";
+}
+
+function handleMediaReady(event: SyntheticEvent<HTMLImageElement | HTMLVideoElement>) {
+  setMediaLoadingState(event.currentTarget, false);
+}
+
 function activateDeferredVideo(video: HTMLVideoElement) {
   const source = video.dataset.src;
-  if (!source || video.getAttribute("src") === source) return;
+  if (!source) return;
+  if (video.getAttribute("src") === source) {
+    setMediaLoadingState(video, video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA);
+    return;
+  }
+  setMediaLoadingState(video, true);
   video.src = source;
   video.load();
 }
 
 function deactivateDeferredVideo(video: HTMLVideoElement) {
   video.pause();
+  setMediaLoadingState(video, false);
   if (!video.hasAttribute("src")) return;
   video.removeAttribute("src");
   video.load();
@@ -1934,7 +1960,11 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
               </section>
             </div>
             <aside className={styles.aboutSidebar} aria-label="Profile details">
-              <figure className={styles.headshot}>
+              <figure
+                className={styles.headshot}
+                data-media-frame=""
+                data-media-loading={shouldLoadChapterMedia(0, 0) ? "true" : "false"}
+              >
                 {/* The source is pre-cropped and optimized, so native image loading is intentional. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -1942,7 +1972,10 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                   alt="Evan Luebbert smiling outdoors."
                   width="480"
                   height="600"
+                  onLoad={handleMediaReady}
+                  onError={handleMediaReady}
                 />
+                <MediaLoadingIndicator />
               </figure>
               <div className={styles.personalNote}>
                 <p className={styles.cardLabel}>OUTSIDE OF SOFTWARE</p>
@@ -1994,7 +2027,11 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                 <a href="https://www.cokittycoalition.com/" target="_blank" rel="noreferrer">Colorado Kitty Coalition <i aria-hidden="true">↗</i></a>
               </nav>
             </div>
-            <figure className={styles.fostyPhoto}>
+            <figure
+              className={styles.fostyPhoto}
+              data-media-frame=""
+              data-media-loading={shouldLoadChapterMedia(1, 0) ? "true" : "false"}
+            >
               {/* The source is optimized for this compact editorial crop. */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -2002,7 +2039,10 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                 alt="Evan holding a foster kitten."
                 width="1040"
                 height="1384"
+                onLoad={handleMediaReady}
+                onError={handleMediaReady}
               />
+              <MediaLoadingIndicator />
             </figure>
           </div>
         </section>
@@ -2029,6 +2069,8 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                     <button
                       className={styles.productScreenshot}
                       type="button"
+                      data-media-frame=""
+                      data-media-loading={shouldLoadChapterMedia(1, 1) ? "true" : "false"}
                       onClick={() => setExpandedMedia(item)}
                       aria-label={`Expand the ${item.title.toLowerCase()} screenshot`}
                     >
@@ -2040,7 +2082,10 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                         width={item.width}
                         height={item.height}
                         loading="lazy"
+                        onLoad={handleMediaReady}
+                        onError={handleMediaReady}
                       />
+                      <MediaLoadingIndicator />
                       <MediaExpandIcon />
                     </button>
                     <figcaption className={styles.productCaption}>
@@ -2067,6 +2112,8 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                 <button
                   className={styles.productScreenshot}
                   type="button"
+                  data-media-frame=""
+                  data-media-loading={shouldLoadChapterMedia(1, 2) ? "true" : "false"}
                   onClick={() => setExpandedMedia(fostyDesignMedia)}
                   aria-label="Expand the Fosty usability review screenshot"
                 >
@@ -2078,7 +2125,10 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                     width={fostyDesignMedia.width}
                     height={fostyDesignMedia.height}
                     loading="lazy"
+                    onLoad={handleMediaReady}
+                    onError={handleMediaReady}
                   />
+                  <MediaLoadingIndicator />
                   <MediaExpandIcon />
                 </button>
                 <figcaption>
@@ -2218,6 +2268,8 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
         {expandedMedia && portalTarget && createPortal(
           <div
             className={styles.mediaLightbox}
+            data-media-frame=""
+            data-media-loading="true"
             role="dialog"
             aria-modal="true"
             aria-label={`Expanded ${expandedMedia.title.toLowerCase()} screenshot`}
@@ -2238,7 +2290,10 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
               width={expandedMedia.width}
               height={expandedMedia.height}
               onClick={(event) => event.stopPropagation()}
+              onLoad={handleMediaReady}
+              onError={handleMediaReady}
             />
+            <MediaLoadingIndicator />
           </div>,
           portalTarget,
         )}
@@ -2267,14 +2322,21 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                   ordinary playback can obscure.
                 </p>
                 <div className={styles.cruxOriginFeature}>
-                  <figure className={styles.cruxOriginScreenshot}>
+                  <figure
+                    className={styles.cruxOriginScreenshot}
+                    data-media-frame=""
+                    data-media-loading={shouldLoadChapterMedia(2, 0) ? "true" : "false"}
+                  >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={shouldLoadChapterMedia(2, 0) ? "/images/crux-vision-find-the-move.webp" : undefined}
                       alt="Crux Vision introduction reading Find the move that matters and See your climbing in motion."
                       width={604}
                       height={504}
+                      onLoad={handleMediaReady}
+                      onError={handleMediaReady}
                     />
+                    <MediaLoadingIndicator />
                   </figure>
                   <nav className={`${styles.minimalContactLinks} ${styles.cruxMediaActions}`} aria-label="Crux Vision links">
                     <a href="https://crux-vision-rebuild.vercel.app/" target="_blank" rel="noreferrer">
@@ -2322,7 +2384,11 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                 </div>
               </section>
               <aside className={styles.cruxMediaColumn} aria-label="Crux Vision movement overlay demonstration">
-                <figure className={`${styles.cruxVideoFrame} ${styles.cruxOriginVideoFrame}`}>
+                <figure
+                  className={`${styles.cruxVideoFrame} ${styles.cruxOriginVideoFrame}`}
+                  data-media-frame=""
+                  data-media-loading="false"
+                >
                   <video
                     ref={cruxVideoRef}
                     data-src="/videos/crux-vision-origin-overlay.mp4"
@@ -2332,9 +2398,12 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                     playsInline
                     preload="none"
                     aria-label="A portrait climbing video with a synchronized pose skeleton and movement trails"
+                    onLoadedData={handleMediaReady}
+                    onError={handleMediaReady}
                   >
                     Your browser does not support embedded video.
                   </video>
+                  <MediaLoadingIndicator />
                   <div className={styles.cruxVideoControls}>
                     <button type="button" onClick={() => openVideoFullscreen(cruxVideoRef.current)} aria-label="View the Crux Vision overlay video fullscreen">
                       <MediaExpandIcon />
@@ -2367,6 +2436,8 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                     <button
                       className={styles.productScreenshot}
                       type="button"
+                      data-media-frame=""
+                      data-media-loading={shouldLoadChapterMedia(2, 1) ? "true" : "false"}
                       onClick={() => setExpandedCruxMedia(cruxMovementMedia[0])}
                       aria-label="Expand the analysis range screenshot"
                     >
@@ -2377,7 +2448,10 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                         width={cruxMovementMedia[0].width}
                         height={cruxMovementMedia[0].height}
                         loading="lazy"
+                        onLoad={handleMediaReady}
+                        onError={handleMediaReady}
                       />
+                      <MediaLoadingIndicator />
                       <MediaExpandIcon />
                     </button>
                   </div>
@@ -2391,7 +2465,11 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                   </div>
                 </section>
               </div>
-              <figure className={`${styles.cruxVideoFrame} ${styles.cruxMovementVideoFrame}`}>
+              <figure
+                className={`${styles.cruxVideoFrame} ${styles.cruxMovementVideoFrame}`}
+                data-media-frame=""
+                data-media-loading="false"
+              >
                 <video
                   ref={cruxMovementVideoRef}
                   data-src="/videos/crux-vision-movement-review.mp4"
@@ -2401,9 +2479,12 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                   playsInline
                   preload="none"
                   aria-label="A climbing move reviewed at quarter speed with three joint trails"
+                  onLoadedData={handleMediaReady}
+                  onError={handleMediaReady}
                 >
                   Your browser does not support embedded video.
                 </video>
+                <MediaLoadingIndicator />
                 <div className={styles.cruxVideoControls}>
                   <button
                     type="button"
@@ -2422,6 +2503,8 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                   <button
                     className={styles.productScreenshot}
                     type="button"
+                    data-media-frame=""
+                    data-media-loading={shouldLoadChapterMedia(2, 1) ? "true" : "false"}
                     onClick={() => setExpandedCruxMedia(cruxMovementMedia[1])}
                     aria-label="Expand the checkpoints screenshot"
                   >
@@ -2432,7 +2515,10 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                       width={cruxMovementMedia[1].width}
                       height={cruxMovementMedia[1].height}
                       loading="lazy"
+                      onLoad={handleMediaReady}
+                      onError={handleMediaReady}
                     />
+                    <MediaLoadingIndicator />
                     <MediaExpandIcon />
                   </button>
                 </div>
@@ -2448,6 +2534,8 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                   <button
                     className={styles.productScreenshot}
                     type="button"
+                    data-media-frame=""
+                    data-media-loading={shouldLoadChapterMedia(2, 1) ? "true" : "false"}
                     onClick={() => setExpandedCruxMedia(cruxMovementMedia[2])}
                     aria-label="Expand the precision playback screenshot"
                   >
@@ -2458,7 +2546,10 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                       width={cruxMovementMedia[2].width}
                       height={cruxMovementMedia[2].height}
                       loading="lazy"
+                      onLoad={handleMediaReady}
+                      onError={handleMediaReady}
                     />
+                    <MediaLoadingIndicator />
                     <MediaExpandIcon />
                   </button>
                 </div>
@@ -2471,6 +2562,8 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                       key={item.title}
                       className={styles.productScreenshot}
                       type="button"
+                      data-media-frame=""
+                      data-media-loading={shouldLoadChapterMedia(2, 1) ? "true" : "false"}
                       onClick={() => setExpandedCruxMedia(item)}
                       aria-label={`Expand the ${item.title.toLowerCase()} screenshot`}
                     >
@@ -2481,7 +2574,10 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                         width={item.width}
                         height={item.height}
                         loading="lazy"
+                        onLoad={handleMediaReady}
+                        onError={handleMediaReady}
                       />
+                      <MediaLoadingIndicator />
                       <MediaExpandIcon />
                     </button>
                   ))}
@@ -2515,7 +2611,11 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
             </header>
 
             <figure className={styles.cruxComparisonFigure}>
-              <div className={`${styles.cruxVideoFrame} ${styles.cruxComparisonVideoFrame}`}>
+              <div
+                className={`${styles.cruxVideoFrame} ${styles.cruxComparisonVideoFrame}`}
+                data-media-frame=""
+                data-media-loading="false"
+              >
                 <video
                   ref={cruxComparisonVideoRef}
                   data-src="/videos/crux-vision-fail-vs-success.mp4"
@@ -2525,9 +2625,12 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                   playsInline
                   preload="none"
                   aria-label="Two attempts at the same dynamic climbing move compared with ankle, hip, and shoulder movement trails"
+                  onLoadedData={handleMediaReady}
+                  onError={handleMediaReady}
                 >
                   Your browser does not support embedded video.
                 </video>
+                <MediaLoadingIndicator />
                 <div className={styles.cruxVideoControls}>
                   <button
                     type="button"
@@ -2541,7 +2644,12 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
             </figure>
 
             <div className={styles.cruxVisualSupport}>
-              <aside className={styles.cruxTrailLegend} aria-label="Selected movement trails">
+              <aside
+                className={styles.cruxTrailLegend}
+                data-media-frame=""
+                data-media-loading={shouldLoadChapterMedia(2, 2) ? "true" : "false"}
+                aria-label="Selected movement trails"
+              >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={shouldLoadChapterMedia(2, 2) ? "/images/crux-vision-trail-legend.webp" : undefined}
@@ -2549,7 +2657,10 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                   width={352}
                   height={316}
                   loading="lazy"
+                  onLoad={handleMediaReady}
+                  onError={handleMediaReady}
                 />
+                <MediaLoadingIndicator />
               </aside>
               <section className={styles.cruxVisualSection} aria-labelledby="crux-visual-move">
                 <h3 id="crux-visual-move">THE MOVE</h3>
@@ -2727,6 +2838,8 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                   <button
                     type="button"
                     className={`${styles.productScreenshot} ${styles.cruxCalibrationScreenshot}`}
+                    data-media-frame=""
+                    data-media-loading={shouldLoadChapterMedia(2, 3) ? "true" : "false"}
                     onClick={() => setExpandedCruxMedia(cruxEngineeringMedia[0])}
                     aria-label="Expand compare derived views screenshot"
                   >
@@ -2737,7 +2850,10 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                       width={cruxEngineeringMedia[0].width}
                       height={cruxEngineeringMedia[0].height}
                       loading="lazy"
+                      onLoad={handleMediaReady}
+                      onError={handleMediaReady}
                     />
+                    <MediaLoadingIndicator />
                     <MediaExpandIcon />
                   </button>
                 </figure>
@@ -2772,6 +2888,8 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                   <button
                     type="button"
                     className={`${styles.productScreenshot} ${styles.cruxCalibrationScreenshot}`}
+                    data-media-frame=""
+                    data-media-loading={shouldLoadChapterMedia(2, 3) ? "true" : "false"}
                     onClick={() => setExpandedCruxMedia(cruxEngineeringMedia[1])}
                     aria-label="Expand confidence threshold controls screenshot"
                   >
@@ -2782,7 +2900,10 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                       width={cruxEngineeringMedia[1].width}
                       height={cruxEngineeringMedia[1].height}
                       loading="lazy"
+                      onLoad={handleMediaReady}
+                      onError={handleMediaReady}
                     />
+                    <MediaLoadingIndicator />
                     <MediaExpandIcon />
                   </button>
                 </figure>
@@ -2813,6 +2934,8 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                 <button
                   type="button"
                   className={`${styles.productScreenshot} ${styles.cruxCalibrationScreenshot}`}
+                  data-media-frame=""
+                  data-media-loading={shouldLoadChapterMedia(2, 3) ? "true" : "false"}
                   onClick={() => setExpandedCruxMedia(cruxEngineeringMedia[2])}
                   aria-label="Expand continuity and smoothing controls screenshot"
                 >
@@ -2823,7 +2946,10 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                     width={cruxEngineeringMedia[2].width}
                     height={cruxEngineeringMedia[2].height}
                     loading="lazy"
+                    onLoad={handleMediaReady}
+                    onError={handleMediaReady}
                   />
+                  <MediaLoadingIndicator />
                   <MediaExpandIcon />
                 </button>
               </figure>
@@ -2953,6 +3079,8 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
         {expandedCruxMedia && portalTarget && createPortal(
           <div
             className={styles.mediaLightbox}
+            data-media-frame=""
+            data-media-loading="true"
             role="dialog"
             aria-modal="true"
             aria-label={`Expanded ${expandedCruxMedia.title.toLowerCase()} screenshot`}
@@ -2973,7 +3101,10 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
               width={expandedCruxMedia.width}
               height={expandedCruxMedia.height}
               onClick={(event) => event.stopPropagation()}
+              onLoad={handleMediaReady}
+              onError={handleMediaReady}
             />
+            <MediaLoadingIndicator />
           </div>,
           portalTarget,
         )}
@@ -3011,7 +3142,11 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                 <div><dt>$70K</dt><dd><strong>MOTION CAPTURE VALUE</strong></dd></div>
               </dl>
               <figure className={styles.inheritanceVideoFrame}>
-                <div className={styles.inheritanceVideoMedia}>
+                <div
+                  className={styles.inheritanceVideoMedia}
+                  data-media-frame=""
+                  data-media-loading="false"
+                >
                   <video
                     ref={inheritanceVideoRef}
                     data-src="/videos/inheritance-motion-collection.mp4"
@@ -3023,9 +3158,12 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                     width="1600"
                     height="886"
                     aria-label="A collection of retargeted motion capture animations playing in Blender"
+                    onLoadedData={handleMediaReady}
+                    onError={handleMediaReady}
                   >
                     Your browser does not support embedded video.
                   </video>
+                  <MediaLoadingIndicator />
                   <div className={styles.cruxVideoControls}>
                     <button
                       type="button"
@@ -3116,6 +3254,8 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                 <button
                   type="button"
                   className={styles.inheritanceAmassButton}
+                  data-media-frame=""
+                  data-media-loading={shouldLoadChapterMedia(4, 1) ? "true" : "false"}
                   onClick={() => setInheritanceImageExpanded(true)}
                   aria-label="Expand the AMASS motion and body diversity image"
                 >
@@ -3126,7 +3266,10 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                     width="1554"
                     height="1074"
                     loading="lazy"
+                    onLoad={handleMediaReady}
+                    onError={handleMediaReady}
                   />
+                  <MediaLoadingIndicator />
                   <MediaExpandIcon />
                 </button>
                 <figcaption>THE MOTION AND BODY DIVERSITY REPRESENTED IN AMASS.</figcaption>
@@ -3162,6 +3305,8 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                 <button
                   type="button"
                   className={styles.inheritanceEngineeringMediaButton}
+                  data-media-frame=""
+                  data-media-loading="false"
                   onClick={() => openVideoFullscreen(inheritanceWalkingVideoRef.current)}
                   aria-label="View the AMASS and production armature walking comparison video fullscreen"
                 >
@@ -3176,9 +3321,12 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
                     width={1372}
                     height={1552}
                     aria-label="A synchronized comparison of AMASS surface motion and the rebuilt production armature animation"
+                    onLoadedData={handleMediaReady}
+                    onError={handleMediaReady}
                   >
                     Your browser does not support embedded video.
                   </video>
+                  <MediaLoadingIndicator />
                   <MediaExpandIcon />
                 </button>
                 <figcaption>AMASS MOTION, REBUILT ON A PRODUCTION ARMATURE.</figcaption>
@@ -3345,6 +3493,8 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
         {inheritanceImageExpanded && portalTarget && createPortal(
           <div
             className={styles.mediaLightbox}
+            data-media-frame=""
+            data-media-loading="true"
             role="dialog"
             aria-modal="true"
             aria-label="Expanded AMASS motion and body diversity image"
@@ -3365,7 +3515,10 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
               width="1554"
               height="1074"
               onClick={(event) => event.stopPropagation()}
+              onLoad={handleMediaReady}
+              onError={handleMediaReady}
             />
+            <MediaLoadingIndicator />
           </div>,
           portalTarget,
         )}

@@ -114,6 +114,8 @@ The adaptive rendering and resilience pass was completed on August 29, 2026. The
 
 The minimal launch scope was implemented on August 30, 2026. When a visitor's operating system requests reduced motion at page load, the site deliberately skips WebGL initialization and uses the existing near-black static presentation with no strand, particles, camera travel, or automatic video playback. Portfolio content and direct-route navigation remain available, and returning to the normal visual experience only requires disabling the preference and refreshing. Broader accessibility, high-contrast, large-text, zoom, and multi-screen-reader auditing is deferred rather than treated as a launch requirement.
 
+A focused keyboard and dialog follow-up was completed the same day. Global route shortcuts no longer intercept arrow and paging keys while a visitor is focused inside a control or scrollable reading region. Expanded-image dialogs keep keyboard focus inside, close with Escape or the existing close controls, and return focus to the control that opened them. Verification remains intentionally limited to a short desktop and mobile smoke test rather than a broad accessibility audit.
+
 - Make reduced motion skip or drastically shorten the opening and disable continuous decorative motion, not only CSS transitions and automatic video playback.
 - Verify complete keyboard navigation and visible focus states.
 - Trap focus inside open image and video dialogs, close them with Escape, and restore focus to the control that opened them.

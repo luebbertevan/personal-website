@@ -335,16 +335,46 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
       && !inheritanceImageExpanded
     ) return;
 
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key !== "Escape") return;
+    const dialog = lightboxCloseRef.current?.closest<HTMLElement>("[role='dialog']") ?? null;
+    const previouslyFocused = document.activeElement instanceof HTMLElement
+      ? document.activeElement
+      : null;
+    const focusDialog = window.requestAnimationFrame(() => {
+      lightboxCloseRef.current?.focus();
+    });
+    const closeLightbox = () => {
       setExpandedMedia(null);
       setExpandedCruxMedia(null);
       setInheritanceImageExpanded(false);
     };
+    const handleDialogKeys = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeLightbox();
+        return;
+      }
+      if (event.key !== "Tab" || !dialog) return;
+      const focusable = Array.from(dialog.querySelectorAll<HTMLElement>(
+        "button:not([disabled]), a[href], [tabindex]:not([tabindex='-1'])",
+      ));
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
 
-    lightboxCloseRef.current?.focus();
-    window.addEventListener("keydown", closeOnEscape);
-    return () => window.removeEventListener("keydown", closeOnEscape);
+    window.addEventListener("keydown", handleDialogKeys);
+    return () => {
+      window.cancelAnimationFrame(focusDialog);
+      window.removeEventListener("keydown", handleDialogKeys);
+      if (previouslyFocused?.isConnected) previouslyFocused.focus();
+    };
   }, [expandedCruxMedia, expandedMedia, inheritanceImageExpanded]);
 
   const requestRoute = (route: PortfolioRoute, push = true) => {
@@ -1029,6 +1059,13 @@ export function SignalPrototypeV4({ initialRoute }: SignalPrototypeV4Props) {
     const keydown = (event: KeyboardEvent) => {
       if (homeIntroActive || directEntryActive) return;
       if (transition || navigationCommandRef.current) return;
+      const eventTarget = event.target instanceof Element ? event.target : null;
+      if (
+        eventTarget
+        && eventTarget !== document.body
+        && eventTarget !== document.documentElement
+        && eventTarget !== shell
+      ) return;
       const direction = event.key === "ArrowRight" || event.key === "ArrowDown" || event.key === "PageDown"
         ? 1
         : event.key === "ArrowLeft" || event.key === "ArrowUp" || event.key === "PageUp"

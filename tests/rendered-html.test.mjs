@@ -196,6 +196,7 @@ test("client navigation synchronizes native history without remounting the portf
   assert.match(source, /syncActiveProjectVideo\(currentDestination, currentChapter\);/);
   assert.match(source, /syncActiveProjectVideo\(activeDestinationForUi, activeChapterForUi\);/);
   assert.match(source, /const activeVideo = getActiveProjectVideo\(destinationIndex, chapterIndex\);[\s\S]*activeVideo\.muted = true;[\s\S]*activeVideo\.play\(\)/);
+  assert.match(source, /eventTarget\s*&& eventTarget !== document\.body\s*&& eventTarget !== document\.documentElement\s*&& eventTarget !== shell/);
   assert.doesNotMatch(source, /router\.push|router\.replace/);
 });
 
@@ -738,6 +739,9 @@ test("Phase 1 provides dedicated mobile navigation, viewport-first content, and 
   assert.match(source, /function MediaExpandIcon\(\) \{\s*return <span aria-hidden="true" className=\{styles\.expandIcon\}>⛶<\/span>;/);
   assert.equal((source.match(/⛶/g) ?? []).length, 1);
   assert.equal([...source.matchAll(/<MediaExpandIcon \/>/g)].length, 15);
+  assert.match(source, /const dialog = lightboxCloseRef\.current\?\.closest<HTMLElement>\("\[role='dialog'\]"\) \?\? null;/);
+  assert.match(source, /if \(event\.key !== "Tab" \|\| !dialog\) return;/);
+  assert.match(source, /if \(previouslyFocused\?\.isConnected\) previouslyFocused\.focus\(\);/);
   assert.match(css, /\.expandIcon \{[^}]*position: absolute;[^}]*right: 13px;[^}]*bottom: 12px;[^}]*width: 28px;[^}]*height: 28px;[^}]*min-width: 28px;[^}]*min-height: 28px;[^}]*font-size: 26px;/s);
   assert.match(css, /\.cruxVideoControls \{\s*display: contents;\s*\}/s);
   assert.match(css, /\.cruxVideoControls button \{[^}]*position: absolute;[^}]*inset: 0;[^}]*width: 100%;[^}]*height: 100%;[^}]*cursor: zoom-in;/s);

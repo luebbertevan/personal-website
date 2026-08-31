@@ -79,6 +79,12 @@ test("server-renders the approved single-panel About content", async () => {
   assert.doesNotMatch(html, /Portfolio Prototype|Dynamic Route Online|Index \/ Home|Scroll \/|Arrows \/|Pointer \//i);
 });
 
+test("the root layout includes Vercel Web Analytics", async () => {
+  const layout = await readFile(new URL("../app/layout.tsx", import.meta.url), "utf8");
+  assert.match(layout, /import \{ Analytics \} from "@vercel\/analytics\/next";/);
+  assert.match(layout, /<Analytics \/>/);
+});
+
 test("About navigation, contact actions, and public assets are wired correctly", async () => {
   const [source, pageSource, css, globalCss, headshot, resume, socialImage] = await Promise.all([
     readPortfolioSource(),
